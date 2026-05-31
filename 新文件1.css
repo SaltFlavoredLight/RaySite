@@ -1,0 +1,282 @@
+/* all prefix that should using ${BUILDER_CONFIG.classPrefix} is "cw-" */
+
+/* in Quill Documents class */
+
+.cw-internal-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;      
+    object-position: center;  
+    display: block;
+    user-select: none;
+}
+
+/* Custom! */
+.cw-context-hr {
+    width: 100%;
+    margin: 0;
+    border: none;
+    border-top: 1px solid currentColor;
+    box-sizing: border-box;
+}
+
+
+.cw-context-audio {
+    width: 100%;
+    display: block;
+}
+
+.cw-context-video {
+    width: 100%;
+    height: auto;
+    display: block;
+    background: #000; /* helps when poster is loading */
+}
+
+.cw-context-vimeoVideo {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+    border: none;
+}
+
+.cw-context-ytvideo {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+    border: none;
+}
+
+.cw-context-gdocs {
+    width: 100%;
+    display: block;
+    font-family: inherit;
+    color: inherit;
+}
+
+.cw-context-gdocs-noscript {
+    display: block;
+}
+
+.cw-context-gdocs-iframe {
+    width: 100%;
+    border: none;
+    display: block;
+}
+
+.cw-ytLive iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+}
+    
+.cw-context-ytLive-overlay {
+  position: absolute;      /* or fixed, depending on your layout */
+  inset: 0;                /* full cover */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #222;
+  color: #EEE;
+  font-size: 1.2rem;
+  z-index: 10;
+  pointer-events: none;    /* so clicks pass through once faded */
+}
+
+
+@keyframes cw-animation-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+@keyframes cw-animation-flyIn {
+  from {
+    opacity: 0;
+    transform: translate(
+      var(--cw-animation-variables-flyIn-x, 0px),
+      var(--cw-animation-variables-flyIn-y, 60px)
+    );
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+
+@keyframes cw-animation-growTurn {
+  from {
+    opacity: 0;
+    transform:
+      scale(0.3)
+      rotate(var(--cw-animation-variables-growTurn-rotate, -25deg));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+
+@keyframes cw-animation-zoom {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+@keyframes cw-animation-basicZoom {
+  from {
+    opacity: 0;
+    transform: scale(
+      calc(var(--cw-animation-variables-basicZoom-scaleStart, 85) / 100)
+    );
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+@keyframes cw-animation-rise {
+  from {
+    opacity: 0;
+    transform: translate(
+      var(--cw-animation-variables-rise-x, 0px),
+      var(--cw-animation-variables-rise-y, 25px)
+    );
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+
+@keyframes cw-animation-stretch {
+  from {
+    opacity: 0;
+    transform-origin: var(--cw-animation-variables-stretch-origin, left);
+    transform: scaleX(0.1);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+
+@keyframes cw-animation-wipe {
+  from {
+    opacity: 0;
+    clip-path: var(--cw-animation-variables-wipe-from, inset(0 100% 0 0));
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+
+@keyframes cw-animation-peekIn {
+  from {
+    opacity: 0;
+    transform: translate(
+      var(--cw-animation-variables-peekIn-x, -40px),
+      var(--cw-animation-variables-peekIn-y, 0px)
+    );
+    clip-path: var(--cw-animation-variables-peekIn-from, inset(0 100% 0 0));
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+
+@keyframes cw-animation-box {
+  from {
+    opacity: 0;
+    clip-path: inset(
+      var(--cw-animation-variables-box-y, 50%)
+      var(--cw-animation-variables-box-x, 50%)
+      var(--cw-animation-variables-box-y, 50%)
+      var(--cw-animation-variables-box-x, 50%)
+    );
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+
+@keyframes cw-animation-expand {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+@keyframes cw-animation-tumble {
+  from {
+    opacity: 0;
+    transform-origin: top left;
+    transform:
+      translate(
+        var(--cw-animation-variables-tumble-x, -40px),
+        var(--cw-animation-variables-tumble-y, -40px)
+      )
+      rotate(var(--cw-animation-variables-tumble-intensity, -120deg));
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+
+@keyframes cw-animation-rotate {
+  from {
+    opacity: 0;
+    transform:
+      translateY(50%)
+      rotate(var(--cw-animation-variables-rotate-intensity, 180deg));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes cw-animation-slideRotate {
+  from {
+    opacity: 0;
+    transform:
+      translate(
+        var(--cw-animation-variables-slideRotate-slideX, 0px),
+        var(--cw-animation-variables-slideRotate-slideY, 100px)
+      )
+      rotate(var(--cw-animation-variables-slideRotate-intensity, 180deg));
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+
+
