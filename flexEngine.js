@@ -24,151 +24,6 @@ const BUILDER_CONFIG = {
 /*
 Styling system
 */
-// Styling everything. for END NODE (1) and CONTAINER NODE (2), And also used as part of SECTION (3)
-debugger; // this need like to change the spacing system, and format to make it better.
-const flexEngineStylingClass = function(dataArray, isVertical) {
-	const engine = flexEngineStyleVarible;
-	
-	const JSONarray = {
-		default: ((data) => {
-			const s = data.style || {};
-			const sz = data.size || {};
-			const overrides = {};
-			if (Array.isArray(data.CSSoverride)) {
-				data.CSSoverride.forEach(item => {
-					if (item && item.key) {
-						overrides[item.key] = item.value;
-					}
-				});
-			}
-			const css = {
-				"padding-top": engine.space(s.paddingTop),
-				"padding-bottom": engine.space(s.paddingBottom),
-				"padding-left": engine.space(s.paddingLeft),
-				"padding-right": engine.space(s.paddingRight),
-				"border-width": engine.space(s.borderThickness),
-				"border-style": s.borderMode || "solid",
-				"border-top": s.borderTop || "none",
-				"border-bottom": s.borderBottom || "none",
-				"border-left": s.borderLeft || "none",
-				"border-right": s.borderRight || "none",
-				"border-radius": `${s.borderRadius || 0}px`,
-				"box-shadow": s.shadow ? `${s.shadowInset ? 'inset ' : ''}${s.shadowOffsetX || 0}px ${s.shadowOffsetY || 0}px ${s.shadowBlur || 0}px ${s.shadowExpand || 0}px ${engine.color(s.shadowColor)}` : "none",
-				"color": engine.color(s.textColor),
-				"background": engine.color(s.background),
-				"filter": s.blur ? `blur(${s.blur}px)` : "none",
-				"font-family": s.font || "inherit",
-				"caret-color": engine.color(s.markColor),
-
-				"width": isVertical ? engine.space(sz.across) : engine.space(sz.along),
-				"height": isVertical ? engine.space(sz.along) : engine.space(sz.across),
-				"flex-grow": sz.alongGrow || 0,
-				"flex-shrink": sz.alongShrink === true ? 1 : 0,
-				"overflow-x": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible'),
-				"overflow-y": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible'),
-				"align-self": (sz.acrossAlign > 0) ? ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'][sz.acrossAlign - 1] : 'auto'
-			};
-			return {
-				...css,
-				...overrides
-			};
-		})(dataArray),
-		onMobile: {
-				"padding-top": engine.space(dataArray.style?.mobilePaddingTop),
-				"padding-bottom": engine.space(dataArray.style?.mobilePaddingBottom),
-				"padding-left": engine.space(dataArray.style?.mobilePaddingLeft),
-				"padding-right": engine.space(dataArray.style?.mobilePaddingRight),
-
-				"min-height": engine.space(dataArray.size?.mobileMinHeight)
-		},
-		onHover: ((data) => {
-			if (!data) return {};
-				const s = data.style || {};
-				const sz = data.size || {};
-				const overrides = {};
-				if (Array.isArray(data.CSSoverride)) {
-					data.CSSoverride.forEach(item => {
-					if (item && item.key) overrides[item.key] = item.value;
-				});
-			}
-			const css = {
-				"padding-top": engine.space(s.paddingTop),
-				"padding-bottom": engine.space(s.paddingBottom),
-				"padding-left": engine.space(s.paddingLeft),
-				"padding-right": engine.space(s.paddingRight),
-				"border-width": engine.space(s.borderThickness),
-				"border-style": s.borderMode || "solid",
-				"border-radius": `${s.borderRadius || 0}px`,
-				"color": engine.color(s.textColor),
-				"background": engine.color(s.background),
-				"width": isVertical ? engine.space(sz.across) : engine.space(sz.along),
-				"height": isVertical ? engine.space(sz.along) : engine.space(sz.across)
-			};
-			return {
-				...css,
-				...overrides
-			};
-		})(dataArray.hover)
-	},
-
-	return JSONarray;
-};
-
-//Styling system for END NODE (1) and CONTAINER NODE (2), And also used as part of SECTION (3)
-const flexEngineStylingContextsNode = function(dataArray, node, isVertical) {
-	const engine = flexEngineStyleVarible;
-
-	const nodeStyle = {
-		// Primary state bundle
-		default: flexEngineStylingClass(dataArray, isVertical),
-
-		// Map each custom class in overrideState
-		...Object.keys(dataArray.overrideState || {}).reduce((acc, key) => {
-			const stateData = dataArray.overrideState[key];
-			acc[key] = flexEngineStylingClass(stateData, isVertical);
-			return acc;
-		}, {}),
-
-	};
-
-	const prefix = BUILDER_CONFIG.classPrefix;
-
-	Object.keys(nodeStyle).forEach(stateKey => {
-		if (stateKey === 'startAnimation') return;
-
-		let cleanName = stateKey.startsWith('.') ? stateKey.substring(1) : stateKey;
-
-		const bundle = nodeStyle[stateKey];
-		const attributeBase = `${prefix}-styles-${cleanName}`;
-
-		// Convert object → CSS string
-		const toCss = (obj) =>
-			Object.entries(obj)
-			.filter(([_, value]) => value !== undefined && value !== null && value !== "")
-			.map(([key, value]) => `${key}: ${value};`)
-			.join("");
-
-		// DEFAULT
-		if (bundle.default) {
-			node.setAttribute(attributeBase, toCss(bundle.default));
-		}
-
-		// MOBILE
-		if (bundle.onMobile) {
-			node.setAttribute(`${attributeBase}-onMobile`, toCss(bundle.onMobile));
-		}
-
-		// HOVER
-		if (bundle.onHover) {
-			node.setAttribute(`${attributeBase}-onHover`, toCss(bundle.onHover));
-		}
-	});
-};
-
-/*
-END NODE (1) and CONTAINER NODE (2) LEVEL
-*/
-
 // Variable system
 const flexEngineStyleVarible = {
 	color: function(colorObj) {
@@ -316,6 +171,248 @@ const flexEngineStyleVarible = {
 		return "var(--animation-curve)";
 	},
 };
+
+// Setting List for nodes.
+const SizeSettingList = {
+	1: {
+		defalut: (sz, isVertical) => {
+			return {
+				"width": isVertical ? engine.space(sz.across) : engine.space(sz.along),
+				"height": isVertical ? engine.space(sz.along) : engine.space(sz.across),
+				"flex-grow": sz.alongGrow || 0,
+				"flex-shrink": sz.alongShrink === true ? 1 : 0,
+				"overflow-x": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible'),
+				"overflow-y": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible'),
+				"align-self": (sz.acrossAlign > 0) ? ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'][sz.acrossAlign - 1] : 'auto'
+			}
+		},
+		mobile: (sz, isVertical) => {
+			return {
+				"min-height": engine.space(sz.mobileMinHeight)
+			}
+		}
+	},
+
+	3: {
+		defalut: (sz, isVertical) => {
+			return {
+				"width": '100%',
+				"height": engine.space(sz.height),
+				"flex-grow": sz.alongGrow === true? 1 : 0,
+				"flex-shrink": sz.alongShrink === true ? 1 : 0,
+				"overflow-x": 'visible',
+				"overflow-y": 'visible',
+				"align-self": 'center'
+			}
+		},
+		mobile: (sz, isVertical) => {
+			return {
+				"min-height": engine.space(sz.mobileMinHeight)
+			}
+		}		
+	},
+
+	4: {
+		defalut: (sz, isVertical) => {
+			return {
+				"min-width": engine.space(sz.minWidth),
+				"min-height": engine.space(sz.minHeight),
+				"max-width": engine.space(sz.maxWidth),
+				"max-height": engine.space(sz.maxHeight)
+			}
+		},
+		mobile: (sz, isVertical) => {
+			return {
+				"min-height": engine.space(dataArray.size?.mobileMinHeight),
+				"max-height": engine.space(dataArray.size?.mobileMaxHeight)
+			}
+		}				
+	},
+
+	601: {
+		default: (sz, isVertical) => {
+			return {
+				"height": engine.space(sz.height),
+				"max-width": engine.space(sz.maxWidth),
+
+				"margin-top": engine.space(sz.marginTop),
+				"margin-bottom": engine.space(sz.marginBottom),
+				"margin-left": engine.space(sz.marginLeft),
+				"margin-right": engine.space(sz.marginRIght)
+			}
+		},
+
+		mobile: (sz, isVertical) => {
+			return {
+				"height": engine.space(sz.mobileHeight),
+
+				"margin-top": engine.space(sz.mobileMarginTop),
+				"margin-bottom": engine.space(sz.mobileMarginBottom),
+				"margin-left": engine.space(sz.mobileMarginLeft),
+				"margin-right": engine.space(sz.mobileMarginRIght)
+			}
+		}
+	}
+};
+
+// Some helping function control the style.
+// Style
+const defalutAppearance = (s) => {
+	return {
+			"padding-top": engine.space(s.paddingTop),
+			"padding-bottom": engine.space(s.paddingBottom),
+			"padding-left": engine.space(s.paddingLeft),
+			"padding-right": engine.space(s.paddingRight),
+			"border-style": s.borderMode || "solid",
+			"border-top": engine.space(s.borderTop) || "0px",
+			"border-bottom": engine.space(s.borderBottom) || "0px",
+			"border-left": engine.space(s.borderLeft) || "0px",
+			"border-right": engine.space(s.borderRight) || "0px",
+			"border-radius": `${s.borderRadius || 0}px`,
+			"box-shadow": s.shadow ? `${s.shadowInset ? 'inset ' : ''}${s.shadowOffsetX || 0}px ${s.shadowOffsetY || 0}px ${s.shadowBlur || 0}px ${s.shadowExpand || 0}px ${engine.color(s.shadowColor)}` : "none",
+			"color": engine.color(s.textColor),
+			"background": engine.color(s.background),
+			"filter": s.blur ? `blur(${s.blur}px)` : "none",
+			"font-family": s.font || "inherit",
+			"caret-color": engine.color(s.markColor),
+	};
+};
+
+const mobileAppearence = (s) => {
+	return {
+		"padding-top": engine.space(dataArray.style?.mobilePaddingTop),
+		"padding-bottom": engine.space(dataArray.style?.mobilePaddingBottom),
+		"padding-left": engine.space(dataArray.style?.mobilePaddingLeft),
+		"padding-right": engine.space(dataArray.style?.mobilePaddingRight)
+	};
+};
+
+// CSS overrides
+const CSSOverrides = (data) => {
+	const overrides = {};
+	if (Array.isArray(data.CSSoverride)) {
+		data.CSSoverride.forEach(item => {
+			if (item && item.key) {
+				overrides[item.key] = item.value;
+			}
+		});
+	}
+	return overrides;
+};
+
+// Styling everything.
+const flexEngineStylingClass = function(dataArray, isVertical, sizeSettingMode) {
+	const engine = flexEngineStyleVarible;
+
+	const JSONarray = {
+		default: ((data) => {
+			const s = data.style || {};
+			const sz = data.size || {};
+
+			return {
+				...defalutAppearance(s),
+				...SizeSettingList[sizeSettingMode].defalut(sz, isVertical),
+				...CSSOverrides(data)
+			};
+		})(dataArray),
+
+		onMobile: ((data) => {
+			const s = data.style || {};
+			const sz = data.size || {};
+
+			// there are no overrides.....
+			return {
+				...mobileAppearence(s),
+				...SizeSettingList[sizeSettingMode].mobile(sz, isVertical),
+			};
+		})(dataArray),
+
+		onHover: ((data) => {
+			if (!data) return {};
+			const s = data.style || {};
+			const sz = data.size || {};
+
+			return {
+				...defalutAppearance(s),
+				...SizeSettingList[sizeSettingMode].defalut(sz, isVertical),
+				...CSSOverrides(data)
+			};
+		})(dataArray.hover),
+
+		onHoverMobile: ((data) => {
+			if (!data) return {};
+			const s = data.style || {};
+			const sz = data.size || {};
+	
+			return {
+				...mobileAppearence(s),
+				...SizeSettingList[sizeSettingMode].mobile(sz, isVertical),
+			};
+		})(dataArray.hoverMobile)
+	};
+
+	return JSONarray;
+};
+
+// Styling system
+const flexEngineStylingSystem = function(dataArray, node, isVertical, sizeSettingMode) {
+	const engine = flexEngineStyleVarible;
+
+	const nodeStyle = {
+		// Primary state bundle
+		default: flexEngineStylingClass(dataArray, isVertical, sizeSettingMode),
+
+		// Map each custom class in overrideState
+		...Object.keys(dataArray.overrideState || {}).reduce((acc, key) => {
+			const stateData = dataArray.overrideState[key];
+			acc[key] = flexEngineStylingClass(stateData, isVertical, sizeSettingMode);
+			return acc;
+		}, {}),
+
+	};
+
+	const prefix = BUILDER_CONFIG.classPrefix;
+
+	Object.keys(nodeStyle).forEach(stateKey => {
+		if (stateKey === 'startAnimation') return;
+
+		let cleanName = stateKey.startsWith('.') ? stateKey.substring(1) : stateKey;
+
+		const bundle = nodeStyle[stateKey];
+		const attributeBase = `${prefix}-styles-${cleanName}`;
+
+		// Convert object → CSS string
+		const toCss = (obj) =>
+			Object.entries(obj)
+			.filter(([_, value]) => value !== undefined && value !== null && value !== "")
+			.map(([key, value]) => `${key}: ${value};`)
+			.join("");
+
+		// DEFAULT
+		if (bundle.default) {
+			node.setAttribute(attributeBase, toCss(bundle.default));
+		}
+
+		// MOBILE
+		if (bundle.onMobile) {
+			node.setAttribute(`${attributeBase}-onMobile`, toCss(bundle.onMobile));
+		}
+
+		// HOVER
+		if (bundle.onHover) {
+			node.setAttribute(`${attributeBase}-onHover`, toCss(bundle.onHover));
+		}
+
+		// HOVER & MOBILE
+		if (bundle.onMobileHover) {
+			node.setAttribute(`${attributeBase}-onMobileHover`, toCss(bundle.onMobileHover));
+		}		
+	});
+};
+
+/*
+END NODE (1) and CONTAINER NODE (2) LEVEL
+*/
 
 // Context Creator for the END NODE (1) and CONTAINER NODE (2)
 const flexEngineContextCreator = {
@@ -1208,7 +1305,7 @@ const flexEngineCreateEndNode = function(dataArray, documentHTML, parentVertical
 	}
 
 	// Styling (FlexEngine style, include style, styleOnHover, AnimationSetting)
-	flexEngineStylingContextsNode(dataArray, node, parentVertical);
+	flexEngineStylingSystem(dataArray, node, parentVertical, 1);
 
 	// animation system and transition system
 	flexEngineAnimationContextsNode(dataArray, node);
@@ -1221,137 +1318,6 @@ const flexEngineCreateEndNode = function(dataArray, documentHTML, parentVertical
 /*
 SECION (3) LEVEL
 */
-
-// Styling system for SECTION (3), use the 1 and 2 version
-const flexEngineStylingSection = function(dataArray, node) {
-	// start from empty
-	const newData = structuredClone(dataArray);
-
-	// --- Normalize SIZE ---
-	if (newData.size) {
-		const sz = newData.size;
-
-		newData.size = {
-			along: sz.height,
-			across: "100%",
-			alongGrow: sz.allowGrow ? 1 : 0,
-			alongShrink: sz.allowShrink ? 1 : 0,
-			overflowAlong: 1,
-			overflowAcross: 1,
-			acrossAlign: 2,
-			mobileMinHeight: sz.mobileMinHeight
-		};
-	}
-
-	// --- Normalize STYLE (keep same, fix typos only) ---
-	if (newData.style) {
-		/*
-		// THIS IS SAME
-        const s = newData.style;
-
-        newData.style = {
-            paddingTop: s.paddingTop,
-            paddingBottom: s.paddingBottom,
-            paddingLeft: s.paddingLeft,
-            paddingRight: s.paddingRight,
-
-            mobilePaddingTop: s.mobilePaddingTop,
-            mobilePaddingBottom: s.mobilePaddingBottom,
-            mobilePaddingLeft: s.mobilePaddingLeft,
-            mobilePaddingRight: s.mobilePaddingRight,
-
-            borderThickness: s.borderThickness,
-            borderMode: s.borderMode,
-
-            borderTop: s.borderTop,
-            borderBottom: s.borderBottom,
-            borderLeft: s.borderLeft,
-            borderRight: s.borderRight,
-            borderRadius: s.borderRadius,
-
-            shadow: s.shadow,
-            shadowOffsetX: s.shadowOffsetX,
-            shadowOffsetY: s.shadowOffsetY,
-            shadowBlur: s.shadowBlur,
-            shadowExpand: s.shadowExpand,
-            shadowInset: s.shadowInset,
-            shadowColor: s.shadowColor,
-
-            textColor: s.textColor,
-            markColor: s.markColor,
-            background: s.background,
-            blur: s.blur,
-            font: s.font
-        };
-		*/
-	}
-
-	// --- Normalize overrideState ---
-	if (newData.overrideState) {
-		Object.keys(newData.overrideState).forEach(key => {
-			const st = newData.overrideState[key];
-
-			// Normalize size inside override
-			if (st.size) {
-				const sz = st.size;
-
-				st.size = {
-					along: sz.height,
-					across: "100%",
-					alongGrow: sz.allowGrow ? 1 : 0,
-					alongShrink: sz.allowShrink ? 1 : 0,
-					overflowAlong: 1,
-					overflowAcross: 1,
-					acrossAlign: 2,
-					mobileMinHeight: sz.mobileMinHeight
-				};
-			}
-
-			// Normalize style inside override
-			if (st.style) {
-				/*
-				// THIS IS SAME......
-                const s = st.style;
-
-                st.style = {
-                    paddingTop: s.paddingTop,
-                    paddingBottom: s.paddingBottom,
-                    paddingLeft: s.paddingLeft,
-                    paddingRight: s.paddingRight,
-
-                    mobilePaddingTop: s.mobilePaddingTop,
-                    mobilePaddingBottom: s.mobilePaddingBottom,
-                    mobilePaddingLeft: s.mobilePaddingLeft,
-                    mobilePaddingRight: s.mobilePaddingRight,
-
-                    borderThickness: s.borderThickness,
-                    borderMode: s.borderMode,
-
-                    borderTop: s.borderTop,
-                    borderBottom: s.borderBottom,
-                    borderLeft: s.borderLeft,
-                    borderRight: s.borderRight,
-                    borderRadius: s.borderRadius,
-
-                    shadow: s.shadow,
-                    shadowOffsetX: s.shadowOffsetX,
-                    shadowOffsetY: s.shadowOffsetY,
-                    shadowBlur: s.shadowBlur,
-                    shadowExpand: s.shadowExpand,
-                    shadowInset: s.shadowInset,
-                    shadowColor: s.shadowColor,
-
-                    textColor: s.textColor,
-                    background: s.background
-                };
-				*/
-			}
-		});
-	}
-
-	// Go and start the system and End it.
-	flexEngineStylingContextsNode(newData, node, true);
-};
 
 // Animation system for SECTION (3) that help them apply the node
 const flexEngineApplyAnimationSection = function(node) {
@@ -1576,7 +1542,7 @@ const flexengineCreateSection = function(dataArray, documentHTML) {
 
 	//then start with now
 	// Here is next Styling system
-	flexEngineStylingSection(dataArray, node);
+	flexEngineStylingSystem(dataArray, node, true, 3);
 
 	// animation self, first from the Animation node.....
 	flexEngineAnimationSection(dataArray, node, true);
@@ -1591,176 +1557,6 @@ const flexengineCreateSection = function(dataArray, documentHTML) {
 /*
 POPUP (4) LEVEL
 */
-// styling inner Popup
-const flexEngineStylingInnerPopup = function(dataArray, node) {
-	const engine = flexEngineStyleVarible;
-
-	const nodeStyle = {
-		// Primary state bundle
-		default: {
-			default: ((data) => {
-				const s = data.style || {};
-				const sz = data.size || {};
-				const overrides = {};
-
-				if (Array.isArray(data.CSSoverride)) {
-					data.CSSoverride.forEach(item => {
-						if (item && item.key) {
-							overrides[item.key] = item.value;
-						}
-					});
-				}
-
-				const css = {
-					"padding-top": engine.space(s.paddingTop),
-					"padding-bottom": engine.space(s.paddingBottom),
-					"padding-left": engine.space(s.paddingLeft),
-					"padding-right": engine.space(s.paddingRight),
-					"border-width": engine.space(s.borderThickness),
-					"border-style": s.borderMode || "solid",
-					"border-top": s.borderTop || "none",
-					"border-bottom": s.borderBottom || "none",
-					"border-left": s.borderLeft || "none",
-					"border-right": s.borderRight || "none",
-					"border-radius": `${s.borderRadius || 0}px`,
-					"box-shadow": s.shadow ? `${s.shadowInset ? 'inset ' : ''}${s.shadowOffsetX || 0}px ${s.shadowOffsetY || 0}px ${s.shadowBlur || 0}px ${s.shadowExpand || 0}px ${engine.color(s.shadowColor)}` : "none",
-					"color": engine.color(s.textColor),
-					"background": engine.color(s.background),
-					"filter": s.blur ? `blur(${s.blur}px)` : "none",
-					"font-family": s.font || "inherit",
-					"caret-color": engine.color(s.markColor),
-
-					"min-width": engine.space(sz.minWidth),
-					"min-height": engine.space(sz.minHeight),
-					"max-width": engine.space(sz.maxWidth),
-					"max-height": engine.space(sz.maxHeight),
-				};
-
-				return {
-					...css,
-					...overrides
-				};
-			})(dataArray),
-
-			onMobile: {
-				"padding-top": engine.space(dataArray.style?.mobilePaddingTop),
-				"padding-bottom": engine.space(dataArray.style?.mobilePaddingBottom),
-				"padding-left": engine.space(dataArray.style?.mobilePaddingLeft),
-				"padding-right": engine.space(dataArray.style?.mobilePaddingRight),
-				"min-height": engine.space(dataArray.size?.mobileMinHeight),
-				"max-height": engine.space(dataArray.size?.mobileMaxHeight),
-			},
-
-			onHover: ((data) => {
-				if (!data) return {};
-				const s = data.style || {};
-				//const sz = data.size || {};
-				const overrides = {};
-
-				if (Array.isArray(data.CSSoverride)) {
-					data.CSSoverride.forEach(item => {
-						if (item && item.key) overrides[item.key] = item.value;
-					});
-				}
-
-				const css = {
-					"padding-top": engine.space(s.paddingTop),
-					"padding-bottom": engine.space(s.paddingBottom),
-					"padding-left": engine.space(s.paddingLeft),
-					"padding-right": engine.space(s.paddingRight),
-					"border-width": engine.space(s.borderThickness),
-					"border-style": s.borderMode || "solid",
-					"border-radius": `${s.borderRadius || 0}px`,
-					"color": engine.color(s.textColor),
-					"background": engine.color(s.background),
-				};
-
-				return {
-					...css,
-					...overrides
-				};
-			})(dataArray.hover)
-		},
-
-		// Map each custom class in overrideState
-		...Object.keys(dataArray.overrideState || {}).reduce((acc, key) => {
-			const stateData = dataArray.overrideState[key];
-
-			acc[key] = {
-				default: ((data) => {
-					const s = data.style || {};
-					//const sz = data.size || {};
-					const overrides = {};
-					if (Array.isArray(data.CSSoverride)) {
-						data.CSSoverride.forEach(item => {
-							if (item.key) overrides[item.key] = item.value;
-						});
-					}
-					return {
-						"padding-top": engine.space(s.paddingTop),
-						"padding-bottom": engine.space(s.paddingBottom),
-						"padding-left": engine.space(s.paddingLeft),
-						"padding-right": engine.space(s.paddingRight),
-						"border-width": engine.space(s.borderThickness),
-						"border-style": s.borderMode || "solid",
-						"border-radius": `${s.borderRadius || 0}px`,
-						"color": engine.color(s.textColor),
-						"background": engine.color(s.background),
-						...overrides
-					};
-				})(stateData),
-				onMobile: {
-					"padding-top": engine.space(stateData.style?.mobilePaddingTop),
-					"padding-bottom": engine.space(stateData.style?.mobilePaddingBottom),
-					"padding-left": engine.space(stateData.style?.mobilePaddingLeft),
-					"padding-right": engine.space(stateData.style?.mobilePaddingRight),
-				},
-				onHover: ((data) => {
-					if (!data) return {};
-					const s = data.style || {};
-					return {
-						"color": engine.color(s.textColor),
-						"background": engine.color(s.background)
-					};
-				})(stateData.hover)
-			};
-			return acc;
-		}, {}),
-	};
-
-	const prefix = BUILDER_CONFIG.classPrefix;
-
-	Object.keys(nodeStyle).forEach(stateKey => {
-		if (stateKey === 'startAnimation') return;
-
-		let cleanName = stateKey.startsWith('.') ? stateKey.substring(1) : stateKey;
-
-		const bundle = nodeStyle[stateKey];
-		const attributeBase = `${prefix}-styles-${cleanName}`;
-
-		// Convert object → CSS string
-		const toCss = (obj) =>
-			Object.entries(obj)
-			.filter(([_, value]) => value !== undefined && value !== null && value !== "")
-			.map(([key, value]) => `${key}: ${value};`)
-			.join("");
-
-		// DEFAULT
-		if (bundle.default) {
-			node.setAttribute(attributeBase, toCss(bundle.default));
-		}
-
-		// MOBILE
-		if (bundle.onMobile) {
-			node.setAttribute(`${attributeBase}-onMobile`, toCss(bundle.onMobile));
-		}
-
-		// HOVER
-		if (bundle.onHover) {
-			node.setAttribute(`${attributeBase}-onHover`, toCss(bundle.onHover));
-		}
-	});
-};
 
 // Create inner part of the Popup, use the Section (3)
 const flexEngineCreatePopupInnerPart = function(dataArray, documentHTML) {
@@ -1831,7 +1627,7 @@ const flexEngineCreatePopupInnerPart = function(dataArray, documentHTML) {
 	}
 
 	// Do same job from the Secion: Apply Section styling: style, CSSoverride, overrideState, size next part
-	flexEngineStylingInnerPopup(dataArray, innerNode);
+	flexEngineStylingSystem(dataArray, node, true, 4);
 
 	// Animation and Translation, as part 3, they are same!
 	// animation self, first from the Animation node.....
@@ -1913,15 +1709,34 @@ const flexengineCreatePopup = function(dataArray, documentHTML) {
 	return node;
 };
 
+
 /*
 HEADER (6) LEVEL
 */
-// Styling system for SECTION (3), use the 1 and 2 version
-const flexEngineStylingSection = function(dataArray, node) {
-	debugger;
+
+// dealing with Open List function
+const flexEngineCreateOpeningList = function(dataArray, node, documentHTML) {
+	debugger; // Wait to create
+}
+
+// create a lists of elements as a source in header context
+debugger; // Wait for create
+const flexEngineHeaderElementList = {
+
 };
 
-// create a new standard HEADER
+// create a floder lists......
+const flexEngineCreateHeaderElements = function(dataArray, node, documentHTML) {
+	debugger; // Wait to create
+};
+
+// that is create a Row, one header in standard have one row.
+const flexEngineCreateHeaderRow = function(dataArray, node, documentHTML) {
+	debugger; // wait to create.
+};
+
+
+// create a new standard HEADER (601)
 const flexEngineCreateHeader = function(dataArray, documentHTML) {
 	const node = documentHTML.createElement("header");
 
@@ -1930,7 +1745,20 @@ const flexEngineCreateHeader = function(dataArray, documentHTML) {
 	node.classList.add(`${BUILDER_CONFIG.classPrefix}${dataArray.type}`);
 	node.classList.add(`${BUILDER_CONFIG.classPrefix}${dataArray.id}`);
 
+
+	// fot the context, we will wait.
 	debugger;
+
+	// Styling system.
+	flexEngineStylingSystem(dataArray, node, true, 601);
+
+	// animation system and transition system
+	debugger; //wait for changes......
+	flexEngineAnimationContextsNode(dataArray, node);
+	flexEngineTransitionContextsNode(dataArray, node);
+
+	// Send everything back!
+	return node;	
 };
 
 
