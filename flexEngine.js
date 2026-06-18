@@ -10,20 +10,46 @@ we will change this whole part of code from the Normal to registery mode.
 // NEXT DAY (late 3.5 day): HEADER
 // LAST: combine final HTML and CSS theme
 
+'use strict';
+
 import quillDeltaToHtml from 'https://cdn.jsdelivr.net/npm/quill-delta-to-html@0.12.1/+esm'
 
 /*
 Config
 */
 const BUILDER_CONFIG = {
-	brandName: "CubicWorld",
-	classPrefix: "cw-",
-	attribution: "Created with CubicWorld, a free, powerful website builder."
+	brandName: "RaySite",
+	classPrefix: "rs-",
+	attribution: "Spread the message with RaySite! RaySite is a Free Website builder for you!"
 };
 
 /*
 Styling system
 */
+// helper function for check this system
+const flexEngineCheckContext = function(contextSetting, label) {
+
+    // Normalize into array
+    let list = [];
+
+    if (Array.isArray(contextSetting)) {
+        // Already an array
+        list = contextSetting.map(s => String(s).trim());
+    } 
+    else if (typeof contextSetting === "string") {
+        // Replace commas with spaces, split on spaces
+        list = contextSetting
+            .replace(/,/g, " ")
+            .split(/\s+/)
+            .map(s => s.trim())
+            .filter(s => s.length > 0);
+    }
+
+    // Check if label exists
+    return list.includes(label);
+}
+
+
 // Variable system
 const flexEngineStyleVarible = {
 	color: function(colorObj) {
@@ -229,28 +255,101 @@ const SizeSettingList = {
 		}				
 	},
 
-	601: {
+	6: {
+		default: (sz) => {
+			return {
+				// width limits
+				"max-width": sz.maxWidth ? engine.space(sz.maxWidth) : "none",
+
+				// height
+				"height": sz.height ? engine.space(sz.height) : "auto",
+
+				// margins
+				"margin-top": sz.marginTop ? engine.space(sz.marginTop) : "0",
+				"margin-left": sz.marginLeft ? engine.space(sz.marginLeft) : "0",
+				"margin-right": sz.marginRIght ? engine.space(sz.marginRIght) : "0"
+			};
+		},
+
+		mobile: (sz) => {
+			return {
+				// mobile height override
+				"height": sz.mobileHeight ? engine.space(sz.mobileHeight) : undefined,
+
+				// mobile margins
+				"margin-top": sz.mobileMarginTop ? engine.space(sz.mobileMarginTop) : undefined,
+				"margin-left": sz.mobileMarginLeft ? engine.space(sz.mobileMarginLeft) : undefined,
+				"margin-right": sz.mobileMarginRIght ? engine.space(sz.mobileMarginRIght) : undefined
+			};
+		}
+	},
+
+	6311: {
 		default: (sz, isVertical) => {
 			return {
-				"height": engine.space(sz.height),
+				"min-width": engine.space(sz.minWidth),
 				"max-width": engine.space(sz.maxWidth),
 
-				"margin-top": engine.space(sz.marginTop),
-				"margin-bottom": engine.space(sz.marginBottom),
-				"margin-left": engine.space(sz.marginLeft),
-				"margin-right": engine.space(sz.marginRIght)
-			}
+				"padding-left": engine.space(sz.paddingLeft),
+				"padding-right": engine.space(sz.paddingRight),
+
+				"min-height": engine.space(sz.minHeight),
+				"max-height": engine.space(sz.maxHeight),
+
+				"overflow-y": sz.cutOverflow ? "hidden" : "auto"
+			};
 		},
 
 		mobile: (sz, isVertical) => {
 			return {
-				"height": engine.space(sz.mobileHeight),
+				"min-height": engine.space(sz.minMobileHeight)
+			};
+		}
+	},
 
-				"margin-top": engine.space(sz.mobileMarginTop),
-				"margin-bottom": engine.space(sz.mobileMarginBottom),
-				"margin-left": engine.space(sz.mobileMarginLeft),
-				"margin-right": engine.space(sz.mobileMarginRIght)
-			}
+	6321: {
+		default: (sz, isVertical) => {
+			return {
+				"min-width": engine.space(sz.minWidth),
+			};
+		},
+
+		mobile: (sz, isVertical) => {
+			return {
+				"min-width": engine.space(sz.mobileMinWidth)
+			};
+		}
+	},
+
+	0: {
+		default: (sz, isVertical) => {
+			return {};
+		},
+
+		mobile: (sz, isVertical) => {
+			return {};
+		}
+	},
+
+	50: {
+		default: (sz, isVertical) => {
+			return {};
+		},
+
+		mobile: (sz, isVertical) => {
+			return {};
+		}
+	},
+
+	51: {
+		default: (sz, isVertical) => {
+			return {
+				"height": engine.space(sz.height),
+			};
+		},
+
+		mobile: (sz, isVertical) => {
+			return {};
 		}
 	}
 };
@@ -301,71 +400,168 @@ const CSSOverrides = (data) => {
 };
 
 // Styling everything.
-const flexEngineStylingClass = function(dataArray, isVertical, sizeSettingMode) {
+const flexEngineStylingClass = function(dataArray, isVertical, sizeSettingMode, contextSetting) {
 	const engine = flexEngineStyleVarible;
+	if (flexEngineCheckContext(contextSetting, "header") === true) {
+		// that's Header
+		const JSONarray = {
+			default: ((data) => {
+				const s = data.style || {};
+				const sz = data.size || {};
 
-	const JSONarray = {
-		default: ((data) => {
-			const s = data.style || {};
-			const sz = data.size || {};
+				return {
+					...defalutAppearance(s),
+					...SizeSettingList[sizeSettingMode].defalut(sz, isVertical),
+					...CSSOverrides(data)
+				};
+			})(dataArray),
 
-			return {
-				...defalutAppearance(s),
-				...SizeSettingList[sizeSettingMode].defalut(sz, isVertical),
-				...CSSOverrides(data)
-			};
-		})(dataArray),
+			onMobile: ((data) => {
+				const s = data.style || {};
+				const sz = data.size || {};
 
-		onMobile: ((data) => {
-			const s = data.style || {};
-			const sz = data.size || {};
+				// there are no overrides.....
+				return {
+					...mobileAppearence(s),
+					...SizeSettingList[sizeSettingMode].mobile(sz, isVertical),
+				};
+			})(dataArray),
 
-			// there are no overrides.....
-			return {
-				...mobileAppearence(s),
-				...SizeSettingList[sizeSettingMode].mobile(sz, isVertical),
-			};
-		})(dataArray),
+			onHover: ((data) => {
+				if (!data) return {};
+				const s = data.style || {};
+				const sz = data.size || {};
 
-		onHover: ((data) => {
-			if (!data) return {};
-			const s = data.style || {};
-			const sz = data.size || {};
+				return {
+					...defalutAppearance(s),
+					...SizeSettingList[sizeSettingMode].defalut(sz, isVertical),
+					...CSSOverrides(data)
+				};
+			})(dataArray.hover),
 
-			return {
-				...defalutAppearance(s),
-				...SizeSettingList[sizeSettingMode].defalut(sz, isVertical),
-				...CSSOverrides(data)
-			};
-		})(dataArray.hover),
+			onHoverMobile: ((data) => {
+				if (!data) return {};
+				const s = data.style || {};
+				const sz = data.size || {};
+		
+				return {
+					...mobileAppearence(s),
+					...SizeSettingList[sizeSettingMode].mobile(sz, isVertical),
+				};
+			})(dataArray.hover),
 
-		onHoverMobile: ((data) => {
-			if (!data) return {};
-			const s = data.style || {};
-			const sz = data.size || {};
-	
-			return {
-				...mobileAppearence(s),
-				...SizeSettingList[sizeSettingMode].mobile(sz, isVertical),
-			};
-		})(dataArray.hoverMobile)
-	};
+
+			// Header's onTop.
+			onTop: ((data) => {
+				const s = data.style || {};
+				const sz = data.size || {};
+
+				return {
+					...defalutAppearance(s),
+					...SizeSettingList[sizeSettingMode].defalut(sz, isVertical),
+					...CSSOverrides(data)
+				};
+			})(dataArray.onTop),
+
+			onTopMobile: ((data) => {
+				const s = data.style || {};
+				const sz = data.size || {};
+
+				// there are no overrides.....
+				return {
+					...mobileAppearence(s),
+					...SizeSettingList[sizeSettingMode].mobile(sz, isVertical),
+				};
+			})(dataArray.onTop),
+
+			onTopHover: ((data) => {
+				if (!data) return {};
+				const s = data.style || {};
+				const sz = data.size || {};
+
+				return {
+					...defalutAppearance(s),
+					...SizeSettingList[sizeSettingMode].defalut(sz, isVertical),
+					...CSSOverrides(data)
+				};
+			})(dataArray.onTop.hover),
+
+			onTopMobileHover: ((data) => {
+				if (!data) return {};
+				const s = data.style || {};
+				const sz = data.size || {};
+		
+				return {
+					...mobileAppearence(s),
+					...SizeSettingList[sizeSettingMode].mobile(sz, isVertical),
+				};
+			})(dataArray.onTop.hover)
+		};
+	} else {
+		// Normal
+		const JSONarray = {
+			default: ((data) => {
+				const s = data.style || {};
+				const sz = data.size || {};
+
+				return {
+					...defalutAppearance(s),
+					...SizeSettingList[sizeSettingMode].defalut(sz, isVertical),
+					...CSSOverrides(data)
+				};
+			})(dataArray),
+
+			onMobile: ((data) => {
+				const s = data.style || {};
+				const sz = data.size || {};
+
+				// there are no overrides.....
+				return {
+					...mobileAppearence(s),
+					...SizeSettingList[sizeSettingMode].mobile(sz, isVertical),
+				};
+			})(dataArray),
+
+			onHover: ((data) => {
+				if (!data) return {};
+				const s = data.style || {};
+				const sz = data.size || {};
+
+				return {
+					...defalutAppearance(s),
+					...SizeSettingList[sizeSettingMode].defalut(sz, isVertical),
+					...CSSOverrides(data)
+				};
+			})(dataArray.hover),
+
+			onHoverMobile: ((data) => {
+				if (!data) return {};
+				const s = data.style || {};
+				const sz = data.size || {};
+		
+				return {
+					...mobileAppearence(s),
+					...SizeSettingList[sizeSettingMode].mobile(sz, isVertical),
+				};
+			})(dataArray.hoverMobile)
+		};
+	}
 
 	return JSONarray;
 };
 
 // Styling system
-const flexEngineStylingSystem = function(dataArray, node, isVertical, sizeSettingMode) {
+const flexEngineStylingSystem = function(dataArray, node, isVertical, sizeSettingMode, contextSetting = "") {
 	const engine = flexEngineStyleVarible;
 
 	const nodeStyle = {
 		// Primary state bundle
-		default: flexEngineStylingClass(dataArray, isVertical, sizeSettingMode),
+		default: flexEngineStylingClass(dataArray, isVertical, sizeSettingMode, contextSetting),
 
 		// Map each custom class in overrideState
 		...Object.keys(dataArray.overrideState || {}).reduce((acc, key) => {
 			const stateData = dataArray.overrideState[key];
-			acc[key] = flexEngineStylingClass(stateData, isVertical, sizeSettingMode);
+			acc[key] = flexEngineStylingClass(stateData, isVertical, sizeSettingMode, contextSetting);
 			return acc;
 		}, {}),
 
@@ -406,7 +602,29 @@ const flexEngineStylingSystem = function(dataArray, node, isVertical, sizeSettin
 		// HOVER & MOBILE
 		if (bundle.onMobileHover) {
 			node.setAttribute(`${attributeBase}-onMobileHover`, toCss(bundle.onMobileHover));
-		}		
+		}
+		
+		if (flexEngineCheckContext(contextSetting, "header") === true) {
+			// ON TOP
+			if (bundle.onTop) {
+				node.setAttribute(`${attributeBase}-onTop`, toCss(bundle.onTop));
+			}
+
+			// ON TOP & Hover
+			if (bundle.onTopHover) {
+				node.setAttribute(`${attributeBase}-onTopHover`, toCss(bundle.onTopHover));
+			}
+
+			// ON TOP & MOBLIE
+			if (bundle.onTopMobile) {
+				node.setAttribute(`${attributeBase}-onTopMobile`, toCss(bundle.onTopMobile));
+			}
+
+			// ON TOP & Hover & MOBLIE
+			if (bundle.onTopMobileHover) {
+				node.setAttribute(`${attributeBase}-onTopMobileHover`, toCss(bundle.onTopMobileHover));
+			}
+		}
 	});
 };
 
@@ -419,465 +637,370 @@ const flexEngineContextCreator = {
 	/*
 	END NODE (1)
 	*/
-
-	text: function(dataArray, documentHTML, node) {
-		const deltaOps = dataArray.content;
-
-		const converter = new QuillDeltaToHtmlConverter(
-			deltaOps, {
+	text: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			const deltaOps = dataArray.content;
+			const converter = new QuillDeltaToHtmlConverter(deltaOps, {
 				classPrefix: `${BUILDER_CONFIG.classPrefix}context-text`
-			}
-		);
-
-		const html = converter.convert();
-
-		node.innerHTML = html;
-	},
-
-	heading: function(dataArray, documentHTML, node) {
-		return this.text(dataArray, documentHTML, node);
-	},
-
-	image: function(dataArray, documentHTML, node) {
-		const content = dataArray.content;
-
-		// Resolve media URL
-		const src = flexEngineStyleVarible.media(content.source);
-
-		// Create <img> element
-		const img = documentHTML.createElement("img");
-		img.src = src;
-		img.alt = content.alt || "";
-		img.className = `${BUILDER_CONFIG.classPrefix}context-image`;
-
-		// Positioning logic
-		const posX = content.displayX; // 1 = left, 2 = center, 3 = right
-		const posY = content.displayY; // 1 = top, 2 = center, 3 = bottom
-
-		// Convert numeric alignment to CSS keywords
-		const map = {
-			1: "start",
-			2: "center",
-			3: "end"
-		};
-
-		img.style.objectPosition = `${map[posX]} ${map[posY]}`;
-
-		// Insert into node
-		node.innerHTML = ""; // clear previous content if needed
-		node.appendChild(img); // DOM insertion
-	},
-
-	button: function(dataArray, documentHTML, node) {
-		const label = dataArray.content.label || "";
-
-		// SAFE: prevents XSS because it does not parse HTML
-		node.textContent = label;
-	},
-
-	hr: function(dataArray, documentHTML, node) {
-		const hr = documentHTML.createElement("hr");
-
-		// Apply class
-		hr.className = `${BUILDER_CONFIG.classPrefix}context-hr`;
-
-		// Insert into node
-		node.innerHTML = "";
-		node.appendChild(hr);
-	},
-
-	space: function(dataArray, documentHTML, node) {
-		// Do nothing — spacer is layout-only
-		return;
-	},
-
-	//Sheet is passed......
-
-	audio: function(dataArray, documentHTML, node) {
-		const content = dataArray.content;
-
-		const src = flexEngineStyleVarible.media(content.source);
-
-		const audio = documentHTML.createElement("audio");
-		audio.className = `${BUILDER_CONFIG.classPrefix}context-audio`;
-		audio.src = src;
-		if (!content.hideControls) {
-			audio.controls = true;
-		}
-		if (content.loop) {
-			audio.loop = true;
-		}
-
-		node.innerHTML = "";
-		node.appendChild(audio);
-	},
-
-	video: function(dataArray, documentHTML, node) {
-		const content = dataArray.content;
-
-		const src = flexEngineStyleVarible.media(content.source);
-		const poster = content.thumbnail ?
-			flexEngineStyleVarible.media(content.thumbnail) :
-			null;
-
-		const video = documentHTML.createElement("video");
-		video.className = `${BUILDER_CONFIG.classPrefix}context-video`;
-
-		video.src = src;
-
-		if (poster) {
-			video.poster = poster;
-		}
-		if (!content.hideControls) {
-			video.controls = true;
-		}
-		if (content.autoplay) {
-			video.autoplay = true;
-		}
-		if (content.muted) {
-			video.muted = true;
-		}
-		if (content.loop) {
-			video.loop = true;
-		}
-		if (content.disablepictureinpicture) {
-			video.disablePictureInPicture = true;
-			video.setAttribute("disablepictureinpicture", "");
-		}
-
-		const fallback = documentHTML.createElement("p");
-		fallback.textContent = "Oh no! your Browser does not support Embed Video! but that's OK, download the video at ";
-		const link = documentHTML.createElement("a");
-		link.href = src;
-		link.textContent = "here!";
-		link.download = "";
-		fallback.appendChild(link);
-		video.appendChild(fallback);
-
-		// Insert into node
-		node.innerHTML = "";
-		node.appendChild(video);
-	},
-
-	vimeoVideo: function(dataArray, documentHTML, node) {
-		const c = dataArray.content;
-
-		// Build Vimeo URL safely
-		let url = `https://player.vimeo.com/video/${encodeURIComponent(c.sourceID)}`;
-
-		const params = new URLSearchParams();
-
-		if (c.hash) {
-			params.set("h", c.hash);
-		}
-
-		params.set("controls", c.hideControls ? "0" : "1");
-
-		if (c.autoplay) {
-			params.set("autoplay", "1");
-			params.set("muted", "1"); // Browser requirement
-		}
-		if (c.muted) {
-			params.set("muted", "1");
-		}
-		if (c.loop) {
-			params.set("loop", "1");
-		}
-		if (c.startTime) {
-			params.set("#t", `${c.startTime}s`);
-		}
-
-		// Final URL
-		url += "?" + params.toString();
-
-		// Create iframe
-		const iframe = documentHTML.createElement("iframe");
-		iframe.className = `${BUILDER_CONFIG.classPrefix}context-vimeoVideo`;
-
-		iframe.src = url;
-		iframe.allow = "autoplay; fullscreen; picture-in-picture";
-
-		// Disable Picture-in-Picture
-		if (c.disablepictureinpicture) {
-			iframe.setAttribute("disablepictureinpicture", "");
-			iframe.allow = "autoplay; fullscreen"; // remove PiP permission
-		}
-
-		iframe.frameBorder = "0";
-		iframe.allowFullscreen = true;
-
-		// Insert into node
-		node.innerHTML = "";
-		node.appendChild(iframe);
-	},
-
-	ytVideo: function(dataArray, documentHTML, node) {
-		const c = dataArray.content;
-
-		let url = `https://www.youtube.com/embed/${encodeURIComponent(c.videoID)}`;
-
-		const params = new URLSearchParams();
-
-		params.set("controls", c.hideControls ? "0" : "1");
-		if (c.autoplay) {
-			params.set("autoplay", "1");
-			params.set("mute", "1"); // Browser requirement
-		}
-		if (c.muted) {
-			params.set("mute", "1");
-		}
-		if (c.loop) {
-			params.set("loop", "1");
-			params.set("playlist", c.videoID); // Required by YouTube for looping
-		}
-		if (c.startTime) {
-			params.set("start", c.startTime);
-		}
-
-		url += "?" + params.toString();
-
-		// Create iframe
-		const iframe = documentHTML.createElement("iframe");
-		iframe.className = `${BUILDER_CONFIG.classPrefix}context-ytvideo`;
-
-		iframe.src = url;
-
-		iframe.title = "YouTube video player";
-		iframe.frameBorder = "0";
-
-		// Allow attributes (standard YouTube embed)
-		iframe.allow =
-			"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-
-		// Disable Picture-in-Picture
-		if (c.disablepictureinpicture) {
-			iframe.setAttribute("disablepictureinpicture", "");
-			iframe.allow =
-				"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; web-share";
-		}
-
-		iframe.referrerPolicy = "strict-origin-when-cross-origin";
-		iframe.allowFullscreen = true;
-
-		// Insert into node
-		node.innerHTML = "";
-		node.appendChild(iframe);
-	},
-
-	iframe: function(dataArray, documentHTML, node) {
-		// --- Create iframe element ---
-		const iframe = documentHTML.createElement("iframe");
-		iframe.className = `${BUILDER_CONFIG.classPrefix}context-iframe`;
-
-		// --- Read content ---
-		const c = dataArray.content;
-
-		// --- Build safe URL (only used when NOT embedAsHTML) ---
-		const safeURL = encodeURI(c.source);
-
-		// --- Sandbox handling ---
-		if (c.sandbox === 1) {
-			iframe.sandbox = "allow-scripts allow-same-origin";
-		} else if (c.sandbox === 2) {
-			iframe.sandbox = ""; // strict sandbox
-		}
-
-		// --- Allow fullscreen ---
-		if (c.allowFullScreen) {
-			iframe.allowFullscreen = true;
-		}
-
-		// --- Permissions list ---
-		if (Array.isArray(c.permission) && c.permission.length > 0) {
-			iframe.allow = c.permission.join("; ");
-		}
-
-		// ======================================================
-		//  EMBED AS HTML MODE
-		// ======================================================
-		if (c.embedAsHTML === true) {
-
-			const src = c.source;
-
-			// --- Validate HTML safely (NO function, inline logic) ---
-
-			// Must be a string
-			if (typeof src !== "string") {
-				console.warn("embedAsHTML: source is not a string");
-				return;
-			}
-
-			// Reject URLs
-			if (/^https?:\/\//i.test(src.trim())) {
-				console.warn("embedAsHTML: source looks like a URL, not HTML");
-				return;
-			}
-
-			// Reject javascript: URLs
-			if (/^javascript:/i.test(src.trim())) {
-				console.warn("embedAsHTML: javascript: URL blocked");
-				return;
-			}
-
-			// Must contain at least one HTML tag
-			if (!/<[^>]+>/.test(src)) {
-				console.warn("embedAsHTML: source does not appear to be HTML");
-				return;
-			}
-
-			// --- Safe HTML embedding inside iframe ---
-			iframe.srcdoc = "";
-
-			iframe.addEventListener("load", () => {
-				const doc = iframe.contentDocument;
-				if (doc) {
-					doc.open();
-					doc.write(src); // SAFE: inside sandbox
-					doc.close();
-				}
 			});
-
-		} else {
+			const html = converter.convert();
+			node.innerHTML = html;
+		},
+	},
+	heading: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			return this.text(dataArray, documentHTML, node);
+		},
+	},
+	image: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			const content = dataArray.content;
+			// Resolve media URL
+			const src = flexEngineStyleVarible.media(content.source);
+			// Create <img> element
+			const img = documentHTML.createElement("img");
+			img.src = src;
+			img.alt = content.alt || "";
+			img.className = `${BUILDER_CONFIG.classPrefix}context-image`;
+			// Positioning logic
+			const posX = content.displayX; // 1 = left, 2 = center, 3 = right
+			const posY = content.displayY; // 1 = top, 2 = center, 3 = bottom
+			// Convert numeric alignment to CSS keywords
+			const map = {
+				1: "start",
+				2: "center",
+				3: "end"
+			};
+			img.style.objectPosition = `${map[posX]} ${map[posY]}`;
+			// Insert into node
+			node.innerHTML = ""; // clear previous content if needed
+			node.appendChild(img); // DOM insertion
+		},
+	},
+	button: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			const label = dataArray.content.label || "";
+			// SAFE: prevents XSS because it does not parse HTML
+			node.textContent = label;
+		},
+	},
+	hr: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			const hr = documentHTML.createElement("hr");
+			// Apply class
+			hr.className = `${BUILDER_CONFIG.classPrefix}context-hr`;
+			// Insert into node
+			node.innerHTML = "";
+			node.appendChild(hr);
+		},
+	},
+	space: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			// Do nothing — spacer is layout-only
+			return;
+		},
+	},
+	//Sheet is passed......
+	audio: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			const content = dataArray.content;
+			const src = flexEngineStyleVarible.media(content.source);
+			const audio = documentHTML.createElement("audio");
+			audio.className = `${BUILDER_CONFIG.classPrefix}context-audio`;
+			audio.src = src;
+			if (!content.hideControls) {
+				audio.controls = true;
+			}
+			if (content.loop) {
+				audio.loop = true;
+			}
+			node.innerHTML = "";
+			node.appendChild(audio);
+		},
+	},
+	video: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			const content = dataArray.content;
+			const src = flexEngineStyleVarible.media(content.source);
+			const poster = content.thumbnail ? flexEngineStyleVarible.media(content.thumbnail) : null;
+			const video = documentHTML.createElement("video");
+			video.className = `${BUILDER_CONFIG.classPrefix}context-video`;
+			video.src = src;
+			if (poster) {
+				video.poster = poster;
+			}
+			if (!content.hideControls) {
+				video.controls = true;
+			}
+			if (content.autoplay) {
+				video.autoplay = true;
+			}
+			if (content.muted) {
+				video.muted = true;
+			}
+			if (content.loop) {
+				video.loop = true;
+			}
+			if (content.disablepictureinpicture) {
+				video.disablePictureInPicture = true;
+				video.setAttribute("disablepictureinpicture", "");
+			}
+			const fallback = documentHTML.createElement("p");
+			fallback.textContent = "Oh no! your Browser does not support Embed Video! but that's OK, download the video at ";
+			const link = documentHTML.createElement("a");
+			link.href = src;
+			link.textContent = "here!";
+			link.download = "";
+			fallback.appendChild(link);
+			video.appendChild(fallback);
+			// Insert into node
+			node.innerHTML = "";
+			node.appendChild(video);
+		},
+	},
+	vimeoVideo: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			const c = dataArray.content;
+			// Build Vimeo URL safely
+			let url = `https://player.vimeo.com/video/${encodeURIComponent(c.sourceID)}`;
+			const params = new URLSearchParams();
+			if (c.hash) {
+				params.set("h", c.hash);
+			}
+			params.set("controls", c.hideControls ? "0" : "1");
+			if (c.autoplay) {
+				params.set("autoplay", "1");
+				params.set("muted", "1"); // Browser requirement
+			}
+			if (c.muted) {
+				params.set("muted", "1");
+			}
+			if (c.loop) {
+				params.set("loop", "1");
+			}
+			if (c.startTime) {
+				params.set("#t", `${c.startTime}s`);
+			}
+			// Final URL
+			url += "?" + params.toString();
+			// Create iframe
+			const iframe = documentHTML.createElement("iframe");
+			iframe.className = `${BUILDER_CONFIG.classPrefix}context-vimeoVideo`;
+			iframe.src = url;
+			iframe.allow = "autoplay; fullscreen; picture-in-picture";
+			// Disable Picture-in-Picture
+			if (c.disablepictureinpicture) {
+				iframe.setAttribute("disablepictureinpicture", "");
+				iframe.allow = "autoplay; fullscreen"; // remove PiP permission
+			}
+			iframe.frameBorder = "0";
+			iframe.allowFullscreen = true;
+			// Insert into node
+			node.innerHTML = "";
+			node.appendChild(iframe);
+		},
+	},
+	ytVideo: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			const c = dataArray.content;
+			let url = `https://www.youtube.com/embed/${encodeURIComponent(c.videoID)}`;
+			const params = new URLSearchParams();
+			params.set("controls", c.hideControls ? "0" : "1");
+			if (c.autoplay) {
+				params.set("autoplay", "1");
+				params.set("mute", "1"); // Browser requirement
+			}
+			if (c.muted) {
+				params.set("mute", "1");
+			}
+			if (c.loop) {
+				params.set("loop", "1");
+				params.set("playlist", c.videoID); // Required by YouTube for looping
+			}
+			if (c.startTime) {
+				params.set("start", c.startTime);
+			}
+			url += "?" + params.toString();
+			// Create iframe
+			const iframe = documentHTML.createElement("iframe");
+			iframe.className = `${BUILDER_CONFIG.classPrefix}context-ytvideo`;
+			iframe.src = url;
+			iframe.title = "YouTube video player";
+			iframe.frameBorder = "0";
+			// Allow attributes (standard YouTube embed)
+			iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+			// Disable Picture-in-Picture
+			if (c.disablepictureinpicture) {
+				iframe.setAttribute("disablepictureinpicture", "");
+				iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; web-share";
+			}
+			iframe.referrerPolicy = "strict-origin-when-cross-origin";
+			iframe.allowFullscreen = true;
+			// Insert into node
+			node.innerHTML = "";
+			node.appendChild(iframe);
+		},
+	},
+	iframe: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			// --- Create iframe element ---
+			const iframe = documentHTML.createElement("iframe");
+			iframe.className = `${BUILDER_CONFIG.classPrefix}context-iframe`;
+			// --- Read content ---
+			const c = dataArray.content;
+			// --- Build safe URL (only used when NOT embedAsHTML) ---
+			const safeURL = encodeURI(c.source);
+			// --- Sandbox handling ---
+			if (c.sandbox === 1) {
+				iframe.sandbox = "allow-scripts allow-same-origin";
+			} else if (c.sandbox === 2) {
+				iframe.sandbox = ""; // strict sandbox
+			}
+			// --- Allow fullscreen ---
+			if (c.allowFullScreen) {
+				iframe.allowFullscreen = true;
+			}
+			// --- Permissions list ---
+			if (Array.isArray(c.permission) && c.permission.length > 0) {
+				iframe.allow = c.permission.join("; ");
+			}
 			// ======================================================
-			//  NORMAL IFRAME MODE
+			//  EMBED AS HTML MODE
 			// ======================================================
-			iframe.src = safeURL;
-		}
-
-		// --- Insert into node ---
-		node.innerHTML = "";
-		node.appendChild(iframe);
+			if (c.embedAsHTML === true) {
+				const src = c.source;
+				// --- Validate HTML safely (NO function, inline logic) ---
+				// Must be a string
+				if (typeof src !== "string") {
+					console.warn("embedAsHTML: source is not a string");
+					return;
+				}
+				// Reject URLs
+				if (/^https?:\/\//i.test(src.trim())) {
+					console.warn("embedAsHTML: source looks like a URL, not HTML");
+					return;
+				}
+				// Reject javascript: URLs
+				if (/^javascript:/i.test(src.trim())) {
+					console.warn("embedAsHTML: javascript: URL blocked");
+					return;
+				}
+				// Must contain at least one HTML tag
+				if (!/<[^>]+>/.test(src)) {
+					console.warn("embedAsHTML: source does not appear to be HTML");
+					return;
+				}
+				// --- Safe HTML embedding inside iframe ---
+				iframe.srcdoc = "";
+				iframe.addEventListener("load", () => {
+					const doc = iframe.contentDocument;
+					if (doc) {
+						doc.open();
+						doc.write(src); // SAFE: inside sandbox
+						doc.close();
+					}
+				});
+			} else {
+				// ======================================================
+				//  NORMAL IFRAME MODE
+				// ======================================================
+				iframe.src = safeURL;
+			}
+			// --- Insert into node ---
+			node.innerHTML = "";
+			node.appendChild(iframe);
+		},
 	},
-
-	gdocs: function(dataArray, documentHTML, node) {
-
-		// Create container
-		const el = documentHTML.createElement("div");
-		el.className = `${BUILDER_CONFIG.classPrefix}context-gdocs`;
-
-		// Add data attribute
-		el.setAttribute(
-			`data-${BUILDER_CONFIG.classPrefix}gdocid`,
-			dataArray.content.gDocsID
-		);
-
-		// Build docId
-		const docId = dataArray.content.gDocsID;
-
-		const loadingText = documentHTML.createElement("p");
-		loadingText.textContent = "Loading Contents.......";
-		el.appendChild(loadingText);
-
-		const fallback = documentHTML.createElement("p");
-
-		fallback.append(
-			documentHTML.createTextNode("Cannot see the Context? go ")
-		);
-
-		const link = documentHTML.createElement("a");
-		link.href = `https://docs.google.com/document/d/e/${docId}/pub`;
-		link.target = "_blank";
-		link.textContent = "this link";
-		fallback.appendChild(link);
-
-		fallback.append(
-			documentHTML.createTextNode(
-				" to view the message. If you disabled JS, your document will be displayed here. For better experience we recommend to "
-			)
-		);
-
-		const jsLink = documentHTML.createElement("a");
-		jsLink.href = "https://turnonjs.com";
-		jsLink.target = "_blank";
-		jsLink.textContent = "turn on JS";
-		fallback.appendChild(jsLink);
-
-		el.appendChild(fallback);
-
-		const noscript = documentHTML.createElement("noscript");
-		noscript.className = `${BUILDER_CONFIG.classPrefix}context-gdocs-noscript`;
-
-		const iframe = documentHTML.createElement("iframe");
-		iframe.className = `${BUILDER_CONFIG.classPrefix}context-gdocs-iframe`;
-		iframe.src = `https://docs.google.com/document/d/e/${docId}/pub?embedded=true`;
-
-		noscript.appendChild(iframe);
-		el.appendChild(noscript);
-
-		node.innerHTML = "";
-		node.appendChild(el);
+	gdocs: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			// Create container
+			const el = documentHTML.createElement("div");
+			el.className = `${BUILDER_CONFIG.classPrefix}context-gdocs`;
+			// Add data attribute
+			el.setAttribute(`data-${BUILDER_CONFIG.classPrefix}gdocid`, dataArray.content.gDocsID);
+			// Build docId
+			const docId = dataArray.content.gDocsID;
+			const loadingText = documentHTML.createElement("p");
+			loadingText.textContent = "Loading Contents.......";
+			el.appendChild(loadingText);
+			const fallback = documentHTML.createElement("p");
+			fallback.append(documentHTML.createTextNode("Cannot see the Context? go "));
+			const link = documentHTML.createElement("a");
+			link.href = `https://docs.google.com/document/d/e/${docId}/pub`;
+			link.target = "_blank";
+			link.textContent = "this link";
+			fallback.appendChild(link);
+			fallback.append(documentHTML.createTextNode(" to view the message. If you disabled JS, your document will be displayed here. For better experience we recommend to "));
+			const jsLink = documentHTML.createElement("a");
+			jsLink.href = "https://turnonjs.com";
+			jsLink.target = "_blank";
+			jsLink.textContent = "turn on JS";
+			fallback.appendChild(jsLink);
+			el.appendChild(fallback);
+			const noscript = documentHTML.createElement("noscript");
+			noscript.className = `${BUILDER_CONFIG.classPrefix}context-gdocs-noscript`;
+			const iframe = documentHTML.createElement("iframe");
+			iframe.className = `${BUILDER_CONFIG.classPrefix}context-gdocs-iframe`;
+			iframe.src = `https://docs.google.com/document/d/e/${docId}/pub?embedded=true`;
+			noscript.appendChild(iframe);
+			el.appendChild(noscript);
+			node.innerHTML = "";
+			node.appendChild(el);
+		},
 	},
-
-	ytLive: function(dataArray, documentHTML, node) {
-		// Add data attribute
-		node.setAttribute("data-cw-ytchannelid", dataArray.content.channelID);
-
-		const overlay = documentHTML.createElement("div");
-		overlay.className = `${BUILDER_CONFIG.classPrefix}context-ytLive-overlay`;
-
-		// Text: "Preparing Live Room....."
-		overlay.appendChild(
-			documentHTML.createTextNode("Preparing Live Room.....")
-		);
-
-		const noscript = documentHTML.createElement("noscript");
-
-		const nsText1 = documentHTML.createTextNode(
-			"We find your JavaScript is disabled, please "
-		);
-		noscript.appendChild(nsText1);
-
-		const turnOn = documentHTML.createElement("a");
-		turnOn.href = "https://turnonjs.com";
-		turnOn.target = "_blank";
-		turnOn.textContent = "Turn on JS";
-		noscript.appendChild(turnOn);
-
-		noscript.appendChild(
-			documentHTML.createTextNode(" or visit the channel: ")
-		);
-
-		const ytLink = documentHTML.createElement("a");
-		ytLink.href = `https://youtube.com/channel/${dataArray.content.channelID}`;
-		ytLink.target = "_blank";
-		ytLink.textContent = "YouTube";
-		noscript.appendChild(ytLink);
-
-		overlay.appendChild(noscript);
-
-		node.innerHTML = "";
-		node.appendChild(overlay);
+	ytLive: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			// Add data attribute
+			node.setAttribute("data-cw-ytchannelid", dataArray.content.channelID);
+			const overlay = documentHTML.createElement("div");
+			overlay.className = `${BUILDER_CONFIG.classPrefix}context-ytLive-overlay`;
+			// Text: "Preparing Live Room....."
+			overlay.appendChild(documentHTML.createTextNode("Preparing Live Room....."));
+			const noscript = documentHTML.createElement("noscript");
+			const nsText1 = documentHTML.createTextNode("We find your JavaScript is disabled, please ");
+			noscript.appendChild(nsText1);
+			const turnOn = documentHTML.createElement("a");
+			turnOn.href = "https://turnonjs.com";
+			turnOn.target = "_blank";
+			turnOn.textContent = "Turn on JS";
+			noscript.appendChild(turnOn);
+			noscript.appendChild(documentHTML.createTextNode(" or visit the channel: "));
+			const ytLink = documentHTML.createElement("a");
+			ytLink.href = `https://youtube.com/channel/${dataArray.content.channelID}`;
+			ytLink.target = "_blank";
+			ytLink.textContent = "YouTube";
+			noscript.appendChild(ytLink);
+			overlay.appendChild(noscript);
+			node.innerHTML = "";
+			node.appendChild(overlay);
+		},
 	},
-
 	//Form is passed......
-
-	html: function(dataArray, documentHTML, node) {
-		node.innerHTML = dataArray.content.html;
+	html: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			node.innerHTML = dataArray.content.html;
+		},
 	},
-
 	/*
 	CONTAINER NODE (2)
 	THOSE WILL WORK AS A CONTAINER BUT STILL TREAT AS END NODE SINCE THIS IS NOT WORK AS SECTION.
 	REMEMBER WHEN START USE THIS, flexEngineCreateEndNode is already defined!
 	*/
-
-	div: function(dataArray, documentHTML, node) {
-		const layout = dataArray.layout || {};
-		const content = dataArray.content;
-
-		// 1. Map Layout Numbers to CSS Flexbox Properties
-		const directions = ['row', 'column', 'row-reverse', 'column-reverse'];
-		const wraps = ['nowrap', 'wrap', 'wrap-reverse'];
-		const justifyMap = ['flex-start', 'center', 'flex-end', 'space-around', 'space-between', 'space-evenly'];
-		const alignMap = ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'];
-
-		// Calculate Desktop Direction
-		const dirIndex = (layout.direction || 1) - 1;
-		const desktopDirection = directions[dirIndex] || 'row';
-		const isVertical = desktopDirection.includes('column');
-
-		// 2. Apply Core CSS directly to the container's inline style
-		const desktopCss = `
+	div: {
+		contextFunction: function(dataArray, documentHTML, node) {
+			const layout = dataArray.layout || {};
+			const content = dataArray.content;
+			// 1. Map Layout Numbers to CSS Flexbox Properties
+			const directions = ['row', 'column', 'row-reverse', 'column-reverse'];
+			const wraps = ['nowrap', 'wrap', 'wrap-reverse'];
+			const justifyMap = ['flex-start', 'center', 'flex-end', 'space-around', 'space-between', 'space-evenly'];
+			const alignMap = ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'];
+			// Calculate Desktop Direction
+			const dirIndex = (layout.direction || 1) - 1;
+			const desktopDirection = directions[dirIndex] || 'row';
+			const isVertical = desktopDirection.includes('column');
+			// 2. Apply Core CSS directly to the container's inline style
+			const desktopCss = `
 		    display: flex;
 		    flex-direction: ${desktopDirection};
 		    flex-wrap: ${wraps[(layout.wrap || 1) - 1] || 'nowrap'};
@@ -886,62 +1009,52 @@ const flexEngineContextCreator = {
 		    ${layout.gapX ? `column-gap: ${flexEngineStyleVarible.space(layout.gapX)};` : ''}
 		    ${layout.gapY ? `row-gap: ${flexEngineStyleVarible.space(layout.gapY)};` : ''}
 		`.trim();
-
-		// 3. Handle Mobile Responsiveness using a localized <delay> tag
-		// (Because inline styles cannot use @media queries natively)
-		if (layout.stackAtMobile || layout.mobileReverseDirection || layout.mobileGap) {
-			let mobileDir = desktopDirection;
-
-			if (layout.stackAtMobile) {
-				// Stack normally (column) or reverse stack (column-reverse)
-				mobileDir = layout.mobileReverseDirection ? 'column-reverse' : 'column';
-			} else if (layout.mobileReverseDirection) {
-				// Keep axis but flip direction (e.g., row -> row-reverse)
-				mobileDir = desktopDirection.includes('-reverse') ?
-					desktopDirection.replace('-reverse', '') :
-					desktopDirection + '-reverse';
-			}
-
-			//ready the gap.
-			const mGap = flexEngineStyleVarible.space(layout.mobileGap);
-
-			let mobileCSS = `
+			// 3. Handle Mobile Responsiveness using a localized <delay> tag
+			// (Because inline styles cannot use @media queries natively)
+			if (layout.stackAtMobile || layout.mobileReverseDirection || layout.mobileGap) {
+				let mobileDir = desktopDirection;
+				if (layout.stackAtMobile) {
+					// Stack normally (column) or reverse stack (column-reverse)
+					mobileDir = layout.mobileReverseDirection ? 'column-reverse' : 'column';
+				} else if (layout.mobileReverseDirection) {
+					// Keep axis but flip direction (e.g., row -> row-reverse)
+					mobileDir = desktopDirection.includes('-reverse') ? desktopDirection.replace('-reverse', '') : desktopDirection + '-reverse';
+				}
+				//ready the gap.
+				const mGap = flexEngineStyleVarible.space(layout.mobileGap);
+				let mobileCSS = `
 				flex-direction: ${mobileDir} !important;
 				gap: ${mGap} !important;
 				`;
-
-			if (layout.stackAtMobile) {
-				mobileCSS += `
+				if (layout.stackAtMobile) {
+					mobileCSS += `
 					justify-content: center;
 					align-items: center;
 				`;
-			};
-		} else {
-			const mobileCSS = "";
-		}
-
-		//Add all them up!
-		const prefix = BUILDER_CONFIG.classPrefix + "styles-node";
-		node.setAttribute(prefix, desktopCss.trim());
-		node.setAttribute(prefix + "-onMobile", (mobileCSS.trim()));
-
-		// 4. Render Children Elements (The "content" array)
-		// We loop through any elements inside this div and render them recursively
-		if (Array.isArray(content)) {
-			content.forEach(childData => {
-				if (childData) {
-					// We pass 'isVertical' down so the child knows if it is inside 
-					// a Row (across) or Column (along) for accurate sizing!
-					const childNode = flexEngineCreateEndNode(childData, documentHTML, isVertical);
-
-					if (childNode) {
-						node.appendChild(childNode);
+				};
+			} else {
+				const mobileCSS = "";
+			}
+			//Add all them up!
+			const prefix = BUILDER_CONFIG.classPrefix + "styles-node";
+			node.setAttribute(prefix, desktopCss.trim());
+			node.setAttribute(prefix + "-onMobile", (mobileCSS.trim()));
+			// 4. Render Children Elements (The "content" array)
+			// We loop through any elements inside this div and render them recursively
+			if (Array.isArray(content)) {
+				content.forEach(childData => {
+					if (childData) {
+						// We pass 'isVertical' down so the child knows if it is inside 
+						// a Row (across) or Column (along) for accurate sizing!
+						const childNode = flexEngineCreateEndNode(childData, documentHTML, isVertical);
+						if (childNode) {
+							node.appendChild(childNode);
+						}
 					}
-				}
-			});
-		}
+				});
+			}
+		},
 	},
-
 };
 
 // Some System help to prevent problems
@@ -1223,50 +1336,49 @@ const flexEngineTransitionContextsNode = function(dataArray, node) {
 	node.setAttribute(attrName, finalCSS);
 };
 
-// Create a new END NODE (1) and CONTAINER NODE (2)
-const flexEngineCreateEndNode = function(dataArray, documentHTML, parentVertical = true) {
+const flexEngineCreateAction = function(documentHTML, clickable, nodeStyleDefault) {
 	let node;
 
-	if (!dataArray.clickable || dataArray.clickable.enable === false) {
-		node = documentHTML.createElement("div");
+	if (!clickable || clickable.enable === false) {
+		node = documentHTML.createElement(nodeStyleDefault);
 	}
 
-	if (dataArray.clickable && dataArray.clickable.enable === true &&
-		dataArray.clickable.action.mode === "a") {
+	if (clickable && clickable.enable === true &&
+		clickable.action.mode === "a") {
 
 		node = documentHTML.createElement("a");
-		node.href = dataArray.clickable.action.url;
+		node.href = clickable.action.url;
 
-		if (dataArray.clickable.action.newPage === true) {
+		if (clickable.action.newPage === true) {
 			node.target = "_blank";
 		}
 	}
 
-	if (dataArray.clickable && dataArray.clickable.enable === true &&
-		dataArray.clickable.action.mode === "download") {
+	if (clickable && clickable.enable === true &&
+		clickable.action.mode === "download") {
 
 		node = documentHTML.createElement("a");
-		node.href = dataArray.clickable.action.url;
+		node.href = clickable.action.url;
 		node.target = "_blank";
 		node.download = "";
 
-		if (dataArray.clickable.action.forceDownload === true) {
-			node.setAttribute("download", dataArray.clickable.action.forceDownload);
+		if (clickable.action.forceDownload === true) {
+			node.setAttribute("download", clickable.action.forceDownload);
 		}
 	}
 
-	if (dataArray.clickable && dataArray.clickable.enable === true &&
-		dataArray.clickable.action.mode === "openPopup") {
+	if (clickable && clickable.enable === true &&
+		clickable.action.mode === "openPopup") {
 
 		node = documentHTML.createElement("button");
 		node.setAttribute(
 			`data-${BUILDER_CONFIG.classPrefix}popup-id`,
-			dataArray.clickable.action.popupID
+			clickable.action.popupID
 		);
 	}
 
-	if (dataArray.clickable && dataArray.clickable.enable === true &&
-		dataArray.clickable.action.mode === "closeThisPopup") {
+	if (clickable && clickable.enable === true &&
+		clickable.action.mode === "closeThisPopup") {
 
 		node = documentHTML.createElement("button");
 		node.setAttribute(
@@ -1275,12 +1387,19 @@ const flexEngineCreateEndNode = function(dataArray, documentHTML, parentVertical
 		);
 	}
 
-	if (dataArray.clickable && dataArray.clickable.enable === true &&
-		dataArray.clickable.action.mode === "runJS") {
+	if (clickable && clickable.enable === true &&
+		clickable.action.mode === "runJS") {
 
 		node = documentHTML.createElement("button");
-		node.setAttribute("onclick", dataArray.clickable.action.JS);
+		node.setAttribute("onclick", clickable.action.JS);
 	}
+
+	return node;
+};
+
+// Create a new END NODE (1) and CONTAINER NODE (2)
+const flexEngineCreateEndNode = function(dataArray, documentHTML, parentVertical = true) {
+	const node = flexEngineCreateAction(documentHTML, dataArray.clickable, "div");
 
 	// set attributes
 	node.id = dataArray.JSID;
@@ -1296,7 +1415,7 @@ const flexEngineCreateEndNode = function(dataArray, documentHTML, parentVertical
 	}
 
 	// setup data inside (select one)
-	const renderFunction = flexEngineContextCreator[dataArray.type];
+	const renderFunction = flexEngineContextCreator[dataArray.type].contextFunction;
 
 	if (typeof renderFunction === "function") {
 		renderFunction(dataArray, documentHTML, node);
@@ -1385,7 +1504,7 @@ const flexEngineAnimationSection = function(dataArray, node, expend) {
 	animationReadyData.animation = animationReadyData.animation.self;
 
 	// Step 3, Run the animation engine render
-	flexEngineTransitionContextsNode(animationReadyData, node);
+	flexEngineAnimationContextsNode(animationReadyData, node);
 
 	// Step 4, cleanup for this part
 	delete animationReadyData;
@@ -1714,52 +1833,358 @@ const flexengineCreatePopup = function(dataArray, documentHTML) {
 HEADER (6) LEVEL
 */
 
-// dealing with Open List function
-const flexEngineCreateOpeningList = function(dataArray, node, documentHTML) {
-	debugger; // Wait to create
-}
+// Control the Open List
+const flexEngineCreateOpenList = function(dataArray, documentHTML, headerDataArray, isMobile) {
+    const node = documentHTML.createElement("ul");
 
-// create a lists of elements as a source in header context
-debugger; // Wait for create
-const flexEngineHeaderElementList = {
+	// basics
+    node.id = dataArray.JSID;
 
-};
+    node.classList.add(
+        `${BUILDER_CONFIG.classPrefix}header-submenulist`,
+    );
 
-// create a floder lists......
-const flexEngineCreateHeaderElements = function(dataArray, node, documentHTML) {
-	debugger; // Wait to create
-};
+	//context creator
+	dataArray.context.forEach(ctx => {
 
-// that is create a Row, one header in standard have one row.
-const flexEngineCreateHeaderRow = function(dataArray, node, documentHTML) {
-	debugger; // wait to create.
-};
+		// create <li>
+		const li = documentHTML.createElement("li");
+
+		// if action.enable is false → append attributes only
+		if (!ctx.action || ctx.action.enable === false) {
+			li.textContent = ctx.attributes;
+			node.appendChild(li);
+			return;
+		}
+
+		// otherwise → create action node
+		const actionNode = flexEngineCreateAction(
+			documentHTML,
+			dataArray.clickable,
+			'span' // 'span' works as fallback in case of problems
+		);
+
+		// append attributes into the action node
+		actionNode.textContent = ctx.attributes;
+
+		// append action node into <li>
+		li.appendChild(actionNode);
+
+		// append <li> into main node
+		node.appendChild(li);
+	});
+
+	const prefix = BUILDER_CONFIG.classPrefix + "styles-node";
+
+	// set attribute using prefix as the name
+	node.setAttribute(
+		prefix,
+		`gap: ${dataArray.layout.gap}`
+	);
 
 
-// create a new standard HEADER (601)
-const flexEngineCreateHeader = function(dataArray, documentHTML) {
-	const node = documentHTML.createElement("header");
-
-	node.id = dataArray.JSID;
-
-	node.classList.add(`${BUILDER_CONFIG.classPrefix}${dataArray.type}`);
-	node.classList.add(`${BUILDER_CONFIG.classPrefix}${dataArray.id}`);
-
-
-	// fot the context, we will wait.
-	debugger;
-
-	// Styling system.
-	flexEngineStylingSystem(dataArray, node, true, 601);
+	flexEngineStylingSystem(dataArray, node, true, 6321, "header");
 
 	// animation system and transition system
-	debugger; //wait for changes......
 	flexEngineAnimationContextsNode(dataArray, node);
+	flexEngineTransitionContextsNode(dataArray, node);	
+
+	// return everything back!
+	return node;
+};
+
+// Control the Sub Section part, remember that is just first part.
+const flexEngineCreateSubSection = function(dataArray, documentHTML, headerDataArray, isMobile) {
+
+    // create base node
+    const node = documentHTML.createElement("div");
+
+    // basics
+    node.id = dataArray.outer.JSID;
+
+    node.classList.add(
+        `${BUILDER_CONFIG.classPrefix}header-subsection`,
+    );
+
+	// render all inside as Elements inside
+	const renderFunction = flexEngineContextCreator.div.contextFunction;
+	renderFunction(dataArray, documentHTML, node);
+
+
+	flexEngineStylingSystem(dataArray, node, parentVertical, 6311, "header");
+
+	// animation system and transition system
+	flexEngineAnimationSection(dataArray, node);
 	flexEngineTransitionContextsNode(dataArray, node);
 
-	// Send everything back!
-	return node;	
+    return node;
 };
+
+// Setup with Header's Labels infomation.
+const flexEngineCreateHeaderLabels = function(dataArray, documentHTML, headerDataArray) {
+	// Start with Action node.
+	const labelNode = flexEngineCreateAction(
+		documentHTML,
+		dataArray.clickable,
+		'p'   // 'p' works as fallback for header labels
+	);
+
+	// CONTENT CREATOR
+	if (dataArray.type === "text") {
+		labelNode.textContent = dataArray.content.label;
+	}
+	else if (dataArray.type === "img") {
+		const img = documentHTML.createElement("img");
+
+		img.classList.add(`${BUILDER_CONFIG.classPrefix}header-labels-img`);
+
+		img.src = dataArray.content.source;
+		img.alt = dataArray.content.alt || "";
+
+		labelNode.appendChild(img);
+	}
+
+	flexEngineStylingSystem(dataArray, labelNode, true, 0, "header");
+
+	flexEngineAnimationContextsNode(dataArray, labelNode);
+	flexEngineTransitionContextsNode(dataArray, labelNode);
+	
+	// now you can return it now.	
+    return labelNode;
+};
+
+// Now create a labels
+const flexEngineCreateHeaderNavItem = function(dataArray, documentHTML, headerDataArray) {
+	const engine = flexEngineStyleVarible;
+
+	// create <li> for header nav item
+	const navItem = documentHTML.createElement("li");
+
+	navItem.id = dataArray.JSID;
+
+	navItem.classList.add(
+		`${BUILDER_CONFIG.classPrefix}header-navitem`,
+		`${BUILDER_CONFIG.classPrefix}header-${dataArray.id}`
+	);
+
+	// Start with CSS.
+    const css = {
+        // padding-bottom from headerDataArray
+        "padding-bottom": engine.space(headerDataArray.style.paddingBottom),
+
+        // border-bottom from gaps
+        "border-bottom-width": engine.space(headerDataArray.gap),
+        "border-bottom-style": dataArray.gaps.incline ? "inset" : "solid",
+        "border-bottom-color": dataArray.gaps.defaultColor
+    };
+
+    // convert to CSS string
+    const layoutCSS =  Object.entries(css)
+        .map(([key, value]) => `${key}: ${value};`)
+        .join(" ");
+
+
+	navItem.setAttribute(`${BUILDER_CONFIG.classPrefix}styles-node`, layoutCSS);
+
+	// create the label element using your existing engine function, then append it.
+	const labelElement = flexEngineCreateHeaderLabels(
+		dataArray,
+		documentHTML,
+		headerDataArray
+	);
+
+	navItem.appendChild(labelElement);
+
+	// Inside, the another one!
+	if ( dataArray.enableToggles === true ) {
+		const height = engine.space(headerDataArray.style.height);
+		const gap = engine.space(dataArray.gaps.gap);
+
+		// top calculation
+		const topValue = dataArray.gaps.incline === false
+			? `calc(${height} + ${gap})`
+			: height;
+
+		// build CSS string
+		const LayoutCSSMenu = [
+			`top: ${topValue};`,
+
+		].join(" ");
+
+		// Things that inside.
+		let openElement;
+
+		if (dataArray.toggleOpen && dataArray.toggleOpen.mode === "Open Section") {
+			// Use SubSection
+			openElement = flexEngineCreateSubSection(
+				dataArray,
+				documentHTML,
+				headerDataArray,
+				false
+			);
+		} else {
+			// Use OpenList
+			openElement = flexEngineCreateOpenList(
+				dataArray,
+				documentHTML,
+				headerDataArray,
+				false
+			);
+		}
+
+		const prefix = BUILDER_CONFIG.classPrefix + "styles-node";
+
+		// read existing CSS string
+		let cssString = openElement.getAttribute(prefix) || "";
+
+		// prepend LayoutCSSMenu context
+		cssString = LayoutCSSMenu + cssString;
+
+		// write back to the same attribute
+		openElement.setAttribute(prefix, cssString);
+		
+		// Append the returned element
+		navItem.appendChild(openElement);
+	}	
+
+	// Styling (FlexEngine style, include style, styleOnHover, AnimationSetting)
+	flexEngineStylingSystem(dataArray, navItem, true, 0, "header");
+
+	// animation system and transition system
+	flexEngineAnimationContextsNode(dataArray, navItem);
+	flexEngineTransitionContextsNode(dataArray, navItem);
+
+	return navItem;
+};
+
+// Inner parts!
+const flexEngineCreateHeaderContext = function (dataArray, documentHTML, type) {
+	const engine = flexEngineStyleVarible;
+
+	//assume this is 'Standard'
+
+	// 1. Create a new node <header> and add class `${BUILDER_CONFIG.classPrefix}header-row`
+	const node = documentHTML.createElement("header");
+	node.classList.add(`${BUILDER_CONFIG.classPrefix}header-row`);
+
+
+	// 2. Create CSS string for max-height using dataArray.size.maxInnerWidth
+	const cssMaxHeight = `max-height: ${engine.space(dataArray.size.maxInnerWidth)};`;
+	// 3. Add that CSS string to `${BUILDER_CONFIG.classPrefix}styles-node`
+	node.setAttribute(
+		`${BUILDER_CONFIG.classPrefix}styles-node`,
+		cssMaxHeight
+	);
+
+
+	// 4. Create left, center, right elements with proper classes
+	const left   = documentHTML.createElement("div");
+	const center = documentHTML.createElement("div");
+	const right  = documentHTML.createElement("div");
+
+	left.classList.add(`${BUILDER_CONFIG.classPrefix}header-row-left`);
+	center.classList.add(`${BUILDER_CONFIG.classPrefix}header-row-center`);
+	right.classList.add(`${BUILDER_CONFIG.classPrefix}header-row-right`);
+
+	// 5. Create CSS string for gap using dataArray.layout.gap
+	const cssGap = `gap: ${engine.space(dataArray.layout.gap)};`;
+
+	// Apply to main + left + center + right
+	[node, left, center, right].forEach((el) => {
+		el.setAttribute(
+			`${BUILDER_CONFIG.classPrefix}styles-node`,
+			(el.getAttribute(`${BUILDER_CONFIG.classPrefix}styles-node`) || "") + cssGap
+		);
+	});
+
+
+	// 7. Create CSS string for mobileGap
+	const cssMobileGap = `gap: ${engine.space(dataArray.layout.mobileGap)};`;
+
+	// Apply to main + left + center + right
+	[node, left, center, right].forEach((el) => {
+		el.setAttribute(
+			`${BUILDER_CONFIG.classPrefix}styles-node-onMobile`,
+			cssMobileGap
+		);
+	});
+
+	// 9. Add context items into left, center, right panels
+	const ctx = dataArray.context || {};
+
+	// Map JSON keys → DOM nodes
+	const panelMap = {
+		left: left,
+		middle: center,
+		right: right
+	};
+
+	// Loop through each panel
+	["left", "middle", "right"].forEach((key) => {
+		const list = ctx[key];
+
+		// Must be an array
+		if (Array.isArray(list)) {
+			list.forEach((item) => {
+				// Create nav item using your engine function
+				const navNode = flexEngineCreateHeaderNavItem(item, documentHTML, dataArray);
+
+				// Append if valid
+				if (navNode) {
+					panelMap[key].appendChild(navNode);
+				}
+			});
+		}
+	});
+
+	// 10. Force animation OFF for node, left, center, right
+	const prefix = BUILDER_CONFIG.classPrefix; // e.g. "cw-"
+	const attrName = `${prefix}animation-config-self`;
+	const triggerAttr = `${prefix}animation-config-self-trigger`;
+
+	// Apply to all 4 nodes
+	[node, left, center, right].forEach((el) => {
+		el.setAttribute(attrName, "");
+		el.setAttribute(triggerAttr, "");
+	});
+
+
+	// 11. Append left, center, right into the main node, then return it
+	node.appendChild(left);
+	node.appendChild(center);
+	node.appendChild(right);
+
+	return node;
+};
+
+// Final Function for Header!
+const flexEngineCreateHeader = function(dataArray, documentHTML) {
+	const header = documentHTML.createElement("header");
+
+	header.id = dataArray.JSID;
+
+	navItem.classList.add(
+		`${BUILDER_CONFIG.classPrefix}header`,
+		`${BUILDER_CONFIG.classPrefix}h${dataArray.id}`
+	);
+
+	// Styles
+	flexEngineStylingSystem(dataArray, navItem, true, 0, "header");
+
+	// Assume this is Standard: we create a inner context
+	flexEngineCreateHeaderContext(dataArray, documentHTML, 'standard');
+
+	// I did not create Moblie, that's you help!
+	debugger;
+
+	//then animation and eerything!
+	flexEngineAnimationSection(dataArray, node);
+	flexEngineTransitionContextsNode(dataArray, node);
+
+
+};
+
+
 
 
 /*
@@ -2002,45 +2427,141 @@ const flexEngineRenderHTMLHeader = function(documentHTML, dataArray, mainArray, 
 };
 
 
-//incomplete
+//Render HTML.
 // Flex Engine final render system!
 //get about components. it should a list that include "path": {JSONs array}. double check everything!
+// Flex Engine final render system!
 const flexEngineRenderHTML = function(dataArray, mainArray, selfSlug, components) {
+    // Dynamically create an empty DOM document setting the title
+    const finalDoc = document.implementation.createHTMLDocument(dataArray.title + " - " + mainArray.name);
 
-	const finalDoc = document.implementation.createHTMLDocument(dataArray.title + " - " + mainArray.name);
+    // Context helper to securely pull data properties from the external JSON array list
+    const getComponentData = (path) => {
+        if (!Array.isArray(components)) return null;
+        const comp = components.find(c => c.path === path);
+        return comp ? comp.data : null;
+    };
 
-	// <head></head>
-	flexEngineRenderHTMLHeader(finalDoc, dataArray, mainArray, selfSlug);
+    // <head></head> config initialization
+    flexEngineRenderHTMLHeader(finalDoc, dataArray, mainArray, selfSlug);
 
-	// <body></body> Header
-	const header = dataArray.header;
-	//wait for header action
+    // 1. <body></body> Header
+    if (dataArray.header && dataArray.header.enable === true) {
+        const headerPath = `/components/header/${dataArray.header.index}.json`;
+        const headerData = getComponentData(headerPath);
+        if (headerData) {
+            const headerNode = flexEngineCreateHeader(headerData, finalDoc);
+            if (headerNode) finalDoc.body.appendChild(headerNode);
+        }
+    }
 
-	// <body></body> Context	
-	const context = dataArray.content;
-	context.forEach((section) => {
-		const sectionHTML = flexengineCreateSection(section);
+    // 2. <body></body> Context (Standard & Reusable Sections)
+    if (Array.isArray(dataArray.content)) {
+        dataArray.content.forEach((section) => {
+            if (!section) return;
+            
+            let sectionNode;
+            
+            // Check if section type requests an external reusable component JSON
+            if (section.type === "reusableSection") {
+                const reusablePath = `/components/reusable_sections/${section.name}.json`;
+                const reusableData = getComponentData(reusablePath);
+                if (reusableData) {
+                    sectionNode = flexengineCreateSection(reusableData, finalDoc);
+                }
+            } else {
+                // Otherwise process standard native layout sections
+                sectionNode = flexengineCreateSection(section, finalDoc);
+            }
 
-		finalDoc.body.appendChild(sectionHTML);
-	});
+            if (sectionNode) {
+                finalDoc.body.appendChild(sectionNode);
+            }
+        });
+    }
 
-	// <body></body> Call to action, Popup, footer, float button and JS.
-	//wait for action
-	debugger;
+    // 3. <body></body> Call To Action (CTA)
+    if (dataArray.CTA && dataArray.CTA.enable === true) {
+        const ctaPath = `/components/cta/${dataArray.CTA.index}.json`;
+        const ctaData = getComponentData(ctaPath);
+        if (ctaData) {
+            const ctaNode = flexengineCreateSection(ctaData, finalDoc);
+            if (ctaNode) finalDoc.body.appendChild(ctaNode);
+        }
+    }
 
+    // 4. <body></body> Footer
+    if (dataArray.footer && dataArray.footer.enable === true) {
+        const footerPath = `/components/footer/${dataArray.footer.index}.json`;
+        const footerData = getComponentData(footerPath);
+        if (footerData) {
+            const footerNode = flexengineCreateSection(footerData, finalDoc);
+            if (footerNode) finalDoc.body.appendChild(footerNode);
+        }
+    }
+
+    // 5. Popups
+    if (Array.isArray(dataArray.popups)) {
+        dataArray.popups.forEach((popupData) => {
+            const popupNode = flexengineCreatePopup(popupData, finalDoc);
+            if (popupNode) finalDoc.body.appendChild(popupNode);
+        });
+    }
+
+    // 6. Float Buttons
+    if (Array.isArray(dataArray.floats)) {
+        dataArray.floats.forEach((floatData) => {
+            const floatNode = flexengineCreateFloat(floatData, finalDoc);
+            if (floatNode) finalDoc.body.appendChild(floatNode);
+        });
+    }
+
+    // 7. JavaScript Code as DOM nodes
+    if (Array.isArray(dataArray.scripts)) {
+        dataArray.scripts.forEach((scriptData) => {
+            const jsNode = flexengineCreateJS(scriptData, finalDoc);
+            if (jsNode) finalDoc.body.appendChild(jsNode);
+        });
+    }
+
+    return finalDoc; // Returns the cleanly generated, fully assembled DOM HTML Document
 };
 
 // incomplete here!
+// Organized Flex Engine Structural Module Object
 const flexEngine = {
-	version: '1.0',
-	flieVersionStart: '1.0.0',
-	flieVersionEnd: '1.0.0',
-
-	getRequirements: flexEngineRequirements,
-
-	renderHTML: flexEngineRenderHTML
+    meta: {
+        version: '1.0',
+        fileVersionStart: '1.0.0',
+        fileVersionEnd: '1.0.0'
+    },
+    
+    // Core Engine Process Functions
+    core: {
+        getRequirements: flexEngineRequirements,
+        renderHTML: flexEngineRenderHTML
+    },
+    
+    // Abstract Factory creators that output Node/Layout Elements
+    creators: {
+        node: flexEngineCreateEndNode,
+        section: flexengineCreateSection,
+        popup: flexengineCreatePopup,
+        header: flexEngineCreateHeader,
+        float: flexengineCreateFloat,
+        js: flexengineCreateJS
+    },
+    
+    // Style sheets, variables, and physics math tools
+    utils: {
+        styling: flexEngineStylingSystem,
+        variables: flexEngineStyleVarible,
+        animation: flexEngineAnimationContextsNode,
+        transition: flexEngineTransitionContextsNode
+    }
 };
-debugger;
+
+export default flexEngine;
 
 // incomplete here!
 export default flexEngine;
