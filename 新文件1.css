@@ -280,3 +280,18 @@
 
 
 
+.cw-header-navitem {
+  overflow: visible;
+  height: 100%;
+  box-sizing: content-box; 
+  margin-bottom: 4px;
+}
+
+.cw-header-submenulist,
+.ce-header-subsection {
+  left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+  position: absolute;
+}
