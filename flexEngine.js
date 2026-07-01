@@ -146,7 +146,7 @@ const flexEngineStyleVarible = {
 				const absoluteDomain = (absoluteDomainEnable) ? `https://${mainArray.domain}` : "/";
 
 				// Constructing: prefix/assets/folder/name
-				return `${absoluteURL}${prefix}assets/${mediaObj.folder}/${mediaObj.name}`;
+				return `${absoluteDomain}/${prefix}assets/${mediaObj.folder}/${mediaObj.name}`;
 
 			case 'external':
 				return mediaObj.url;
@@ -203,8 +203,8 @@ const SizeSettingList = {
 	1: {
 		defalut: (sz, isVertical) => {
 			return {
-				"width": isVertical ? engine.space(sz.across) : engine.space(sz.along),
-				"height": isVertical ? engine.space(sz.along) : engine.space(sz.across),
+				"width": isVertical ? flexEngineStyleVarible.space(sz.across) : flexEngineStyleVarible.space(sz.along),
+				"height": isVertical ? flexEngineStyleVarible.space(sz.along) : flexEngineStyleVarible.space(sz.across),
 				"flex-grow": sz.alongGrow || 0,
 				"flex-shrink": sz.alongShrink === true ? 1 : 0,
 				"overflow-x": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible'),
@@ -214,7 +214,7 @@ const SizeSettingList = {
 		},
 		mobile: (sz, isVertical) => {
 			return {
-				"min-height": engine.space(sz.mobileMinHeight)
+				"min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
 			}
 		}
 	},
@@ -223,7 +223,7 @@ const SizeSettingList = {
 		defalut: (sz, isVertical) => {
 			return {
 				"width": '100%',
-				"height": engine.space(sz.height),
+				"height": flexEngineStyleVarible.space(sz.height),
 				"flex-grow": sz.alongGrow === true? 1 : 0,
 				"flex-shrink": sz.alongShrink === true ? 1 : 0,
 				"overflow-x": 'visible',
@@ -233,7 +233,7 @@ const SizeSettingList = {
 		},
 		mobile: (sz, isVertical) => {
 			return {
-				"min-height": engine.space(sz.mobileMinHeight)
+				"min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
 			}
 		}		
 	},
@@ -241,16 +241,16 @@ const SizeSettingList = {
 	4: {
 		defalut: (sz, isVertical) => {
 			return {
-				"min-width": engine.space(sz.minWidth),
-				"min-height": engine.space(sz.minHeight),
-				"max-width": engine.space(sz.maxWidth),
-				"max-height": engine.space(sz.maxHeight)
+				"min-width": flexEngineStyleVarible.space(sz.minWidth),
+				"min-height": flexEngineStyleVarible.space(sz.minHeight),
+				"max-width": flexEngineStyleVarible.space(sz.maxWidth),
+				"max-height": flexEngineStyleVarible.space(sz.maxHeight)
 			}
 		},
 		mobile: (sz, isVertical) => {
 			return {
-				"min-height": engine.space(dataArray.size?.mobileMinHeight),
-				"max-height": engine.space(dataArray.size?.mobileMaxHeight)
+				"min-height": flexEngineStyleVarible.space(dataArray.size?.mobileMinHeight),
+				"max-height": flexEngineStyleVarible.space(dataArray.size?.mobileMaxHeight)
 			}
 		}				
 	},
@@ -259,27 +259,27 @@ const SizeSettingList = {
 		default: (sz) => {
 			return {
 				// width limits
-				"max-width": sz.maxWidth ? engine.space(sz.maxWidth) : "none",
+				"max-width": sz.maxWidth ? flexEngineStyleVarible.space(sz.maxWidth) : "none",
 
 				// height
-				"height": sz.height ? engine.space(sz.height) : "auto",
+				"height": sz.height ? flexEngineStyleVarible.space(sz.height) : "auto",
 
 				// margins
-				"margin-top": sz.marginTop ? engine.space(sz.marginTop) : "0",
-				"margin-left": sz.marginLeft ? engine.space(sz.marginLeft) : "0",
-				"margin-right": sz.marginRIght ? engine.space(sz.marginRIght) : "0"
+				"margin-top": sz.marginTop ? flexEngineStyleVarible.space(sz.marginTop) : "0",
+				"margin-left": sz.marginLeft ? flexEngineStyleVarible.space(sz.marginLeft) : "0",
+				"margin-right": sz.marginRIght ? flexEngineStyleVarible.space(sz.marginRIght) : "0"
 			};
 		},
 
 		mobile: (sz) => {
 			return {
 				// mobile height override
-				"height": sz.mobileHeight ? engine.space(sz.mobileHeight) : undefined,
+				"height": sz.mobileHeight ? flexEngineStyleVarible.space(sz.mobileHeight) : undefined,
 
 				// mobile margins
-				"margin-top": sz.mobileMarginTop ? engine.space(sz.mobileMarginTop) : undefined,
-				"margin-left": sz.mobileMarginLeft ? engine.space(sz.mobileMarginLeft) : undefined,
-				"margin-right": sz.mobileMarginRIght ? engine.space(sz.mobileMarginRIght) : undefined
+				"margin-top": sz.mobileMarginTop ? flexEngineStyleVarible.space(sz.mobileMarginTop) : undefined,
+				"margin-left": sz.mobileMarginLeft ? flexEngineStyleVarible.space(sz.mobileMarginLeft) : undefined,
+				"margin-right": sz.mobileMarginRIght ? flexEngineStyleVarible.space(sz.mobileMarginRIght) : undefined
 			};
 		}
 	},
@@ -287,14 +287,14 @@ const SizeSettingList = {
 	6311: {
 		default: (sz, isVertical) => {
 			return {
-				"min-width": engine.space(sz.minWidth),
-				"max-width": engine.space(sz.maxWidth),
+				"min-width": flexEngineStyleVarible.space(sz.minWidth),
+				"max-width": flexEngineStyleVarible.space(sz.maxWidth),
 
-				"padding-left": engine.space(sz.paddingLeft),
-				"padding-right": engine.space(sz.paddingRight),
+				"padding-left": flexEngineStyleVarible.space(sz.paddingLeft),
+				"padding-right": flexEngineStyleVarible.space(sz.paddingRight),
 
-				"min-height": engine.space(sz.minHeight),
-				"max-height": engine.space(sz.maxHeight),
+				"min-height": flexEngineStyleVarible.space(sz.minHeight),
+				"max-height": flexEngineStyleVarible.space(sz.maxHeight),
 
 				"overflow-y": sz.cutOverflow ? "hidden" : "auto"
 			};
@@ -302,7 +302,7 @@ const SizeSettingList = {
 
 		mobile: (sz, isVertical) => {
 			return {
-				"min-height": engine.space(sz.minMobileHeight)
+				"min-height": flexEngineStyleVarible.space(sz.minMobileHeight)
 			};
 		}
 	},
@@ -310,13 +310,13 @@ const SizeSettingList = {
 	6321: {
 		default: (sz, isVertical) => {
 			return {
-				"min-width": engine.space(sz.minWidth),
+				"min-width": flexEngineStyleVarible.space(sz.minWidth),
 			};
 		},
 
 		mobile: (sz, isVertical) => {
 			return {
-				"min-width": engine.space(sz.mobileMinWidth)
+				"min-width": flexEngineStyleVarible.space(sz.mobileMinWidth)
 			};
 		}
 	},
@@ -344,7 +344,7 @@ const SizeSettingList = {
 	51: {
 		default: (sz, isVertical) => {
 			return {
-				"height": engine.space(sz.height),
+				"height": flexEngineStyleVarible.space(sz.height),
 			};
 		},
 
@@ -358,15 +358,15 @@ const SizeSettingList = {
 // Style
 const defalutAppearance = (s) => {
 	return {
-			"padding-top": engine.space(s.paddingTop),
-			"padding-bottom": engine.space(s.paddingBottom),
-			"padding-left": engine.space(s.paddingLeft),
-			"padding-right": engine.space(s.paddingRight),
+			"padding-top": flexEngineStyleVarible.space(s.paddingTop),
+			"padding-bottom": flexEngineStyleVarible.space(s.paddingBottom),
+			"padding-left": flexEngineStyleVarible.space(s.paddingLeft),
+			"padding-right": flexEngineStyleVarible.space(s.paddingRight),
 			"border-style": s.borderMode || "solid",
-			"border-top": engine.space(s.borderTop) || "0px",
-			"border-bottom": engine.space(s.borderBottom) || "0px",
-			"border-left": engine.space(s.borderLeft) || "0px",
-			"border-right": engine.space(s.borderRight) || "0px",
+			"border-top": flexEngineStyleVarible.space(s.borderTop) || "0px",
+			"border-bottom": flexEngineStyleVarible.space(s.borderBottom) || "0px",
+			"border-left": flexEngineStyleVarible.space(s.borderLeft) || "0px",
+			"border-right": flexEngineStyleVarible.space(s.borderRight) || "0px",
 			"border-radius": `${s.borderRadius || 0}px`,
 			"box-shadow": s.shadow ? `${s.shadowInset ? 'inset ' : ''}${s.shadowOffsetX || 0}px ${s.shadowOffsetY || 0}px ${s.shadowBlur || 0}px ${s.shadowExpand || 0}px ${engine.color(s.shadowColor)}` : "none",
 			"color": engine.color(s.textColor),
@@ -379,10 +379,10 @@ const defalutAppearance = (s) => {
 
 const mobileAppearence = (s) => {
 	return {
-		"padding-top": engine.space(dataArray.style?.mobilePaddingTop),
-		"padding-bottom": engine.space(dataArray.style?.mobilePaddingBottom),
-		"padding-left": engine.space(dataArray.style?.mobilePaddingLeft),
-		"padding-right": engine.space(dataArray.style?.mobilePaddingRight)
+		"padding-top": flexEngineStyleVarible.space(dataArray.style?.mobilePaddingTop),
+		"padding-bottom": flexEngineStyleVarible.space(dataArray.style?.mobilePaddingBottom),
+		"padding-left": flexEngineStyleVarible.space(dataArray.style?.mobilePaddingLeft),
+		"padding-right": flexEngineStyleVarible.space(dataArray.style?.mobilePaddingRight)
 	};
 };
 
@@ -1970,10 +1970,10 @@ const flexEngineCreateHeaderNavItem = function(dataArray, documentHTML, headerDa
 	// Start with CSS.
     const css = {
         // padding-bottom from headerDataArray
-        "padding-bottom": engine.space(headerDataArray.style.paddingBottom),
+        "padding-bottom": flexEngineStyleVarible.space(headerDataArray.style.paddingBottom),
 
         // border-bottom from gaps
-        "border-bottom-width": engine.space(headerDataArray.gap),
+        "border-bottom-width": flexEngineStyleVarible.space(headerDataArray.gap),
         "border-bottom-style": dataArray.gaps.incline ? "inset" : "solid",
         "border-bottom-color": dataArray.gaps.defaultColor
     };
@@ -1997,8 +1997,8 @@ const flexEngineCreateHeaderNavItem = function(dataArray, documentHTML, headerDa
 
 	// Inside, the another one!
 	if ( dataArray.enableToggles === true ) {
-		const height = engine.space(headerDataArray.style.height);
-		const gap = engine.space(dataArray.gaps.gap);
+		const height = flexEngineStyleVarible.space(headerDataArray.style.height);
+		const gap = flexEngineStyleVarible.space(dataArray.gaps.gap);
 
 		// top calculation
 		const topValue = dataArray.gaps.incline === false
@@ -2069,7 +2069,7 @@ const flexEngineCreateHeaderContext = function (dataArray, documentHTML, type) {
 
 
 	// 2. Create CSS string for max-height using dataArray.size.maxInnerWidth
-	const cssMaxHeight = `max-height: ${engine.space(dataArray.size.maxInnerWidth)};`;
+	const cssMaxHeight = `max-height: ${flexEngineStyleVarible.space(dataArray.size.maxInnerWidth)};`;
 	// 3. Add that CSS string to `${BUILDER_CONFIG.classPrefix}styles-node`
 	node.setAttribute(
 		`${BUILDER_CONFIG.classPrefix}styles-node`,
@@ -2087,7 +2087,7 @@ const flexEngineCreateHeaderContext = function (dataArray, documentHTML, type) {
 	right.classList.add(`${BUILDER_CONFIG.classPrefix}header-row-right`);
 
 	// 5. Create CSS string for gap using dataArray.layout.gap
-	const cssGap = `gap: ${engine.space(dataArray.layout.gap)};`;
+	const cssGap = `gap: ${flexEngineStyleVarible.space(dataArray.layout.gap)};`;
 
 	// Apply to main + left + center + right
 	[node, left, center, right].forEach((el) => {
@@ -2099,7 +2099,7 @@ const flexEngineCreateHeaderContext = function (dataArray, documentHTML, type) {
 
 
 	// 7. Create CSS string for mobileGap
-	const cssMobileGap = `gap: ${engine.space(dataArray.layout.mobileGap)};`;
+	const cssMobileGap = `gap: ${flexEngineStyleVarible.space(dataArray.layout.mobileGap)};`;
 
 	// Apply to main + left + center + right
 	[node, left, center, right].forEach((el) => {
@@ -2537,10 +2537,9 @@ const flexEngine = {
     },
     
     // Core Engine Process Functions
-    core: {
-        getRequirements: flexEngineRequirements,
-        renderHTML: flexEngineRenderHTML
-    },
+
+    getRequirements: flexEngineRequirements,
+    render: flexEngineRenderHTML,
     
     // Abstract Factory creators that output Node/Layout Elements
     creators: {
@@ -2561,7 +2560,4 @@ const flexEngine = {
     }
 };
 
-export default flexEngine;
-
-// incomplete here!
 export default flexEngine;

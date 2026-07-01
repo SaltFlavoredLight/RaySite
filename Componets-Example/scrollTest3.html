@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RaySiteUI Scroll Overflow Example</title>
+<style>
+    :root {
+        --ui-space-1: 4px;
+        --ui-space-2: 8px;
+        --ui-space-m: 12px;
+        --ui-space-4: 28px;
+        --ui-border-default: 1px solid #c7c7c7;
+        --ui-theme-white-2: #f7f4f4;
+        --ui-glass-effect-range: var(--ui-space-2);
+    }
+
+    .RaySiteUI-c-scroll-scrollWrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+        margin: 40px auto;
+        border: var(--ui-border-default);
+
+    }
+
+    .RaySiteUI-c-scroll-scrollArea {
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        display: flex;
+        gap: var(--ui-space-m);
+        padding: var(--ui-space-1) 0;
+        flex: 1;
+        padding-left: var(--ui-space-2);
+        padding-right: var(--ui-space-2);
+        box-sizing: border-box;
+        /*margin-left: var(--ui-space-4);
+        margin-right: var(--ui-space-4);*/
+    }
+
+    .RaySiteUI-c-scroll-scrollArea::-webkit-scrollbar {
+        display: none;
+    }
+
+    .RaySiteUI-c-scroll-scrollItem {
+        min-width: 120px;
+        padding: var(--ui-space-2);
+        background: #eee;
+        border-radius: var(--ui-space-1);
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .RaySiteUI-c-scroll-scrollBtn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: var(--ui-space-1) var(--ui-space-2);
+
+        /* Glass effect using variable name safely */
+        background: color-mix(
+            in srgb,
+            var(--ui-theme-white-2) 55%,
+            transparent
+        );
+        backdrop-filter: blur(var(--ui-glass-effect-range));
+        -webkit-backdrop-filter: blur(var(--ui-glass-effect-range));
+
+        border: var(--ui-border-default);
+        border-radius: var(--ui-space-1);
+
+        width: var(--ui-space-4);
+        height: 100%;
+        z-index: 10;
+        user-select: none;
+
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .2s ease;
+    }
+
+    .RaySiteUI-c-scroll-scrollBtn.is-visible {
+        opacity: 1;
+        pointer-events: auto;
+        cursor: pointer;
+
+
+    }
+
+    .RaySiteUI-c-scroll-scrollBtn.left {
+        left: 0;
+    }
+
+    .RaySiteUI-c-scroll-scrollBtn.right {
+        right: 0;
+    }
+</style>
+</head>
+<body>
+
+<div class="RaySiteUI-c-scroll-scrollWrap" data-app-uiaction="leftRightScroll">
+    <button class="RaySiteUI-c-scroll-scrollBtn left">‹</button>
+
+    <div class="RaySiteUI-c-scroll-scrollArea">
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 1</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 2</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 3</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 4</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 5</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 6</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 7</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 8</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 9</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 10</div>
+    </div>
+
+    <button class="RaySiteUI-c-scroll-scrollBtn right">›</button>
+</div>
+
+<script>
+(function() {
+    function initScrollSnap(root) {
+        const area = root.querySelector(".RaySiteUI-c-scroll-scrollArea");
+        const btnLeft = root.querySelector(".RaySiteUI-c-scroll-scrollBtn.left");
+        const btnRight = root.querySelector(".RaySiteUI-c-scroll-scrollBtn.right");
+
+        /*if (!btnLeft) {
+            btnLeft = document.createElement("button");
+            btnLeft.textContent = "‹"
+            btnLeft.classList.add('RaySiteUI-c-scroll-scrollBtn', 'left');
+        }
+
+        if (!btnRight) {
+            btnRight = document.createElement("button");
+            btnRight.textContent = "‹"
+            btnRight.classList.add('RaySiteUI-c-scroll-scrollBtn', 'left');
+
+        }*/
+
+        if (!area || !btnLeft || !btnRight) return;
+
+        function updateButtons() {
+            const maxScroll = area.scrollWidth - area.clientWidth;
+
+            if (area.scrollLeft > 0) {
+                btnLeft.classList.add("is-visible");
+            } else {
+                btnLeft.classList.remove("is-visible");
+            }
+
+            if (area.scrollLeft < maxScroll) {
+                btnRight.classList.add("is-visible");
+            } else {
+                btnRight.classList.remove("is-visible");
+            }
+        }
+
+
+        btnLeft.addEventListener("click", () => {
+            area.scrollBy({ left: -area.clientWidth, behavior: "smooth" });
+        });
+
+        btnRight.addEventListener("click", () => {
+            area.scrollBy({ left: area.clientWidth, behavior: "smooth" });
+        });
+
+        area.addEventListener("scroll", updateButtons);
+        window.addEventListener("resize", updateButtons);
+
+        updateButtons();
+    }
+
+    document.querySelectorAll('[data-app-uiaction="leftRightScroll"]').forEach(initScrollSnap);
+})();
+</script>
+
+</body>
+</html>

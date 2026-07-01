@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SortableJS Stable Cross-Iframe</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
+
+    <style>
+        body { font-family: sans-serif; display: flex; gap: 20px; }
+        ul { padding: 0; list-style: none; width: 200px; border: 1px solid #ccc; min-height: 150px; }
+        li { padding: 8px; margin: 4px; background: #eee; border: 1px solid #aaa; cursor: grab; }
+        iframe { width: 600px; height: calc(100vh - 60px); border: 1px solid #666; }
+
+        .placeholder {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <h3>Left List (Clone Only)</h3>
+        <ul id="leftList">
+            <li>Text</li>
+            <li>Image</li>
+            <li>Headings</li>
+            <li>HTML</li>
+        </ul>
+    </div>
+
+    <iframe id="preview" sandbox="allow-scripts allow-same-origin" srcdoc="
+        <html>
+        <head>
+            <style>
+                body { font-family: sans-serif; display: flex; gap: 20px; flex-direction: column; }
+                div { padding: 0; list-style: none; width: 100%; border: 1px solid #ccc; min-height: 150px; }
+                li { padding: 8px; margin: 4px; background: #eef; border: 1px solid #88a; cursor: grab; }
+                .placeholder { position: absolute;left: 0; top: 0; opacity: 0; pointer-events: none; height: 0; margin: 0; padding: 0; }
+            </style>
+        </head>
+        <body>
+
+            <div id='list1'><li class='placeholder'></li></div>
+            <div id='list2'><li class='placeholder'></li></div>
+            <div id='list3'><li class='placeholder'></li></div>
+            <div id='list4'><li class='placeholder'></li></div>
+
+        </body>
+        </html>
+    "></iframe>
+
+    <script>
+        // --- LEFT LIST (clone only, no placeholder logic) ---
+        Sortable.create(document.getElementById("leftList"), {
+            group: {
+                name: "builder",
+                pull: "clone",
+                put: false
+            },
+            sort: false,
+            animation: 150
+        });
+
+        // --- IFRAME LISTS ---
+        const iframe = document.getElementById("preview");
+        iframe.addEventListener("load", () => {
+            const doc = iframe.contentDocument;
+            const listIds = ["list1", "list2", "list3", "list4"];
+
+            listIds.forEach(id => {
+                Sortable.create(doc.getElementById(id), {
+                    group: {
+                        name: "builder",
+                        pull: true,
+                        put: true
+                    },
+                    animation: 150,
+                    dragoverBubble: true,
+                    fallbackOnBody: true,
+                    document: doc,
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
