@@ -1,0 +1,865 @@
+:root {
+    /* Core Theme Colors */
+    --ui-theme-white-1: #ffffff;
+    --ui-theme-white-2: #f7f4f4;
+    --ui-theme-white-3: #c7c7c7;
+    --ui-theme-white-4: #a6a6a6;
+
+    --ui-theme-main-1: #8b2525;
+    --ui-theme-main-2: #9d2d2d;
+    --ui-theme-main-3: #520c0c;
+
+    --ui-theme-black: #1B1717;
+    --ui-theme-shine: gold;
+
+    --ui-space-1: 4px;     /* mini */
+    --ui-space-2: 8px;     /* small */
+    --ui-space-m: 12px;
+    --ui-space-3: 16px;    /* medium */
+    --ui-space-4: 28px;    /* large */
+    --ui-space-5: 36px;    /* extra large */
+    --ui-space-6: 48px;    /* ultra large */ 
+
+    --ui-glass-effect-range: var(--ui-space-2);
+
+    --ui-font-heading: 'Cardo', serif;
+    --ui-font-text: 'Roboto', sans-serif;
+    --ui-font-details: 'Cardo', serif;
+    --ui-text-size: 14px;
+    
+    --ui-border-default: 1px solid var(--ui-theme-white-3);
+
+    --ui-transition-shape: ease-in-out;
+    --ui-transition-default: 0.25s;
+
+
+    /* Start with settings */
+    --ui-layout-left: 52px;
+    --ui-layout-right: 300px;
+}
+
+/* Green Theme */
+.raysiteUI-green {
+    --ui-theme-main-1: #0A5F38;
+    --ui-theme-main-2: #20b46f;
+    --ui-theme-main-3: #05512d;
+
+    --ui-theme-white-1: #ffffff;
+    --ui-theme-white-2: #f0fdf1;
+
+    --ui-theme-black: #0F1A12;
+    --ui-theme-shine: #C8FF8C;
+}
+
+/* Purple / Grape Flower Theme */
+.raysiteUI-purple {
+    --ui-theme-main-1: #4B1A6A;
+    --ui-theme-main-2: #8a31b7;
+    --ui-theme-main-3: #3b0f53;
+
+    --ui-theme-white-1: #ffffff;
+    --ui-theme-white-2: #fbf1f9;
+
+    --ui-theme-black: #1A0F1F;
+    --ui-theme-shine: #D6B0FF;
+}
+
+
+/* UI CSS System reset */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	vertical-align: baseline;
+}
+
+html, body, div, span, applet, object, iframe, p, blockquote, pre,
+a, abbr, acronym, address, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+strike, sub, sup, tt, var, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	font-size: 100%;
+    font: inherit;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+
+
+/* Components! */
+button,
+.RaySiteUI-c-button,
+.RaySiteUI-c-button-1,
+.RaySiteUI-c-button-2,
+.RaySiteUI-c-button-3,
+.RaySiteUI-c-button-4,
+.RaySiteUI-c-button-1i,
+.RaySiteUI-c-button-2i,
+.RaySiteUI-c-button-3i,
+.RaySiteUI-c-button-4i,
+.RaySiteUI-c-button-1is,
+.RaySiteUI-c-button-2is,
+.RaySiteUI-c-button-3is,
+.RaySiteUI-c-button-4is,
+/* 12 New N Classes Base Setup */
+.RaySiteUI-c-button-1n,
+.RaySiteUI-c-button-2n,
+.RaySiteUI-c-button-3n,
+.RaySiteUI-c-button-4n,
+.RaySiteUI-c-button-1in,
+.RaySiteUI-c-button-2in,
+.RaySiteUI-c-button-3in,
+.RaySiteUI-c-button-4in,
+.RaySiteUI-c-button-1isn,
+.RaySiteUI-c-button-2isn,
+.RaySiteUI-c-button-3isn,
+.RaySiteUI-c-button-4isn {
+  min-height: var(--ui-space-3);
+  min-width: var(--ui-space-5);
+  /*border: var(--ui-border-default);*/
+  border: 0;
+  border-radius: var(--ui-space-1);
+  padding: var(--ui-space-1) var(--ui-space-2);
+  font-size: var(--ui-text-size);
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--ui-transition-shape) var(--ui-transition-default);
+}
+
+.RaySiteUI-c-button-1i,
+.RaySiteUI-c-button-2i,
+.RaySiteUI-c-button-3i,
+.RaySiteUI-c-button-4i,
+.RaySiteUI-c-button-1is,
+.RaySiteUI-c-button-2is,
+.RaySiteUI-c-button-3is,
+.RaySiteUI-c-button-4is,
+/* 8 New Icon/Square N Classes Setup */
+.RaySiteUI-c-button-1in,
+.RaySiteUI-c-button-2in,
+.RaySiteUI-c-button-3in,
+.RaySiteUI-c-button-4in,
+.RaySiteUI-c-button-1isn,
+.RaySiteUI-c-button-2isn,
+.RaySiteUI-c-button-3isn,
+.RaySiteUI-c-button-4isn {
+  min-width: var(--ui-space-5);
+  max-width: 100%;
+  min-height: var(--ui-space-5);
+  max-height: 100%;
+  padding: calc((var(--ui-space-1) + var(--ui-space-2)) / 2);
+}
+
+.RaySiteUI-c-button-1is,
+.RaySiteUI-c-button-2is,
+.RaySiteUI-c-button-3is,
+.RaySiteUI-c-button-4is,
+/* 4 New Square N Classes Setup */
+.RaySiteUI-c-button-1isn,
+.RaySiteUI-c-button-2isn,
+.RaySiteUI-c-button-3isn,
+.RaySiteUI-c-button-4isn {
+  aspect-ratio: 1 / 1;
+}
+
+/* BUTTON 1 */
+.RaySiteUI-c-button-1,
+.RaySiteUI-c-button-1i,
+.RaySiteUI-c-button-1is,
+.RaySiteUI-c-button-1n,
+.RaySiteUI-c-button-1in,
+.RaySiteUI-c-button-1isn {
+  background: var(--ui-theme-main-1);
+  color: var(--ui-theme-white-1);
+}
+.RaySiteUI-c-button-1:hover,
+.RaySiteUI-c-button-1.open,
+.RaySiteUI-c-button-1i:hover,
+.RaySiteUI-c-button-1i.open,
+.RaySiteUI-c-button-1is:hover,
+.RaySiteUI-c-button-1is.open,
+/* N hovers (no .open classes here) */
+.RaySiteUI-c-button-1n:hover,
+.RaySiteUI-c-button-1in:hover,
+.RaySiteUI-c-button-1isn:hover {
+  background: var(--ui-theme-main-3);
+}
+
+/* BUTTON 2 */
+.RaySiteUI-c-button-2,
+.RaySiteUI-c-button-2i,
+.RaySiteUI-c-button-2is,
+.RaySiteUI-c-button-2n,
+.RaySiteUI-c-button-2in,
+.RaySiteUI-c-button-2isn {
+  background: var(--ui-theme-white-3);
+  color: var(--ui-theme-black);
+}
+.RaySiteUI-c-button-2:hover,
+.RaySiteUI-c-button-2.open,
+.RaySiteUI-c-button-2i:hover,
+.RaySiteUI-c-button-2i.open,
+.RaySiteUI-c-button-2is:hover,
+.RaySiteUI-c-button-2is.open,
+/* N hovers (no .open classes here) */
+.RaySiteUI-c-button-2n:hover,
+.RaySiteUI-c-button-2in:hover,
+.RaySiteUI-c-button-2isn:hover {
+  background: var(--ui-theme-white-4);
+}
+
+/* BUTTON 3 */
+.RaySiteUI-c-button-3,
+.RaySiteUI-c-button-3i,
+.RaySiteUI-c-button-3is,
+.RaySiteUI-c-button-3n,
+.RaySiteUI-c-button-3in,
+.RaySiteUI-c-button-3isn {
+  background: var(--ui-theme-main-3);
+  color: var(--ui-theme-white-1);
+}
+.RaySiteUI-c-button-3:hover,
+.RaySiteUI-c-button-3.open,
+.RaySiteUI-c-button-3i:hover,
+.RaySiteUI-c-button-3i.open,
+.RaySiteUI-c-button-3is:hover,
+.RaySiteUI-c-button-3is.open,
+/* N hovers (no .open classes here) */
+.RaySiteUI-c-button-3n:hover,
+.RaySiteUI-c-button-3in:hover,
+.RaySiteUI-c-button-3isn:hover {
+  background: var(--ui-theme-main-2);
+}
+
+/* BUTTON 4 */
+.RaySiteUI-c-button-4,
+.RaySiteUI-c-button-4i,
+.RaySiteUI-c-button-4is,
+.RaySiteUI-c-button-4n,
+.RaySiteUI-c-button-4in,
+.RaySiteUI-c-button-4isn {
+  background: var(--ui-theme-white-2);
+  color: var(--ui-theme-black);
+}
+.RaySiteUI-c-button-4:hover,
+.RaySiteUI-c-button-4.open,
+.RaySiteUI-c-button-4i:hover,
+.RaySiteUI-c-button-4i.open,
+.RaySiteUI-c-button-4is:hover,
+.RaySiteUI-c-button-4is.open,
+/* N hovers (no .open classes here) */
+.RaySiteUI-c-button-4n:hover,
+.RaySiteUI-c-button-4in:hover,
+.RaySiteUI-c-button-4isn:hover {
+  background: var(--ui-theme-white-3);
+}
+
+
+
+
+
+.RaySiteUI-c-spaces,
+.RaySiteUI-c-spaces-row,
+.RaySiteUI-c-spaces-row-end,
+.RaySiteUI-c-spaces-row-center,
+.RaySiteUI-c-spaces-column,
+.RaySiteUI-c-spaces-column-end,
+.RaySiteUI-c-spaces-column-center {
+    /*padding: var(--ui-space-2);*/
+    display: flex;
+    gap: var(--ui-space-2);
+    align-items: center;
+}
+
+.RaySiteUI-c-spaces-row,
+.RaySiteUI-c-spaces-row-end,
+.RaySiteUI-c-spaces-row-center {
+    flex-direction: row;
+    padding-left: var(--ui-space-3);
+    padding-right: var(--ui-space-3);
+
+}
+
+.RaySiteUI-c-spaces-column,
+.RaySiteUI-c-spaces-column-end,
+.RaySiteUI-c-spaces-column-center {
+    flex-direction: column;
+    padding-top: var(--ui-space-3);
+    padding-bottom: var(--ui-space-3);
+}
+
+.RaySiteUI-c-spaces-row-end,
+.RaySiteUI-c-spaces-column-end {
+    justify-content: flex-end;
+}
+
+.RaySiteUI-c-spaces-row-center,
+.RaySiteUI-c-spaces-column-center {
+    justify-content: center;
+}
+
+.RaySiteUI-c-cpanel {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+/* Componets about the buttons*/
+.RaySiteUI-c-scroll-scrollWrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+.RaySiteUI-c-scroll-scrollArea {
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    display: flex;
+    gap: var(--ui-space-m);
+    height: 100%;    
+    /*padding: var(--ui-space-1) 0;
+    flex: 1;
+    padding-left: var(--ui-space-2);
+    padding-right: var(--ui-space-2);
+    /*margin-left: var(--ui-space-4);
+     margin-right: var(--ui-space-4);
+    */
+}
+.RaySiteUI-c-scroll-scrollArea::-webkit-scrollbar {
+    display: none;
+}
+
+.RaySiteUI-c-scroll-scrollBtn {
+    position: absolute;
+    padding: var(--ui-space-1);
+    /* Glass effect using variable name safely */
+    background: var(--ui-theme-white-2);
+    flex-wrap: nowrap;
+    height: 100%;
+    z-index: 10;
+    user-select: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    border: var(--ui-border-default);
+    border-radius: var(--ui-space-1);
+}
+.RaySiteUI-c-scroll-scrollBtn.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
+}
+.RaySiteUI-c-scroll-scrollBtn.left {
+    left: 0;
+}
+.RaySiteUI-c-scroll-scrollBtn.right {
+    right: 0;
+}
+
+.RaySiteUI-c-list {
+    list-style: none;
+    padding: var(--ui-space-m) 0;
+    border: var(--ui-border-default);
+    border-radius: var(--ui-space-1);
+    display: flex;
+    flex-direction: column;
+    font-size: var(--ui-text-size, 14px);
+    margin: 0;
+    min-width: 200px;
+    gap: var(--ui-space-2);
+}
+
+.RaySiteUI-c-list > li {
+    padding: var(--ui-space-m);
+    font-size: inherit;
+    background: inherit;
+    cursor: pointer;
+    transition: background var(--ui-transition-shape) var(--ui-transition-default);
+}
+
+.RaySiteUI-c-list > li:hover {
+    background: var(--ui-theme-white-3)
+}
+
+
+
+.RaySiteUI-c-text-white-1 { color: var(--ui-theme-white-1); }
+.RaySiteUI-c-text-white-2 { color: var(--ui-theme-white-2); }
+.RaySiteUI-c-text-white-3 { color: var(--ui-theme-white-3); }
+.RaySiteUI-c-text-white-4 { color: var(--ui-theme-white-4); }
+
+.RaySiteUI-c-text-main-1 { color: var(--ui-theme-main-1); }
+.RaySiteUI-c-text-main-2 { color: var(--ui-theme-main-2); }
+.RaySiteUI-c-text-main-3 { color: var(--ui-theme-main-3); }
+
+.RaySiteUI-c-text-black { color: var(--ui-theme-black); }
+.RaySiteUI-c-text-shine { color: var(--ui-theme-shine); }
+
+/* Preset shortcuts */
+.RaySiteUI-c-text-1 { color: var(--ui-theme-main-1); }
+.RaySiteUI-c-text-2 { color: var(--ui-theme-white-3); }
+.RaySiteUI-c-text-3 { color: var(--ui-theme-main-3); }
+.RaySiteUI-c-text-4 { color: var(--ui-theme-white-2); }
+
+.RaySiteUI-c-background-white-1 { background: var(--ui-theme-white-1); }
+.RaySiteUI-c-background-white-2 { background: var(--ui-theme-white-2); }
+.RaySiteUI-c-background-white-3 { background: var(--ui-theme-white-3); }
+.RaySiteUI-c-background-white-4 { background: var(--ui-theme-white-4); }
+
+.RaySiteUI-c-background-main-1 { background: var(--ui-theme-main-1); }
+.RaySiteUI-c-background-main-2 { background: var(--ui-theme-main-2); }
+.RaySiteUI-c-background-main-3 { background: var(--ui-theme-main-3); }
+
+.RaySiteUI-c-background-black { background: var(--ui-theme-black); }
+.RaySiteUI-c-background-shine { background: var(--ui-theme-shine); }
+
+/* Preset shortcuts */
+.RaySiteUI-c-background-1 { background: var(--ui-theme-main-1); }
+.RaySiteUI-c-background-2 { background: var(--ui-theme-white-3); }
+.RaySiteUI-c-background-3 { background: var(--ui-theme-main-3); }
+.RaySiteUI-c-background-4 { background: var(--ui-theme-white-2); }
+
+.RaySiteUI-c-hovertext-white-1:hover { color: var(--ui-theme-white-1); }
+.RaySiteUI-c-hovertext-white-2:hover { color: var(--ui-theme-white-2); }
+.RaySiteUI-c-hovertext-white-3:hover { color: var(--ui-theme-white-3); }
+.RaySiteUI-c-hovertext-white-4:hover { color: var(--ui-theme-white-4); }
+
+.RaySiteUI-c-hovertext-main-1:hover { color: var(--ui-theme-main-1); }
+.RaySiteUI-c-hovertext-main-2:hover { color: var(--ui-theme-main-2); }
+.RaySiteUI-c-hovertext-main-3:hover { color: var(--ui-theme-main-3); }
+
+.RaySiteUI-c-hovertext-black:hover { color: var(--ui-theme-black); }
+.RaySiteUI-c-hovertext-shine:hover { color: var(--ui-theme-shine); }
+
+/* Preset shortcuts */
+.RaySiteUI-c-hovertext-1:hover { color: var(--ui-theme-main-1); }
+.RaySiteUI-c-hovertext-2:hover { color: var(--ui-theme-white-3); }
+.RaySiteUI-c-hovertext-3:hover { color: var(--ui-theme-main-3); }
+.RaySiteUI-c-hovertext-4:hover { color: var(--ui-theme-white-2); }
+
+.RaySiteUI-c-hoverbg-white-1:hover { background: var(--ui-theme-white-1); }
+.RaySiteUI-c-hoverbg-white-2:hover { background: var(--ui-theme-white-2); }
+.RaySiteUI-c-hoverbg-white-3:hover { background: var(--ui-theme-white-3); }
+.RaySiteUI-c-hoverbg-white-4:hover { background: var(--ui-theme-white-4); }
+
+.RaySiteUI-c-hoverbg-main-1:hover { background: var(--ui-theme-main-1); }
+.RaySiteUI-c-hoverbg-main-2:hover { background: var(--ui-theme-main-2); }
+.RaySiteUI-c-hoverbg-main-3:hover { background: var(--ui-theme-main-3); }
+
+.RaySiteUI-c-hoverbg-black:hover { background: var(--ui-theme-black); }
+.RaySiteUI-c-hoverbg-shine:hover { background: var(--ui-theme-shine); }
+
+/* Preset shortcuts */
+.RaySiteUI-c-hoverbg-1:hover { background: var(--ui-theme-main-1); }
+.RaySiteUI-c-hoverbg-2:hover { background: var(--ui-theme-white-3); }
+.RaySiteUI-c-hoverbg-3:hover { background: var(--ui-theme-main-3); }
+.RaySiteUI-c-hoverbg-4:hover { background: var(--ui-theme-white-2); }
+
+/*
+Glass
+*/
+.RaySiteUI-c-glass {
+    background: color-mix(in srgb, var(--ui-theme-white-2) 35%, transparent);
+    backdrop-filter: blur(var(--ui-glass-effect-range));
+    -webkit-backdrop-filter: blur(var(--ui-glass-effect-range));
+}
+
+.RaySiteUI-c-font-heading {
+    font-family: var(--ui-font-heading);
+}
+
+.RaySiteUI-c-font-text {
+    font-family: var(--ui-font-text);
+}
+
+.RaySiteUI-c-font-details {
+    font-family: var(--ui-font-details);
+}
+
+
+.RaySiteUI-c-list > br {
+    display: block;
+    height: var(--ui-text-size, 14px);
+    content: "";
+}
+
+.RaySiteUI-c-hr {
+    width: calc(100% - var(--ui-space-2) * 2);
+    border: 0;
+    border-top: 1px solid var(--ui-theme-white-3);
+    margin: 0 var(--ui-space-2);
+}
+
+.RaySiteUI-c-vr {
+    height: calc(100% - var(--ui-space-2) * 2);
+    border: 0;
+    border-left: 1px solid var(--ui-theme-white-3);
+    margin: var(--ui-space-2) 0;
+}
+
+.RaySiteUI-c-hr-full {
+    width: 100%;
+    border: 0;
+    border-top: 1px solid var(--ui-theme-white-3);
+    margin: 0;
+}
+
+.RaySiteUI-c-vr-full {
+    height: 100%;
+    border: 0;
+    border-left: 1px solid var(--ui-theme-white-3);
+    margin: 0;
+}
+
+
+.RaySiteUI-c-relative {
+    position: relative;
+}
+
+
+/*Fill it*/
+.RaySiteUI-c-fill {
+    width: 100%;
+    height: 100%;
+}
+
+/* =============================
+MASTER CSS!
+   =============================*/
+/* Master style about Body*/
+.RaySiteUI {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: hidden;
+    font-family: var(--ui-font-text);
+    color: var(--ui-theme-black);
+    background: var(--ui-theme-white-1);
+    flex-direction: column;
+    font-size: var(--ui-text-size);
+}
+
+.RaySiteUI-brand {
+    padding: var(--ui-space-1);
+    font-size: var(--ui-space-3);
+}
+
+.RaySiteUI-globalHeader {
+    height: var(--ui-space-5);
+    width: 100%;
+    background: var(--ui-theme-white-2);
+    border-bottom: var(--ui-border-default);
+    display: flex;
+    position: relative;
+    z-index: 110;
+}
+
+.RaySiteUI-globalHeader-menu {
+    width: var(--ui-layout-left);
+    border-right: var(--ui-border-default);
+
+    padding-top: var(--ui-space-1);
+    padding-bottom: var(--ui-space-1);    
+}
+
+.RaySiteUI-globalHeader-menu-icon {
+    height: 100%;
+    aspect-ratio: 1 / 1;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.RaySiteUI-globalHeader-menu-icon span {
+    height: 2px;
+    width: 100%;
+    background: var(--ui-theme-black);
+    transition: transform .25s ease, opacity .25s ease;
+}
+
+.RaySiteUI-globalHeader-menu.open .RaySiteUI-globalHeader-menu-icon span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+.RaySiteUI-globalHeader-menu.open .RaySiteUI-globalHeader-menu-icon span:nth-child(2) {
+    opacity: 0;
+}
+.RaySiteUI-globalHeader-menu.open .RaySiteUI-globalHeader-menu-icon span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+.RaySiteUI-globalHeader-menu-options {
+    position: absolute;
+    top: calc(100% + var(--ui-space-1));
+    left: 0;
+    background: var(--ui-theme-white-1);
+    clip-path: inset(0 0 100% 0);
+    opacity: 0;
+    pointer-events: none;
+    transition: clip-path .25s ease, opacity .25s ease;
+}
+
+.RaySiteUI-globalHeader-menu.open .RaySiteUI-globalHeader-menu-options {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
+.RaySiteUI-globalHeader-left {
+    width: calc(var(--ui-layout-right) - var(--ui-layout-left));
+}
+
+.RaySiteUI-globalHeader-center {
+    flex: 1;
+}
+
+.RaySiteUI-globalHeader-right {
+    width: var(--ui-layout-right);
+}
+
+.RaySiteUI-workspace {
+    width: 100%;
+    flex: 1;
+    position: relative;
+}
+
+.RaySiteUI-workspace-design {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+}
+
+.RaySiteUI-workspace-design-sidebar {
+    width: var(--ui-layout-left);
+    border-right: var(--ui-border-default);
+    background: var(--ui-theme-white-2);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 100;
+}
+
+.RaySiteUI-workspace-design-sidebar-top {
+    position: relative;
+    z-index: 100;
+    min-height: 50px;
+    flex: 1;
+    border-bottom: var(--ui-border-default);
+    background: var(--ui-theme-white-2);
+}
+
+.RaySiteUI-workspace-design-sidebar-bottom {
+    position: relative;
+    z-index: 100;
+    min-height: 50px;
+    border-top: var(--ui-border-default);
+    background: var(--ui-theme-white-2);
+}
+
+.RaySiteUI-workspace-design-sidebar-s-slidePanel {
+    position: absolute;
+    top: 0;
+    right: 1px;
+    width: var(--ui-layout-right);
+    height: 100%;
+    transition: right var(--ui-transition-default) var(--ui-transition-shape);    
+    border-right: var(--ui-border-default);
+    z-index: 10;
+    display: flex;
+}
+
+.RaySiteUI-workspace-design-sidebar-s-slidePanel.open {
+    right: calc(var(--ui-layout-right) * -1 - 1px);
+}
+
+.RaySiteUI-workspace-design-sidebar-s-slidePanel-inner {
+    padding: var(--ui-space-4) !important;
+}
+
+
+.RaySiteUI-workspace-design-sidebar-s-fullPanel {
+    position: absolute;
+    top: 0;
+    right: 1px;
+    width: calc(100vw - var(--ui-layout-left));
+    height: 100%;
+    transition: right var(--ui-transition-default) var(--ui-transition-shape);    
+    border-right: var(--ui-border-default);
+    z-index: 10;
+    display: flex;
+}
+
+.RaySiteUI-workspace-design-sidebar-s-fullPanel.open {
+    right: calc((100vw - var(--ui-layout-left)) * -1 - 1px);
+}
+
+.RaySiteUI-workspace-design-sidebar-s-fullPanel-inner {
+    padding: var(--ui-space-6) !important;
+}
+
+
+.RaySiteUI-workspace-design-left {
+    display: none;
+    width: 200px;
+    border-right: var(--ui-border-default);
+    background: var(--ui-theme-white-1);
+}
+
+.RaySiteUI-workspace-design-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.RaySiteUI-workspace-design-center-info {
+    height: var(--ui-space-4);
+}
+
+.RaySiteUI-workspace-design-center-canvascreen {
+    flex: 1;
+    display: flex;
+}
+
+.RaySiteUI-workspace-design-center-canvascreen-left {
+    width: var(--ui-space-3);
+}
+
+.RaySiteUI-workspace-design-center-canvascreen-canvas {
+    flex: 1;
+    border: var(--ui-border-default);
+    border-bottom: none;
+    border-top-left-radius: var(--ui-space-3);
+    border-top-right-radius: var(--ui-space-3);
+}
+
+.RaySiteUI-workspace-design-center-canvascreen-right {
+    width: var(--ui-space-3);
+    position: relative;
+    z-index: 100;
+}
+
+.RaySiteUI-workspace-design-right {
+    width: var(--ui-layout-right);
+    border-left: var(--ui-border-default);
+    background: var(--ui-theme-white-2);
+}
+
+
+.RaySiteUI-toolbar {
+    height: var(--ui-space-6);
+    width: 100%;
+    background: var(--ui-theme-white-2);
+    border-top: var(--ui-border-default);
+    position: relative;
+    z-index: 100;
+}
+
+.RaySiteUI-toolbar-s-main {
+    position: relative;
+    z-index: 10;
+    background: var(--ui-theme-white-2);
+}
+
+.RaySiteUI-toolbar-s-popupPanels {
+    width: 100%;
+    height: 200px;
+    position: absolute;
+    bottom: calc(-199px + 100%);
+    left: 0;
+    z-index: 0;
+    transition: bottom var(--ui-transition-default) var(--ui-transition-shape);
+    border-top: var(--ui-border-default);
+}
+
+.RaySiteUI-toolbar-s-popupPanels.open {
+    bottom: calc(100% + 1px);
+}
+
+.RaySiteUI-footerInfo {
+    height: var(--ui-space-3);
+    width: 100%;
+    background: var(--ui-theme-main-1);
+    color: var(--ui-theme-white-1);
+    border-top: var(--ui-border-default);
+    position: relative;
+    z-index: 100;
+}
+
+
+.RaySiteUI-overSizeScreen,
+.RaySiteUI-loadingScreen {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    z-index: 9999;
+}
+
+.RaySiteUI-overSizeScreen {
+    backdrop-filter: blur(var(--ui-space-2));
+    padding: var(--ui-space-6);
+    font-weight: bold;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    font-family: var(--ui-font-heading);
+}
+
+@media (max-width: 950px) {
+    .RaySiteUI-overSizeScreen {
+        display: flex;
+    }
+}
+
+.RaySiteUI-loadingScreen {
+    display: none;
+}
+

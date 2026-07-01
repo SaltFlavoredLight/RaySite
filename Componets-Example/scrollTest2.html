@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RaySiteUI Scroll Overflow Example</title>
+<style>
+    :root {
+        --ui-space-1: 4px;
+        --ui-space-2: 8px;
+        --ui-space-m: 12px;
+        --ui-border-default: 1px solid #c7c7c7;
+        --ui-theme-white-2: #f7f4f4;
+    }
+
+    .RaySiteUI-scrollAble {
+        position: relative;
+        display: flex;
+        width: 100%;
+        max-width: 600px;
+
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        display: flex;
+        gap: var(--ui-space-m);
+        padding: var(--ui-space-1) 0;
+        flex: 1;
+        border: var(--ui-border-default);
+        border-radius: var(--ui-space-1);
+        padding-left: var(--ui-space-2);
+        padding-right: var(--ui-space-2);
+        box-sizing: border-box;
+    }
+/*
+    .RaySiteUI-scrollAble::-webkit-scrollbar {
+        display: none;
+    }*/
+
+    .RaySiteUI-scrollItem {
+        min-width: 120px;
+        padding: var(--ui-space-2);
+        background: #eee;
+        border-radius: var(--ui-space-1);
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .RaySiteUI-c-scroll-scrollBtn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: var(--ui-space-1) var(--ui-space-2);
+        background: var(--ui-theme-white-2);
+        border: var(--ui-border-default);
+        border-radius: var(--ui-space-1);
+        cursor: pointer;
+        display: none;
+        z-index: 10;
+        user-select: none;
+    }
+
+    .RaySiteUI-c-scroll-scrollBtn.left {
+        left: 0;
+        transform: translate(-50%, -50%);
+    }
+
+    .RaySiteUI-c-scroll-scrollBtn.right {
+        right: 0;
+        transform: translate(50%, -50%);
+    }
+</style>
+</head>
+<body>
+    <div class="RaySiteUI-scrollAble" data-app-uiaction="leftRightScroll">
+        <div class="RaySiteUI-scrollItem">Item 1</div>
+        <div class="RaySiteUI-scrollItem">Item 2</div>
+        <div class="RaySiteUI-scrollItem">Item 3</div>
+        <div class="RaySiteUI-scrollItem">Item 4</div>
+        <div class="RaySiteUI-scrollItem">Item 5</div>
+        <div class="RaySiteUI-scrollItem">Item 6</div>
+        <div class="RaySiteUI-scrollItem">Item 7</div>
+        <div class="RaySiteUI-scrollItem">Item 8</div>
+        <div class="RaySiteUI-scrollItem">Item 9</div>
+        <div class="RaySiteUI-scrollItem">Item 10</div>
+    </div>
+
+
+<script>
+
+    document.querySelectorAll('[data-app-uiaction="leftRightScroll"]').forEach((element) => {
+        const btnLeft = document.createElement("button");
+        btnLeft.textContent = "‹"
+        btnLeft.classList.add('RaySiteUI-c-scroll-scrollBtn', 'left');
+
+        const btnRight = document.createElement("button");
+        btnRight.textContent = "›"
+        btnRight.classList.add('RaySiteUI-c-scroll-scrollBtn', 'right');
+
+        function updateButtons() {
+            const maxScroll = element.scrollWidth - element.clientWidth;
+            btnLeft.style.display = element.scrollLeft > 0 ? "block" : "none";
+            btnRight.style.display = element.scrollLeft < maxScroll ? "block" : "none";
+        }
+
+        btnLeft.addEventListener("click", () => {
+            element.scrollBy({ left: -1 * element.clientWidth, behavior: "smooth" });
+        });
+
+        btnRight.addEventListener("click", () => {
+            element.scrollBy({ left: element.clientWidth, behavior: "smooth" });
+        });
+
+        element.addEventListener("scroll", updateButtons);
+        window.addEventListener("resize", updateButtons);
+
+        updateButtons();
+
+        element.prepend(btnLeft);
+        element.appendChild(btnRight);
+    });
+
+</script>
+
+</body>
+</html>

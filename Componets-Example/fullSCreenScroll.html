@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RaySiteUI Paged Carousel</title>
+
+<style>
+    :root {
+        --ui-space-1: 4px;
+        --ui-space-2: 8px;
+        --ui-space-m: 12px;
+        --ui-border-default: 1px solid #c7c7c7;
+        --ui-theme-white-2: #f7f4f4;
+    }
+
+    .RaySiteUI-c-scroll-scrollWrap {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        margin: 40px auto;
+        border: var(--ui-border-default);
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+ .RaySiteUI-c-scroll-scrollArea {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.RaySiteUI-c-scroll-scrollArea.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.RaySiteUI-c-scroll-scrollArea.exit-left {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.RaySiteUI-c-scroll-scrollArea.exit-right {
+    transform: translateX(100%);
+    opacity: 0;
+}
+   
+
+    .RaySiteUI-c-scroll-scrollArea.active {
+        display: flex;
+    }
+
+    .RaySiteUI-c-scroll-scrollItem {
+        min-width: 120px;
+        padding: var(--ui-space-2);
+        background: #eee;
+        border-radius: var(--ui-space-1);
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .RaySiteUI-c-scroll-scrollBtn {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 40px;
+        background: var(--ui-theme-white-2);
+        border: var(--ui-border-default);
+        cursor: pointer;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .RaySiteUI-c-scroll-scrollBtn.left {
+        left: 0;
+    }
+
+    .RaySiteUI-c-scroll-scrollBtn.right {
+        right: 0;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="RaySiteUI-c-scroll-scrollWrap" data-app-uiaction="leftRightScroll">
+
+    <button class="RaySiteUI-c-scroll-scrollBtn left">‹</button>
+
+    <div class="RaySiteUI-c-scroll-scrollArea active">
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 1</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 2</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 3</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 4</div>
+    </div>
+
+    <div class="RaySiteUI-c-scroll-scrollArea">
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 5</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 6</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 7</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 8</div>
+    </div>
+
+    <div class="RaySiteUI-c-scroll-scrollArea">
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 9</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 10</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 11</div>
+        <div class="RaySiteUI-c-scroll-scrollItem">Item 12</div>
+    </div>
+
+    <button class="RaySiteUI-c-scroll-scrollBtn right">›</button>
+
+</div>
+
+<script>
+(function() {
+    function initPagedScroll(root) {
+        const pages = Array.from(root.querySelectorAll(".RaySiteUI-c-scroll-scrollArea"));
+        const btnLeft = root.querySelector(".RaySiteUI-c-scroll-scrollBtn.left");
+        const btnRight = root.querySelector(".RaySiteUI-c-scroll-scrollBtn.right");
+
+        let currentPage = 0;
+
+        function showPage(newIndex, direction) {
+            const oldPage = pages[currentPage];
+            const newPage = pages[newIndex];
+
+            // Remove active from old page
+            oldPage.classList.remove("active");
+            oldPage.classList.add(direction === "right" ? "exit-left" : "exit-right");
+
+            // Prepare new page position
+            newPage.classList.remove("exit-left", "exit-right");
+            newPage.classList.add("active");
+
+            // After animation ends, clean up
+            setTimeout(() => {
+                oldPage.classList.remove("exit-left", "exit-right");
+            }, 400);
+
+            currentPage = newIndex;
+            updateButtons();
+        }
+
+        function updateButtons() {
+            btnLeft.style.display = currentPage === 0 ? "none" : "flex";
+            btnRight.style.display = currentPage === pages.length - 1 ? "none" : "flex";
+        }
+
+        btnLeft.addEventListener("click", () => {
+            if (currentPage > 0) {
+                showPage(currentPage - 1, "left");
+            }
+        });
+
+        btnRight.addEventListener("click", () => {
+            if (currentPage < pages.length - 1) {
+                showPage(currentPage + 1, "right");
+            }
+        });
+
+        // Initialize
+        pages.forEach((p, i) => {
+            if (i === 0) p.classList.add("active");
+        });
+
+        updateButtons();
+    }
+
+    document.querySelectorAll('[data-app-uiaction="leftRightScroll"]').forEach(initPagedScroll);
+})();
+
+</script>
+
+</body>
+</html>
