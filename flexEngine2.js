@@ -396,7 +396,6 @@ const FlexEngineDefaultElements = {
             systemClass: true
         }
     },
-
     
     media: {
         sizeQuery: [
@@ -1492,8 +1491,7 @@ const FlexEngineDefaultElements = {
                 },
 
                 jsRuntime: {
-                    forEach: function(BUILDER_CONFIG, element) {
-
+                    forEach: function(BUILDER_CONFIG) {
                         return `
                             const docId = element.getAttribute(\`data-${BUILDER_CONFIG.classPrefix}gdocid\`);
                             const url = \`https://docs.google.com/document/d/e/\${docId}/pub?embedded=true\`;
@@ -1535,17 +1533,227 @@ const FlexEngineDefaultElements = {
                     }
                 ],
 
+                settings: {}
+            },
+
+            ytLive: {
+                name: "YouTube Live Connector",
+                className: "ytLive",
+
+                alts: ["youtube live", "yt live", "live connector", "youtube stream"],
+
+                icon: `
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 -960 960 960"
+                        fill="currentColor"
+                        class="RaySiteUI-c-svg">
+                        <circle cx="480" cy="-480" r="120" fill="#f44336"></circle>
+                        <path fill="#f44336" d="M350 -580 L300 -630 C240 -570 200 -480 200 -380 s40 190 100 250 l50 -50 c-40 -40 -60 -100 -60 -160 s20 -120 60 -160z"></path>
+                        <path fill="#f44336" d="M610 -580 l50 -50 c60 60 100 150 100 250 s-40 190 -100 250 l-50 -50 c40 -40 60 -100 60 -160 s-20 -120 -60 -160z"></path>
+                        <path fill="#f44336" d="M280 -700 l-60 -60 C120 -640 60 -520 60 -380 s60 260 160 340 l60 -60 c-80 -80 -120 -180 -120 -280 s40 -200 120 -280z"></path>
+                        <path fill="#f44336" d="M680 -700 l60 -60 c100 80 160 200 160 340 s-60 260 -160 340 l-60 -60 c80 -80 120 -180 120 -280 s-40 -200 -120 -280z"></path>
+                    </svg>
+                `,
+
+                contentQuery: [
+                    {
+                        name: "channelID",
+                        label: "YouTube channel ID",
+                        type: "string/text"
+                    }
+                ],
+
+                layoutQuery: [],
+
+                initQuery: [
+                    {
+                        name: "channelID",
+                        label: "Please paste your YouTube channel ID (you can find yours on https://www.youtube.com/account_advanced)",
+                        type: "string/text"
+                    }
+                ],
+
+                initFunction: function(dataArray, element) {
+                    element.content.channelID = dataArray.channelID || "";
+                },
+
+                contextFunction: function(dataArray, documentHTML, node) {
+                    // Add data attribute
+                    node.setAttribute("data-cw-ytchannelid", dataArray.content.channelID);
+
+                    // Clear existing content
+                    node.innerHTML = "";
+
+                    // <noscript> block
+                    const noscript = documentHTML.createElement("noscript");
+
+                    // "We find your JavaScript is disabled, please "
+                    noscript.appendChild(documentHTML.createTextNode("We find your JavaScript is disabled, please "));
+
+                    // <a> Turn on JS
+                    const turnOn = documentHTML.createElement("a");
+                    turnOn.href = "https://turnonjs.com";
+                    turnOn.target = "_blank";
+                    turnOn.textContent = "Turn on JS";
+                    noscript.appendChild(turnOn);
+
+                    // " or visit the channel: "
+                    noscript.appendChild(documentHTML.createTextNode(" or visit the channel: "));
+
+                    // <a> YouTube channel link
+                    const ytLink = documentHTML.createElement("a");
+                    ytLink.href = `https://youtube.com/channel/${dataArray.content.channelID}`;
+                    ytLink.target = "_blank";
+                    ytLink.textContent = "YouTube";
+                    noscript.appendChild(ytLink);
+
+                    // Append <noscript> directly to node
+                    node.appendChild(noscript);
+
+                },
+
+                jsRuntime: {
+                    sourceRequirement: [
+                        {
+                            source: 1,
+                            script: "https://www.youtube.com/iframe_api",
+                            defer: false,
+                            integrity: "none",
+                            ESM: false
+                        }
+                    ],
+
+                    forEach: function(BUILDER_CONFIG) {
+                        return `
+                            const channelId = el.getAttribute(\`data-\${BUILDER_CONFIG.classPrefix}ytchannelid\`);
+
+                            el.innerHTML = "";
+                            const overlay = document.createElement("div");
+                            overlay.className = \`\${BUILDER_CONFIG.classPrefix}context-ytLive-preparing\`;
+                            overlay.textContent = "Preparing, Please Wait.....";
+                            el.appendChild(overlay);
+
+                            const iframe = document.createElement("iframe");
+                            iframe.src = \`https://www.youtube.com/embed/live_stream?channel=\${channelId}&autoplay=1&mute=1&enablejsapi=1\`;
+                            iframe.allow = "autoplay; encrypted-media";
+                            iframe.allowFullscreen = true;
+                            el.appendChild(iframe);
+
+                            const poll = setInterval(() => {
+                            if (window.YT && window.YT.Player) {
+                                clearInterval(poll);
+
+                                const thisPlayer = new YT.Player(iframe, {
+                                events: {
+                                    onReady: () => {
+                                    if (overlay) overlay.remove();
+                                    },
+
+                                    onError: function(event) {
+                                    if (event.data === 100 || event.data === 150) {
+                                        const playlistId = "UU" + channelId.substring(2);
+
+                                        const playlistIframe = document.createElement("iframe");
+                                        playlistIframe.src = \`https://www.youtube.com/embed/videoseries?list=\${playlistId}&autoplay=0\`;
+                                        playlistIframe.allow = "autoplay; encrypted-media";
+                                        playlistIframe.allowFullscreen = true;
+                                        playlistIframe.className = \`\${BUILDER_CONFIG.classPrefix}offline\`;
+
+                                        thisPlayer.destroy();
+                                        el.innerHTML = "";
+                                        el.appendChild(playlistIframe);
+                                    }
+                                    }
+                                }
+                                });
+                            }
+                            }, 120);
+                        `;
+                    }
+                },
+
+                cssStyles: [
+                    {
+                        object: "@root-preparing",
+                        info: [
+                            { key: "position", value: "absolute" },
+                            { key: "inset", value: "0" },
+                            { key: "display", value: "flex" },
+                            { key: "align-items", value: "center" },
+                            { key: "justify-content", value: "center" },
+                            { key: "background", value: "#222" },
+                            { key: "color", value: "#EEE" },
+                            { key: "font-size", value: "1.2rem" },
+                            { key: "z-index", value: "10" },
+                            { key: "pointer-events", value: "none" }
+                        ]
+                    },
+                    {
+                        object: "iframe",
+                        info: [
+                            { key: "width", value: "100%" },
+                            { key: "aspect-ratio", value: "16 / 9" },
+                            { key: "border", value: "0" }
+                        ]
+                    }
+                ],
+
+                settings: {}
+            },
+
+            html: {
+                name: "HTML",
+                className: "html",
+
+                alts: ["html", "raw html", "custom html", "embed html"],
+
+                icon: `
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 -960 960 960"
+                        fill="currentColor"
+                        class="RaySiteUI-c-svg">
+                        <path d="M228-300 48-480l180-180 51 51-129 129 129 129-51 51Zm196 119-69-22 180-576 69 22-180 576Zm308-119-51-51 129-129-129-129 51-51 180 180-180 180Z"/>
+                    </svg>
+                `,
+
+                contentQuery: [
+                    {
+                        name: "html",
+                        label: "HTML Code Snap",
+                        type: "string/textbox"
+                    }
+                ],
+
+                layoutQuery: [],
+
+                initQuery: [
+                    {
+                        name: "html",
+                        label: "HTML Code Snap Here",
+                        type: "string/textbox"
+                    }
+                ],
+
+                initFunction: function(dataArray, element) {
+                    element.content.html = dataArray.html || "";
+                },
+
+                contextFunction: function(dataArray, documentHTML, node) {
+                    node.innerHTML = dataArray.content.html;
+                },
+
+                jsRuntime: "",
+
+                cssStyles: [],
 
                 settings: {}
             }
-
-
         },
 
         setting: {
             systemClass: true
         }
-    },
+    }
 };
 
 /**

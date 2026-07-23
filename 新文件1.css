@@ -70,7 +70,7 @@
     border: 0;
 }
     
-.cw-context-ytLive-overlay {
+.cw-context-ytLive-preparing {
   position: absolute;      /* or fixed, depending on your layout */
   inset: 0;                /* full cover */
   display: flex;

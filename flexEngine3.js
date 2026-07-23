@@ -638,34 +638,6 @@ const flexEngineContextCreator = {
 	END NODE (1)
 	*/
 	//Sheet is passed......
-
-	ytLive: {
-		contextFunction: function(dataArray, documentHTML, node) {
-			// Add data attribute
-			node.setAttribute("data-cw-ytchannelid", dataArray.content.channelID);
-			const overlay = documentHTML.createElement("div");
-			overlay.className = `${BUILDER_CONFIG.classPrefix}context-ytLive-overlay`;
-			// Text: "Preparing Live Room....."
-			overlay.appendChild(documentHTML.createTextNode("Preparing Live Room....."));
-			const noscript = documentHTML.createElement("noscript");
-			const nsText1 = documentHTML.createTextNode("We find your JavaScript is disabled, please ");
-			noscript.appendChild(nsText1);
-			const turnOn = documentHTML.createElement("a");
-			turnOn.href = "https://turnonjs.com";
-			turnOn.target = "_blank";
-			turnOn.textContent = "Turn on JS";
-			noscript.appendChild(turnOn);
-			noscript.appendChild(documentHTML.createTextNode(" or visit the channel: "));
-			const ytLink = documentHTML.createElement("a");
-			ytLink.href = `https://youtube.com/channel/${dataArray.content.channelID}`;
-			ytLink.target = "_blank";
-			ytLink.textContent = "YouTube";
-			noscript.appendChild(ytLink);
-			overlay.appendChild(noscript);
-			node.innerHTML = "";
-			node.appendChild(overlay);
-		},
-	},
 	//Form is passed......
 	html: {
 		contextFunction: function(dataArray, documentHTML, node) {
