@@ -639,85 +639,11 @@ const flexEngineContextCreator = {
 	*/
 	//Sheet is passed......
 	//Form is passed......
-	html: {
-		contextFunction: function(dataArray, documentHTML, node) {
-			node.innerHTML = dataArray.content.html;
-		},
-	},
 	/*
 	CONTAINER NODE (2)
 	THOSE WILL WORK AS A CONTAINER BUT STILL TREAT AS END NODE SINCE THIS IS NOT WORK AS SECTION.
 	REMEMBER WHEN START USE THIS, flexEngineCreateEndNode is already defined!
 	*/
-	div: {
-		contextFunction: function(dataArray, documentHTML, node) {
-			const layout = dataArray.layout || {};
-			const content = dataArray.content;
-			// 1. Map Layout Numbers to CSS Flexbox Properties
-			const directions = ['row', 'column', 'row-reverse', 'column-reverse'];
-			const wraps = ['nowrap', 'wrap', 'wrap-reverse'];
-			const justifyMap = ['flex-start', 'center', 'flex-end', 'space-around', 'space-between', 'space-evenly'];
-			const alignMap = ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'];
-			// Calculate Desktop Direction
-			const dirIndex = (layout.direction || 1) - 1;
-			const desktopDirection = directions[dirIndex] || 'row';
-			const isVertical = desktopDirection.includes('column');
-			// 2. Apply Core CSS directly to the container's inline style
-			const desktopCss = `
-		    display: flex;
-		    flex-direction: ${desktopDirection};
-		    flex-wrap: ${wraps[(layout.wrap || 1) - 1] || 'nowrap'};
-		    justify-content: ${justifyMap[(layout.spaceAlong || 1) - 1] || 'flex-start'};
-		    align-items: ${alignMap[(layout.spaceAcross || 1) - 1] || 'flex-start'};
-		    ${layout.gapX ? `column-gap: ${flexEngineStyleVarible.space(layout.gapX)};` : ''}
-		    ${layout.gapY ? `row-gap: ${flexEngineStyleVarible.space(layout.gapY)};` : ''}
-		`.trim();
-			// 3. Handle Mobile Responsiveness using a localized <delay> tag
-			// (Because inline styles cannot use @media queries natively)
-			if (layout.stackAtMobile || layout.mobileReverseDirection || layout.mobileGap) {
-				let mobileDir = desktopDirection;
-				if (layout.stackAtMobile) {
-					// Stack normally (column) or reverse stack (column-reverse)
-					mobileDir = layout.mobileReverseDirection ? 'column-reverse' : 'column';
-				} else if (layout.mobileReverseDirection) {
-					// Keep axis but flip direction (e.g., row -> row-reverse)
-					mobileDir = desktopDirection.includes('-reverse') ? desktopDirection.replace('-reverse', '') : desktopDirection + '-reverse';
-				}
-				//ready the gap.
-				const mGap = flexEngineStyleVarible.space(layout.mobileGap);
-				let mobileCSS = `
-				flex-direction: ${mobileDir} !important;
-				gap: ${mGap} !important;
-				`;
-				if (layout.stackAtMobile) {
-					mobileCSS += `
-					justify-content: center;
-					align-items: center;
-				`;
-				};
-			} else {
-				const mobileCSS = "";
-			}
-			//Add all them up!
-			const prefix = BUILDER_CONFIG.classPrefix + "styles-node";
-			node.setAttribute(prefix, desktopCss.trim());
-			node.setAttribute(prefix + "-onMobile", (mobileCSS.trim()));
-			// 4. Render Children Elements (The "content" array)
-			// We loop through any elements inside this div and render them recursively
-			if (Array.isArray(content)) {
-				content.forEach(childData => {
-					if (childData) {
-						// We pass 'isVertical' down so the child knows if it is inside 
-						// a Row (across) or Column (along) for accurate sizing!
-						const childNode = flexEngineCreateEndNode(childData, documentHTML, isVertical);
-						if (childNode) {
-							node.appendChild(childNode);
-						}
-					}
-				});
-			}
-		},
-	},
 };
 
 // Some System help to prevent problems

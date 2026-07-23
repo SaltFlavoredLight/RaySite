@@ -1753,13 +1753,303 @@ const FlexEngineDefaultElements = {
         setting: {
             systemClass: true
         }
-    }
+    },
+
+    container: {
+        sizeQuery: [
+            {
+                name: "along",
+                label: "{Width/Height}",
+                type: "space"
+            },
+            {
+                name: "overflowAlong",
+                label: "{Width/Hwight} Overflow Behavior",
+                type: "selection",
+                choice: [
+                    { label: "Grow to fit", value: 1 },
+                    { label: "Cut part", value: 2 },
+                    { label: "Scroll bar", value: 3 }
+                ]
+            },
+            {
+                name: "alongGrow",
+                label: "{Width/Hwight} Growth Amount",
+                type: "number"
+            },
+            {
+                name: "alongShrink",
+                label: "Shrink?",
+                type: "selection",
+                choice: [
+                    { label: "No shrink", value: 0 },
+                    { label: "Shrink", value: 1 }
+                ]
+            },
+
+            {
+                name: "across",
+                label: "{Height/Width}",
+                type: "space"
+            },
+            {
+                name: "overflowAcross",
+                label: "{Height/Width} Overflow Behavior",
+                type: "selection",
+                choice: [
+                    { label: "Grow to fit", value: 1 },
+                    { label: "Cut part", value: 2 },
+                    { label: "Scroll bar", value: 3 }
+                ]
+            },
+            {
+                name: "acrossAlign",
+                label: "{Height/Width} Alignment",
+                type: "selection",
+                choice: [
+                    { label: "Default", value: 0 },
+                    { label: "Start", value: 1 },
+                    { label: "Center", value: 2 },
+                    { label: "End", value: 3 },
+                    { label: "Stretch", value: 4 },
+                    { label: "Baseline", value: 5 }
+                ]
+            },
+
+            {
+                name: "mobileMinHeight",
+                label: "Mobile Minimum Height",
+                type: "space"
+            }
+        ],
+
+		sizeDefault: (sz, isVertical) => {
+			return {
+				"width": isVertical ? flexEngineStyleVarible.space(sz.across) : flexEngineStyleVarible.space(sz.along),
+				"height": isVertical ? flexEngineStyleVarible.space(sz.along) : flexEngineStyleVarible.space(sz.across),
+				"flex-grow": sz.alongGrow || 0,
+				"flex-shrink": sz.alongShrink === true ? 1 : 0,
+				"overflow-x": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible'),
+				"overflow-y": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible'),
+				"align-self": (sz.acrossAlign > 0) ? ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'][sz.acrossAlign - 1] : 'auto'
+			}
+		},
+        
+		sizeMobile: (sz, isVertical) => {
+			return {
+				"min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
+			}
+		},
+
+        elements: {
+            div: {
+                name: "Standard Container",
+                className: "div",
+
+                alts: ["div", "container", "wrapper", "layout container"],
+
+                icon: `
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 -960 960 960"
+                        fill="currentColor"
+                        class="RaySiteUI-c-svg">
+                        <path d="M96-191v-240h336v240H96Zm0-337v-240h336v240H96Zm72-72h192v-96H168v96Zm505 411L481-381l51-51 105 105v-441h72v441l106-105 50 51-192 192Z"/>
+                    </svg>
+                `,
+
+                contentQuery: [
+                    {
+                        name: "@global",
+                        label: "Elements",
+                        type: "interactiveElements"
+                    }
+                ],
+
+                layoutQuery: [
+                    {
+                        name: "direction",
+                        label: "Direction",
+                        type: "selection",
+                        choice: [
+                            { label: "Left → Right", value: 1 },
+                            { label: "Top → Bottom", value: 2 },
+                            { label: "Right → Left", value: 3 },
+                            { label: "Bottom → Top", value: 4 }
+                        ],
+                        default: 1
+                    },
+                    {
+                        name: "wrap",
+                        label: "Wrap Permission",
+                        type: "selection",
+                        choice: [
+                            { label: "No wrap", value: 1 },
+                            { label: "Wrap", value: 2 },
+                            { label: "Wrap reverse", value: 3 }
+                        ],
+                        default: 1
+                    },
+                    {
+                        name: "spaceAlong",
+                        label: "{Width/Hwight} Space Distribuation",
+                        type: "selection",
+                        choice: [
+                            { label: "Start", value: 1 },
+                            { label: "Center", value: 2 },
+                            { label: "End", value: 3 },
+                            { label: "Space Around", value: 4 },
+                            { label: "Space Between", value: 5 },
+                            { label: "Space Evenly", value: 6 }
+                        ],
+                        default: 1
+                    },
+                    {
+                        name: "spaceAcross",
+                        label: "{Height/Width} Space Distribuation",
+                        type: "selection",
+                        choice: [
+                            { label: "Start", value: 1 },
+                            { label: "Center", value: 2 },
+                            { label: "End", value: 3 },
+                            { label: "Stretch", value: 4 },
+                            { label: "Baseline", value: 5 }
+                        ],
+                        default: 1
+                    },
+                    {
+                        name: "spaceAcrossMutiple",
+                        label: "When Wrap Happend, Align {Height/Width} with",
+                        type: "selection",
+                        choice: [
+                            { label: "Start", value: 1 },
+                            { label: "Center", value: 2 },
+                            { label: "End", value: 3 },
+                            { label: "Stretch", value: 4 },
+                            { label: "Baseline", value: 5 },
+                            { label: "Evenly", value: 6 }
+                        ],
+                        default: 1
+                    },
+                    {
+                        name: "gapX",
+                        label: "Gap on Horizontal",
+                        type: "space"
+                    },
+                    {
+                        name: "gapY",
+                        label: "Gap on Vertical",
+                        type: "space"
+                    },
+                    {
+                        name: "stackAtMobile",
+                        label: "Stack when at Mobile?",
+                        type: "boolean/checkmark",
+                        default: false
+                    },
+                    {
+                        name: "mobileReverseDirection",
+                        label: "Reverse Direction on Mobile?",
+                        type: "boolean/checkmark",
+                        default: false
+                    },
+                    {
+                        name: "mobileGap",
+                        label: "Gap on Mobile",
+                        type: "space"
+                    }
+                ],
+
+                initQuery: [],
+
+                initFunction: null,
+
+                contextFunction: function(dataArray, documentHTML, node) {
+                    const layout = dataArray.layout || {};
+                    const content = dataArray.content;
+
+                    const directions = ['row', 'column', 'row-reverse', 'column-reverse'];
+                    const wraps = ['nowrap', 'wrap', 'wrap-reverse'];
+                    const justifyMap = ['flex-start', 'center', 'flex-end', 'space-around', 'space-between', 'space-evenly'];
+                    const alignMap = ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'];
+
+                    const dirIndex = (layout.direction || 1) - 1;
+                    const desktopDirection = directions[dirIndex] || 'row';
+                    const isVertical = desktopDirection.includes('column');
+
+                    const desktopCss = `
+                        display: flex;
+                        flex-direction: ${desktopDirection};
+                        flex-wrap: ${wraps[(layout.wrap || 1) - 1] || 'nowrap'};
+                        justify-content: ${justifyMap[(layout.spaceAlong || 1) - 1] || 'flex-start'};
+                        align-items: ${alignMap[(layout.spaceAcross || 1) - 1] || 'flex-start'};
+                        ${layout.gapX ? `column-gap: ${flexEngineStyleVarible.space(layout.gapX)};` : ''}
+                        ${layout.gapY ? `row-gap: ${flexEngineStyleVarible.space(layout.gapY)};` : ''}
+                    `.trim();
+
+                    let mobileCSS = "";
+                    if (layout.stackAtMobile || layout.mobileReverseDirection || layout.mobileGap) {
+                        let mobileDir = desktopDirection;
+
+                        if (layout.stackAtMobile) {
+                            mobileDir = layout.mobileReverseDirection ? 'column-reverse' : 'column';
+                        } else if (layout.mobileReverseDirection) {
+                            mobileDir = desktopDirection.includes('-reverse')
+                                ? desktopDirection.replace('-reverse', '')
+                                : desktopDirection + '-reverse';
+                        }
+
+                        const mGap = flexEngineStyleVarible.space(layout.mobileGap);
+
+                        mobileCSS = `
+                            flex-direction: ${mobileDir} !important;
+                            gap: ${mGap} !important;
+                        `.trim();
+
+                        if (layout.stackAtMobile) {
+                            mobileCSS += `
+                                justify-content: center;
+                                align-items: center;
+                            `;
+                        }
+                    }
+
+                    const prefix = BUILDER_CONFIG.classPrefix + "styles-node";
+                    node.setAttribute(prefix, desktopCss.trim());
+                    node.setAttribute(prefix + "-onMobile", mobileCSS.trim());
+
+                    if (Array.isArray(content)) {
+                        content.forEach(childData => {
+                            if (childData) {
+                                const childNode = flexEngineCreateEndNode(childData, documentHTML, isVertical);
+                                if (childNode) node.appendChild(childNode);
+                            }
+                        });
+                    }
+                },
+
+                jsRuntime: {},
+
+                cssStyles: [],
+
+                settings: {
+                    sortable: "@root"
+                }
+            }     
+        },
+
+        setting: {
+            systemClass: true
+        }
+    },    
 };
 
 /**
  * How we check the Element? and element should be named like {catergory}/{name}, like basic/image
+ * Set @global direct mean that's the only 1, and that will make only 1 can accapt this.
+ * 
  * 
  * interactiveTextBox: a textbox just show it.
+ * interactiveElements: a interactive elements.
  * boolean/checkmark: a true/false question
  * media/img: a source file from image.
  * media/audio: a source file from audio.
