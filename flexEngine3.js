@@ -1,27 +1,7 @@
 /*
-This is Flex Engine.
-
-it work as create whole DOM for the website, then do everything else at next step.
-
-Future:
-we will change this whole part of code from the Normal to registery mode.
-*/
-
-// NEXT DAY (late 3.5 day): HEADER
-// LAST: combine final HTML and CSS theme
-
-'use strict';
-
-import quillDeltaToHtml from 'https://cdn.jsdelivr.net/npm/quill-delta-to-html@0.12.1/+esm'
-
-/*
 Config
 */
-const BUILDER_CONFIG = {
-	brandName: "RaySite",
-	classPrefix: "rs-",
-	attribution: "Spread the message with RaySite! RaySite is a Free Website builder for you!"
-};
+
 
 /*
 Styling system
