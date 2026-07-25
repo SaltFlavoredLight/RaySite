@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Recursive Nested Sortable (No Text Selection)</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #eaeff2; }
+    h2 { color: #333; margin-bottom: 20px; }
+    .container { display: flex; gap: 30px; align-items: flex-start; }
+    
+    .list1 { 
+      border: 2px solid #cbd5e1; 
+      border-radius: 8px;
+      padding: 15px; 
+      padding-bottom: 40px; 
+      min-height: 140px; 
+      width: 340px; 
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      background: #ffffff;
+    }
+    
+       .list2 { 
+      border: 2px solid #cbd5e1; 
+      border-radius: 8px;
+      padding: 15px; 
+      padding-bottom: 40px; 
+      min-height: 140px; 
+      width: 100%; 
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      background: #ffffff;
+    }
+    
+    #sourceList { background: #f8fafc; padding-bottom: 15px; }
+    #sourceList .nest { display: none; }
+    
+    .item { 
+      border: 1px solid #94a3b8; 
+      border-radius: 6px;
+      padding: 10px; 
+      margin: 8px 0; 
+      cursor: grab; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      
+      /* CRITICAL FIX: Stops the browser from highlighting text while dragging */
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    
+    .type-C { background: #e0f2fe; border-color: #7dd3fc; }
+    .type-D { background: #fee2e2; border-color: #fca5a5; }
+    .type-E { background: #fef3c7; border-color: #fcd34d; }
+    .type-F { background: #dcfce7; border-color: #86efac; }
+    .type-A, .type-B { background: #f1f5f9; border-color: #cbd5e1; }
+    
+    .label { font-weight: 600; color: #334155; pointer-events: none; }
+    
+    .nest { 
+      border: 2px dashed #cbd5e1; 
+      border-radius: 6px;
+      padding: 10px; 
+      padding-bottom: 30px; 
+      margin-top: 10px; 
+      min-height: 50px; 
+      background: rgba(255, 255, 255, 0.6); 
+    }
+    
+    .sortable-ghost { opacity: 0.3; border: 2px dashed #3b82f6 !important; background: #eff6ff !important; }
+    .sortable-drag { 
+      opacity: 0.95 !important; 
+      box-shadow: 0 12px 24px rgba(0,0,0,0.2) !important; 
+      transform: scale(1.02);
+      background: #ffffff !important;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Recursive Nested Sortable</h2>
+
+<div class="container">
+  <div id="sourceList" class="list1">
+    <h3 style="margin-top: 0;">Source Elements</h3>
+    <div class="item type-C"><span class="label">C (Accepts: D, B, A)</span><div class="nest"></div></div>
+    <div class="item type-D"><span class="label">D (Accepts: A, B, D)</span><div class="nest"></div></div>
+    <div class="item type-F"><span class="label">F (Accepts: E, B)</span><div class="nest"></div></div>
+    <div class="item type-E"><span class="label">E (Accepts: B)</span><div class="nest"></div></div>
+    <div class="item type-B"><span class="label">B (Leaf)</span></div>
+    <div class="item type-A"><span class="label">A (Leaf)</span></div>
+  </div>
+
+  <div id="root" class="list2">
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+const allowedChildren = {
+  root: ['C', 'F'],
+  C: ['D', 'B', 'A'],
+  D: ['A', 'B', 'D'],
+  F: ['E', 'B'],
+  E: ['B']
+};
+
+function getType(element) {
+  if (!element) return null;
+  const typeClass = Array.from(element.classList).find(c => c.startsWith("type-"));
+  return typeClass ? typeClass.replace("type-", "") : null;
+}
+
+function getContainerType(container) {
+  if (container.id === "root") return "root";
+  const parentItem = container.closest(".item");
+  return parentItem ? getType(parentItem) : null;
+}
+
+function checkDrop(draggedEl, targetContainer) {
+  const draggedType = getType(draggedEl);
+  const parentType = getContainerType(targetContainer);
+  if (!parentType || !draggedType) return false;
+  return (allowedChildren[parentType] || []).includes(draggedType);
+}
+
+const sortableConfig = {
+  group: { name: "tree", pull: true, put: true },
+  animation: 200,
+  forceFallback: true,
+  fallbackOnBody: true,
+  swapThreshold: 0.4,
+  invertSwap: true,
+  emptyInsertThreshold: 20,
+  onMove: (evt) => checkDrop(evt.dragged, evt.to)
+};
+
+new Sortable(document.getElementById("sourceList"), {
+  ...sortableConfig,
+  group: { name: "tree", pull: "clone", put: false },
+  sort: false
+});
+
+function makeSortable(element) {
+  if (element._sortableInstance) return; 
+  element._sortableInstance = new Sortable(element, sortableConfig);
+}
+
+makeSortable(document.getElementById("root"));
+
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach(mutation => {
+    mutation.addedNodes.forEach(node => {
+      if (node.nodeType === 1) { 
+        if (node.classList.contains("nest")) makeSortable(node);
+        node.querySelectorAll(".nest").forEach(nest => makeSortable(nest));
+      }
+    });
+  });
+});
+
+observer.observe(document.getElementById("root"), { childList: true, subtree: true });
+</script>
+
+</body>
+</html>

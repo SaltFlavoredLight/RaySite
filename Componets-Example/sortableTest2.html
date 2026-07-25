@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Recursive Nested Sortable (Correct Protection)</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .container { display: flex; gap: 20px; align-items: flex-start; }
+    .list { border: 2px solid #444; padding: 10px; min-height: 80px; width: 240px; }
+    #root { background: #fafafa; }
+    #sourceList { background: #f0f8ff; }
+    .item { border: 1px solid #999; background: #eee; padding: 6px; margin: 6px 0; cursor: grab; }
+    .type-C { background: #d0e9ff; }
+    .type-D { background: #ffd0d0; }
+    .type-E { background: #fff3c4; }
+    .type-F { background: #d4ffd4; }
+    .type-A, .type-B { background: #f5f5f5; }
+    .label { font-weight: bold; margin-bottom: 4px; display: inline-block; }
+    .nest { border: 1px dashed #666; padding: 6px; margin-top: 6px; min-height: 30px; background: #fff; }
+  </style>
+</head>
+<body>
+
+<h2>Recursive Nested Sortable (Correct Protection)</h2>
+
+<div class="container">
+
+  <div id="sourceList" class="list">
+    <h3>Source List</h3>
+
+    <div class="item type-C"><span class="label">C</span><div class="nest"></div></div>
+    <div class="item type-D"><span class="label">D</span><div class="nest"></div></div>
+    <div class="item type-F"><span class="label">F</span><div class="nest"></div></div>
+    <div class="item type-E"><span class="label">E</span><div class="nest"></div></div>
+    <div class="item type-B"><span class="label">B</span></div>
+    <div class="item type-A"><span class="label">A</span></div>
+  </div>
+
+  <div id="root" class="list">
+    <h3>Root</h3>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+const allowedChildren = {
+  root: ['C','F'],
+  C: ['D','B','A'],
+  D: ['A','B','D'],
+  F: ['E','B'],
+  E: ['B']
+};
+
+let draggedType = null;
+
+// Capture type BEFORE clone happens
+function onChoose(evt){
+  draggedType = getType(evt.item);
+}
+
+function getType(item){
+  return [...item.classList].find(c => c.startsWith("type-"))?.replace("type-","");
+}
+
+function getParentType(container){
+  if(container.id === "root") return "root";
+  const parentItem = container.closest(".item");
+  return parentItem ? getType(parentItem) : null;
+}
+
+function canDrop(toContainer){
+  const parentType = getParentType(toContainer);
+  if(!parentType || !draggedType) return false;
+  return allowedChildren[parentType]?.includes(draggedType);
+}
+
+// SOURCE LIST
+new Sortable(sourceList, {
+  group: { name:"tree", pull:"clone", put:false },
+  sort:false,
+  animation:150,
+  onChoose:onChoose,
+  onMove: evt => canDrop(evt.to)
+});
+
+// ROOT
+new Sortable(root, {
+  group:"tree",
+  animation:150,
+  onChoose:onChoose,
+  onMove: evt => canDrop(evt.to)
+});
+
+// NESTS
+function initNests(){
+  document.querySelectorAll(".nest").forEach(nest=>{
+    if(nest._init) return;
+    nest._init = true;
+
+    new Sortable(nest, {
+      group:"tree",
+      animation:150,
+      onChoose:onChoose,
+      onMove: evt => canDrop(evt.to)
+    });
+  });
+}
+
+initNests();
+
+document.addEventListener("DOMNodeInserted", e=>{
+  if(e.target.classList?.contains("item")){
+    const nest = e.target.querySelector(".nest");
+    if(nest && !nest._init){
+      new Sortable(nest, {
+        group:"tree",
+        animation:150,
+        onChoose:onChoose,
+        onMove: evt => canDrop(evt.to)
+      });
+      nest._init = true;
+    }
+  }
+});
+</script>
+
+</body>
+</html>

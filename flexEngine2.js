@@ -1,3 +1,22 @@
+/*
+This is Flex Engine Resigtery Defalut Config
+
+NOTE: Run before the flexengine.js
+*/
+
+
+// Enable strict mode, later I will use ESM.
+'use strict';
+
+// Nesserary for have a Quill delta element
+import quillDeltaToHtml from 'https://cdn.jsdelivr.net/npm/quill-delta-to-html@0.12.1/+esm'
+
+// and configs
+const BUILDER_CONFIG = {
+	brandName: "RaySite",
+	classPrefix: "rs-",
+	attribution: "Spread the message with RaySite! RaySite is a Free Website builder for you!"
+};
 
 /*
 Input type - those parts will define the input and how to process it to work.
@@ -393,7 +412,9 @@ const FlexEngineDefaultElements = {
         },
 
         setting: {
-            systemClass: true
+            systemClass: true,
+            allowedSortIn: false, // Work at End node
+            allowedSortTo: ["container", "@root/section", "@root/CTA", "@root/Footer"]
         }
     },
     
@@ -1751,7 +1772,9 @@ const FlexEngineDefaultElements = {
         },
 
         setting: {
-            systemClass: true
+            systemClass: true,
+            allowedSortIn: false,
+            allowedSortTo: ["container", "@root/section", "@root/CTA", "@root/Footer"]
         }
     },
 
@@ -2032,15 +2055,22 @@ const FlexEngineDefaultElements = {
                 cssStyles: [],
 
                 settings: {
-                    sortable: "@root"
+                    sortablePart: "@root"
                 }
             }     
         },
 
         setting: {
-            systemClass: true
+            systemClass: true,
+            allowedSortIn: true,
+            allowedSortTo: ["root/section", "@root/CTA", "@root/Footer"],
         }
-    },    
+    },
+
+    /* System wide class: Root cannot be used, and it sort differently */
+    root: {
+
+    }
 };
 
 /**
