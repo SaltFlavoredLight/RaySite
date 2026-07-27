@@ -21,13 +21,77 @@ const BUILDER_CONFIG = {
 /*
 Input type - those parts will define the input and how to process it to work.
 */
+const flexEngineDefaultVaribles = {
+    integer: {
+        // remember: same name will be collapse to same name, EG: integer/integer = integer.
+        integer: {
+            strutureSample: 0,
+            // this is a Sample to prectice, you can put anything you want. that is default.
 
+            displayType: "small",
+            // small: just a field
+            // medium: take one line 
+            // large: take a big space for that question
+            // custom: follow the space of how it taken
+            // popup: prepare for the popup of the system
+            // interactive: it completely work differently!
 
+            cssStyles: {},
 
+            component: class {
+                // Constructor: pass dataArray & entryElement, data is that piece, and entryElement is what the field is, different depending on time
+                constructor(dataArray, entryElement, elementSetting) { 
+                    this.dataArray = dataArray; // regieter it
+                    this.entryElement = entryElement; // remember it!
+
+                    const input = document.createElement('input');
+
+                    input.type = 'number';
+                    input.step = '1';
+                    input.style.height = '100%';
+                    input.style.width = '100%';
+
+                    input.addEventListener('keydown', (event) => {
+                    if (event.key === '.' || event.key === ',' ) {
+                        event.preventDefault();
+                    }
+                    });
+
+                    input.addEventListener('input', (event) => {
+                        event.target.value = event.target.value.replace(/[^0-9-]/g, '');
+
+                        this.dataArray = Number(input.value);
+                    });       
+                    
+                    input.value = this.dataArray;
+
+                    this.entryElement.innerHTML = "";
+                    this.entryElement.appendChild(input);
+                }
+
+                onSave(){
+                    return this.dataArray;
+                }
+            },
+
+            render: function(dataArray) {
+                return dataArray; // Good, since it is just Number.
+            }
+        }
+
+        /* COpliot Promot
+        OK, stop that, here is what I want:
+        a JS object named: noNeg
+        strutureSample is 
+        */
+    }
+};
+
+debugger; // FLAG! this part need change on how to Render the some certain elements not just Number
 /*
 Elements - those will define what the elements will be
 */
-const FlexEngineDefaultElements = {
+const flexEngineDefaultElements = {
     basic: {
         sizeQuery: [
             {
@@ -2089,6 +2153,7 @@ const FlexEngineDefaultElements = {
  * string/url: ask for a URL.
  * integer: appear a bar with the thing. or simply a number question for things.
  * integer/noNeg: appear a bar with the thing. or simply a number question for things.
+ * (not using) interger/noBound: that's 
  * selection: how they want the option and the value of that option, there will have choice.
  * selection/mutiple/popup: ask that like a popup to adjust mutiple choice setting.
  * space: it ask a space query
