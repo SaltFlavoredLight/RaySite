@@ -30,8 +30,10 @@ const flexEngineDefaultVaribles = {
 
             displayType: "small",
             // small: just a field
-            // medium: take one line 
-            // large: take a big space for that question
+            // medium: take one line (still 100%)
+            // large: take a big space for that question (Custom height)
+            // extraLarge: take the expend option
+            // extraExtraLarge: expend option with full screen notice 
             // custom: follow the space of how it taken
             // popup: prepare for the popup of the system
             // interactive: it completely work differently!
@@ -67,6 +69,12 @@ const flexEngineDefaultVaribles = {
 
                     this.entryElement.innerHTML = "";
                     this.entryElement.appendChild(input);
+
+                    return { code: 0 };
+                    // 0: everything OK!
+                    // 1: No, happend the error.
+                    // another JSON array: change my layout type please.
+                    // another Function: OK, this is an aynsc function, tell system run it after
                 }
 
                 onSave(){
@@ -77,13 +85,194 @@ const flexEngineDefaultVaribles = {
             render: function(dataArray) {
                 return dataArray; // Good, since it is just Number.
             }
-        }
+        },
 
-        /* COpliot Promot
-        OK, stop that, here is what I want:
-        a JS object named: noNeg
-        strutureSample is 
-        */
+        noNeg: {
+            strutureSample: 0,
+
+            displayType: "small",
+
+            cssStyles: {},
+
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    this.dataArray = dataArray;
+                    this.entryElement = entryElement;
+
+                    const input = document.createElement('input');
+
+                    input.type = 'number';
+                    input.step = '1';
+                    input.style.height = '100%';
+                    input.style.width = '100%';
+
+                    // Prevent typing "-" or any non-digit
+                    input.addEventListener('keydown', (event) => {
+                        if (event.key === '.' || event.key === ',' || event.key === '-') {
+                            event.preventDefault();
+                        }
+                    });
+
+                    input.addEventListener('input', (event) => {
+                        // Remove anything not a digit
+                        event.target.value = event.target.value.replace(/[^0-9-]/g, '');
+                        if (Number(input.value) < 0) {
+                            input.value = Number(input.value) * -1;
+                        } 
+
+                        // Convert to number
+                        this.dataArray = Number(input.value);
+                    });
+
+                    input.value = this.dataArray;
+
+                    this.entryElement.innerHTML = "";
+                    this.entryElement.appendChild(input);
+                    
+                    return { code: 0};
+                }
+
+                onSave() {
+                    return this.dataArray;
+                }
+            },
+
+            render: function(dataArray) {
+                return dataArray;
+            }
+        }
+    },
+
+    boolean: {
+        checkmark: {
+            strutureSample: true,
+
+            displayType: "small",
+
+            cssStyles: {},
+
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    this.dataArray = Boolean(dataArray);
+                    this.entryElement = entryElement;
+
+                    const box = document.createElement('input');
+                    box.type = 'checkbox';
+
+                    // 1:1 ratio, full height
+                    box.style.height = '100%';
+                    box.style.aspectRatio = '1 / 1';
+                    box.style.width = 'auto';
+
+                    // Set initial state
+                    box.checked = this.dataArray;
+
+                    // Live update
+                    box.addEventListener('input', () => {
+                        this.dataArray = box.checked;
+                    });
+
+                    this.entryElement.innerHTML = "";
+                    this.entryElement.appendChild(box);
+
+                    return { code: 0};
+                }
+
+                onSave() {
+                    return this.dataArray;
+                }
+            },
+
+            render: function(dataArray) {
+                return Boolean(dataArray);
+            }         
+        }
+    },
+
+    string: {
+        text: {
+            strutureSample: "Love the Lord your God with all your heart and with all your soul and with all your mind",
+
+            displayType: "medium",
+
+            cssStyles: {},
+
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    this.dataArray = String(dataArray);
+                    this.entryElement = entryElement;
+
+                    const input = document.createElement('input');
+                    input.type = 'text';
+
+                    // full size
+                    input.style.width = '100%';
+                    input.style.height = '100%';
+
+                    // initial value
+                    input.value = this.dataArray;
+
+                    // live update
+                    input.addEventListener('input', () => {
+                        this.dataArray = input.value;
+                    });
+
+                    this.entryElement.innerHTML = "";
+                    this.entryElement.appendChild(input);
+                }
+
+                onSave() {
+                    return this.dataArray;
+                }
+            },
+
+            render: function(dataArray) {
+                return String(dataArray);
+            }
+        },
+
+        url: {
+            strutureSample: "https://www.raysite.app",
+
+            displayType: "medium",
+
+            cssStyles: {},
+
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    this.dataArray = String(dataArray);
+                    this.entryElement = entryElement;
+
+                    const input = document.createElement('input');
+                    input.type = 'url';
+
+                    // full size
+                    input.style.width = '100%';
+                    input.style.height = '100%';
+
+                    // initial value
+                    input.value = this.dataArray;
+
+                    // live update
+                    input.addEventListener('input', () => {
+                        this.dataArray = input.value;
+                    });
+
+                    this.entryElement.innerHTML = "";
+                    this.entryElement.appendChild(input);
+                }
+
+                onSave() {
+                    return this.dataArray;
+                }
+            },
+
+            render: function(dataArray) {
+                return String(dataArray);
+            }
+        },
+
+
     }
 };
 
@@ -379,7 +568,7 @@ const flexEngineDefaultElements = {
                 contentQuery: [
                     {
                         name: "label",
-                        type: "string/textbox",
+                        type: "string/text",
                     }
                 ],
 
@@ -1163,7 +1352,7 @@ const flexEngineDefaultElements = {
                     {
                         name: "permission",
                         label: "Permission Setting......",
-                        type: "selection/mutiple/popup",
+                        type: "selection/popup",
                         catergory: [
                             {
                                 label: "Media & Playback",
@@ -2144,18 +2333,19 @@ const flexEngineDefaultElements = {
  * 
  * interactiveTextBox: a textbox just show it.
  * interactiveElements: a interactive elements.
- * boolean/checkmark: a true/false question
- * media/img: a source file from image.
+ * boolean/checkmark: a true/false question (DONE)
+ * media/img: a source file from image. 
  * media/audio: a source file from audio.
  * media/video: a source file from video.
  * string/textbox: just ask a longstring.
- * string/text: ask for a short thing.
+ * string/text: ask for a short thing. (DONE)
+ * (not using) string/rich: a rich text box!
  * string/url: ask for a URL.
- * integer: appear a bar with the thing. or simply a number question for things.
- * integer/noNeg: appear a bar with the thing. or simply a number question for things.
- * (not using) interger/noBound: that's 
+ * integer: appear a bar with the thing. or simply a number question for things. (DONE)
+ * integer/noNeg: appear a bar with the thing. or simply a number question for things. (DONE)
+ * (not using) interger/bound: that's for bounds have minimum and maximum.
  * selection: how they want the option and the value of that option, there will have choice.
- * selection/mutiple/popup: ask that like a popup to adjust mutiple choice setting.
+ * selection/popup: ask that like a popup to adjust mutiple choice setting.
  * space: it ask a space query
  * 
  * one note: 
