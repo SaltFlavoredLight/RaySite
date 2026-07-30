@@ -1,5 +1,5 @@
 /*
 flexEngine.js 
 
-the Core Render Engine FOr the system
+the Core Render Engine FOr the Website Builder system
 */
