@@ -9,6 +9,7 @@ NOTE: Run before the flexengine.js
 'use strict';
 
 // Nesserary for have a Quill delta element
+import quill from 'https://cdn.jsdelivr.net/npm/quill@2.0.3/+esm'
 import quillDeltaToHtml from 'https://cdn.jsdelivr.net/npm/quill-delta-to-html@0.12.1/+esm'
 
 // and configs
@@ -36,6 +37,8 @@ const flexEngineDefaultVaribles = {
             // extraExtraLarge: expend option with full screen notice 
             // custom: follow the space of how it taken
             // popup: prepare for the popup of the system
+            // popupMedium: same to that, but it display preview.
+            // popupMediumWithInteractive
             // interactive: it completely work differently!
 
             cssStyles: {},
@@ -82,7 +85,7 @@ const flexEngineDefaultVaribles = {
                 }
             },
 
-            render: function(dataArray) {
+            render: function(dataArray, elementSetting, elementSetting) {
                 return dataArray; // Good, since it is just Number.
             }
         },
@@ -137,7 +140,7 @@ const flexEngineDefaultVaribles = {
                 }
             },
 
-            render: function(dataArray) {
+            render: function(dataArray, elementSetting) {
                 return dataArray;
             }
         }
@@ -226,7 +229,7 @@ const flexEngineDefaultVaribles = {
                 }
             },
 
-            render: function(dataArray) {
+            render: function(dataArray, elementSetting) {
                 return String(dataArray);
             }
         },
@@ -267,11 +270,495 @@ const flexEngineDefaultVaribles = {
                 }
             },
 
-            render: function(dataArray) {
+            render: function(dataArray, elementSetting) {
                 return String(dataArray);
             }
         },
 
+        textbox: {
+            strutureSample: "",
+
+            displayType: "large",
+
+            cssStyles: {},
+
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    this.dataArray = String(dataArray || "");
+                    this.entryElement = entryElement;
+
+                    // Create textarea
+                    this.textarea = document.createElement('textarea');
+                    this.textarea.style.width = "100%";
+                    this.textarea.style.height = "300px";
+                    this.textarea.value = this.dataArray;
+
+                    // Live update
+                    this.textarea.addEventListener('input', () => {
+                        this.dataArray = this.textarea.value;
+                    });
+
+                    // Mount
+                    this.entryElement.innerHTML = "";
+                    this.entryElement.appendChild(this.textarea);
+
+                    return { code: 0 };
+                }
+
+                onSave() {
+                    return this.dataArray;
+                }
+            },
+
+            render: function(dataArray) {
+                return String(dataArray);
+            }
+        }
+    },
+
+    selection: {
+        selection: {
+            strutureSample: 0,
+
+            displayType: "small",
+
+            cssStyles: {},
+
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    // If null → use default
+                    const defaultValue = Number(elementSetting.default);
+                    this.dataArray = (dataArray === null || dataArray === undefined)
+                        ? defaultValue
+                        : Number(dataArray);
+
+                    this.entryElement = entryElement;
+
+                    // Create <select>
+                    const select = document.createElement('select');
+                    select.style.width = "100%";
+                    select.style.height = "100%";
+
+                    // Build options
+                    if (Array.isArray(elementSetting.choice)) {
+                        elementSetting.choice.forEach(opt => {
+                            const option = document.createElement('option');
+                            option.value = Number(opt.value);   // ALWAYS number
+                            option.textContent = opt.label;
+                            select.appendChild(option);
+                        });
+                    }
+
+                    // Set initial value (default or existing)
+                    select.value = this.dataArray;
+
+                    // Live update
+                    select.addEventListener('input', () => {
+                        this.dataArray = Number(select.value);
+                    });
+
+                    this.entryElement.innerHTML = "";
+                    this.entryElement.appendChild(select);
+
+                    return { code: 0 };
+                }
+
+                onSave() {
+                    return this.dataArray;
+                }
+            },
+
+            render: function(dataArray) {
+                return Number(dataArray);
+            }
+        },
+
+        popup: {
+            strutureSample: [],
+
+            displayType: "popupMedium",
+
+            cssStyles: {},
+
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    // entryElement = [previewElement, popupElement]
+                    this.previewElement = entryElement[0];
+                    this.popupElement = entryElement[1];
+                    this.elementSetting = elementSetting;
+
+                    // If null → use default
+                    this.dataArray = Array.isArray(dataArray)
+                        ? dataArray
+                        : (elementSetting.default || []);
+
+                    // -----------------------------
+                    // PREVIEW AREA
+                    // -----------------------------
+                    this.previewText = document.createElement('p');
+                    this.updatePreview();
+
+                    this.previewElement.innerHTML = "";
+                    this.previewElement.appendChild(this.previewText);
+
+                    // -----------------------------
+                    // POPUP AREA
+                    // -----------------------------
+                    this.popupElement.innerHTML = "";
+
+                    elementSetting.catergory.forEach(cat => {
+                        // Category title
+                        const title = document.createElement('h3');
+                        title.textContent = cat.label;
+                        this.popupElement.appendChild(title);
+
+                        // Choices list
+                        cat.choice.forEach(opt => {
+                            const label = document.createElement('label');
+                            label.setAttribute('data-value', opt.name);
+
+                            const checkbox = document.createElement('input');
+                            checkbox.type = "checkbox";
+                            checkbox.value = opt.name;
+                            checkbox.checked = this.dataArray.includes(opt.name);
+
+                            label.appendChild(checkbox);
+                            label.appendChild(document.createTextNode(opt.label));
+
+                            this.popupElement.appendChild(label);
+                        });
+                    });
+
+                    return { code: 0 };
+                }
+
+                // -----------------------------
+                // PREVIEW UPDATE METHOD
+                // -----------------------------
+                updatePreview() {
+                    this.previewText.textContent = this.dataArray.join(", ");
+                }
+
+                // -----------------------------
+                // POPUP CLOSE CALLBACK (NOW A METHOD)
+                // -----------------------------
+                onPopupClose() {
+                    const selected = [];
+
+                    const inputs = this.popupElement.querySelectorAll('input[type="checkbox"]');
+                    inputs.forEach(cb => {
+                        if (cb.checked) selected.push(cb.value);
+                    });
+
+                    this.dataArray = selected;
+                    this.updatePreview();
+                }
+
+                // -----------------------------
+                // SAVE
+                // -----------------------------
+                onSave() {
+                    return this.dataArray;
+                }
+            },
+
+            render: function(dataArray) {
+                return Array.isArray(dataArray) ? dataArray : [];
+            }
+        }
+    },
+
+    media: {
+        img: {
+            strutureSample: { mode: "internal", folder: "img", name: "" },
+
+            displayType: "popup",
+
+            cssStyles: [
+                {
+                    object: ".media-img-preview",
+                    info: [
+                        { key: "width", value: "100%" },
+                        { key: "height", value: "100%" },
+                        { key: "object-fit", value: "cover" },
+                        { key: "object-position", value: "center" },
+                        { key: "display", value: "block" },
+                        { key: "user-select", value: "none" }
+                    ]
+                },
+                {
+                    object: ".media-img-row",
+                    info: [
+                        { key: "display", value: "flex" },
+                        { key: "align-items", value: "center" },
+                        { key: "gap", value: "12px" },
+                        { key: "height", value: "60px" },
+                        { key: "padding", value: "6px 8px" },
+                        { key: "border-bottom", value: "1px solid #eee" },
+                        { key: "cursor", value: "pointer" },
+                        { key: "user-select", value: "none" }
+                    ]
+                },
+                {
+                    object: ".media-img-thumb",
+                    info: [
+                        { key: "width", value: "100px" },
+                        { key: "height", value: "60px" },
+                        { key: "object-fit", value: "cover" },
+                        { key: "object-position", value: "center" },
+                        { key: "display", value: "block" },
+                        { key: "user-select", value: "none" }
+                    ]
+                },
+                {
+                    object: ".media-img-title",
+                    info: [
+                        { key: "flex", value: "1" },
+                        { key: "overflow", value: "hidden" },
+                        { key: "text-overflow", value: "ellipsis" },
+                        { key: "white-space", value: "nowrap" }
+                    ]
+                },
+                {
+                    object: ".media-img-overlay",
+                    info: [
+                        { key: "position", value: "absolute" },
+                        { key: "top", value: "0" },
+                        { key: "left", value: "0" },
+                        { key: "width", value: "100%" },
+                        { key: "height", value: "100%" },
+                        { key: "background", value: "rgba(0,0,0,0.85)" },
+                        { key: "display", value: "flex" },
+                        { key: "align-items", value: "center" },
+                        { key: "justify-content", value: "center" },
+                        { key: "z-index", value: "9999" }
+                    ]
+                },
+                {
+                    object: ".media-img-overlay img",
+                    info: [
+                        { key: "max-width", value: "95%" },
+                        { key: "max-height", value: "95%" },
+                        { key: "object-fit", value: "contain" }
+                    ]
+                }
+            ],
+
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    this.previewElement = entryElement[0];
+                    this.popupElement = entryElement[1];
+                    this.elementSetting = elementSetting;
+
+                    this.dataArray = dataArray || { mode: "internal", folder: "img", name: "" };
+                    this._activeTab = this.dataArray.mode === "external" ? "external" : "internal";
+
+                    this._selected =
+                        this.dataArray.mode === "internal"
+                            ? { mode: "internal", folder: "img", name: this.dataArray.name }
+                            : (this.dataArray.mode === "external"
+                                ? { mode: "external", url: this.dataArray.url }
+                                : null);
+
+                    this._objectUrls = new Set();
+
+                    this.previewText = document.createElement("div");
+                    this.previewText.className = "media-img-preview";
+                    this.updatePreview();
+
+                    this.previewElement.innerHTML = "";
+                    this.previewElement.appendChild(this.previewText);
+
+                    // RETURN ASYNC POPUP INITIALIZER
+                    return async () => {
+                        this.popupElement.innerHTML = "";
+                        
+                        if (window.getComputedStyle(this.popupElement).position === "static") {
+                            this.popupElement.style.position = "relative";
+                        }
+
+                        let tabBar = document.createElement("div");
+                        let tabInternal = document.createElement("button");
+                        tabInternal.textContent = "Internal";
+                        let tabExternal = document.createElement("button");
+                        tabExternal.textContent = "External";
+                        tabBar.appendChild(tabInternal);
+                        tabBar.appendChild(tabExternal);
+
+                        let internalContainer = document.createElement("div");
+                        internalContainer.style.maxHeight = "320px";
+                        internalContainer.style.overflowY = "auto";
+
+                        let externalContainer = document.createElement("div");
+                        let externalInput = document.createElement("input");
+                        externalInput.type = "url";
+                        externalInput.style.width = "100%";
+                        externalInput.value =
+                            this.dataArray.mode === "external" ? (this.dataArray.url || "") : "";
+                        externalContainer.appendChild(externalInput);
+
+                        this.popupElement.appendChild(tabBar);
+                        this.popupElement.appendChild(internalContainer);
+                        this.popupElement.appendChild(externalContainer);
+
+                        let overlay = document.createElement("div");
+                        overlay.className = "media-img-overlay";
+                        overlay.style.display = "none";
+                        let overlayImg = document.createElement("img");
+                        overlay.appendChild(overlayImg);
+                        this.popupElement.appendChild(overlay);
+
+                        const closeOverlay = () => {
+                            overlay.style.display = "none";
+                            overlayImg.src = "";
+                        };
+                        overlay.onclick = closeOverlay;
+                        overlayImg.onclick = (e) => { e.stopPropagation(); closeOverlay(); };
+
+                        let showInternal = () => {
+                            this._activeTab = "internal";
+                            internalContainer.style.display = "block";
+                            externalContainer.style.display = "none";
+                        };
+                        let showExternal = () => {
+                            this._activeTab = "external";
+                            internalContainer.style.display = "none";
+                            externalContainer.style.display = "block";
+                        };
+
+                        if (this.dataArray.mode === "external") showExternal();
+                        else showInternal();
+
+                        tabInternal.onclick = showInternal;
+                        tabExternal.onclick = showExternal;
+
+                        let assets = await flexEngineFileSystem.listAssets("img");
+
+                        const processAssetChunk = async (items, index = 0) => {
+                            const chunkSize = 5;
+                            const limit = Math.min(index + chunkSize, items.length);
+
+                            for (let i = index; i < limit; i++) {
+                                let file = items[i];
+
+                                let row = document.createElement("div");
+                                row.className = "media-img-row";
+                                row.dataset.assetName = file.name;
+
+                                let thumb = document.createElement("img");
+                                thumb.className = "media-img-thumb";
+
+                                let title = document.createElement("div");
+                                title.className = "media-img-title";
+                                title.textContent = file.name;
+
+                                let selectRow = () => {
+                                    this._selected = { mode: "internal", folder: "img", name: row.dataset.assetName };
+                                    let siblings = internalContainer.querySelectorAll(".media-img-row");
+                                    siblings.forEach(s => s.style.background = "");
+                                    row.style.background = "rgba(0,120,215,0.08)";
+                                };
+
+                                row.onclick = () => selectRow();
+                                title.onclick = (e) => { e.stopPropagation(); selectRow(); };
+
+                                try {
+                                    let blob = await flexEngineFileSystem.readAsset("/img/" + file.name);
+                                    let url = URL.createObjectURL(blob);
+                                    thumb.src = url;
+                                    thumb.dataset.objectUrl = url;
+                                    this._objectUrls.add(url);
+                                } catch (e) {
+                                    thumb.src = "https://raystudio.net/404img.png";
+                                }
+
+                                thumb.onclick = (e) => {
+                                    e.stopPropagation();
+                                    selectRow();
+                                    if (thumb.dataset.objectUrl || thumb.src) {
+                                        overlayImg.src = thumb.dataset.objectUrl || thumb.src;
+                                        overlay.style.display = "flex";
+                                    }
+                                };
+
+                                row.appendChild(thumb);
+                                row.appendChild(title);
+                                internalContainer.appendChild(row);
+                            }
+
+                            if (limit < items.length) {
+                                setTimeout(() => processAssetChunk(items, limit), 20);
+                            }
+                        };
+
+                        if (assets && assets.length > 0) {
+                            await processAssetChunk(assets);
+                        }
+
+                        externalInput.addEventListener("input", () => {
+                            let v = externalInput.value.trim();
+                            if (v && this._activeTab === "external") {
+                                this._selected = { mode: "external", url: v };
+                            }
+                        });
+
+                        this._popupExternalInput = externalInput;
+                    };
+                }
+
+                updatePreview() {
+                    if (this.dataArray.mode === "internal") {
+                        this.previewText.textContent = this.dataArray.name || "(no image)";
+                    } else if (this.dataArray.mode === "external") {
+                        this.previewText.textContent = this.dataArray.url || "(no external URL)";
+                    } else {
+                        this.previewText.textContent = "(no image)";
+                    }
+                }
+
+                onPopupClose() {
+                    if (this._activeTab === "external" && this._popupExternalInput && this._popupExternalInput.value.trim() !== "") {
+                        this.dataArray = {
+                            mode: "external",
+                            url: this._popupExternalInput.value.trim()
+                        };
+                    } else if (this._selected) {
+                        this.dataArray = this._selected;
+                    }
+
+                    this._objectUrls.forEach(u => URL.revokeObjectURL(u));
+                    this._objectUrls.clear();
+
+                    const dynamicOverlay = this.popupElement.querySelector(".media-img-overlay");
+                    if (dynamicOverlay) {
+                        dynamicOverlay.remove();
+                    }
+
+                    this.updatePreview();
+                }
+
+                onSave() {
+                    return this.dataArray;
+                }
+            },
+
+            render: function(dataArray) {
+                if (!dataArray || !dataArray.mode)
+                    return "https://raystudio.net/404img.png";
+
+                switch (dataArray.mode) {
+                    case "internal":
+                        let prefix = BUILDER_CONFIG.classPrefix;
+                        return "/" + prefix + "assets/img/" + dataArray.name;
+
+                    case "external":
+                        return dataArray.url;
+
+                    default:
+                        return "https://raystudio.net/404img.png";
+                }
+            }
+        }
 
     }
 };
@@ -2334,18 +2821,16 @@ const flexEngineDefaultElements = {
  * interactiveTextBox: a textbox just show it.
  * interactiveElements: a interactive elements.
  * boolean/checkmark: a true/false question (DONE)
- * media/img: a source file from image. 
+ * media/img: a source file from image. (DONE)
  * media/audio: a source file from audio.
  * media/video: a source file from video.
- * string/textbox: just ask a longstring.
+ * string/textbox: just ask a longstring. (DONE)
  * string/text: ask for a short thing. (DONE)
- * (not using) string/rich: a rich text box!
- * string/url: ask for a URL.
+ * string/url: ask for a URL. (DONE)
  * integer: appear a bar with the thing. or simply a number question for things. (DONE)
  * integer/noNeg: appear a bar with the thing. or simply a number question for things. (DONE)
- * (not using) interger/bound: that's for bounds have minimum and maximum.
- * selection: how they want the option and the value of that option, there will have choice.
- * selection/popup: ask that like a popup to adjust mutiple choice setting.
+ * selection: how they want the option and the value of that option, there will have choice. (DONE)
+ * selection/popup: ask that like a popup to adjust mutiple choice setting. (DONE)
  * space: it ask a space query
  * 
  * one note: 
