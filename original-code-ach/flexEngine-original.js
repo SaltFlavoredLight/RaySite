@@ -122,7 +122,7 @@ const flexEngineStyleVarible = {
 			case 'internal':
 				const prefix = BUILDER_CONFIG.classPrefix;
 
-				// Constructing: prefix/assets/folder/name
+				// Constructing: prefix-assets/folder/name
 				return `/${prefix}assets/${mediaObj.folder}/${mediaObj.name}`;
 
 			case 'external':
