@@ -19,10 +19,28 @@ const BUILDER_CONFIG = {
 	attribution: "Spread the message with RaySite! RaySite is a Free Website builder for you!"
 };
 
+
+
+
 /*
 Input type - those parts will define the input and how to process it to work.
 */
 const flexEngineDefaultVaribles = {
+    /*
+    Let system pass out first.
+    */
+    interactiveTextBox: {
+        interactiveTextBox: {
+            system: true
+        }
+    },
+
+    interactiveElements: {
+        interactiveElements: {
+            system: true
+        }
+    },
+
     integer: {
         // remember: same name will be collapse to same name, EG: integer/integer = integer.
         integer: {
@@ -469,30 +487,395 @@ const flexEngineDefaultVaribles = {
     },
 
     media: {
-        img: {
-            strutureSample: { mode: "internal", folder: "img", name: "" },
+		img: {
+		    strutureSample: { mode: "internal", folder: "img", name: "" },
+
+		    displayType: "popup",
+
+		    cssStyles: [
+		        {
+		            object: ".media-img-preview",
+		            info: [
+		                { key: "width", value: "100%" },
+		                { key: "height", value: "100%" },
+		                { key: "object-fit", value: "cover" },
+		                { key: "object-position", value: "center" },
+		                { key: "display", value: "block" },
+		                { key: "user-select", value: "none" }
+		            ]
+		        },
+		        {
+		            object: ".media-img-row",
+		            info: [
+		                { key: "display", value: "flex" },
+		                { key: "align-items", value: "center" },
+		                { key: "gap", value: "12px" },
+		                { key: "height", value: "60px" },
+		                { key: "padding", value: "6px 8px" },
+		                { key: "border-bottom", value: "1px solid #eee" },
+		                { key: "cursor", value: "pointer" },
+		                { key: "user-select", value: "none" }
+		            ]
+		        },
+		        {
+		            object: ".media-img-thumb",
+		            info: [
+		                { key: "width", value: "100px" },
+		                { key: "height", value: "60px" },
+		                { key: "object-fit", value: "cover" },
+		                { key: "object-position", value: "center" },
+		                { key: "display", value: "block" },
+		                { key: "user-select", value: "none" }
+		            ]
+		        },
+		        {
+		            object: ".media-img-title",
+		            info: [
+		                { key: "flex", value: "1" },
+		                { key: "overflow", value: "hidden" },
+		                { key: "text-overflow", value: "ellipsis" },
+		                { key: "white-space", value: "nowrap" }
+		            ]
+		        },
+		        {
+		            object: ".media-img-overlay",
+		            info: [
+		                { key: "position", value: "absolute" },
+		                { key: "top", value: "0" },
+		                { key: "left", value: "0" },
+		                { key: "width", value: "100%" },
+		                { key: "height", value: "100%" },
+		                { key: "background", value: "rgba(0,0,0,0.85)" },
+		                { key: "display", value: "flex" },
+		                { key: "align-items", value: "center" },
+		                { key: "justify-content", value: "center" },
+		                { key: "z-index", value: "9999" }
+		            ]
+		        },
+		        {
+		            object: ".media-img-overlay img",
+		            info: [
+		                { key: "max-width", value: "95%" },
+		                { key: "max-height", value: "95%" },
+		                { key: "object-fit", value: "contain" }
+		            ]
+		        }
+		    ],
+
+		    component: class {
+		        constructor(dataArray, entryElement, elementSetting) {
+		            this.previewElement = entryElement[0];
+		            this.popupElement = entryElement[1];
+		            this.elementSetting = elementSetting;
+
+		            this.dataArray = dataArray || { mode: "internal", folder: "img", name: "" };
+		            this._activeTab = this.dataArray.mode === "external" ? "external" : "internal";
+
+		            this._selected =
+		                this.dataArray.mode === "internal"
+		                    ? { mode: "internal", folder: "img", name: this.dataArray.name }
+		                    : (this.dataArray.mode === "external"
+		                        ? { mode: "external", url: this.dataArray.url }
+		                        : null);
+
+		            this._objectUrls = new Set();
+
+		            this.previewText = document.createElement("div");
+		            this.previewText.className = "media-img-preview";
+		            this.updatePreview();
+
+		            this.previewElement.innerHTML = "";
+		            this.previewElement.appendChild(this.previewText);
+
+		            // RETURN ASYNC POPUP INITIALIZER
+		            return async () => {
+		                this.popupElement.innerHTML = "";
+                
+		                if (window.getComputedStyle(this.popupElement).position === "static") {
+		                    this.popupElement.style.position = "relative";
+		                }
+
+		                let tabBar = document.createElement("div");
+		                let tabInternal = document.createElement("button");
+		                tabInternal.textContent = "Internal";
+		                let tabExternal = document.createElement("button");
+		                tabExternal.textContent = "External";
+		                let tabUpload = document.createElement("button");
+		                tabUpload.textContent = "Upload";
+
+		                tabBar.appendChild(tabInternal);
+		                tabBar.appendChild(tabExternal);
+		                tabBar.appendChild(tabUpload);
+
+		                let internalContainer = document.createElement("div");
+		                internalContainer.style.maxHeight = "320px";
+		                internalContainer.style.overflowY = "auto";
+
+		                let externalContainer = document.createElement("div");
+		                let externalInput = document.createElement("input");
+		                externalInput.type = "url";
+		                externalInput.style.width = "100%";
+		                externalInput.value =
+		                    this.dataArray.mode === "external" ? (this.dataArray.url || "") : "";
+		                externalContainer.appendChild(externalInput);
+
+		                // UPLOAD TAB UI
+		                let uploadContainer = document.createElement("div");
+		                uploadContainer.style.padding = "10px";
+
+		                let fileInput = document.createElement("input");
+		                fileInput.type = "file";
+		                fileInput.accept = "image/*";
+		                fileInput.style.marginBottom = "10px";
+		                fileInput.style.display = "block";
+
+		                let nameInput = document.createElement("input");
+		                nameInput.type = "text";
+		                nameInput.placeholder = "(optional) Name of this asset";
+		                nameInput.style.width = "100%";
+		                nameInput.style.padding = "6px";
+
+		                uploadContainer.appendChild(fileInput);
+		                uploadContainer.appendChild(nameInput);
+
+		                this.popupElement.appendChild(tabBar);
+		                this.popupElement.appendChild(internalContainer);
+		                this.popupElement.appendChild(externalContainer);
+		                this.popupElement.appendChild(uploadContainer);
+
+		                let overlay = document.createElement("div");
+		                overlay.className = "media-img-overlay";
+		                overlay.style.display = "none";
+		                let overlayImg = document.createElement("img");
+		                overlay.appendChild(overlayImg);
+		                this.popupElement.appendChild(overlay);
+
+		                const closeOverlay = () => {
+		                    overlay.style.display = "none";
+		                    overlayImg.src = "";
+		                };
+		                overlay.onclick = closeOverlay;
+		                overlayImg.onclick = (e) => { e.stopPropagation(); closeOverlay(); };
+
+		                let showInternal = () => {
+		                    this._activeTab = "internal";
+		                    internalContainer.style.display = "block";
+		                    externalContainer.style.display = "none";
+		                    uploadContainer.style.display = "none";
+		                };
+		                let showExternal = () => {
+		                    this._activeTab = "external";
+		                    internalContainer.style.display = "none";
+		                    externalContainer.style.display = "block";
+		                    uploadContainer.style.display = "none";
+		                };
+		                let showUpload = () => {
+		                    this._activeTab = "upload";
+		                    internalContainer.style.display = "none";
+		                    externalContainer.style.display = "none";
+		                    uploadContainer.style.display = "block";
+		                };
+
+		                if (this.dataArray.mode === "external") showExternal();
+		                else showInternal();
+
+		                tabInternal.onclick = showInternal;
+		                tabExternal.onclick = showExternal;
+		                tabUpload.onclick = showUpload;
+
+		                let assets = await flexEngineFileSystem.listAssets("img");
+
+		                const processAssetChunk = async (items, index = 0) => {
+		                    const chunkSize = 5;
+		                    const limit = Math.min(index + chunkSize, items.length);
+
+		                    for (let i = index; i < limit; i++) {
+		                        let file = items[i];
+
+		                        let row = document.createElement("div");
+		                        row.className = "media-img-row";
+		                        row.dataset.assetName = file.name;
+
+		                        let thumb = document.createElement("img");
+		                        thumb.className = "media-img-thumb";
+
+		                        let title = document.createElement("div");
+		                        title.className = "media-img-title";
+		                        title.textContent = file.name;
+
+		                        let selectRow = () => {
+		                            this._selected = { mode: "internal", folder: "img", name: row.dataset.assetName };
+		                            let siblings = internalContainer.querySelectorAll(".media-img-row");
+		                            siblings.forEach(s => s.style.background = "");
+		                            row.style.background = "rgba(0,120,215,0.08)";
+		                        };
+
+		                        row.onclick = () => selectRow();
+		                        title.onclick = (e) => { e.stopPropagation(); selectRow(); };
+
+		                        try {
+		                            let blob = await flexEngineFileSystem.readAsset("/img/" + file.name);
+		                            let url = URL.createObjectURL(blob);
+		                            thumb.src = url;
+		                            thumb.dataset.objectUrl = url;
+		                            this._objectUrls.add(url);
+		                        } catch (e) {
+		                            thumb.src = "https://raystudio.net/404img.png";
+		                        }
+
+		                        thumb.onclick = (e) => {
+		                            e.stopPropagation();
+		                            selectRow();
+		                            if (thumb.dataset.objectUrl || thumb.src) {
+		                                overlayImg.src = thumb.dataset.objectUrl || thumb.src;
+		                                overlay.style.display = "flex";
+		                            }
+		                        };
+
+		                        row.appendChild(thumb);
+		                        row.appendChild(title);
+		                        internalContainer.appendChild(row);
+		                    }
+
+		                    if (limit < items.length) {
+		                        setTimeout(() => processAssetChunk(items, limit), 20);
+		                    }
+		                };
+
+		                if (assets && assets.length > 0) {
+		                    await processAssetChunk(assets);
+		                }
+
+		                externalInput.addEventListener("input", () => {
+		                    let v = externalInput.value.trim();
+		                    if (v && this._activeTab === "external") {
+		                        this._selected = { mode: "external", url: v };
+		                    }
+		                });
+
+		                this._popupExternalInput = externalInput;
+		                this._popupFileInput = fileInput;
+		                this._popupNameInput = nameInput;
+		            };
+		        }
+
+		        updatePreview() {
+		            if (this.dataArray.mode === "internal") {
+		                this.previewText.textContent = this.dataArray.name || "(no image)";
+		            } else if (this.dataArray.mode === "external") {
+		                this.previewText.textContent = this.dataArray.url || "(no external URL)";
+		            } else {
+		                this.previewText.textContent = "(no image)";
+		            }
+		        }
+
+		        async onPopupClose() {
+		            if (this._activeTab === "external" && this._popupExternalInput && this._popupExternalInput.value.trim() !== "") {
+		                this.dataArray = {
+		                    mode: "external",
+		                    url: this._popupExternalInput.value.trim()
+		                };
+		            } else if (this._activeTab === "upload" && this._popupFileInput && this._popupFileInput.files.length > 0) {
+		                let file = this._popupFileInput.files[0];
+		                let customName = this._popupNameInput ? this._popupNameInput.value.trim() : "";
+                
+		                let ext = "";
+		                let baseName = file.name;
+		                const dotIndex = file.name.lastIndexOf(".");
+		                if (dotIndex !== -1) {
+		                    baseName = file.name.substring(0, dotIndex);
+		                    ext = file.name.substring(dotIndex);
+		                }
+
+		                if (customName !== "") {
+		                    baseName = customName;
+		                }
+
+		                let finalName = baseName + ext;
+
+		                try {
+		                    let assets = await flexEngineFileSystem.listAssets("img");
+		                    let existingNames = new Set(assets ? assets.map(a => a.name) : []);
+
+		                    let counter = 1;
+		                    while (existingNames.has(finalName)) {
+		                        finalName = `${baseName} (${counter})${ext}`;
+		                        counter++;
+		                    }
+
+		                    let resCode = await flexEngineFileSystem.updateAsset("img", finalName, file);
+
+		                    if (resCode === 0 || resCode === 2) {
+		                        this.dataArray = {
+		                            mode: "internal",
+		                            folder: "img",
+		                            name: finalName
+		                        };
+		                    }
+		                } catch (err) {
+		                    console.error("Failed to upload image asset:", err);
+		                }
+		            } else if (this._selected) {
+		                this.dataArray = this._selected;
+		            }
+
+		            this._objectUrls.forEach(u => URL.revokeObjectURL(u));
+		            this._objectUrls.clear();
+
+		            const dynamicOverlay = this.popupElement.querySelector(".media-img-overlay");
+		            if (dynamicOverlay) {
+		                dynamicOverlay.remove();
+		            }
+
+		            this.updatePreview();
+		        }
+
+		        onSave() {
+		            return this.dataArray;
+		        }
+		    },
+
+		    render: function(dataArray) {
+		        if (!dataArray || !dataArray.mode)
+		            return "https://raystudio.net/404img.png";
+
+		        switch (dataArray.mode) {
+		            case "internal":
+		                let prefix = BUILDER_CONFIG.classPrefix;
+		                return "/" + prefix + "assets/img/" + dataArray.name;
+
+		            case "external":
+		                return dataArray.url;
+
+		            default:
+		                return "https://raystudio.net/404img.png";
+		        }
+		    }
+		},
+
+        audio: {
+            strutureSample: { mode: "internal", folder: "audio", name: "" },
 
             displayType: "popup",
 
             cssStyles: [
                 {
-                    object: ".media-img-preview",
+                    object: ".media-audio-preview",
                     info: [
                         { key: "width", value: "100%" },
                         { key: "height", value: "100%" },
-                        { key: "object-fit", value: "cover" },
-                        { key: "object-position", value: "center" },
-                        { key: "display", value: "block" },
+                        { key: "display", value: "flex" },
+                        { key: "align-items", value: "center" },
                         { key: "user-select", value: "none" }
                     ]
                 },
                 {
-                    object: ".media-img-row",
+                    object: ".media-audio-row",
                     info: [
                         { key: "display", value: "flex" },
                         { key: "align-items", value: "center" },
                         { key: "gap", value: "12px" },
-                        { key: "height", value: "60px" },
+                        { key: "height", value: "50px" },
                         { key: "padding", value: "6px 8px" },
                         { key: "border-bottom", value: "1px solid #eee" },
                         { key: "cursor", value: "pointer" },
@@ -500,18 +883,18 @@ const flexEngineDefaultVaribles = {
                     ]
                 },
                 {
-                    object: ".media-img-thumb",
+                    object: ".media-audio-thumb-icon",
                     info: [
-                        { key: "width", value: "100px" },
-                        { key: "height", value: "60px" },
-                        { key: "object-fit", value: "cover" },
-                        { key: "object-position", value: "center" },
-                        { key: "display", value: "block" },
-                        { key: "user-select", value: "none" }
+                        { key: "width", value: "48px" },
+                        { key: "height", value: "48px" },
+                        { key: "display", value: "flex" },
+                        { key: "align-items", value: "center" },
+                        { key: "justify-content", value: "center" },
+                        { key: "cursor", value: "pointer" }
                     ]
                 },
                 {
-                    object: ".media-img-title",
+                    object: ".media-audio-title",
                     info: [
                         { key: "flex", value: "1" },
                         { key: "overflow", value: "hidden" },
@@ -520,7 +903,7 @@ const flexEngineDefaultVaribles = {
                     ]
                 },
                 {
-                    object: ".media-img-overlay",
+                    object: ".media-audio-overlay",
                     info: [
                         { key: "position", value: "absolute" },
                         { key: "top", value: "0" },
@@ -535,11 +918,11 @@ const flexEngineDefaultVaribles = {
                     ]
                 },
                 {
-                    object: ".media-img-overlay img",
+                    object: ".media-audio-error",
                     info: [
-                        { key: "max-width", value: "95%" },
-                        { key: "max-height", value: "95%" },
-                        { key: "object-fit", value: "contain" }
+                        { key: "color", value: "#ff4d4f" },
+                        { key: "margin-top", value: "8px" },
+                        { key: "font-size", value: "14px" }
                     ]
                 }
             ],
@@ -550,20 +933,21 @@ const flexEngineDefaultVaribles = {
                     this.popupElement = entryElement[1];
                     this.elementSetting = elementSetting;
 
-                    this.dataArray = dataArray || { mode: "internal", folder: "img", name: "" };
+                    this.dataArray = dataArray || { mode: "internal", folder: "audio", name: "" };
                     this._activeTab = this.dataArray.mode === "external" ? "external" : "internal";
 
                     this._selected =
                         this.dataArray.mode === "internal"
-                            ? { mode: "internal", folder: "img", name: this.dataArray.name }
+                            ? { mode: "internal", folder: "audio", name: this.dataArray.name }
                             : (this.dataArray.mode === "external"
                                 ? { mode: "external", url: this.dataArray.url }
                                 : null);
 
                     this._objectUrls = new Set();
+                    this._isFileValid = true;
 
                     this.previewText = document.createElement("div");
-                    this.previewText.className = "media-img-preview";
+                    this.previewText.className = "media-audio-preview";
                     this.updatePreview();
 
                     this.previewElement.innerHTML = "";
@@ -582,8 +966,12 @@ const flexEngineDefaultVaribles = {
                         tabInternal.textContent = "Internal";
                         let tabExternal = document.createElement("button");
                         tabExternal.textContent = "External";
+                        let tabUpload = document.createElement("button");
+                        tabUpload.textContent = "Upload";
+
                         tabBar.appendChild(tabInternal);
                         tabBar.appendChild(tabExternal);
+                        tabBar.appendChild(tabUpload);
 
                         let internalContainer = document.createElement("div");
                         internalContainer.style.maxHeight = "320px";
@@ -597,33 +985,85 @@ const flexEngineDefaultVaribles = {
                             this.dataArray.mode === "external" ? (this.dataArray.url || "") : "";
                         externalContainer.appendChild(externalInput);
 
+                        // UPLOAD TAB UI
+                        let uploadContainer = document.createElement("div");
+                        uploadContainer.style.padding = "10px";
+
+                        let fileInput = document.createElement("input");
+                        fileInput.type = "file";
+                        fileInput.accept = "audio/*";
+                        fileInput.style.marginBottom = "10px";
+                        fileInput.style.display = "block";
+
+                        let nameInput = document.createElement("input");
+                        nameInput.type = "text";
+                        nameInput.placeholder = "(optional) Name of this asset";
+                        nameInput.style.width = "100%";
+                        nameInput.style.padding = "6px";
+
+                        let errorMsg = document.createElement("div");
+                        errorMsg.className = "media-audio-error";
+
+                        uploadContainer.appendChild(fileInput);
+                        uploadContainer.appendChild(nameInput);
+                        uploadContainer.appendChild(errorMsg);
+
                         this.popupElement.appendChild(tabBar);
                         this.popupElement.appendChild(internalContainer);
                         this.popupElement.appendChild(externalContainer);
+                        this.popupElement.appendChild(uploadContainer);
 
+                        // OVERLAY FOR AUDIO PREVIEW
                         let overlay = document.createElement("div");
-                        overlay.className = "media-img-overlay";
+                        overlay.className = "media-audio-overlay";
                         overlay.style.display = "none";
-                        let overlayImg = document.createElement("img");
-                        overlay.appendChild(overlayImg);
+                        let overlayAudio = document.createElement("audio");
+                        overlayAudio.controls = true;
+                        overlay.appendChild(overlayAudio);
                         this.popupElement.appendChild(overlay);
 
                         const closeOverlay = () => {
                             overlay.style.display = "none";
-                            overlayImg.src = "";
+                            overlayAudio.pause();
+                            overlayAudio.src = "";
                         };
                         overlay.onclick = closeOverlay;
-                        overlayImg.onclick = (e) => { e.stopPropagation(); closeOverlay(); };
+                        overlayAudio.onclick = (e) => { e.stopPropagation(); };
+
+                        // DYNAMIC FILE SIZE CHECK ON CHANGE
+                        fileInput.addEventListener("change", () => {
+                            errorMsg.innerHTML = "";
+                            if (fileInput.files.length > 0) {
+                                let file = fileInput.files[0];
+                                const maxBytes = 25 * 1024 * 1024; // 25 MB
+                                if (file.size > maxBytes) {
+                                    errorMsg.innerHTML = "<p>this File is Larger than 25 MB, RaySite rejected your file because it may broke the system</p>";
+                                    this._isFileValid = false;
+                                } else {
+                                    this._isFileValid = true;
+                                }
+                            } else {
+                                this._isFileValid = true;
+                            }
+                        });
 
                         let showInternal = () => {
                             this._activeTab = "internal";
                             internalContainer.style.display = "block";
                             externalContainer.style.display = "none";
+                            uploadContainer.style.display = "none";
                         };
                         let showExternal = () => {
                             this._activeTab = "external";
                             internalContainer.style.display = "none";
                             externalContainer.style.display = "block";
+                            uploadContainer.style.display = "none";
+                        };
+                        let showUpload = () => {
+                            this._activeTab = "upload";
+                            internalContainer.style.display = "none";
+                            externalContainer.style.display = "none";
+                            uploadContainer.style.display = "block";
                         };
 
                         if (this.dataArray.mode === "external") showExternal();
@@ -631,8 +1071,9 @@ const flexEngineDefaultVaribles = {
 
                         tabInternal.onclick = showInternal;
                         tabExternal.onclick = showExternal;
+                        tabUpload.onclick = showUpload;
 
-                        let assets = await flexEngineFileSystem.listAssets("img");
+                        let assets = await flexEngineFileSystem.listAssets("audio");
 
                         const processAssetChunk = async (items, index = 0) => {
                             const chunkSize = 5;
@@ -642,19 +1083,21 @@ const flexEngineDefaultVaribles = {
                                 let file = items[i];
 
                                 let row = document.createElement("div");
-                                row.className = "media-img-row";
+                                row.className = "media-audio-row";
                                 row.dataset.assetName = file.name;
 
-                                let thumb = document.createElement("img");
-                                thumb.className = "media-img-thumb";
+                                // FIXED SVG AUDIO ICON
+                                let iconContainer = document.createElement("div");
+                                iconContainer.className = "media-audio-thumb-icon";
+                                iconContainer.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#1f1f1f"><path d="M427-192q41 0 70-28.31T526-290v-202h116v-60H486v187q-11-9-26.38-14-15.39-5-32.62-5-39.27 0-66.13 27.5Q334-329 334-289.5t26.87 68.5q26.86 29 66.13 29ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z"/></svg>`;
 
                                 let title = document.createElement("div");
-                                title.className = "media-img-title";
+                                title.className = "media-audio-title";
                                 title.textContent = file.name;
 
                                 let selectRow = () => {
-                                    this._selected = { mode: "internal", folder: "img", name: row.dataset.assetName };
-                                    let siblings = internalContainer.querySelectorAll(".media-img-row");
+                                    this._selected = { mode: "internal", folder: "audio", name: row.dataset.assetName };
+                                    let siblings = internalContainer.querySelectorAll(".media-audio-row");
                                     siblings.forEach(s => s.style.background = "");
                                     row.style.background = "rgba(0,120,215,0.08)";
                                 };
@@ -662,26 +1105,23 @@ const flexEngineDefaultVaribles = {
                                 row.onclick = () => selectRow();
                                 title.onclick = (e) => { e.stopPropagation(); selectRow(); };
 
-                                try {
-                                    let blob = await flexEngineFileSystem.readAsset("/img/" + file.name);
-                                    let url = URL.createObjectURL(blob);
-                                    thumb.src = url;
-                                    thumb.dataset.objectUrl = url;
-                                    this._objectUrls.add(url);
-                                } catch (e) {
-                                    thumb.src = "https://raystudio.net/404img.png";
-                                }
-
-                                thumb.onclick = (e) => {
+                                // CLICK ICON TO PREVIEW AUDIO
+                                iconContainer.onclick = async (e) => {
                                     e.stopPropagation();
                                     selectRow();
-                                    if (thumb.dataset.objectUrl || thumb.src) {
-                                        overlayImg.src = thumb.dataset.objectUrl || thumb.src;
+                                    try {
+                                        let blob = await flexEngineFileSystem.readAsset("/audio/" + file.name);
+                                        let url = URL.createObjectURL(blob);
+                                        overlayAudio.src = url;
+                                        this._objectUrls.add(url);
                                         overlay.style.display = "flex";
+                                        overlayAudio.play();
+                                    } catch (err) {
+                                        console.error("Could not load audio for preview", err);
                                     }
                                 };
 
-                                row.appendChild(thumb);
+                                row.appendChild(iconContainer);
                                 row.appendChild(title);
                                 internalContainer.appendChild(row);
                             }
@@ -703,25 +1143,72 @@ const flexEngineDefaultVaribles = {
                         });
 
                         this._popupExternalInput = externalInput;
+                        this._popupFileInput = fileInput;
+                        this._popupNameInput = nameInput;
                     };
                 }
 
                 updatePreview() {
                     if (this.dataArray.mode === "internal") {
-                        this.previewText.textContent = this.dataArray.name || "(no image)";
+                        this.previewText.textContent = this.dataArray.name || "";
                     } else if (this.dataArray.mode === "external") {
-                        this.previewText.textContent = this.dataArray.url || "(no external URL)";
+                        this.previewText.textContent = this.dataArray.url || "";
                     } else {
-                        this.previewText.textContent = "(no image)";
+                        this.previewText.textContent = "";
                     }
                 }
 
-                onPopupClose() {
+                async onPopupClose() {
                     if (this._activeTab === "external" && this._popupExternalInput && this._popupExternalInput.value.trim() !== "") {
                         this.dataArray = {
                             mode: "external",
                             url: this._popupExternalInput.value.trim()
                         };
+                    } else if (this._activeTab === "upload" && this._popupFileInput && this._popupFileInput.files.length > 0) {
+                        // CANCEL SAVE IF FILE EXCEEDS 25 MB
+                        if (!this._isFileValid) {
+                            return;
+                        }
+
+                        let file = this._popupFileInput.files[0];
+                        let customName = this._popupNameInput ? this._popupNameInput.value.trim() : "";
+                        
+                        let ext = "";
+                        let baseName = file.name;
+                        const dotIndex = file.name.lastIndexOf(".");
+                        if (dotIndex !== -1) {
+                            baseName = file.name.substring(0, dotIndex);
+                            ext = file.name.substring(dotIndex);
+                        }
+
+                        if (customName !== "") {
+                            baseName = customName;
+                        }
+
+                        let finalName = baseName + ext;
+
+                        try {
+                            let assets = await flexEngineFileSystem.listAssets("audio");
+                            let existingNames = new Set(assets ? assets.map(a => a.name) : []);
+
+                            let counter = 1;
+                            while (existingNames.has(finalName)) {
+                                finalName = `${baseName} (${counter})${ext}`;
+                                counter++;
+                            }
+
+                            let resCode = await flexEngineFileSystem.updateAsset("audio", finalName, file);
+
+                            if (resCode === 0 || resCode === 2) {
+                                this.dataArray = {
+                                    mode: "internal",
+                                    folder: "audio",
+                                    name: finalName
+                                };
+                            }
+                        } catch (err) {
+                            console.error("Failed to upload audio asset:", err);
+                        }
                     } else if (this._selected) {
                         this.dataArray = this._selected;
                     }
@@ -729,7 +1216,7 @@ const flexEngineDefaultVaribles = {
                     this._objectUrls.forEach(u => URL.revokeObjectURL(u));
                     this._objectUrls.clear();
 
-                    const dynamicOverlay = this.popupElement.querySelector(".media-img-overlay");
+                    const dynamicOverlay = this.popupElement.querySelector(".media-audio-overlay");
                     if (dynamicOverlay) {
                         dynamicOverlay.remove();
                     }
@@ -744,26 +1231,1128 @@ const flexEngineDefaultVaribles = {
 
             render: function(dataArray) {
                 if (!dataArray || !dataArray.mode)
-                    return "https://raystudio.net/404img.png";
+                    return "";
 
                 switch (dataArray.mode) {
                     case "internal":
                         let prefix = BUILDER_CONFIG.classPrefix;
-                        return "/" + prefix + "assets/img/" + dataArray.name;
+                        return "/" + prefix + "assets/audio/" + dataArray.name;
 
                     case "external":
-                        return dataArray.url;
+                        return dataArray.url || "";
 
                     default:
-                        return "https://raystudio.net/404img.png";
+                        return "";
+                }
+            }
+        },      
+        
+        video: {
+            strutureSample: { mode: "internal", folder: "video", name: "" },
+
+            displayType: "popup",
+
+            cssStyles: [
+                {
+                    object: ".media-video-preview",
+                    info: [
+                        { key: "width", value: "100%" },
+                        { key: "height", value: "100%" },
+                        { key: "display", value: "flex" },
+                        { key: "align-items", value: "center" },
+                        { key: "user-select", value: "none" }
+                    ]
+                },
+                {
+                    object: ".media-video-row",
+                    info: [
+                        { key: "display", value: "flex" },
+                        { key: "align-items", value: "center" },
+                        { key: "gap", value: "12px" },
+                        { key: "height", value: "60px" },
+                        { key: "padding", value: "6px 8px" },
+                        { key: "border-bottom", value: "1px solid #eee" },
+                        { key: "cursor", value: "pointer" },
+                        { key: "user-select", value: "none" }
+                    ]
+                },
+                {
+                    object: ".media-video-thumb-icon",
+                    info: [
+                        { key: "width", value: "48px" },
+                        { key: "height", value: "48px" },
+                        { key: "display", value: "flex" },
+                        { key: "align-items", value: "center" },
+                        { key: "justify-content", value: "center" },
+                        { key: "cursor", value: "pointer" },
+                        { key: "overflow", value: "hidden" },
+                        { key: "border-radius", value: "4px" },
+                        { key: "background", value: "#f0f0f0" }
+                    ]
+                },
+                {
+                    object: ".media-video-title",
+                    info: [
+                        { key: "flex", value: "1" },
+                        { key: "overflow", value: "hidden" },
+                        { key: "text-overflow", value: "ellipsis" },
+                        { key: "white-space", value: "nowrap" }
+                    ]
+                },
+                {
+                    object: ".media-video-overlay",
+                    info: [
+                        { key: "position", value: "absolute" },
+                        { key: "top", value: "0" },
+                        { key: "left", value: "0" },
+                        { key: "width", value: "100%" },
+                        { key: "height", value: "100%" },
+                        { key: "background", value: "rgba(0,0,0,0.85)" },
+                        { key: "display", value: "flex" },
+                        { key: "align-items", value: "center" },
+                        { key: "justify-content", value: "center" },
+                        { key: "z-index", value: "9999" }
+                    ]
+                },
+                {
+                    object: ".media-video-error",
+                    info: [
+                        { key: "color", value: "#ff4d4f" },
+                        { key: "margin-top", value: "8px" },
+                        { key: "font-size", value: "14px" }
+                    ]
+                }
+            ],
+
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    this.previewElement = entryElement[0];
+                    this.popupElement = entryElement[1];
+                    this.elementSetting = elementSetting;
+
+                    this.dataArray = dataArray || { mode: "internal", folder: "video", name: "" };
+                    this._activeTab = this.dataArray.mode === "external" ? "external" : "internal";
+
+                    this._selected =
+                        this.dataArray.mode === "internal"
+                            ? { mode: "internal", folder: "video", name: this.dataArray.name }
+                            : (this.dataArray.mode === "external"
+                                ? { mode: "external", url: this.dataArray.url }
+                                : null);
+
+                    this._objectUrls = new Set();
+                    this._isFileValid = true;
+
+                    this.previewText = document.createElement("div");
+                    this.previewText.className = "media-video-preview";
+                    this.updatePreview();
+
+                    this.previewElement.innerHTML = "";
+                    this.previewElement.appendChild(this.previewText);
+
+                    // RETURN ASYNC POPUP INITIALIZER
+                    return async () => {
+                        this.popupElement.innerHTML = "";
+                        
+                        if (window.getComputedStyle(this.popupElement).position === "static") {
+                            this.popupElement.style.position = "relative";
+                        }
+
+                        let tabBar = document.createElement("div");
+                        let tabInternal = document.createElement("button");
+                        tabInternal.textContent = "Internal";
+                        let tabExternal = document.createElement("button");
+                        tabExternal.textContent = "External";
+                        let tabUpload = document.createElement("button");
+                        tabUpload.textContent = "Upload";
+
+                        tabBar.appendChild(tabInternal);
+                        tabBar.appendChild(tabExternal);
+                        tabBar.appendChild(tabUpload);
+
+                        let internalContainer = document.createElement("div");
+                        internalContainer.style.maxHeight = "320px";
+                        internalContainer.style.overflowY = "auto";
+
+                        let externalContainer = document.createElement("div");
+                        let externalInput = document.createElement("input");
+                        externalInput.type = "url";
+                        externalInput.style.width = "100%";
+                        externalInput.value =
+                            this.dataArray.mode === "external" ? (this.dataArray.url || "") : "";
+                        externalContainer.appendChild(externalInput);
+
+                        // UPLOAD TAB UI
+                        let uploadContainer = document.createElement("div");
+                        uploadContainer.style.padding = "10px";
+
+                        let fileInput = document.createElement("input");
+                        fileInput.type = "file";
+                        fileInput.accept = "video/*";
+                        fileInput.style.marginBottom = "10px";
+                        fileInput.style.display = "block";
+
+                        let nameInput = document.createElement("input");
+                        nameInput.type = "text";
+                        nameInput.placeholder = "(optional) Name of this asset";
+                        nameInput.style.width = "100%";
+                        nameInput.style.padding = "6px";
+
+                        let errorMsg = document.createElement("div");
+                        errorMsg.className = "media-video-error";
+
+                        uploadContainer.appendChild(fileInput);
+                        uploadContainer.appendChild(nameInput);
+                        uploadContainer.appendChild(errorMsg);
+
+                        this.popupElement.appendChild(tabBar);
+                        this.popupElement.appendChild(internalContainer);
+                        this.popupElement.appendChild(externalContainer);
+                        this.popupElement.appendChild(uploadContainer);
+
+                        // OVERLAY FOR VIDEO PREVIEW
+                        let overlay = document.createElement("div");
+                        overlay.className = "media-video-overlay";
+                        overlay.style.display = "none";
+                        let overlayVideo = document.createElement("video");
+                        overlayVideo.controls = true;
+                        overlayVideo.style.maxWidth = "90%";
+                        overlayVideo.style.maxHeight = "90%";
+                        overlay.appendChild(overlayVideo);
+                        this.popupElement.appendChild(overlay);
+
+                        const closeOverlay = () => {
+                            overlay.style.display = "none";
+                            overlayVideo.pause();
+                            if (overlayVideo.src) {
+                                URL.revokeObjectURL(overlayVideo.src);
+                                this._objectUrls.delete(overlayVideo.src);
+                                overlayVideo.src = "";
+                            }
+                        };
+                        overlay.onclick = closeOverlay;
+                        overlayVideo.onclick = (e) => { e.stopPropagation(); };
+
+                        // DYNAMIC FILE SIZE CHECK ON CHANGE
+                        fileInput.addEventListener("change", () => {
+                            errorMsg.innerHTML = "";
+                            if (fileInput.files.length > 0) {
+                                let file = fileInput.files[0];
+                                const maxBytes = 25 * 1024 * 1024; // 25 MB
+                                if (file.size > maxBytes) {
+                                    errorMsg.innerHTML = "<p>this File is Larger than 25 MB, RaySite rejected your file because it may broke the system</p>";
+                                    this._isFileValid = false;
+                                } else {
+                                    this._isFileValid = true;
+                                }
+                            } else {
+                                this._isFileValid = true;
+                            }
+                        });
+
+                        let showInternal = () => {
+                            this._activeTab = "internal";
+                            internalContainer.style.display = "block";
+                            externalContainer.style.display = "none";
+                            uploadContainer.style.display = "none";
+                        };
+                        let showExternal = () => {
+                            this._activeTab = "external";
+                            internalContainer.style.display = "none";
+                            externalContainer.style.display = "block";
+                            uploadContainer.style.display = "none";
+                        };
+                        let showUpload = () => {
+                            this._activeTab = "upload";
+                            internalContainer.style.display = "none";
+                            externalContainer.style.display = "none";
+                            uploadContainer.style.display = "block";
+                        };
+
+                        if (this.dataArray.mode === "external") showExternal();
+                        else showInternal();
+
+                        tabInternal.onclick = showInternal;
+                        tabExternal.onclick = showExternal;
+                        tabUpload.onclick = showUpload;
+
+                        let assets = await flexEngineFileSystem.listAssets("video");
+
+                        // HELPER FUNCTION: EXTRACT 2.5s FRAME AS DATA URL
+                        const captureFrame = (blob) => {
+                            return new Promise((resolve) => {
+                                let tempVideo = document.createElement("video");
+                                tempVideo.preload = "metadata";
+                                tempVideo.muted = true;
+                                tempVideo.playsInline = true;
+                                let url = URL.createObjectURL(blob);
+
+                                tempVideo.onloadedmetadata = () => {
+                                    let seekTime = 2.5;
+                                    if (tempVideo.duration < 2.5) {
+                                        seekTime = tempVideo.duration / 2;
+                                    }
+                                    tempVideo.currentTime = seekTime;
+                                };
+
+                                tempVideo.onseeked = () => {
+                                    try {
+                                        let canvas = document.createElement("canvas");
+                                        canvas.width = tempVideo.videoWidth || 100;
+                                        canvas.height = tempVideo.videoHeight || 100;
+                                        let ctx = canvas.getContext("2d");
+                                        ctx.drawImage(tempVideo, 0, 0, canvas.width, canvas.height);
+                                        let dataUrl = canvas.toDataURL("image/jpeg");
+                                        URL.revokeObjectURL(url);
+                                        resolve(dataUrl);
+                                    } catch (e) {
+                                        URL.revokeObjectURL(url);
+                                        resolve(null);
+                                    }
+                                };
+
+                                tempVideo.onerror = () => {
+                                    URL.revokeObjectURL(url);
+                                    resolve(null);
+                                };
+
+                                tempVideo.src = url;
+                            });
+                        };
+
+                        const processAssetChunk = async (items, index = 0) => {
+                            const chunkSize = 5;
+                            const limit = Math.min(index + chunkSize, items.length);
+
+                            for (let i = index; i < limit; i++) {
+                                let file = items[i];
+
+                                let row = document.createElement("div");
+                                row.className = "media-video-row";
+                                row.dataset.assetName = file.name;
+
+                                let iconContainer = document.createElement("div");
+                                iconContainer.className = "media-video-thumb-icon";
+                                // DEFAULT SVG FALLBACK ICON
+                                let defaultSVG = `<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#1f1f1f"><path d="M352-240h175q14 0 24.5-10.5T562-275v-55l80 46v-152l-80 46v-55q0-14-10.5-24.5T527-480H352q-14 0-24.5 10.5T317-445v170q0 14 10.5 24.5T352-240ZM220-80q-24 0-42-18t-18-42v-680q0-24 18-42t42-18h361l219 219v521q0 24-18 42t-42 18H220Zm331-554v-186H220v680h520v-494H551ZM220-820v186-186 680-680Z"/></svg>`;
+                                iconContainer.innerHTML = defaultSVG;
+
+                                let title = document.createElement("div");
+                                title.className = "media-video-title";
+                                title.textContent = file.name;
+
+                                let selectRow = () => {
+                                    this._selected = { mode: "internal", folder: "video", name: row.dataset.assetName };
+                                    let siblings = internalContainer.querySelectorAll(".media-video-row");
+                                    siblings.forEach(s => s.style.background = "");
+                                    row.style.background = "rgba(0,120,215,0.08)";
+                                };
+
+                                row.onclick = () => selectRow();
+                                title.onclick = (e) => { e.stopPropagation(); selectRow(); };
+
+                                // TRY TO LOAD 2.5s FRAME PREVIEW
+                                flexEngineFileSystem.readAsset("/video/" + file.name)
+                                    .then(blob => captureFrame(blob))
+                                    .then(frameUrl => {
+                                        if (frameUrl) {
+                                            iconContainer.innerHTML = `<img src="${frameUrl}" style="width:100%;height:100%;object-fit:cover;" />`;
+                                        }
+                                    })
+                                    .catch(() => {});
+
+                                // CLICK ICON TO SHOW FULL VIDEO PREVIEW
+                                iconContainer.onclick = async (e) => {
+                                    e.stopPropagation();
+                                    selectRow();
+                                    try {
+                                        let blob = await flexEngineFileSystem.readAsset("/video/" + file.name);
+                                        let url = URL.createObjectURL(blob);
+                                        overlayVideo.src = url;
+                                        this._objectUrls.add(url);
+                                        overlay.style.display = "flex";
+                                        overlayVideo.play();
+                                    } catch (err) {
+                                        console.error("Could not load video for preview", err);
+                                    }
+                                };
+
+                                row.appendChild(iconContainer);
+                                row.appendChild(title);
+                                internalContainer.appendChild(row);
+                            }
+
+                            if (limit < items.length) {
+                                setTimeout(() => processAssetChunk(items, limit), 20);
+                            }
+                        };
+
+                        if (assets && assets.length > 0) {
+                            await processAssetChunk(assets);
+                        }
+
+                        externalInput.addEventListener("input", () => {
+                            let v = externalInput.value.trim();
+                            if (v && this._activeTab === "external") {
+                                this._selected = { mode: "external", url: v };
+                            }
+                        });
+
+                        this._popupExternalInput = externalInput;
+                        this._popupFileInput = fileInput;
+                        this._popupNameInput = nameInput;
+                    };
+                }
+
+                updatePreview() {
+                    if (this.dataArray.mode === "internal") {
+                        this.previewText.textContent = this.dataArray.name || "";
+                    } else if (this.dataArray.mode === "external") {
+                        this.previewText.textContent = this.dataArray.url || "";
+                    } else {
+                        this.previewText.textContent = "";
+                    }
+                }
+
+                async onPopupClose() {
+                    if (this._activeTab === "external" && this._popupExternalInput && this._popupExternalInput.value.trim() !== "") {
+                        this.dataArray = {
+                            mode: "external",
+                            url: this._popupExternalInput.value.trim()
+                        };
+                    } else if (this._activeTab === "upload" && this._popupFileInput && this._popupFileInput.files.length > 0) {
+                        // CANCEL SAVE IF FILE EXCEEDS 25 MB
+                        if (!this._isFileValid) {
+                            return;
+                        }
+
+                        let file = this._popupFileInput.files[0];
+                        let customName = this._popupNameInput ? this._popupNameInput.value.trim() : "";
+                        
+                        let ext = "";
+                        let baseName = file.name;
+                        const dotIndex = file.name.lastIndexOf(".");
+                        if (dotIndex !== -1) {
+                            baseName = file.name.substring(0, dotIndex);
+                            ext = file.name.substring(dotIndex);
+                        }
+
+                        if (customName !== "") {
+                            baseName = customName;
+                        }
+
+                        let finalName = baseName + ext;
+
+                        try {
+                            let assets = await flexEngineFileSystem.listAssets("video");
+                            let existingNames = new Set(assets ? assets.map(a => a.name) : []);
+
+                            let counter = 1;
+                            while (existingNames.has(finalName)) {
+                                finalName = `${baseName} (${counter})${ext}`;
+                                counter++;
+                            }
+
+                            let resCode = await flexEngineFileSystem.updateAsset("video", finalName, file);
+
+                            if (resCode === 0 || resCode === 2) {
+                                this.dataArray = {
+                                    mode: "internal",
+                                    folder: "video",
+                                    name: finalName
+                                };
+                            }
+                        } catch (err) {
+                            console.error("Failed to upload video asset:", err);
+                        }
+                    } else if (this._selected) {
+                        this.dataArray = this._selected;
+                    }
+
+                    // REVOKE ALL CREATED TEMP OBJECT URLS
+                    this._objectUrls.forEach(u => URL.revokeObjectURL(u));
+                    this._objectUrls.clear();
+
+                    const dynamicOverlay = this.popupElement.querySelector(".media-video-overlay");
+                    if (dynamicOverlay) {
+                        dynamicOverlay.remove();
+                    }
+
+                    this.updatePreview();
+                }
+
+                onSave() {
+                    return this.dataArray;
+                }
+            },
+
+            render: function(dataArray) {
+                if (!dataArray || !dataArray.mode)
+                    return "";
+
+                switch (dataArray.mode) {
+                    case "internal":
+                        let prefix = BUILDER_CONFIG.classPrefix;
+                        return "/" + prefix + "assets/video/" + dataArray.name;
+
+                    case "external":
+                        return dataArray.url || "";
+
+                    default:
+                        return "";
+                }
+            }
+        }        
+    },
+
+    space: {
+        space: {
+            structureSample: {
+                mode: "px",
+                value: 60
+            },
+            displayType: "large",
+            cssStyles: [{
+                object: ".space-control-container",
+                info: [{
+                    key: "height",
+                    value: "60px"
+                }, {
+                    key: "max-height",
+                    value: "60px"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }, {
+                    key: "justify-content",
+                    value: "flex-end"
+                }, {
+                    key: "gap",
+                    value: "10px"
+                }, {
+                    key: "padding",
+                    value: "0 12px"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "overflow",
+                    value: "hidden"
+                }, {
+                    key: "background",
+                    value: "#ffffff"
+                }, {
+                    key: "border",
+                    value: "1px solid #d2d2d7"
+                }, {
+                    key: "border-radius",
+                    value: "8px"
+                }]
+            }, {
+                object: ".space-slider-wrap",
+                info: [{
+                    key: "position",
+                    value: "relative"
+                }, {
+                    key: "flex",
+                    value: "1"
+                }, {
+                    key: "height",
+                    value: "100%"
+                }, {
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }]
+            }, {
+                object: ".space-ticks-bg",
+                info: [{
+                    key: "position",
+                    value: "absolute"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "height",
+                    value: "4px"
+                }, {
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "gap",
+                    value: "3px"
+                }, {
+                    key: "pointer-events",
+                    value: "none"
+                }, {
+                    key: "z-index",
+                    value: "1"
+                }]
+            }, {
+                object: ".space-tick-seg",
+                info: [{
+                    key: "flex",
+                    value: "1"
+                }, {
+                    key: "height",
+                    value: "100%"
+                }, {
+                    key: "background",
+                    value: "#e5e7eb"
+                }, {
+                    key: "border-radius",
+                    value: "2px"
+                }]
+            }, {
+                object: ".space-tick-seg.active",
+                info: [{
+                    key: "background",
+                    value: "#2563eb"
+                }]
+            }, {
+                object: ".space-range-input",
+                info: [{
+                    key: "-webkit-appearance",
+                    value: "none"
+                }, {
+                    key: "appearance",
+                    value: "none"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "height",
+                    value: "4px"
+                }, {
+                    key: "background",
+                    value: "#e5e7eb"
+                }, {
+                    key: "border-radius",
+                    value: "2px"
+                }, {
+                    key: "outline",
+                    value: "none"
+                }, {
+                    key: "cursor",
+                    value: "pointer"
+                }, {
+                    key: "position",
+                    value: "relative"
+                }, {
+                    key: "z-index",
+                    value: "2"
+                }, {
+                    key: "margin",
+                    value: "0"
+                }]
+            }, {
+                object: ".space-range-input.theme-mode",
+                info: [{
+                    key: "background",
+                    value: "transparent"
+                }]
+            }, {
+                object: ".space-slider-tooltip",
+                info: [{
+                    key: "position",
+                    value: "absolute"
+                }, {
+                    key: "bottom",
+                    value: "4px"
+                }, {
+                    key: "transform",
+                    value: "translateX(-50%)"
+                }, {
+                    key: "background",
+                    value: "#262626"
+                }, {
+                    key: "color",
+                    value: "#ffffff"
+                }, {
+                    key: "font-size",
+                    value: "11px"
+                }, {
+                    key: "font-weight",
+                    value: "600"
+                }, {
+                    key: "padding",
+                    value: "2px 6px"
+                }, {
+                    key: "border-radius",
+                    value: "4px"
+                }, {
+                    key: "white-space",
+                    value: "nowrap"
+                }, {
+                    key: "pointer-events",
+                    value: "none"
+                }, {
+                    key: "z-index",
+                    value: "10"
+                }]
+            }, {
+                object: ".space-number-input",
+                info: [{
+                    key: "width",
+                    value: "64px"
+                }, {
+                    key: "height",
+                    value: "32px"
+                }, {
+                    key: "border",
+                    value: "1px solid #d2d2d7"
+                }, {
+                    key: "border-radius",
+                    value: "6px"
+                }, {
+                    key: "padding",
+                    value: "0 6px"
+                }, {
+                    key: "font-size",
+                    value: "13px"
+                }, {
+                    key: "text-align",
+                    value: "center"
+                }, {
+                    key: "outline",
+                    value: "none"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                object: ".space-mode-select",
+                info: [{
+                    key: "height",
+                    value: "32px"
+                }, {
+                    key: "border",
+                    value: "1px solid #d2d2d7"
+                }, {
+                    key: "border-radius",
+                    value: "6px"
+                }, {
+                    key: "padding",
+                    value: "0 8px"
+                }, {
+                    key: "font-size",
+                    value: "13px"
+                }, {
+                    key: "background",
+                    value: "#ffffff"
+                }, {
+                    key: "color",
+                    value: "#1d1d1f"
+                }, {
+                    key: "cursor",
+                    value: "pointer"
+                }, {
+                    key: "outline",
+                    value: "none"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }],
+            component: class {
+                constructor(dataArray, entryElement) {
+                    this.THEME_LEVELS = ["tiny", "small", "mSmall", "medium", "large", "extraLarge"];
+                    this.VALID_UNITS = ['px', 'rem', 'em', '%', 'vw', 'vh', 'vmin', 'vmax', 'ch'];
+                    // Use dataArray reference directly (which will be a Proxy)
+                    this.dataArray = dataArray && typeof dataArray === 'object' ? dataArray : {
+                        mode: "px",
+                        value: 60
+                    };
+                    this.entryElement = entryElement;
+                    // Helper method to mutate object properties so the Proxy traps trigger
+                    this.updateData = (newData) => {
+                        Object.keys(this.dataArray).forEach(k => delete this.dataArray[k]);
+                        Object.assign(this.dataArray, newData);
+                    };
+                    const container = document.createElement("div");
+                    container.className = "space-control-container";
+                    const sliderWrap = document.createElement("div");
+                    sliderWrap.className = "space-slider-wrap";
+                    const ticksBg = document.createElement("div");
+                    ticksBg.className = "space-ticks-bg";
+                    for (let i = 0; i < 5; i++) {
+                        const seg = document.createElement("div");
+                        seg.className = "space-tick-seg";
+                        ticksBg.appendChild(seg);
+                    }
+                    const slider = document.createElement("input");
+                    slider.type = "range";
+                    slider.className = "space-range-input";
+                    const tooltip = document.createElement("div");
+                    tooltip.className = "space-slider-tooltip";
+                    sliderWrap.appendChild(ticksBg);
+                    sliderWrap.appendChild(slider);
+                    sliderWrap.appendChild(tooltip);
+                    const numInput = document.createElement("input");
+                    numInput.type = "number";
+                    numInput.className = "space-number-input";
+                    numInput.min = "0";
+                    numInput.max = "100";
+                    const select = document.createElement("select");
+                    select.className = "space-mode-select";
+                    const options = [{
+                        label: "px",
+                        value: "px"
+                    }, {
+                        label: "theme",
+                        value: "variables"
+                    }, {
+                        label: "auto",
+                        value: "auto"
+                    }, {
+                        label: "none",
+                        value: "none"
+                    }, {
+                        label: "rem",
+                        value: "rem"
+                    }, {
+                        label: "em",
+                        value: "em"
+                    }, {
+                        label: "%",
+                        value: "%"
+                    }, {
+                        label: "vw",
+                        value: "vw"
+                    }, {
+                        label: "vh",
+                        value: "vh"
+                    }, {
+                        label: "vmin",
+                        value: "vmin"
+                    }, {
+                        label: "vmax",
+                        value: "vmax"
+                    }, {
+                        label: "ch",
+                        value: "ch"
+                    }];
+                    options.forEach(opt => {
+                        const o = document.createElement("option");
+                        o.value = opt.value;
+                        o.textContent = opt.label;
+                        select.appendChild(o);
+                    });
+                    container.appendChild(sliderWrap);
+                    container.appendChild(numInput);
+                    container.appendChild(select);
+                    const updateTicks = (idx) => {
+                        const segs = ticksBg.querySelectorAll(".space-tick-seg");
+                        segs.forEach((seg, i) => {
+                            if (i < idx) seg.classList.add("active");
+                            else seg.classList.remove("active");
+                        });
+                    };
+                    const updateTooltipPosition = (idx) => {
+                        const pct = idx / 5;
+                        tooltip.style.left = `calc(${pct * 100}% - ${(pct - 0.5) * 16}px)`;
+                        tooltip.textContent = this.THEME_LEVELS[idx];
+                    };
+                    const syncUI = () => {
+                        const mode = select.value;
+                        if (mode === "variables") {
+                            sliderWrap.style.display = "flex";
+                            numInput.style.display = "none";
+                            ticksBg.style.display = "flex";
+                            tooltip.style.display = "block";
+                            slider.classList.add("theme-mode");
+                            slider.min = "0";
+                            slider.max = "5";
+                            slider.step = "1";
+                            let idx = this.THEME_LEVELS.indexOf(this.dataArray.variables);
+                            if (idx === -1) idx = 3;
+                            slider.value = idx;
+                            this.updateData({
+                                mode: "variables",
+                                variables: this.THEME_LEVELS[idx]
+                            });
+                            updateTicks(idx);
+                            updateTooltipPosition(idx);
+                        } else if (this.VALID_UNITS.includes(mode)) {
+                            sliderWrap.style.display = "flex";
+                            numInput.style.display = "block";
+                            ticksBg.style.display = "none";
+                            tooltip.style.display = "none";
+                            slider.classList.remove("theme-mode");
+                            slider.min = "0";
+                            slider.max = "100";
+                            slider.step = "1";
+                            let val = this.dataArray.value !== undefined ? Number(this.dataArray.value) : 60;
+                            if (val > 100) val = 100;
+                            if (val < 0) val = 0;
+                            slider.value = val;
+                            numInput.value = val;
+                            this.updateData({
+                                mode: mode,
+                                value: val
+                            });
+                        } else {
+                            sliderWrap.style.display = "none";
+                            numInput.style.display = "none";
+                            tooltip.style.display = "none";
+                            this.updateData({
+                                mode: mode
+                            });
+                        }
+                    };
+                    select.value = this.dataArray.mode || "px";
+                    select.addEventListener("change", syncUI);
+                    slider.addEventListener("input", (e) => {
+                        const val = Number(e.target.value);
+                        const mode = select.value;
+                        if (mode === "variables") {
+                            this.updateData({
+                                mode: "variables",
+                                variables: this.THEME_LEVELS[val]
+                            });
+                            updateTicks(val);
+                            updateTooltipPosition(val);
+                        } else {
+                            this.updateData({
+                                mode: mode,
+                                value: val
+                            });
+                            numInput.value = val;
+                        }
+                    });
+                    numInput.addEventListener("input", (e) => {
+                        let val = Number(e.target.value);
+                        if (val > 100) val = 100;
+                        if (val < 0) val = 0;
+                        this.updateData({
+                            mode: select.value,
+                            value: val
+                        });
+                        slider.value = val;
+                    });
+                    syncUI();
+                    this.entryElement.innerHTML = "";
+                    this.entryElement.appendChild(container);
+                    // Fixed constructor: DO NOT return custom object `{ code: 0 }`
+                }
+                onSave() {
+                    return this.dataArray;
+                }
+            },
+            render: function(spaceObj) {
+                if (!spaceObj || !spaceObj.mode) return '0px';
+                switch (spaceObj.mode) {
+                    case 'auto':
+                        return 'auto';
+                    case 'none':
+                        return '0px';
+                    case 'variables':
+                        return `var(--rs-theme-${spaceObj.variables})`;
+                    default:
+                        const validUnits = ['px', 'rem', 'em', '%', 'vw', 'vh', 'vmin', 'vmax', 'ch'];
+                        if (validUnits.includes(spaceObj.mode)) {
+                            return `${spaceObj.value}${spaceObj.mode}`;
+                        }
+                        return '0px';
                 }
             }
         }
-
     }
 };
 
-debugger; // FLAG! this part need change on how to Render the some certain elements not just Number
+/**
+ * How we check the Element? and element should be named like {catergory}/{name}, like basic/image
+ * Set @global direct mean that's the only 1, and that will make only 1 can accapt this.
+ * 
+ * 
+ * interactiveTextBox: a textbox just show it. (Done via system)
+ * interactiveElements: a interactive elements. (DONE via system)
+ * boolean/checkmark: a true/false question (DONE)
+ * media/img: a source file from image. (DONE)
+ * media/audio: a source file from audio. (DONE)
+ * media/video: a source file from video. (DONE)
+ * string/textbox: just ask a longstring. (DONE)
+ * string/text: ask for a short thing. (DONE)
+ * string/url: ask for a URL. (DONE)
+ * integer: appear a bar with the thing. or simply a number question for things. (DONE)
+ * integer/noNeg: appear a bar with the thing. or simply a number question for things. (DONE)
+ * selection: how they want the option and the value of that option, there will have choice. (DONE)
+ * selection/popup: ask that like a popup to adjust mutiple choice setting. (DONE)
+ * space: it ask a space query (DONE)
+ * 
+ * one note: 
+ * {Width/Hwight} when is along, {Height/Width} when is across
+ * 
+ * and also when it's unaliable shown, there will set something.
+ * default is what you can fill before, default is blank or true.
+ * 
+ * 
+ */
+
+
+
+debugger; // FLAG for future change - flexEngineDefaultElements need to shift to new StyleVarible, for safety, keep the original ones, but we will delete soon after.
+// Variable system
+const flexEngineStyleVarible = {
+	color: function(colorObj) {
+		if (!colorObj || !colorObj.mode) return 'transparent';
+
+		switch (colorObj.mode) {
+			case 'hex':
+				return colorObj.hex;
+
+			case 'linearGradient':
+				// Map the stops array into "color offset, color offset" format
+				const gradientStops = colorObj.stops
+					.map(stop => `${stop.color} ${stop.offset}`)
+					.join(', ');
+				return `linear-gradient(${colorObj.angle}, ${gradientStops})`;
+
+			case 'backgroundIMG':
+				const repeat = `${colorObj.repeatX ? 'repeat-x' : ''} ${colorObj.repeatY ? 'repeat-y' : ''}`.trim() || 'no-repeat';
+
+				// Mapping 1-3 to CSS position keywords
+				const posX = ['left', 'center', 'right'][colorObj.positionX - 1] || 'center';
+				const posY = ['top', 'center', 'bottom'][colorObj.positionY - 1] || 'center';
+				const attachment = colorObj.attachment ? 'fixed' : 'scroll';
+
+				// If a color overlay is provided, we use a linear-gradient trick 
+				// to layer the color over the image.
+				if (colorObj.coloroverlay && colorObj.coloroverlay !== 'transparent') {
+					return `linear-gradient(${colorObj.coloroverlay}, ${colorObj.coloroverlay}), url("${colorObj.src}") ${posX} ${posY} / auto ${repeat} ${attachment}`;
+				}
+				return `url("${colorObj.src}") ${posX} ${posY} / auto ${repeat} ${attachment}`;
+
+			case 'variables':
+				return `var(--${colorObj.variables})`;
+
+			case 'inherit':
+				return 'inherit';
+
+			case 'none':
+			default:
+				return 'transparent';
+		}
+	},
+
+	space: function(spaceObj) {
+		if (!spaceObj || !spaceObj.mode) return '0px';
+
+		switch (spaceObj.mode) {
+			case 'auto':
+				return 'auto';
+
+            case 'none':
+                return '0px';
+
+			case 'variables':
+				return `var(--${BUILDER_CONFIG.classPrefix + spaceObj.variables})`;
+
+				// Handles: px, rem, em, %, vw, vh, vmin, vmax, ch
+			default:
+				const validUnits = ['px', 'rem', 'em', '%', 'vw', 'vh', 'vmin', 'vmax', 'ch'];
+				if (validUnits.includes(spaceObj.mode)) {
+					return `${spaceObj.value}${spaceObj.mode}`;
+				}
+
+				// Fallback for unexpected modes
+				return '0px';
+		}
+	},
+
+	media: function(mediaObj) {
+		if (!mediaObj || !mediaObj.mode) return '';
+
+		switch (mediaObj.mode) {
+			case 'internal':
+				const prefix = BUILDER_CONFIG.classPrefix;
+
+				// Constructing: prefix/assets/folder/name
+				return `/${prefix}assets/${mediaObj.folder}/${mediaObj.name}`;
+
+			case 'external':
+				return mediaObj.url;
+
+			default:
+				return '';
+		}
+	},
+
+	// for Head only
+	absMedia: function(mediaObj, mainArray, selfSlug) {
+		if (!mediaObj || !mediaObj.mode) return '';
+
+		switch (mediaObj.mode) {
+			case 'internal':
+
+				const prefix = BUILDER_CONFIG.classPrefix;
+
+				const absoluteDomainEnable = (selfSlug !== null && mainArray.domain !== null && selfSlug !== "" && mainArray.domain !== "");
+				const absoluteDomain = (absoluteDomainEnable) ? `https://${mainArray.domain}` : "/";
+
+				// Constructing: prefix/assets/folder/name
+				return `${absoluteDomain}/${prefix}assets/${mediaObj.folder}/${mediaObj.name}`;
+
+			case 'external':
+				return mediaObj.url;
+
+			default:
+				return '';
+		}
+	},
+
+	curve: function(curveObj) {
+		if (!curveObj || !curveObj.mode) return "";
+
+		const mode = curveObj.mode;
+
+		// 1. System default (your design palette)
+		if (mode === "system") {
+			return "var(--animation-curve)";
+		}
+
+		// 2. Built‑in CSS curves
+		if (
+			mode === "linear" ||
+			mode === "ease" ||
+			mode === "ease-in" ||
+			mode === "ease-out" ||
+			mode === "ease-in-out"
+		) {
+			return mode;
+		}
+
+		// 3. Step()
+		if (mode === "step") {
+			const n = curveObj.stepNumber || 1;
+			const end = curveObj.changeAtEnd === true ? "end" : "start";
+			return `steps(${n}, ${end})`;
+		}
+
+		// 4. Cubic‑bezier()
+		if (mode === "cubic-bezier") {
+			const x1 = curveObj.x1 ?? 0;
+			const y1 = curveObj.y1 ?? 0;
+			const x2 = curveObj.x2 ?? 1;
+			const y2 = curveObj.y2 ?? 1;
+			return `cubic-bezier(${x1}, ${y1}, ${x2}, ${y2})`;
+		}
+
+		// 5. Unknown → fallback
+		return "var(--animation-curve)";
+	},
+};
+
+
+debugger; // FLAG for future change - flexEngineDefaultElements need to shift to new StyleVarible, for safety, keep the original ones, but we will delete soon after.
 /*
 Elements - those will define what the elements will be
 */
@@ -773,7 +2362,8 @@ const flexEngineDefaultElements = {
             {
                 name: "along",
                 label: "{Width/Height}",
-                type: "space"
+                type: "space",
+                defaultAsFull: true
             },
             {
                 name: "overflowAlong",
@@ -803,7 +2393,8 @@ const flexEngineDefaultElements = {
             {
                 name: "across",
                 label: "{Height/Width}",
-                type: "space"
+                type: "space",
+                defaultAsFull: true
             },
             {
                 name: "overflowAcross",
@@ -832,7 +2423,8 @@ const flexEngineDefaultElements = {
             {
                 name: "mobileMinHeight",
                 label: "Mobile Minimum Height",
-                type: "space"
+                type: "space",
+                defaultAsFull: true
             }
         ],
 
@@ -1163,7 +2755,8 @@ const flexEngineDefaultElements = {
             {
                 name: "along",
                 label: "{Width/Height}",
-                type: "space"
+                type: "space",
+                defaultAsFull: true
             },
             {
                 name: "overflowAlong",
@@ -1193,7 +2786,8 @@ const flexEngineDefaultElements = {
             {
                 name: "across",
                 label: "{Height/Width}",
-                type: "space"
+                type: "space",
+                defaultAsFull: true
             },
             {
                 name: "overflowAcross",
@@ -1222,7 +2816,8 @@ const flexEngineDefaultElements = {
             {
                 name: "mobileMinHeight",
                 label: "Mobile Minimum Height",
-                type: "space"
+                type: "space",
+                defaultAsFull: true
             }
         ],
 
@@ -2523,7 +4118,8 @@ const flexEngineDefaultElements = {
             {
                 name: "along",
                 label: "{Width/Height}",
-                type: "space"
+                type: "space",
+                defaultAsFull: true
             },
             {
                 name: "overflowAlong",
@@ -2553,7 +4149,8 @@ const flexEngineDefaultElements = {
             {
                 name: "across",
                 label: "{Height/Width}",
-                type: "space"
+                type: "space",
+                defaultAsFull: true
             },
             {
                 name: "overflowAcross",
@@ -2582,7 +4179,8 @@ const flexEngineDefaultElements = {
             {
                 name: "mobileMinHeight",
                 label: "Mobile Minimum Height",
-                type: "space"
+                type: "space",
+                defaultAsFull: true
             }
         ],
 
@@ -2813,31 +4411,3 @@ const flexEngineDefaultElements = {
     }
 };
 
-/**
- * How we check the Element? and element should be named like {catergory}/{name}, like basic/image
- * Set @global direct mean that's the only 1, and that will make only 1 can accapt this.
- * 
- * 
- * interactiveTextBox: a textbox just show it.
- * interactiveElements: a interactive elements.
- * boolean/checkmark: a true/false question (DONE)
- * media/img: a source file from image. (DONE)
- * media/audio: a source file from audio.
- * media/video: a source file from video.
- * string/textbox: just ask a longstring. (DONE)
- * string/text: ask for a short thing. (DONE)
- * string/url: ask for a URL. (DONE)
- * integer: appear a bar with the thing. or simply a number question for things. (DONE)
- * integer/noNeg: appear a bar with the thing. or simply a number question for things. (DONE)
- * selection: how they want the option and the value of that option, there will have choice. (DONE)
- * selection/popup: ask that like a popup to adjust mutiple choice setting. (DONE)
- * space: it ask a space query
- * 
- * one note: 
- * {Width/Hwight} when is along, {Height/Width} when is across
- * 
- * and also when it's unaliable shown, there will set something.
- * default is what you can fill before, default is blank or true.
- * 
- * 
- */
