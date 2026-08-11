@@ -22,6 +22,35 @@ const BUILDER_CONFIG = {
 
 
 
+/**
+ * How we check the Element? and element should be named like {catergory}/{name}, like basic/image
+ * Set @global direct mean that's the only 1, and that will make only 1 can accapt this.
+ * 
+ * 
+ * interactiveTextBox: a textbox just show it. (Done via system)
+ * interactiveElements: a interactive elements. (DONE via system)
+ * boolean/checkmark: a true/false question (DONE)
+ * media/img: a source file from image. (DONE)
+ * media/audio: a source file from audio. (DONE)
+ * media/video: a source file from video. (DONE)
+ * string/textbox: just ask a longstring. (DONE)
+ * string/text: ask for a short thing. (DONE)
+ * string/url: ask for a URL. (DONE)
+ * integer: appear a bar with the thing. or simply a number question for things. (DONE)
+ * integer/noNeg: appear a bar with the thing. or simply a number question for things. (DONE)
+ * selection: how they want the option and the value of that option, there will have choice. (DONE)
+ * selection/popup: ask that like a popup to adjust mutiple choice setting. (DONE)
+ * space: it ask a space query (DONE)
+ * 
+ * one note: 
+ * {Width/Hwight} when is along, {Height/Width} when is across
+ * 
+ * and also when it's unaliable shown, there will set something.
+ * default is what you can fill before, default is blank or true.
+ * 
+ * 
+ */
+
 /*
 Input type - those parts will define the input and how to process it to work.
 */
@@ -2153,36 +2182,12 @@ const flexEngineDefaultVaribles = {
     }
 };
 
-/**
- * How we check the Element? and element should be named like {catergory}/{name}, like basic/image
- * Set @global direct mean that's the only 1, and that will make only 1 can accapt this.
- * 
- * 
- * interactiveTextBox: a textbox just show it. (Done via system)
- * interactiveElements: a interactive elements. (DONE via system)
- * boolean/checkmark: a true/false question (DONE)
- * media/img: a source file from image. (DONE)
- * media/audio: a source file from audio. (DONE)
- * media/video: a source file from video. (DONE)
- * string/textbox: just ask a longstring. (DONE)
- * string/text: ask for a short thing. (DONE)
- * string/url: ask for a URL. (DONE)
- * integer: appear a bar with the thing. or simply a number question for things. (DONE)
- * integer/noNeg: appear a bar with the thing. or simply a number question for things. (DONE)
- * selection: how they want the option and the value of that option, there will have choice. (DONE)
- * selection/popup: ask that like a popup to adjust mutiple choice setting. (DONE)
- * space: it ask a space query (DONE)
- * 
- * one note: 
- * {Width/Hwight} when is along, {Height/Width} when is across
- * 
- * and also when it's unaliable shown, there will set something.
- * default is what you can fill before, default is blank or true.
- * 
- * 
- */
+/*
+ANimation sample!
+*/
+const flexEngineDefaultAnimation = {
 
-
+};
 
 
 
@@ -2429,7 +2434,7 @@ const flexEngineDefaultElements = {
                 },  
                 cssStyles: [
                     {
-                        object: "@root",
+                        object: "@context",
                         info: [
                             { key: "width", value: "100%" },
                             { key: "height", value: "100%" },
@@ -2727,7 +2732,7 @@ const flexEngineDefaultElements = {
                 },  
                 cssStyles: [
                     {
-                        object: "@root",
+                        object: "@context",
                         info: [
                             { key: "width", value: "100%" },
                             { key: "display", value: "block" }
@@ -2837,7 +2842,7 @@ const flexEngineDefaultElements = {
                 },
                 cssStyles: [
                     {
-                        object: "@root",
+                        object: "@context",
                         info: [
                             { key: "width", value: "100%" },
                             { key: "height", value: "auto" },
@@ -3021,7 +3026,7 @@ const flexEngineDefaultElements = {
 
                 cssStyles: [
                     {
-                        object: "@root",
+                        object: "@context",
                         info: [
                             { key: "width", value: "100%" },
                             { key: "aspect-ratio", value: "16 / 9" },
@@ -3207,7 +3212,7 @@ const flexEngineDefaultElements = {
 
                 cssStyles: [
                     {
-                        object: "@root",
+                        object: "@context",
                         info: [
                             { key: "width", value: "100%" },
                             { key: "aspect-ratio", value: "16 / 9" },
@@ -3458,7 +3463,7 @@ const flexEngineDefaultElements = {
 
                 cssStyles: [
                     {
-                        object: "@root",
+                        object: "@context",
                         info: [
                             { key: "width", value: "100%" },
                             { key: "height", value: "100%" },
@@ -3699,7 +3704,7 @@ const flexEngineDefaultElements = {
 
                 cssStyles: [
                     {
-                        object: "@root",
+                        object: "@context",
                         info: [
                             { key: "width", value: "100%" },
                             { key: "display", value: "block" },
@@ -3708,13 +3713,13 @@ const flexEngineDefaultElements = {
                         ]
                     },
                     {
-                        object: "@root-noscript",
+                        object: "@context-noscript",
                         info: [
                             { key: "display", value: "block" }
                         ]
                     },
                     {
-                        object: "@root-iframe",
+                        object: "@context-iframe",
                         info: [
                             { key: "width", value: "100%" },
                             { key: "border", value: "none" },
@@ -3769,7 +3774,7 @@ const flexEngineDefaultElements = {
 
                 contextFunction: function(dataArray, documentHTML, node) {
                     // Add data attribute
-                    node.setAttribute("data-cw-ytchannelid", dataArray.content.channelID);
+                    node.setAttribute(`data-${BUILDER_CONFIG.classPrefix}ytchannelid`, dataArray.content.channelID);
 
                     // Clear existing content
                     node.innerHTML = "";
@@ -3864,7 +3869,7 @@ const flexEngineDefaultElements = {
 
                 cssStyles: [
                     {
-                        object: "@root-preparing",
+                        object: "@context-preparing",
                         info: [
                             { key: "position", value: "absolute" },
                             { key: "inset", value: "0" },
@@ -4227,7 +4232,9 @@ const flexEngineDefaultElements = {
                 cssStyles: [],
 
                 settings: {
-                    sortablePart: "@root"
+                    sortablePart: function(elemnent){
+                        return element;
+                    }
                 }
             }     
         },
@@ -4307,7 +4314,6 @@ const flexEngineDefaultElements = {
                     }
                 ],
                 
-                // debugger
                 layoutQuery: [
                     {
                         name: "spaceAcross",
@@ -4328,13 +4334,13 @@ const flexEngineDefaultElements = {
                         choice: [
                             { label: "Top", value: 1 },
                             { label: "Center", value: 2 },
-                            { label: "Button", value: 3 }
+                            { label: "Buttom", value: 3 }
                         ],
                         default: 1
                     },
                     {
                         name: "overflow",
-                        label: "Overflow Behavior",
+                        label: "Height Overflow Behavior",
                         type: "selection",
                         choice: [
                             { label: "Scroll", value: 1 },
@@ -4345,7 +4351,7 @@ const flexEngineDefaultElements = {
                     },
                     {
                         name: "gap",
-                        label: "Gap",
+                        label: "Gaps Length",
                         type: "space"
                     },
                     {
@@ -4358,6 +4364,17 @@ const flexEngineDefaultElements = {
                         label: "Reverse Direction on Mobile?",
                         type: "boolean/checkmark",
                         default: false
+                    },
+                    {
+                        name: "displayType",
+                        label: "Maximum Width",
+                        type: "selection",
+                        choice: [
+                            { label: "Standard", value: 0 },
+                            { label: "Wide", value: 1 },
+                            { label: "Full", value: 2 }
+                        ],
+                        default: 0
                     }
                 ],
 
@@ -4424,29 +4441,67 @@ const flexEngineDefaultElements = {
                     }
 
                     // apply attributes
-                    const prefix = BUILDER_CONFIG.classPrefix + "styles-node";
-                    const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile";
+                    const prefix = BUILDER_CONFIG.classPrefix + "styles-node-atFirstChild";
+                    const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-atFirstChild";
 
                     node.setAttribute(prefix, cssOutput);
                     node.setAttribute(prefixMobile, cssMobileOutput);
+
+                    let innerNode = documentHTML.createElement("div");
+
+                    if (layout.displayType === 0) {
+                        innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-standard`);
+                    } else if(layout.displayType === 1) {
+                        innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-wide`);
+                    } else {
+                        innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-full`);
+                    }
 
                     // children
                     if (Array.isArray(dataArray.context)) {
                         dataArray.context.forEach(ctx => {
                             const childNode = createAnotherNode(ctx, documentHTML, true);
                             if (childNode) {
-                                node.appendChild(childNode);
+                                innerNode.appendChild(childNode);
                             }
                         });
                     }
+
+                    node.appendChild(innerNode);
                 },
 
                 jsRuntime: {},
 
-                cssStyles: {},
+                cssStyles: [
+                    {
+                        object: "@context-full",
+                        info: [
+                            { key: "width", value: "100%" },
+                            { key: "height", value: "100%" }
+                        ]
+                    },
+                    {
+                        object: "@context-wide",
+                        info: [
+                            { key: "width", value: "100%" },
+                            { key: "height", value: "100%" },
+                            { key: "max-width", value: "1600px" }
+                        ]
+                    },
+                    {
+                        object: "@context-standard",
+                        info: [
+                            { key: "width", value: "100%" },
+                            { key: "height", value: "100%" },
+                            { key: "max-width", value: "1200px" }
+                        ]
+                    }
+                ],
 
                 settings: {
-                    sortablePart: "@root",
+                    sortablePart: function(element) {
+                        return element.firstElementChild;
+                    },
                     elementType: "section"
                 }
             }

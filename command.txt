@@ -1,0 +1,16 @@
+now the next one:
+the real challenge:
+const flexEngineDefaultAnimation = {
+
+};
+
+is what it show:
+
+now inside, do like this:
+
+number_as_code: {
+name: "say the name here",
+query: [],
+animation: "enter the css styles, I will provide to you"
+animationVaribleProcess
+}
