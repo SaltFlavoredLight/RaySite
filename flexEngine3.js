@@ -148,6 +148,8 @@ const SizeSettingList = {
 	}
 };
 
+
+
 // Some helping function control the style.
 // Style
 const defalutAppearance = (s) => {
@@ -965,88 +967,7 @@ const flexEngineAnimationSection = function(dataArray, node, expend) {
 };
 
 // create a new Section, SECTION (3)
-const flexengineCreateSection = function(dataArray, documentHTML) {
-	// Create a new node
-	if (dataArray.type === "section") {
-		const node = documentHTML.createElement("section");
-		node.classList.add(`${BUILDER_CONFIG.classPrefix}section`);
-	} 
-
-	// setup basic attributes
-	node.id = dataArray.JSID;
-
-	node.classList.add(`${BUILDER_CONFIG.classPrefix}${dataArray.id}`);
-
-	// This is the layout part, for all node above is using external element, but here is simple......
-	const layout = dataArray.layout;
-
-	// Map the style layout first.
-	const acrossMap = ["", "justify-start", "justify-center", "justify-end", "justify-stretch"];
-	const alongMap = ["", "align-start", "align-center", "align-end"];
-	const overflowMap = ["", "overflow-scroll", "overflow-hidden", ""];
-
-	let cssOutput = "";
-	let cssMobileOutput = "";
-
-	if (layout.spaceAcross) {
-		const rule = acrossMap[layout.spaceAcross];
-		cssOutput += `.${prefix}-${rule}{justify-content:${flexEngineStyleVariable.justify[rule]};}`;
-	}
-
-	if (layout.spaceAlong) {
-		const rule = alongMap[layout.spaceAlong];
-		cssOutput += `.${prefix}-${rule}{align-items:${flexEngineStyleVariable.align[rule]};}`;
-	}
-
-	if (layout.overflow && overflowMap[layout.overflow]) {
-		const rule = overflowMap[layout.overflow];
-		cssOutput += `.${prefix}-${rule}{overflow:${flexEngineStyleVariable.overflow[rule]};}`;
-	}
-
-	if (layout.gap !== undefined) {
-		const gapValue = flexEngineStyleVariable.space[layout.gap];
-		cssOutput += `.${prefix}-gap-${gapValue}{gap:${gapValue};}`;
-	}
-
-	if (layout.mobileReverseDirection) {
-		cssMobileOutput += `.${prefixMobile}-reverse{flex-direction:column-reverse;}`;
-	}
-
-	if (layout.mobileGap !== undefined) {
-		const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
-		cssMobileOutput += `.${prefixMobile}-gap-${gapValue}{gap:${gapValue};}`;
-	}
-
-	// apply
-	const prefix = BUILDER_CONFIG.classPrefix + "styles-node";
-	const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile";
-
-	node.setAttribute(prefix, cssOutput);
-	node.setAttribute(prefixMobile, cssMobileOutput);
-
-	// Next add all the Child
-	if (Array.isArray(dataArray.context)) {
-		dataArray.context.forEach(ctx => {
-			const childNode = flexEngineCreateEndNode(ctx, documentHTML, true);
-			if (childNode) {
-				node.appendChild(childNode);
-			}
-		});
-	}
-
-	//then start with now
-	// Here is next Styling system
-	flexEngineStylingSystem(dataArray, node, true, 3);
-
-	// animation self, first from the Animation node.....
-	flexEngineAnimationSection(dataArray, node, true);
-
-	// Transition get from the END NODE (1)
-	flexEngineTransitionContextsNode(dataArray, node);
-
-	// Send everything back!
-	return node;
-};
+// moved
 
 /*
 POPUP (4) LEVEL
