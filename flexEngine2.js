@@ -1966,13 +1966,12 @@ const flexEngineDefaultVaribles = {
                 constructor(dataArray, entryElement) {
                     this.THEME_LEVELS = ["tiny", "small", "mSmall", "medium", "large", "extraLarge"];
                     this.VALID_UNITS = ['px', 'rem', 'em', '%', 'vw', 'vh', 'vmin', 'vmax', 'ch'];
-                    // Use dataArray reference directly (which will be a Proxy)
+                    debugger; // later you need replace 60px to what should it be.
                     this.dataArray = dataArray && typeof dataArray === 'object' ? dataArray : {
                         mode: "px",
                         value: 60
                     };
                     this.entryElement = entryElement;
-                    // Helper method to mutate object properties so the Proxy traps trigger
                     this.updateData = (newData) => {
                         Object.keys(this.dataArray).forEach(k => delete this.dataArray[k]);
                         Object.assign(this.dataArray, newData);
@@ -1999,16 +1998,15 @@ const flexEngineDefaultVaribles = {
                     const numInput = document.createElement("input");
                     numInput.type = "number";
                     numInput.className = "space-number-input";
-                    numInput.min = "0";
-                    numInput.max = "100";
+                    
                     const select = document.createElement("select");
                     select.className = "space-mode-select";
                     const options = [{
-                        label: "px",
-                        value: "px"
-                    }, {
                         label: "theme",
                         value: "variables"
+                    }, {
+                        label: "px",
+                        value: "px"
                     }, {
                         label: "auto",
                         value: "auto"
@@ -2049,6 +2047,7 @@ const flexEngineDefaultVaribles = {
                     container.appendChild(sliderWrap);
                     container.appendChild(numInput);
                     container.appendChild(select);
+
                     const updateTicks = (idx) => {
                         const segs = ticksBg.querySelectorAll(".space-tick-seg");
                         segs.forEach((seg, i) => {
@@ -2082,18 +2081,11 @@ const flexEngineDefaultVaribles = {
                             updateTicks(idx);
                             updateTooltipPosition(idx);
                         } else if (this.VALID_UNITS.includes(mode)) {
-                            sliderWrap.style.display = "flex";
+                            sliderWrap.style.display = "none";
                             numInput.style.display = "block";
                             ticksBg.style.display = "none";
                             tooltip.style.display = "none";
-                            slider.classList.remove("theme-mode");
-                            slider.min = "0";
-                            slider.max = "100";
-                            slider.step = "1";
                             let val = this.dataArray.value !== undefined ? Number(this.dataArray.value) : 60;
-                            if (val > 100) val = 100;
-                            if (val < 0) val = 0;
-                            slider.value = val;
                             numInput.value = val;
                             this.updateData({
                                 mode: mode,
@@ -2108,40 +2100,33 @@ const flexEngineDefaultVaribles = {
                             });
                         }
                     };
+
                     select.value = this.dataArray.mode || "px";
                     select.addEventListener("change", syncUI);
+                    
                     slider.addEventListener("input", (e) => {
                         const val = Number(e.target.value);
-                        const mode = select.value;
-                        if (mode === "variables") {
+                        if (select.value === "variables") {
                             this.updateData({
                                 mode: "variables",
                                 variables: this.THEME_LEVELS[val]
                             });
                             updateTicks(val);
                             updateTooltipPosition(val);
-                        } else {
-                            this.updateData({
-                                mode: mode,
-                                value: val
-                            });
-                            numInput.value = val;
                         }
                     });
+
                     numInput.addEventListener("input", (e) => {
                         let val = Number(e.target.value);
-                        if (val > 100) val = 100;
-                        if (val < 0) val = 0;
                         this.updateData({
                             mode: select.value,
                             value: val
                         });
-                        slider.value = val;
                     });
+
                     syncUI();
                     this.entryElement.innerHTML = "";
                     this.entryElement.appendChild(container);
-                    // Fixed constructor: DO NOT return custom object `{ code: 0 }`
                 }
                 onSave() {
                     return this.dataArray;
@@ -2199,157 +2184,6 @@ const flexEngineDefaultVaribles = {
 
 
 
-debugger; // FLAG for future change - flexEngineDefaultElements need to shift to new StyleVarible, for safety, keep the original ones, but we will delete soon after.
-// Variable system
-const flexEngineStyleVarible = {
-	color: function(colorObj) {
-		if (!colorObj || !colorObj.mode) return 'transparent';
-
-		switch (colorObj.mode) {
-			case 'hex':
-				return colorObj.hex;
-
-			case 'linearGradient':
-				// Map the stops array into "color offset, color offset" format
-				const gradientStops = colorObj.stops
-					.map(stop => `${stop.color} ${stop.offset}`)
-					.join(', ');
-				return `linear-gradient(${colorObj.angle}, ${gradientStops})`;
-
-			case 'backgroundIMG':
-				const repeat = `${colorObj.repeatX ? 'repeat-x' : ''} ${colorObj.repeatY ? 'repeat-y' : ''}`.trim() || 'no-repeat';
-
-				// Mapping 1-3 to CSS position keywords
-				const posX = ['left', 'center', 'right'][colorObj.positionX - 1] || 'center';
-				const posY = ['top', 'center', 'bottom'][colorObj.positionY - 1] || 'center';
-				const attachment = colorObj.attachment ? 'fixed' : 'scroll';
-
-				// If a color overlay is provided, we use a linear-gradient trick 
-				// to layer the color over the image.
-				if (colorObj.coloroverlay && colorObj.coloroverlay !== 'transparent') {
-					return `linear-gradient(${colorObj.coloroverlay}, ${colorObj.coloroverlay}), url("${colorObj.src}") ${posX} ${posY} / auto ${repeat} ${attachment}`;
-				}
-				return `url("${colorObj.src}") ${posX} ${posY} / auto ${repeat} ${attachment}`;
-
-			case 'variables':
-				return `var(--${colorObj.variables})`;
-
-			case 'inherit':
-				return 'inherit';
-
-			case 'none':
-			default:
-				return 'transparent';
-		}
-	},
-
-	space: function(spaceObj) {
-		if (!spaceObj || !spaceObj.mode) return '0px';
-
-		switch (spaceObj.mode) {
-			case 'auto':
-				return 'auto';
-
-            case 'none':
-                return '0px';
-
-			case 'variables':
-				return `var(--${BUILDER_CONFIG.classPrefix + spaceObj.variables})`;
-
-				// Handles: px, rem, em, %, vw, vh, vmin, vmax, ch
-			default:
-				const validUnits = ['px', 'rem', 'em', '%', 'vw', 'vh', 'vmin', 'vmax', 'ch'];
-				if (validUnits.includes(spaceObj.mode)) {
-					return `${spaceObj.value}${spaceObj.mode}`;
-				}
-
-				// Fallback for unexpected modes
-				return '0px';
-		}
-	},
-
-	media: function(mediaObj) {
-		if (!mediaObj || !mediaObj.mode) return '';
-
-		switch (mediaObj.mode) {
-			case 'internal':
-				const prefix = BUILDER_CONFIG.classPrefix;
-
-				// Constructing: prefix/assets/folder/name
-				return `/${prefix}assets/${mediaObj.folder}/${mediaObj.name}`;
-
-			case 'external':
-				return mediaObj.url;
-
-			default:
-				return '';
-		}
-	},
-
-	// for Head only
-	absMedia: function(mediaObj, mainArray, selfSlug) {
-		if (!mediaObj || !mediaObj.mode) return '';
-
-		switch (mediaObj.mode) {
-			case 'internal':
-
-				const prefix = BUILDER_CONFIG.classPrefix;
-
-				const absoluteDomainEnable = (selfSlug !== null && mainArray.domain !== null && selfSlug !== "" && mainArray.domain !== "");
-				const absoluteDomain = (absoluteDomainEnable) ? `https://${mainArray.domain}` : "/";
-
-				// Constructing: prefix/assets/folder/name
-				return `${absoluteDomain}/${prefix}assets/${mediaObj.folder}/${mediaObj.name}`;
-
-			case 'external':
-				return mediaObj.url;
-
-			default:
-				return '';
-		}
-	},
-
-	curve: function(curveObj) {
-		if (!curveObj || !curveObj.mode) return "";
-
-		const mode = curveObj.mode;
-
-		// 1. System default (your design palette)
-		if (mode === "system") {
-			return "var(--animation-curve)";
-		}
-
-		// 2. Built‑in CSS curves
-		if (
-			mode === "linear" ||
-			mode === "ease" ||
-			mode === "ease-in" ||
-			mode === "ease-out" ||
-			mode === "ease-in-out"
-		) {
-			return mode;
-		}
-
-		// 3. Step()
-		if (mode === "step") {
-			const n = curveObj.stepNumber || 1;
-			const end = curveObj.changeAtEnd === true ? "end" : "start";
-			return `steps(${n}, ${end})`;
-		}
-
-		// 4. Cubic‑bezier()
-		if (mode === "cubic-bezier") {
-			const x1 = curveObj.x1 ?? 0;
-			const y1 = curveObj.y1 ?? 0;
-			const x2 = curveObj.x2 ?? 1;
-			const y2 = curveObj.y2 ?? 1;
-			return `cubic-bezier(${x1}, ${y1}, ${x2}, ${y2})`;
-		}
-
-		// 5. Unknown → fallback
-		return "var(--animation-curve)";
-	},
-};
 
 
 debugger; // FLAG for future change - flexEngineDefaultElements need to shift to new StyleVarible, for safety, keep the original ones, but we will delete soon after.
@@ -2746,7 +2580,7 @@ const flexEngineDefaultElements = {
         setting: {
             systemClass: true,
             allowedSortIn: false, // Work at End node
-            allowedSortTo: ["container", "@root/section", "@root/CTA", "@root/Footer"]
+            allowedSortTo: ["container", "section/section", "@root/popup", "@root/CTA", "@root/Footer"]
         }
     },
     
@@ -4109,7 +3943,7 @@ const flexEngineDefaultElements = {
         setting: {
             systemClass: true,
             allowedSortIn: false,
-            allowedSortTo: ["container", "@root/section", "@root/CTA", "@root/Footer"]
+            allowedSortTo: ["container", "section/section", "@root/popup", "@root/CTA", "@root/Footer"]
         }
     },
 
@@ -4324,7 +4158,7 @@ const flexEngineDefaultElements = {
 
                 initFunction: null,
 
-                contextFunction: function(dataArray, documentHTML, node) {
+                contextFunction: function(dataArray, documentHTML, node, createAnotherNode) {
                     const layout = dataArray.layout || {};
                     const content = dataArray.content;
 
@@ -4381,7 +4215,7 @@ const flexEngineDefaultElements = {
                     if (Array.isArray(content)) {
                         content.forEach(childData => {
                             if (childData) {
-                                const childNode = flexEngineCreateEndNode(childData, documentHTML, isVertical);
+                                const childNode = createAnotherNode(childData, documentHTML, isVertical);
                                 if (childNode) node.appendChild(childNode);
                             }
                         });
@@ -4401,8 +4235,232 @@ const flexEngineDefaultElements = {
         setting: {
             systemClass: true,
             allowedSortIn: true,
-            allowedSortTo: ["root/section", "@root/CTA", "@root/Footer"],
+            allowedSortTo: ["container", "section/section", "@root/popup", "@root/CTA", "@root/Footer"],
         }
+    },
+
+    section: {
+        sizeQuery: [
+            {
+                name: "height",
+                label: "Height",
+                type: "space",
+                defaultAsFull: true
+            },
+            {
+                name: "alongGrow",
+                label: "Allow section grow?",
+                type: "boolean/checkmark"
+            },
+            {
+                name: "alongShrink",
+                label: "Allow section shrink?",
+                type: "boolean/checkmark"
+            },
+            {
+                name: "mobileMinHeight",
+                label: "Mobile Minimum Height",
+                type: "space",
+                defaultAsFull: true
+            }
+        ],
+
+        sizeDefault: (sz, isVertical) => {
+            return {
+                "width": "100%",
+                "height": flexEngineStyleVarible.space(sz.height),
+                "flex-grow": sz.alongGrow === true ? 1 : 0,
+                "flex-shrink": sz.alongShrink === true ? 1 : 0,
+                "overflow-x": "visible",
+                "overflow-y": "visible",
+                "align-self": "center"
+            };
+        },
+
+        sizeMobile: (sz, isVertical) => {
+            return {
+                "min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
+            };
+        },
+
+        elements: {
+            section: {
+                name: "Section",
+                className: "section",
+
+                alts: ["section", "Section"],
+
+                icon: `
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 -960 960 960"
+                        fill="currentColor"
+                        class="RaySiteUI-c-svg">
+                        <path d="M216-216v-144 16-4 132Zm-.3 72q-32.7 0-52.2-19.5T144-216v-144q0-33 19.5-52.5T216-432h528q33 0 52.5 19.5T816-360H216v144h396v72H215.7Zm.3-384q-33 0-52.5-19.5T144-600v-144q0-33 19.5-52.5T216-816h528q33 0 52.5 19.5T816-744v144q0 33-19.5 52.5T744-528H216Zm0-72h528v-144H216v144Zm0 0v-144 144ZM744-84v-60h-60v-72h60v-60h72v60h60v72h-60v60h-72Z"/>
+                    </svg>
+                `,
+
+                contentQuery: [
+                    {
+                        name: "@global",
+                        label: "Elements",
+                        type: "interactiveElements"
+                    }
+                ],
+                
+                // debugger
+                layoutQuery: [
+                    {
+                        name: "spaceAcross",
+                        label: "Align it to...",
+                        type: "selection",
+                        choice: [
+                            { label: "Left", value: 1 },
+                            { label: "Center", value: 2 },
+                            { label: "Right", value: 3 },
+                            { label: "Stretch it", value: 4 }
+                        ],
+                        default: 1
+                    },
+                    {
+                        name: "spaceAlong",
+                        label: "in Height, perfer...",
+                        type: "selection",
+                        choice: [
+                            { label: "Top", value: 1 },
+                            { label: "Center", value: 2 },
+                            { label: "Button", value: 3 }
+                        ],
+                        default: 1
+                    },
+                    {
+                        name: "overflow",
+                        label: "Overflow Behavior",
+                        type: "selection",
+                        choice: [
+                            { label: "Scroll", value: 1 },
+                            { label: "Hidden", value: 2 },
+                            { label: "No Action", value: 3 }
+                        ],
+                        default: 3
+                    },
+                    {
+                        name: "gap",
+                        label: "Gap",
+                        type: "space"
+                    },
+                    {
+                        name: "mobileGap",
+                        label: "Gap on Mobile",
+                        type: "space"
+                    },
+                    {
+                        name: "mobileReverseDirection",
+                        label: "Reverse Direction on Mobile?",
+                        type: "boolean/checkmark",
+                        default: false
+                    }
+                ],
+
+                initQuery: [],
+
+                initFunction: function(dataArray, element) {
+                    debugger; // in future we will add some default views
+                },
+
+
+                contentFunction: function(dataArray, documentHTML, node, createAnotherNode) {
+                    const layout = dataArray.layout;
+                    let cssOutput = "";
+                    let cssMobileOutput = "";
+
+                    // spaceAcross
+                    if (layout.spaceAcross) {
+                        const map = {
+                            1: "flex-start",
+                            2: "center",
+                            3: "flex-end",
+                            4: "stretch"
+                        };
+                        cssOutput += `justify-content:${map[layout.spaceAcross]};`;
+                    }
+
+                    // spaceAlong
+                    if (layout.spaceAlong) {
+                        const map = {
+                            1: "flex-start",
+                            2: "center",
+                            3: "flex-end"
+                        };
+                        cssOutput += `align-items:${map[layout.spaceAlong]};`;
+                    }
+
+                    // overflow
+                    if (layout.overflow) {
+                        const map = {
+                            1: "scroll",
+                            2: "hidden",
+                            3: null
+                        };
+                        if (map[layout.overflow]) {
+                            cssOutput += `overflow:${map[layout.overflow]};`;
+                        }
+                    }
+
+                    // gap
+                    if (layout.gap !== undefined) {
+                        const gapValue = flexEngineStyleVariable.space[layout.gap];
+                        cssOutput += `gap:${gapValue};`;
+                    }
+
+                    // mobile reverse direction
+                    if (layout.mobileReverseDirection) {
+                        cssMobileOutput += `flex-direction:column-reverse;`;
+                    }
+
+                    // mobile gap
+                    if (layout.mobileGap !== undefined) {
+                        const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
+                        cssMobileOutput += `gap:${gapValue};`;
+                    }
+
+                    // apply attributes
+                    const prefix = BUILDER_CONFIG.classPrefix + "styles-node";
+                    const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile";
+
+                    node.setAttribute(prefix, cssOutput);
+                    node.setAttribute(prefixMobile, cssMobileOutput);
+
+                    // children
+                    if (Array.isArray(dataArray.context)) {
+                        dataArray.context.forEach(ctx => {
+                            const childNode = createAnotherNode(ctx, documentHTML, true);
+                            if (childNode) {
+                                node.appendChild(childNode);
+                            }
+                        });
+                    }
+                },
+
+                jsRuntime: {},
+
+                cssStyles: {},
+
+                settings: {
+                    sortablePart: "@root",
+                    elementType: "section"
+                }
+            }
+        },
+
+        setting: {
+            systemClass: true,
+            allowedSortIn: true,
+            allowedSortTo: ["@root/popup", "@root/CTA", "@root/Footer"]
+        }
+    },
+
+    header: {
+
     },
 
     /* System wide class: Root cannot be used, and it sort differently */
