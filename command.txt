@@ -14,3 +14,12 @@ query: [],
 animation: "enter the css styles, I will provide to you"
 animationVaribleProcess
 }
+
+
+## Todo:
+Fix the problem with varibles: use new code system
+
+first provide a Animation editor. create a curve/curve
+
+then, use each setting, check those setting like space, degrees and number stuff.
+
