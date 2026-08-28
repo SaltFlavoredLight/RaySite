@@ -119,7 +119,9 @@ const flexEngineDefaultVaribles = {
 
                     this.entryElement.innerHTML = "";
                     this.entryElement.appendChild(input);
+                }
 
+                initResult() {
                     return { code: 0 };
                     // 0: everything OK!
                     // 1: No, happend the error.
@@ -190,6 +192,400 @@ const flexEngineDefaultVaribles = {
             render: function(dataArray, elementSetting) {
                 return dataArray;
             }
+        },
+
+        slide: {
+            strutureSample: 0,
+            displayType: "large",
+
+            cssStyles: [{
+                object: ".slide-numbers-container",
+                info: [
+                    { key: "height", value: "60px" },
+                    { key: "max-height", value: "60px" },
+                    { key: "width", value: "100%" },
+                    { key: "display", value: "flex" },
+                    { key: "align-items", value: "center" },
+                    { key: "justify-content", value: "flex-end" },
+                    { key: "gap", value: "10px" },
+                    { key: "padding", value: "0 12px" },
+                    { key: "box-sizing", value: "border-box" },
+                    { key: "overflow", value: "hidden" },
+                    { key: "background", value: "#ffffff" },
+                    { key: "border", value: "1px solid #d2d2d7" },
+                    { key: "border-radius", value: "8px" }
+                ]
+            }, {
+                object: ".slide-numbers-slider-wrap",
+                info: [
+                    { key: "position", value: "relative" },
+                    { key: "flex", value: "1" },
+                    { key: "height", value: "100%" },
+                    { key: "display", value: "flex" },
+                    { key: "align-items", value: "center" }
+                ]
+            }, {
+                object: ".slide-numbers-ticks-bg",
+                info: [
+                    { key: "position", value: "absolute" },
+                    { key: "width", value: "100%" },
+                    { key: "height", value: "4px" },
+                    { key: "display", value: "flex" },
+                    { key: "gap", value: "3px" },
+                    { key: "pointer-events", value: "none" },
+                    { key: "z-index", value: "1" }
+                ]
+            }, {
+                object: ".slide-numbers-tick-seg",
+                info: [
+                    { key: "flex", value: "1" },
+                    { key: "height", value: "100%" },
+                    { key: "background", value: "#e5e7eb" },
+                    { key: "border-radius", value: "2px" }
+                ]
+            }, {
+                object: ".slide-numbers-tick-seg.active",
+                info: [
+                    { key: "background", value: "#2563eb" }
+                ]
+            }, {
+                object: ".slide-numbers-range-input",
+                info: [
+                    { key: "-webkit-appearance", value: "none" },
+                    { key: "appearance", value: "none" },
+                    { key: "width", value: "100%" },
+                    { key: "height", value: "4px" },
+                    { key: "background", value: "#e5e7eb" },
+                    { key: "border-radius", value: "2px" },
+                    { key: "outline", value: "none" },
+                    { key: "cursor", value: "pointer" },
+                    { key: "position", value: "relative" },
+                    { key: "z-index", value: "2" },
+                    { key: "margin", value: "0" }
+                ]
+            }, {
+                object: ".slide-numbers-slider-tooltip",
+                info: [
+                    { key: "position", value: "absolute" },
+                    { key: "bottom", value: "4px" },
+                    { key: "transform", value: "translateX(-50%)" },
+                    { key: "background", value: "#262626" },
+                    { key: "color", value: "#ffffff" },
+                    { key: "font-size", value: "11px" },
+                    { key: "font-weight", value: "600" },
+                    { key: "padding", value: "2px 6px" },
+                    { key: "border-radius", value: "4px" },
+                    { key: "white-space", value: "nowrap" },
+                    { key: "pointer-events", value: "none" },
+                    { key: "z-index", value: "10" }
+                ]
+            }],
+
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    this.dataArray = Number(dataArray) || 0;
+                    this.entryElement = entryElement;
+
+                    this.min = Number(elementSetting.min);
+                    this.max = Number(elementSetting.max);
+                    this.gap = Number(elementSetting.gap);
+                    this.nameList = Array.isArray(elementSetting.name) ? elementSetting.name : [];
+
+                    this.steps = [];
+                    let current = this.min;
+
+                    while (current < this.max) {
+                        this.steps.push(current);
+                        current += this.gap;
+                    }
+                    this.steps.push(this.max);
+
+                    const container = document.createElement("div");
+                    container.className = "slide-numbers-container";
+
+                    const sliderWrap = document.createElement("div");
+                    sliderWrap.className = "slide-numbers-slider-wrap";
+
+                    const ticksBg = document.createElement("div");
+                    ticksBg.className = "slide-numbers-ticks-bg";
+
+                    for (let i = 0; i < this.steps.length; i++) {
+                        const seg = document.createElement("div");
+                        seg.className = "slide-numbers-tick-seg";
+                        ticksBg.appendChild(seg);
+                    }
+
+                    const slider = document.createElement("input");
+                    slider.type = "range";
+                    slider.className = "slide-numbers-range-input";
+                    slider.min = 0;
+                    slider.max = this.steps.length - 1;
+                    slider.step = 1;
+
+                    const tooltip = document.createElement("div");
+                    tooltip.className = "slide-numbers-slider-tooltip";
+
+                    sliderWrap.appendChild(ticksBg);
+                    sliderWrap.appendChild(slider);
+                    sliderWrap.appendChild(tooltip);
+
+                    container.appendChild(sliderWrap);
+
+                    const updateTicks = (idx) => {
+                        const segs = ticksBg.querySelectorAll(".slide-numbers-tick-seg");
+                        segs.forEach((seg, i) => {
+                            if (i <= idx) seg.classList.add("active");
+                            else seg.classList.remove("active");
+                        });
+                    };
+
+                    const findLabel = (value) => {
+                        const found = this.nameList.find(n => Number(n.value) === Number(value));
+                        return found ? found.label : value;
+                    };
+
+                    const updateTooltip = (idx) => {
+                        const value = this.steps[idx];
+                        tooltip.textContent = findLabel(value);
+                        const pct = idx / (this.steps.length - 1);
+                        tooltip.style.left = `calc(${pct * 100}% - ${(pct - 0.5) * 16}px)`;
+                    };
+
+                    slider.addEventListener("input", (e) => {
+                        const idx = Number(e.target.value);
+                        const value = this.steps[idx];
+
+                        this.dataArray = value;
+
+                        updateTicks(idx);
+                        updateTooltip(idx);
+                    });
+
+                    const initialIndex = this.steps.indexOf(this.dataArray);
+                    slider.value = initialIndex === -1 ? 0 : initialIndex;
+
+                    updateTicks(slider.value);
+                    updateTooltip(slider.value);
+
+                    entryElement.innerHTML = "";
+                    entryElement.appendChild(container);
+                }
+
+                initResult() {
+                    return { code: 0 };
+                }
+
+                onSave() {
+                    return this.dataArray;
+                }
+            },
+
+            render: function(dataArray) {
+                return Number(dataArray);
+            }
+        },
+
+        segment: {
+            strutureSample: 0,
+            displayType: "large",
+
+            cssStyles: [
+                {
+                    object: ".slide-numbers-container",
+                    info: [
+                        { key: "height", value: "60px" },
+                        { key: "max-height", value: "60px" },
+                        { key: "width", value: "100%" },
+                        { key: "display", value: "flex" },
+                        { key: "align-items", value: "center" },
+                        { key: "justify-content", value: "flex-end" },
+                        { key: "gap", value: "10px" },
+                        { key: "padding", value: "0 12px" },
+                        { key: "box-sizing", value: "border-box" },
+                        { key: "overflow", value: "hidden" },
+                        { key: "background", value: "#ffffff" },
+                        { key: "border", value: "1px solid #d2d2d7" },
+                        { key: "border-radius", value: "8px" }
+                    ]
+                },
+                {
+                    object: ".slide-numbers-slider-wrap",
+                    info: [
+                        { key: "position", value: "relative" },
+                        { key: "flex", value: "1" },
+                        { key: "height", value: "100%" },
+                        { key: "display", value: "flex" },
+                        { key: "align-items", value: "center" }
+                    ]
+                },
+                {
+                    object: ".slide-numbers-ticks-bg",
+                    info: [
+                        { key: "position", value: "absolute" },
+                        { key: "top", value: "50%" },
+                        { key: "transform", value: "translateY(-50%)" },
+                        { key: "width", value: "100%" },
+                        { key: "height", value: "4px" },
+                        { key: "display", value: "flex" },
+                        { key: "gap", value: "3px" },
+                        { key: "pointer-events", value: "none" },
+                        { key: "z-index", value: "1" }
+                    ]
+                },
+                {
+                    object: ".slide-numbers-tick-seg",
+                    info: [
+                        { key: "flex", value: "1" },
+                        { key: "height", value: "100%" },
+                        { key: "background", value: "#e5e7eb" },
+                        { key: "border-radius", value: "2px" }
+                    ]
+                },
+                {
+                    object: ".slide-numbers-tick-seg.active",
+                    info: [
+                        { key: "background", value: "#2563eb" }
+                    ]
+                },
+                {
+                    object: ".slide-numbers-range-input",
+                    info: [
+                        { key: "-webkit-appearance", value: "none" },
+                        { key: "appearance", value: "none" },
+                        { key: "width", value: "100%" },
+                        { key: "height", value: "4px" },
+                        { key: "background", value: "transparent" },
+                        { key: "border-radius", value: "2px" },
+                        { key: "outline", value: "none" },
+                        { key: "cursor", value: "pointer" },
+                        { key: "position", value: "relative" },
+                        { key: "z-index", value: "2" },
+                        { key: "margin", value: "0" }
+                    ]
+                },
+                {
+                    object: ".slide-numbers-slider-tooltip",
+                    info: [
+                        { key: "position", value: "absolute" },
+                        { key: "bottom", value: "4px" },
+                        { key: "transform", value: "translateX(-50%)" },
+                        { key: "background", value: "#262626" },
+                        { key: "color", value: "#ffffff" },
+                        { key: "font-size", value: "11px" },
+                        { key: "font-weight", value: "600" },
+                        { key: "padding", value: "2px 6px" },
+                        { key: "border-radius", value: "4px" },
+                        { key: "white-space", value: "nowrap" },
+                        { key: "pointer-events", value: "none" },
+                        { key: "z-index", value: "10" }
+                    ]
+                }
+            ],
+
+
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    this.dataArray = Number(dataArray) || 0;
+                    this.entryElement = entryElement;
+
+                    this.min = Number(elementSetting.min);
+                    this.max = Number(elementSetting.max);
+                    this.gap = Number(elementSetting.gap);
+                    this.nameList = Array.isArray(elementSetting.name) ? elementSetting.name : [];
+
+                    this.steps = [];
+                    let current = this.min;
+
+                    while (current < this.max) {
+                        this.steps.push(current);
+                        current += this.gap;
+                    }
+                    this.steps.push(this.max);
+
+                    const container = document.createElement("div");
+                    container.className = "slide-numbers-container";
+
+                    const sliderWrap = document.createElement("div");
+                    sliderWrap.className = "slide-numbers-slider-wrap";
+
+                    const ticksBg = document.createElement("div");
+                    ticksBg.className = "slide-numbers-ticks-bg";
+
+                    for (let i = 0; i < this.steps.length - 1; i++) {
+                        const seg = document.createElement("div");
+                        seg.className = "slide-numbers-tick-seg";
+                        ticksBg.appendChild(seg);
+                    }
+
+                    const slider = document.createElement("input");
+                    slider.type = "range";
+                    slider.className = "slide-numbers-range-input";
+                    slider.min = 0;
+                    slider.max = this.steps.length - 1;
+                    slider.step = 1;
+
+                    const tooltip = document.createElement("div");
+                    tooltip.className = "slide-numbers-slider-tooltip";
+
+                    sliderWrap.appendChild(ticksBg);
+                    sliderWrap.appendChild(slider);
+                    sliderWrap.appendChild(tooltip);
+
+                    container.appendChild(sliderWrap);
+
+                    const updateTicks = (idx) => {
+                        const segs = ticksBg.querySelectorAll(".slide-numbers-tick-seg");
+                        segs.forEach((seg, i) => {
+                            if (i < idx) seg.classList.add("active");
+                            else seg.classList.remove("active");
+                        });
+                    };
+
+                    const findLabel = (value) => {
+                        const found = this.nameList.find(n => Number(n.value) === Number(value));
+                        return found ? found.label : value;
+                    };
+
+                    const updateTooltip = (idx) => {
+                        const value = this.steps[idx];
+                        tooltip.textContent = findLabel(value);
+
+                        const pct = idx / (this.steps.length - 1);
+                        tooltip.style.left = `calc(${pct * 100}% - ${(pct - 0.5) * 16}px)`;
+                    };
+
+                    slider.addEventListener("input", (e) => {
+                        const idx = Number(e.target.value);
+                        const value = this.steps[idx];
+
+                        this.dataArray = value;
+
+                        updateTicks(idx);
+                        updateTooltip(idx);
+                    });
+
+                    const initialIndex = this.steps.indexOf(this.dataArray);
+                    slider.value = initialIndex === -1 ? 0 : initialIndex;
+
+                    updateTicks(slider.value);
+                    updateTooltip(slider.value);
+
+                    entryElement.innerHTML = "";
+                    entryElement.appendChild(container);
+                }
+
+                initResult() {
+                    return { code: 0 };
+                }
+
+                onSave() {
+                    return this.dataArray;
+                }
+            },
+
+            render: function(dataArray) {
+                return Number(dataArray);
+            }
         }
     },
 
@@ -224,8 +620,10 @@ const flexEngineDefaultVaribles = {
 
                     this.entryElement.innerHTML = "";
                     this.entryElement.appendChild(box);
+                }
 
-                    return { code: 0};
+                initResult() {
+                    return { code: 0 };
                 }
 
                 onSave() {
@@ -271,6 +669,10 @@ const flexEngineDefaultVaribles = {
                     this.entryElement.appendChild(input);
                 }
 
+                initResult() {
+                    return { code: 0 };
+                }
+
                 onSave() {
                     return this.dataArray;
                 }
@@ -312,6 +714,10 @@ const flexEngineDefaultVaribles = {
                     this.entryElement.appendChild(input);
                 }
 
+                initResult() {
+                    return { code: 0 };
+                }
+
                 onSave() {
                     return this.dataArray;
                 }
@@ -348,7 +754,9 @@ const flexEngineDefaultVaribles = {
                     // Mount
                     this.entryElement.innerHTML = "";
                     this.entryElement.appendChild(this.textarea);
+                }
 
+                initResult() {
                     return { code: 0 };
                 }
 
@@ -406,7 +814,9 @@ const flexEngineDefaultVaribles = {
 
                     this.entryElement.innerHTML = "";
                     this.entryElement.appendChild(select);
+                }
 
+                initResult() {
                     return { code: 0 };
                 }
 
@@ -475,9 +885,11 @@ const flexEngineDefaultVaribles = {
                             this.popupElement.appendChild(label);
                         });
                     });
-
-                    return { code: 0 };
                 }
+
+                initResult() {
+                    return { code: 0 };
+                }                
 
                 // -----------------------------
                 // PREVIEW UPDATE METHOD
@@ -615,7 +1027,9 @@ const flexEngineDefaultVaribles = {
 
 		            this.previewElement.innerHTML = "";
 		            this.previewElement.appendChild(this.previewText);
+		        }
 
+                initResult() {
 		            // RETURN ASYNC POPUP INITIALIZER
 		            return async () => {
 		                this.popupElement.innerHTML = "";
@@ -786,7 +1200,7 @@ const flexEngineDefaultVaribles = {
 		                this._popupFileInput = fileInput;
 		                this._popupNameInput = nameInput;
 		            };
-		        }
+                }
 
 		        updatePreview() {
 		            if (this.dataArray.mode === "internal") {
@@ -981,7 +1395,9 @@ const flexEngineDefaultVaribles = {
 
                     this.previewElement.innerHTML = "";
                     this.previewElement.appendChild(this.previewText);
+		        }
 
+                initResult() {
                     // RETURN ASYNC POPUP INITIALIZER
                     return async () => {
                         this.popupElement.innerHTML = "";
@@ -1378,7 +1794,9 @@ const flexEngineDefaultVaribles = {
 
                     this.previewElement.innerHTML = "";
                     this.previewElement.appendChild(this.previewText);
+		        }
 
+                initResult() {
                     // RETURN ASYNC POPUP INITIALIZER
                     return async () => {
                         this.popupElement.innerHTML = "";
@@ -1991,6 +2409,7 @@ const flexEngineDefaultVaribles = {
                     value: "border-box"
                 }]
             }],
+
             component: class {
                 constructor(dataArray, entryElement) {
                     this.THEME_LEVELS = ["tiny", "small", "mSmall", "medium", "large", "extraLarge"];
@@ -2157,6 +2576,11 @@ const flexEngineDefaultVaribles = {
                     this.entryElement.innerHTML = "";
                     this.entryElement.appendChild(container);
                 }
+
+                initResult() {
+                    return { code: 0 };
+                }
+
                 onSave() {
                     return this.dataArray;
                 }
