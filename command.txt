@@ -1,25 +1,4 @@
-now the next one:
-the real challenge:
-const flexEngineDefaultAnimation = {
-
-};
-
-is what it show:
-
-now inside, do like this:
-
-number_as_code: {
-name: "say the name here",
-query: [],
-animation: "enter the css styles, I will provide to you"
-animationVaribleProcess
-}
-
-
 ## Todo:
-Fix the problem with varibles: use new code system
+then, use each animation setting, check those setting like space, degrees and number stuff.
 
-first provide a Animation editor. create a curve/curve
-
-then, use each setting, check those setting like space, degrees and number stuff.
-
+then after we done this start the UI part, the UI design already thinked enough so start it
