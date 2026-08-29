@@ -9,8 +9,11 @@ NOTE: Run before the flexengine.js
 'use strict';
 
 // Nesserary for have a Quill delta element
-import quill from 'https://cdn.jsdelivr.net/npm/quill@2.0.3/+esm'
-import quillDeltaToHtml from 'https://cdn.jsdelivr.net/npm/quill-delta-to-html@0.12.1/+esm'
+import quill from 'https://cdn.jsdelivr.net/npm/quill@2.0.3/+esm';
+import quillDeltaToHtml from 'https://cdn.jsdelivr.net/npm/quill-delta-to-html@0.12.1/+esm';
+
+// Our import of Editors:
+import CubicBezierEditor from 'CubicBezierEditor.js';
 
 // and configs
 const BUILDER_CONFIG = {
@@ -2603,14 +2606,272 @@ const flexEngineDefaultVaribles = {
                 }
             }
         }
+    },
+
+    // Require CubicBezierEditor.js
+    curve: {
+        curve: {
+            structureSample: [0, 0, 1, 1],
+            // this is the Cubic Bezier Animation
+
+            displayType: "large",
+
+            cssStyles: {},
+
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    this.dataArray = dataArray;
+
+                    // Check if initial value is the theme keyword
+                    this.isTheme = Array.isArray(this.dataArray) && 
+                        this.dataArray.length === 1 && 
+                        this.dataArray[0] === 'theme';
+
+                    const PRESETS = {
+                        '0,0,1,1': 'linear',
+                        '0.25,0.1,0.25,1': 'ease',
+                        '0.42,0,1,1': 'ease-in',
+                        '0,0,0.58,1': 'ease-out',
+                        '0.42,0,0.58,1': 'ease-in-out'
+                    };
+
+                    const PRESET_COORDS = {
+                        'linear': [0, 0, 1, 1],
+                        'ease': [0.25, 0.1, 0.25, 1],
+                        'ease-in': [0.42, 0, 1, 1],
+                        'ease-out': [0, 0, 0.58, 1],
+                        'ease-in-out': [0.42, 0, 0.58, 1]
+                    };
+
+                    this.PRESETS = PRESETS;
+                    this.PRESET_COORDS = PRESET_COORDS;
+
+                    const initialCoords = this.isTheme
+                        ? [0.42, 0, 0.58, 1]
+                        : (Array.isArray(this.dataArray) && this.dataArray.length === 4 
+                            ? [...this.dataArray] 
+                            : [0.42, 0, 0.58, 1]);
+
+                    this.entryElement = entryElement;
+                    this.editor = null;
+
+                    // Root wrapper
+                    this.wrapper = document.createElement('div');
+                    this.wrapper.style.width = '100%';
+
+                    // Top control bar
+                    const controlBar = document.createElement('div');
+                    controlBar.style.marginBottom = '8px';
+
+                    this.select = document.createElement('select');
+                    this.select.style.width = '100%';
+                    this.select.style.padding = '4px 8px';
+                    this.select.style.boxSizing = 'border-box';
+
+                    const options = [
+                        { value: 'theme', label: 'Theme Curve' },
+                        { value: 'custom', label: 'Custom' },
+                        { value: 'ease-in-out', label: 'Preset: ease-in-out' },
+                        { value: 'ease', label: 'Preset: ease' },
+                        { value: 'linear', label: 'Preset: linear' },
+                        { value: 'ease-in', label: 'Preset: ease-in' },
+                        { value: 'ease-out', label: 'Preset: ease-out' }
+                    ];
+
+                    options.forEach(opt => {
+                        const el = document.createElement('option');
+                        el.value = opt.value;
+                        el.textContent = opt.label;
+                        this.select.appendChild(el);
+                    });
+
+                    // Set initial select value based on initial coordinates
+                    this.select.value = this.isTheme 
+                        ? 'theme' 
+                        : (PRESETS[initialCoords.join(',')] || 'custom');
+
+                    controlBar.appendChild(this.select);
+                    this.wrapper.appendChild(controlBar);
+
+                    // Container for the canvas editor
+                    this.editorContainer = document.createElement('div');
+                    this.editorContainer.style.width = '100%';
+                    this.wrapper.appendChild(this.editorContainer);
+
+                    // Handle dropdown change
+                    this.select.addEventListener('change', (e) => {
+                        const val = e.target.value;
+                        if (val === 'theme') {
+                            this.isTheme = true;
+                            this.dataArray.splice(0, this.dataArray.length, "theme");
+                            this._destroyEditor();
+                        } else {
+                            this.isTheme = false;
+                            if (val === 'custom') {
+                                const startCoords = [0.42, 0, 0.58, 1];
+                                this.dataArray.splice(0, this.dataArray.length, ...startCoords);
+                                this._initEditor(startCoords);
+                            } else {
+                                const targetCoords = PRESET_COORDS[val];
+                                this.dataArray.splice(0, this.dataArray.length, ...targetCoords);
+                                if (this.editor) {
+                                    this.editor.setPreset(val);
+                                } else {
+                                    this._initEditor(targetCoords);
+                                }
+                            }
+                        }
+                    });
+
+                    // Append to DOM container if passed directly
+                    if (this.entryElement) {
+                        this.entryElement.appendChild(this.wrapper);
+                    }
+
+                    // Mount editor initially if not on theme mode
+                    if (!this.isTheme) {
+                        this._initEditor(initialCoords);
+                    }
+                }
+
+                _initEditor(coords) {
+                    this._destroyEditor();
+
+                    this.editor = new CubicBezierEditor(this.editorContainer, {
+                        entry: coords,
+                        size: 'auto',
+                        easyMode: true,
+                        showPreview: true,
+                        onChange: (data) => {
+                            const currentCoords = data.coords;
+
+                            // Update shared dataArray in-place
+                            this.dataArray.splice(0, this.dataArray.length, ...currentCoords);
+
+                            // Automatically sync dropdown selection (Preset vs Custom)
+                            const matchedPreset = this.PRESETS[currentCoords.join(',')];
+                            const targetOption = matchedPreset || 'custom';
+
+                            if (this.select.value !== targetOption) {
+                                this.select.value = targetOption;
+                            }
+                        }
+                    });
+
+                    this.editor.init();
+                }
+
+                _destroyEditor() {
+                    if (this.editor) {
+                        this.editor.destroy();
+                        this.editor = null;
+                    }
+                    this.editorContainer.innerHTML = '';
+                }
+
+                initResult() {
+                    return { code: 0 };
+                }
+
+                onSave() {
+                    const result = this.isTheme ? ["theme"] : this.dataArray;
+
+                    // Clean up resources on save
+                    this._destroyEditor();
+
+                    return result;
+                }
+            },
+
+            render: function(coords) {
+                // Return CSS variable if set to theme mode
+                if (Array.isArray(coords) && coords.length === 1 && coords[0] === 'theme') {
+                    const prefix = (typeof BUILDER_CONFIG !== 'undefined' && BUILDER_CONFIG.classPrefix) 
+                        ? BUILDER_CONFIG.classPrefix 
+                        : 'default';
+                    return `var(--${prefix}-animation-animationCurve)`;
+                }
+
+                const presetMap = {
+                    '0,0,1,1': 'linear',
+                    '0.25,0.1,0.25,1': 'ease',
+                    '0.42,0,1,1': 'ease-in',
+                    '0,0,0.58,1': 'ease-out',
+                    '0.42,0,0.58,1': 'ease-in-out'
+                };
+
+                const key = Array.isArray(coords) ? coords.join(',') : '';
+
+                return presetMap[key] || `cubic-bezier(${key})`;
+            }
+        },
+
+        pure: {
+            structureSample: [0, 0, 1, 1],
+            // this is the Cubic Bezier Animation
+
+            displayType: "large",
+
+            cssStyles: {},
+
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    this.dataArray = dataArray ? dataArray : [0.42, 0, 0.58, 1];
+                    this.entryElement = entryElement;
+
+                    debugger; // pass
+
+                    const container = document.createElement('div')
+
+                    container.style.width = '100%';
+
+                    this.editor = new CubicBezierEditor(container, {
+                        entry: this.dataArray,
+                        size: 'auto',
+                        easyMode: true,
+                        showPreview: true,
+                        onChange: (data) => {
+                            this.dataArray = data.coords;
+                        }
+                    });
+
+                    this.editor.init();
+                }
+
+                initResult() {
+                    return { code: 0 };
+                }
+
+                onSave() {
+                    this.editor.destroy();
+                    return this.dataArray;
+                }                
+            },
+
+            render: function(coords) {
+                const presetMap = {
+                    '0,0,1,1': 'linear',
+                    '0.25,0.1,0.25,1': 'ease',
+                    '0.42,0,1,1': 'ease-in',
+                    '0,0,0.58,1': 'ease-out',
+                    '0.42,0,0.58,1': 'ease-in-out'
+                };
+
+                const key = coords.join(',');
+
+                return presetMap[key] || `cubic-bezier(${key})`;
+            }
+        }
     }
 };
+
 
 /*
 ANimation sample!
 */
+debugger; // wait for sample.
 const flexEngineDefaultAnimation = {
-
+    // wait a sec
 };
 
 

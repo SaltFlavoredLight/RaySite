@@ -4,9 +4,17 @@ export default class CubicBezierEditor {
    * container: DOM element where the editor will be mounted
    * options: {
    *   entry: [x1, y1, x2, y2], // initial coordinates (numbers 0..1)
-   *   easyMode: false,         // toggle easy mode (appends preset name when matching)
-   *   roundTo: 2,              // decimal places precision (default: 2)
-   *   onChange: function(data) // called with { coords: [...], css: '...', preview: '...', html: '...' }
+   *   easyMode: false,         // toggle easy mode
+   *   roundTo: 2,              // decimal places precision
+   *   size: 'auto',            // 'width', 'height', 'auto', or CSS size (e.g. '400px')
+   *   showPreview: false,      // toggle text output label
+   *   theme: {
+   *     handleColor: '#ff4080',     // color of the control handles & points
+   *     backgroundColor: '#fafafa', // canvas background (set 'transparent' for no fill)
+   *     curveColor: '#000000',      // bezier curve stroke color
+   *     lineColor: '#aaaaaa'        // handle connecting lines color
+   *   },
+   *   onChange: function(data)
    * }
    */
   constructor(container, options = {}) {
@@ -18,17 +26,24 @@ export default class CubicBezierEditor {
     this.options = options;
     this.easyMode = Boolean(options.easyMode);
     this.roundTo = typeof options.roundTo === 'number' && options.roundTo >= 0 ? options.roundTo : 2;
+    this.sizeOption = options.size || 'auto';
+    this.showPreview = Boolean(options.showPreview);
+
+    const defaultTheme = {
+      handleColor: '#ff4080',
+      backgroundColor: '#fafafa',
+      curveColor: '#000000',
+      lineColor: '#aaaaaa'
+    };
+    this.theme = Object.assign({}, defaultTheme, options.theme || {});
 
     const initialEntry = Array.isArray(options.entry) && options.entry.length === 4
       ? options.entry.map(Number)
       : [0.25, 0.1, 0.25, 1];
 
-    // Apply initial precision rounding
     this.coordinates = this._roundCoords(initialEntry);
-
     this.onChange = typeof options.onChange === 'function' ? options.onChange : null;
 
-    // Standard presets map
     this.presets = {
       'linear': [0, 0, 1, 1],
       'ease': [0.25, 0.1, 0.25, 1],
@@ -37,20 +52,14 @@ export default class CubicBezierEditor {
       'ease-in-out': [0.42, 0, 0.58, 1]
     };
 
-    // internal references
     this._elements = {};
     this._listeners = [];
     this._isInitialized = false;
+    this._resizeObserver = null;
   }
 
-  // Alias getter/setter for compatibility
-  get coords() {
-    return this.coordinates;
-  }
-
-  set coords(val) {
-    this.coordinates = val;
-  }
+  get coords() { return this.coordinates; }
+  set coords(val) { this.coordinates = val; }
 
   toString() {
     return `cubic-bezier(${this.coordinates.join(',')})`;
@@ -60,18 +69,43 @@ export default class CubicBezierEditor {
     if (this._isInitialized) return;
     this._isInitialized = true;
 
-    // Build DOM
+    if (getComputedStyle(this.container).overflow === 'visible') {
+      this.container.style.overflow = 'hidden';
+    }
+
+    // Outer root wrapper to manage flex flow
+    const mainWrap = document.createElement('div');
+    mainWrap.className = 'cbe-main-wrap';
+    Object.assign(mainWrap.style, {
+      display: 'inline-flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '100%'
+    });
+
     const wrap = document.createElement('div');
     wrap.className = 'cbe-wrap';
-    wrap.style.position = 'relative';
-    wrap.style.display = 'inline-block';
+    Object.assign(wrap.style, {
+      position: 'relative',
+      display: 'block',
+      lineHeight: '0',
+      fontSize: '0',
+      verticalAlign: 'top',
+      flexShrink: '0'
+    });
 
     const canvas = document.createElement('canvas');
-    canvas.width = 300;
-    canvas.height = 300;
-    canvas.style.border = '1px solid #ccc';
-    canvas.style.background = '#fafafa';
     canvas.className = 'cbe-canvas';
+    Object.assign(canvas.style, {
+      border: '1px solid #ccc',
+      boxSizing: 'border-box',
+      background: this.theme.backgroundColor === 'transparent' ? 'none' : this.theme.backgroundColor,
+      display: 'block',
+      verticalAlign: 'bottom'
+    });
 
     const handle1 = document.createElement('div');
     const handle2 = document.createElement('div');
@@ -80,44 +114,112 @@ export default class CubicBezierEditor {
       Object.assign(h.style, {
         width: '14px',
         height: '14px',
-        background: '#ff4080',
+        background: this.theme.handleColor,
         borderRadius: '50%',
         position: 'absolute',
         cursor: 'pointer',
         transform: 'translate(-7px, -7px)',
         touchAction: 'none',
+        zIndex: '2'
       });
     });
-
-    const output = document.createElement('div');
-    output.className = 'cbe-output';
-    output.style.marginTop = '12px';
-    output.style.fontFamily = 'sans-serif';
-    output.style.fontSize = '14px';
 
     wrap.appendChild(canvas);
     wrap.appendChild(handle1);
     wrap.appendChild(handle2);
-    this.container.appendChild(wrap);
-    this.container.appendChild(output);
+    mainWrap.appendChild(wrap);
 
-    // store refs
-    this._elements = { wrap, canvas, handle1, handle2, output };
+    this._elements = { mainWrap, wrap, canvas, handle1, handle2 };
 
-    // create canvas helper
+    if (this.showPreview) {
+      const output = document.createElement('p');
+      output.className = 'cbe-output';
+      Object.assign(output.style, {
+        marginTop: '8px',
+        marginBottom: '0',
+        fontFamily: 'sans-serif',
+        fontSize: '14px',
+        lineHeight: '1.4',
+        textAlign: 'center',
+        boxSizing: 'border-box',
+        flexShrink: '0'
+      });
+      mainWrap.appendChild(output);
+      this._elements.output = output;
+    }
+
+    this.container.appendChild(mainWrap);
+
     this._bc = new CubicBezierCanvas(canvas, this);
 
-    // initial render
-    this._updateHandles();
-    this._redraw();
+    this._updateDimensions();
+    this._setupResizeObserver();
 
-    // make draggable
     this._makeDraggable(handle1, 0);
     this._makeDraggable(handle2, 1);
-
-    // touch support
     this._addTouchSupport(handle1, 0);
     this._addTouchSupport(handle2, 1);
+  }
+
+  _updateDimensions() {
+    if (!this._elements.canvas) return;
+
+    const parentRect = this.container.getBoundingClientRect();
+    
+    // Subtract preview element height + top margin if visible
+    let reservedHeight = 0;
+    if (this.showPreview && this._elements.output) {
+      const outputRect = this._elements.output.getBoundingClientRect();
+      reservedHeight = outputRect.height + 8; // 8px margin
+    }
+
+    const availWidth = parentRect.width;
+    const availHeight = Math.max(0, parentRect.height - reservedHeight);
+
+    let targetSize = 300;
+
+    if (this.sizeOption === 'width') {
+      targetSize = availWidth;
+    } else if (this.sizeOption === 'height') {
+      targetSize = availHeight;
+    } else if (this.sizeOption === 'auto') {
+      if (availWidth > 0 && availHeight > 0) {
+        targetSize = Math.min(availWidth, availHeight);
+      } else {
+        targetSize = availWidth || availHeight || 300;
+      }
+    } else {
+      const tempEl = document.createElement('div');
+      tempEl.style.width = this.sizeOption;
+      tempEl.style.position = 'absolute';
+      tempEl.style.visibility = 'hidden';
+      document.body.appendChild(tempEl);
+      targetSize = tempEl.getBoundingClientRect().width || 300;
+      document.body.removeChild(tempEl);
+    }
+
+    const sizePx = Math.max(50, Math.floor(targetSize));
+
+    // Force strict square bounds for canvas and handle wrap
+    this._elements.canvas.width = sizePx;
+    this._elements.canvas.height = sizePx;
+    this._elements.canvas.style.width = `${sizePx}px`;
+    this._elements.canvas.style.height = `${sizePx}px`;
+
+    this._elements.wrap.style.width = `${sizePx}px`;
+    this._elements.wrap.style.height = `${sizePx}px`;
+
+    this._updateHandles();
+    this._redraw();
+  }
+
+  _setupResizeObserver() {
+    if (typeof ResizeObserver !== 'undefined') {
+      this._resizeObserver = new ResizeObserver(() => {
+        this._updateDimensions();
+      });
+      this._resizeObserver.observe(this.container);
+    }
   }
 
   getResult() {
@@ -160,23 +262,21 @@ export default class CubicBezierEditor {
   }
 
   destroy() {
-    // remove listeners
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+      this._resizeObserver = null;
+    }
+
     this._listeners.forEach(({ target, type, fn }) => target.removeEventListener(type, fn));
     this._listeners = [];
 
-    // remove DOM
-    if (this._elements.wrap && this._elements.wrap.parentNode) {
-      this._elements.wrap.parentNode.removeChild(this._elements.wrap);
-    }
-    if (this._elements.output && this._elements.output.parentNode) {
-      this._elements.output.parentNode.removeChild(this._elements.output);
+    if (this._elements.mainWrap && this._elements.mainWrap.parentNode) {
+      this._elements.mainWrap.parentNode.removeChild(this._elements.mainWrap);
     }
 
     this._elements = {};
     this._isInitialized = false;
   }
-
-  // Internal helpers
 
   _roundNumber(val) {
     return Number(Math.round(val + 'e' + this.roundTo) + 'e-' + this.roundTo);
@@ -189,12 +289,10 @@ export default class CubicBezierEditor {
   _getMatchingPreset() {
     const [x1, y1, x2, y2] = this.coordinates;
 
-    // Linear check: Handles lie anywhere on the diagonal (y = x line)
     if (Math.abs(x1 - y1) <= 0.001 && Math.abs(x2 - y2) <= 0.001) {
       return 'linear';
     }
 
-    // Standard preset checks
     for (const [name, values] of Object.entries(this.presets)) {
       if (name === 'linear') continue;
       if (values.every((v, i) => Math.abs(v - this.coordinates[i]) <= 0.001)) {
@@ -216,7 +314,6 @@ export default class CubicBezierEditor {
       try {
         this.onChange({ coords: this.getResult(), css, preview, html });
       } catch (e) {
-        // swallow user callback errors
         console.error(e);
       }
     }
@@ -227,7 +324,6 @@ export default class CubicBezierEditor {
     const [cx1, cy1] = this._bc.bezierToCanvas(x1, y1);
     const [cx2, cy2] = this._bc.bezierToCanvas(x2, y2);
 
-    // Rounded strictly to integer pixels
     this._elements.handle1.style.left = Math.round(cx1) + 'px';
     this._elements.handle1.style.top = Math.round(cy1) + 'px';
     this._elements.handle2.style.left = Math.round(cx2) + 'px';
@@ -285,7 +381,6 @@ export default class CubicBezierEditor {
 
   _applyPointerToCoord(px, py, index) {
     const [bx, by] = this._bc.canvasToBezier(px, py);
-    // clamp 0..1
     const cx = Math.max(0, Math.min(1, bx));
     const cy = Math.max(0, Math.min(1, by));
 
@@ -297,10 +392,6 @@ export default class CubicBezierEditor {
   }
 }
 
-/* -----------------------------------------------------------
-   Internal Canvas Renderer Class
------------------------------------------------------------ */
-
 class CubicBezierCanvas {
   constructor(canvas, bezier) {
     this.canvas = canvas;
@@ -310,17 +401,22 @@ class CubicBezierCanvas {
 
   plot() {
     const ctx = this.ctx;
+    const theme = this.bezier.theme;
     const [x1, y1, x2, y2] = this.bezier.coordinates;
 
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    if (theme.backgroundColor && theme.backgroundColor !== 'transparent') {
+      ctx.fillStyle = theme.backgroundColor;
+      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
 
     ctx.save();
     ctx.translate(0, this.canvas.height);
     ctx.scale(this.canvas.width, -this.canvas.height);
 
-    // control lines
     ctx.lineWidth = 0.01;
-    ctx.strokeStyle = '#aaa';
+    ctx.strokeStyle = theme.lineColor;
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(x1, y1);
@@ -328,15 +424,13 @@ class CubicBezierCanvas {
     ctx.lineTo(x2, y2);
     ctx.stroke();
 
-    // control points
-    ctx.fillStyle = '#ff4080';
+    ctx.fillStyle = theme.handleColor;
     ctx.beginPath();
     ctx.arc(x1, y1, 0.015, 0, Math.PI * 2);
     ctx.arc(x2, y2, 0.015, 0, Math.PI * 2);
     ctx.fill();
 
-    // bezier curve
-    ctx.strokeStyle = '#000';
+    ctx.strokeStyle = theme.curveColor;
     ctx.lineWidth = 0.02;
     ctx.beginPath();
     ctx.moveTo(0, 0);
@@ -347,7 +441,6 @@ class CubicBezierCanvas {
   }
 
   canvasToBezier(px, py) {
-    // Direct integer rounding on pixel coordinates within canvas boundaries
     const clampedPx = Math.max(0, Math.min(this.canvas.width, Math.round(px)));
     const clampedPy = Math.max(0, Math.min(this.canvas.height, Math.round(py)));
     return [clampedPx / this.canvas.width, 1 - clampedPy / this.canvas.height];
@@ -360,3 +453,5 @@ class CubicBezierCanvas {
     ];
   }
 }
+
+

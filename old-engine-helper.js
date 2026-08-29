@@ -116,43 +116,24 @@ const flexEngineStyleVarible = {
 	},
 
 	curve: function(curveObj) {
-		if (!curveObj || !curveObj.mode) return "";
+                // Return CSS variable if set to theme mode
+                if (Array.isArray(coords) && coords.length === 1 && coords[0] === 'theme') {
+                    const prefix = (typeof BUILDER_CONFIG !== 'undefined' && BUILDER_CONFIG.classPrefix) 
+                        ? BUILDER_CONFIG.classPrefix 
+                        : 'default';
+                    return `var(--${prefix}-animation-animationCurve)`;
+                }
 
-		const mode = curveObj.mode;
+                const presetMap = {
+                    '0,0,1,1': 'linear',
+                    '0.25,0.1,0.25,1': 'ease',
+                    '0.42,0,1,1': 'ease-in',
+                    '0,0,0.58,1': 'ease-out',
+                    '0.42,0,0.58,1': 'ease-in-out'
+                };
 
-		// 1. System default (your design palette)
-		if (mode === "system") {
-			return "var(--animation-curve)";
-		}
+                const key = Array.isArray(coords) ? coords.join(',') : '';
 
-		// 2. Built‑in CSS curves
-		if (
-			mode === "linear" ||
-			mode === "ease" ||
-			mode === "ease-in" ||
-			mode === "ease-out" ||
-			mode === "ease-in-out"
-		) {
-			return mode;
-		}
-
-		// 3. Step()
-		if (mode === "step") {
-			const n = curveObj.stepNumber || 1;
-			const end = curveObj.changeAtEnd === true ? "end" : "start";
-			return `steps(${n}, ${end})`;
-		}
-
-		// 4. Cubic‑bezier()
-		if (mode === "cubic-bezier") {
-			const x1 = curveObj.x1 ?? 0;
-			const y1 = curveObj.y1 ?? 0;
-			const x2 = curveObj.x2 ?? 1;
-			const y2 = curveObj.y2 ?? 1;
-			return `cubic-bezier(${x1}, ${y1}, ${x2}, ${y2})`;
-		}
-
-		// 5. Unknown → fallback
-		return "var(--animation-curve)";
+                return presetMap[key] || `cubic-bezier(${key})`;
 	},
 };
