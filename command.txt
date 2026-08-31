@@ -1,4 +1,0 @@
-## Todo:
-then, use each animation setting, check those setting like space, degrees and number stuff.
-
-then after we done this start the UI part, the UI design already thinked enough so start it

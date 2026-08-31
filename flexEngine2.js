@@ -22,7 +22,9 @@ const BUILDER_CONFIG = {
 	attribution: "Spread the message with RaySite! RaySite is a Free Website builder for you!"
 };
 
-
+// use this for get Pae JSON - to keep that simple
+// const thisPageObject = .
+// any class can acsess this, but read only.
 
 
 /**
@@ -2818,8 +2820,6 @@ const flexEngineDefaultVaribles = {
                 constructor(dataArray, entryElement, elementSetting) {
                     this.dataArray = dataArray ? dataArray : [0.42, 0, 0.58, 1];
                     this.entryElement = entryElement;
-
-                    debugger; // pass
 
                     const container = document.createElement('div')
 
