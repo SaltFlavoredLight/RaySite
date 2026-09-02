@@ -1,0 +1,2330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Color System Demo (Engine Style)</title>
+	<style id="demytric"></style>
+	<style>
+		:root {
+			--color-primaryColor: #007aff;
+			--color-secondaryColor: #34c759;
+			--color-accentColor: #ff3b30;
+			--color-secondaryAccentColor: #ff9500;
+			--color-costomColor1: #5856d6;
+			--color-costomColor2: #af52de;
+			--color-costomColor3: #5ac8fa;
+			--color-costomColor4: #8e8e93;
+			--color-neutralTextColor: #1c1c1e;
+			--color-neutralBackgroundColor: #f2f2f7;
+		}
+
+		body {
+			font-family: Arial, sans-serif;
+			background: #f5f5f7;
+			padding: 20px;
+		}
+
+		#engineDemo {
+			max-width: 480px;
+			margin: 40px auto;
+		}
+
+		#enginePreview {
+			width: 100%;
+			height: 140px;
+			border: 1px solid #d2d2d7;
+			border-radius: 8px;
+			margin-top: 12px;
+			background-color: #ffffff;
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			box-sizing: border-box;
+		}
+
+		h2 {
+			font-size: 18px;
+			margin-bottom: 10px;
+			font-weight: bold;
+		}
+
+		.preview-label {
+			max-width: 480px;
+			margin: 30px auto 8px;
+			font-size: 13px;
+			color: #666;
+		}
+	</style>
+</head>
+
+<body>
+	<h2>Engine-Style Component Demo</h2>
+	<div id="engineDemo"></div>
+	<div class="preview-label">Preview</div>
+	<div id="enginePreview"></div>
+	<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+
+	<script>
+		// Engine file system
+		window.flexEngineFlieSystem = {
+			readTheme: async () => ({
+				colors: {
+					primaryColor: {
+						hex: "#007aff"
+					},
+					secondaryColor: {
+						hex: "#34c759"
+					},
+					accentColor: {
+						hex: "#ff3b30"
+					},
+					secondaryAccentColor: {
+						hex: "#ff9500"
+					},
+					costomColor1: {
+						hex: "#5856d6"
+					},
+					costomColor2: {
+						hex: "#af52de"
+					},
+					costomColor3: {
+						hex: "#5ac8fa"
+					},
+					costomColor4: {
+						hex: "#8e8e93"
+					},
+					neutralTextColor: {
+						hex: "#1c1c1e"
+					},
+					neutralBackgroundColor: {
+						hex: "#f2f2f7"
+					}
+				}
+			})
+		};
+	</script>
+	<script>
+		// Color system
+		const colorSystem = {
+			structureSample: {
+				mode: "basic",
+				color: "color-primaryColor"
+			},
+			displayType: "large",
+			cssStyles: [{
+				object: ".color-control-container",
+				info: [{
+					key: "width",
+					value: "100%"
+				}, {
+					key: "display",
+					value: "flex"
+				}, {
+					key: "flex-direction",
+					value: "column"
+				}, {
+					key: "gap",
+					value: "10px"
+				}, {
+					key: "padding",
+					value: "12px"
+				}, {
+					key: "box-sizing",
+					value: "border-box"
+				}, {
+					key: "background",
+					value: "#ffffff"
+				}, {
+					key: "border",
+					value: "1px solid #d2d2d7"
+				}, {
+					key: "border-radius",
+					value: "8px"
+				}]
+			}, {
+				object: ".color-header",
+				info: [{
+					key: "display",
+					value: "flex"
+				}, {
+					key: "justify-content",
+					value: "space-between"
+				}, {
+					key: "align-items",
+					value: "center"
+				}, {
+					key: "gap",
+					value: "4px"
+				}, {
+					key: "background",
+					value: "#f2f2f7"
+				}, {
+					key: "padding",
+					value: "4px"
+				}, {
+					key: "border-radius",
+					value: "8px"
+				}, {
+					key: "border",
+					value: "1px solid #e5e5ea"
+				}]
+			}, {
+				object: ".color-switch-btn",
+				info: [{
+					key: "flex",
+					value: "1 1 0"
+				}, {
+					key: "text-align",
+					value: "center"
+				}, {
+					key: "padding",
+					value: "6px 4px"
+				}, {
+					key: "font-size",
+					value: "12px"
+				}, {
+					key: "font-weight",
+					value: "500"
+				}, {
+					key: "color",
+					value: "#3a3a3c"
+				}, {
+					key: "border-radius",
+					value: "6px"
+				}, {
+					key: "cursor",
+					value: "pointer"
+				}, {
+					key: "border",
+					value: "none"
+				}, {
+					key: "background",
+					value: "transparent"
+				}, {
+					key: "transition",
+					value: "all 0.2s ease-in-out"
+				}, {
+					key: "user-select",
+					value: "none"
+				}, {
+					key: "white-space",
+					value: "nowrap"
+				}]
+			}, {
+				object: ".color-switch-btn.active",
+				info: [{
+					key: "background",
+					value: "#ffffff"
+				}, {
+					key: "color",
+					value: "#000000"
+				}, {
+					key: "box-shadow",
+					value: "0 1px 3px rgba(0,0,0,0.12)"
+				}, {
+					key: "font-weight",
+					value: "600"
+				}]
+			}, {
+				object: ".color-content-area",
+				info: [{
+					key: "display",
+					value: "flex"
+				}, {
+					key: "flex-direction",
+					value: "column"
+				}, {
+					key: "gap",
+					value: "10px"
+				}]
+			}, {
+				object: ".color-row",
+				info: [{
+					key: "display",
+					value: "flex"
+				}, {
+					key: "align-items",
+					value: "center"
+				}, {
+					key: "gap",
+					value: "8px"
+				}, {
+					key: "font-size",
+					value: "13px"
+				}, {
+					key: "flex-wrap",
+					value: "wrap"
+				}]
+			}, {
+				object: ".color-input",
+				info: [{
+					key: "height",
+					value: "32px"
+				}, {
+					key: "border",
+					value: "1px solid #d2d2d7"
+				}, {
+					key: "border-radius",
+					value: "6px"
+				}, {
+					key: "padding",
+					value: "0 8px"
+				}, {
+					key: "flex",
+					value: "1"
+				}, {
+					key: "outline",
+					value: "none"
+				}]
+			}, {
+				object: ".btn-action",
+				info: [{
+					key: "padding",
+					value: "4px 8px"
+				}, {
+					key: "background",
+					value: "#f3f4f6"
+				}, {
+					key: "border",
+					value: "1px solid #d2d2d7"
+				}, {
+					key: "border-radius",
+					value: "4px"
+				}, {
+					key: "cursor",
+					value: "pointer"
+				}, {
+					key: "font-size",
+					value: "12px"
+				}]
+			}, {
+				object: ".color-angle-slider",
+				info: [{
+					key: "-webkit-appearance",
+					value: "none"
+				}, {
+					key: "appearance",
+					value: "none"
+				}, {
+					key: "width",
+					value: "100%"
+				}, {
+					key: "height",
+					value: "6px"
+				}, {
+					key: "background",
+					value: "#e5e5ea"
+				}, {
+					key: "border-radius",
+					value: "3px"
+				}, {
+					key: "outline",
+					value: "none"
+				}, {
+					key: "cursor",
+					value: "pointer"
+				}]
+			}, {
+				object: ".color-angle-slider::-webkit-slider-thumb",
+				info: [{
+					key: "-webkit-appearance",
+					value: "none"
+				}, {
+					key: "appearance",
+					value: "none"
+				}, {
+					key: "width",
+					value: "16px"
+				}, {
+					key: "height",
+					value: "16px"
+				}, {
+					key: "border-radius",
+					value: "50%"
+				}, {
+					key: "background",
+					value: "#007aff"
+				}, {
+					key: "box-shadow",
+					value: "0 1px 3px rgba(0,0,0,0.3)"
+				}, {
+					key: "cursor",
+					value: "pointer"
+				}]
+			}, {
+				object: ".color-angle-slider::-moz-range-thumb",
+				info: [{
+					key: "width",
+					value: "16px"
+				}, {
+					key: "height",
+					value: "16px"
+				}, {
+					key: "border",
+					value: "none"
+				}, {
+					key: "border-radius",
+					value: "50%"
+				}, {
+					key: "background",
+					value: "#007aff"
+				}, {
+					key: "box-shadow",
+					value: "0 1px 3px rgba(0,0,0,0.3)"
+				}, {
+					key: "cursor",
+					value: "pointer"
+				}]
+			}, {
+				object: ".color-overlay-section",
+				info: [{
+					key: "display",
+					value: "flex"
+				}, {
+					key: "flex-direction",
+					value: "column"
+				}, {
+					key: "gap",
+					value: "10px"
+				}, {
+					key: "padding",
+					value: "10px"
+				}, {
+					key: "background",
+					value: "#fdfdfd"
+				}, {
+					key: "border",
+					value: "1px solid #d2d2d7"
+				}, {
+					key: "border-radius",
+					value: "8px"
+				}, {
+					key: "margin-top",
+					value: "2px"
+				}, {
+					key: "box-sizing",
+					value: "border-box"
+				}]
+			}, {
+				object: ".color-overlay-toggle",
+				info: [{
+					key: "width",
+					value: "100%"
+				}, {
+					key: "display",
+					value: "flex"
+				}, {
+					key: "align-items",
+					value: "center"
+				}, {
+					key: "justify-content",
+					value: "space-between"
+				}, {
+					key: "padding",
+					value: "8px 10px"
+				}, {
+					key: "background",
+					value: "#f3f4f6"
+				}, {
+					key: "border",
+					value: "1px solid #d2d2d7"
+				}, {
+					key: "border-radius",
+					value: "6px"
+				}, {
+					key: "cursor",
+					value: "pointer"
+				}, {
+					key: "font-size",
+					value: "12px"
+				}, {
+					key: "font-weight",
+					value: "600"
+				}, {
+					key: "color",
+					value: "#3a3a3c"
+				}, {
+					key: "text-align",
+					value: "left"
+				}, {
+					key: "transition",
+					value: "all 0.2s ease-in-out"
+				}, {
+					key: "user-select",
+					value: "none"
+				}, {
+					key: "box-sizing",
+					value: "border-box"
+				}]
+			}, {
+				object: ".color-overlay-toggle.active",
+				info: [{
+					key: "background",
+					value: "#eaf3ff"
+				}, {
+					key: "border-color",
+					value: "#b8d9ff"
+				}, {
+					key: "color",
+					value: "#007aff"
+				}]
+			}, {
+				object: ".color-overlay-toggle-indicator",
+				info: [{
+					key: "width",
+					value: "8px"
+				}, {
+					key: "height",
+					value: "8px"
+				}, {
+					key: "border-radius",
+					value: "50%"
+				}, {
+					key: "background",
+					value: "#c7c7cc"
+				}, {
+					key: "flex",
+					value: "0 0 auto"
+				}, {
+					key: "transition",
+					value: "background 0.2s ease-in-out"
+				}]
+			}, {
+				object: ".color-overlay-toggle.active .color-overlay-toggle-indicator",
+				info: [{
+					key: "background",
+					value: "#007aff"
+				}]
+			}, {
+				object: ".color-overlay-label",
+				info: [{
+					key: "display",
+					value: "flex"
+				}, {
+					key: "align-items",
+					value: "center"
+				}, {
+					key: "gap",
+					value: "8px"
+				}]
+			}, {
+				object: ".color-overlay-color-label",
+				info: [{
+					key: "font-size",
+					value: "12px"
+				}, {
+					key: "color",
+					value: "#666"
+				}, {
+					key: "margin-bottom",
+					value: "2px"
+				}]
+			}, {
+				object: ".color-overlay-opacity-row",
+				info: [{
+					key: "display",
+					value: "flex"
+				}, {
+					key: "align-items",
+					value: "center"
+				}, {
+					key: "gap",
+					value: "8px"
+				}, {
+					key: "font-size",
+					value: "12px"
+				}, {
+					key: "color",
+					value: "#666"
+				}]
+			}, {
+				object: ".color-overlay-opacity-slider",
+				info: [{
+					key: "-webkit-appearance",
+					value: "none"
+				}, {
+					key: "appearance",
+					value: "none"
+				}, {
+					key: "flex",
+					value: "1"
+				}, {
+					key: "width",
+					value: "100%"
+				}, {
+					key: "height",
+					value: "6px"
+				}, {
+					key: "background",
+					value: "#e5e5ea"
+				}, {
+					key: "border-radius",
+					value: "3px"
+				}, {
+					key: "outline",
+					value: "none"
+				}, {
+					key: "cursor",
+					value: "pointer"
+				}]
+			}, {
+				object: ".color-overlay-opacity-slider::-webkit-slider-thumb",
+				info: [{
+					key: "-webkit-appearance",
+					value: "none"
+				}, {
+					key: "appearance",
+					value: "none"
+				}, {
+					key: "width",
+					value: "16px"
+				}, {
+					key: "height",
+					value: "16px"
+				}, {
+					key: "border-radius",
+					value: "50%"
+				}, {
+					key: "background",
+					value: "#007aff"
+				}, {
+					key: "box-shadow",
+					value: "0 1px 3px rgba(0,0,0,0.3)"
+				}, {
+					key: "cursor",
+					value: "pointer"
+				}]
+			}, {
+				object: ".color-overlay-opacity-slider::-moz-range-thumb",
+				info: [{
+					key: "width",
+					value: "16px"
+				}, {
+					key: "height",
+					value: "16px"
+				}, {
+					key: "border",
+					value: "none"
+				}, {
+					key: "border-radius",
+					value: "50%"
+				}, {
+					key: "background",
+					value: "#007aff"
+				}, {
+					key: "box-shadow",
+					value: "0 1px 3px rgba(0,0,0,0.3)"
+				}, {
+					key: "cursor",
+					value: "pointer"
+				}]
+			}, {
+				object: ".color-overlay-opacity-value",
+				info: [{
+					key: "width",
+					value: "42px"
+				}, {
+					key: "text-align",
+					value: "right"
+				}, {
+					key: "font-variant-numeric",
+					value: "tabular-nums"
+				}, {
+					key: "color",
+					value: "#666"
+				}]
+			}, {
+				object: ".color-custom-picker",
+				info: [{
+					key: "width",
+					value: "32px"
+				}, {
+					key: "height",
+					value: "32px"
+				}, {
+					key: "border-radius",
+					value: "50%"
+				}, {
+					key: "overflow",
+					value: "hidden"
+				}, {
+					key: "cursor",
+					value: "pointer"
+				}, {
+					key: "position",
+					value: "relative"
+				}, {
+					key: "flex",
+					value: "0 0 auto"
+				}]
+			}, {
+				object: ".color-custom-picker input[type=\"color\"]",
+				info: [{
+					key: "appearance",
+					value: "none"
+				}, {
+					key: "-webkit-appearance",
+					value: "none"
+				}, {
+					key: "box-sizing",
+					value: "border-box"
+				}, {
+					key: "width",
+					value: "100%"
+				}, {
+					key: "height",
+					value: "100%"
+				}, {
+					key: "padding",
+					value: "0"
+				}, {
+					key: "margin",
+					value: "0"
+				}, {
+					key: "border",
+					value: "none"
+				}, {
+					key: "outline",
+					value: "none"
+				}, {
+					key: "background",
+					value: "transparent"
+				}, {
+					key: "display",
+					value: "block"
+				}, {
+					key: "cursor",
+					value: "pointer"
+				}]
+			}, {
+				object: ".color-custom-picker input[type=\"color\"]::-webkit-color-swatch-wrapper",
+				info: [{
+					key: "padding",
+					value: "0"
+				}, {
+					key: "border",
+					value: "none"
+				}]
+			}, {
+				object: ".color-custom-picker input[type=\"color\"]::-webkit-color-swatch",
+				info: [{
+					key: "border",
+					value: "none"
+				}, {
+					key: "border-radius",
+					value: "50%"
+				}]
+			}, {
+				object: ".color-custom-picker-brush",
+				info: [{
+					key: "position",
+					value: "absolute"
+				}, {
+					key: "left",
+					value: "50%"
+				}, {
+					key: "top",
+					value: "50%"
+				}, {
+					key: "transform",
+					value: "translate(-50%, -50%)"
+				}, {
+					key: "font-size",
+					value: "14px"
+				}, {
+					key: "line-height",
+					value: "1"
+				}, {
+					key: "pointer-events",
+					value: "none"
+				}, {
+					key: "user-select",
+					value: "none"
+				}, {
+					key: "z-index",
+					value: "2"
+				}]
+			}],
+			component: class {
+				constructor(dataArray, entryElement, entryConfig = {}) {
+					/*
+					 * IMPORTANT:
+					 *
+					 * Keep the exact object supplied by the caller.
+					 *
+					 * If it is a Proxy, the Proxy stays the Proxy.
+					 *
+					 * The component does NOT create another Proxy.
+					 */
+					this.dataArray = dataArray && Object.keys(dataArray).length > 0 ? dataArray : {
+						mode: "basic",
+						color: "color-primaryColor"
+					};
+					if (this.dataArray.mode === "none") {
+						this.dataArray.mode = "inherit";
+					}
+					this.entryElement = entryElement;
+					this.allowBackgroundIMG = entryConfig.backgroundIMG !== false;
+					this.themeColors = null;
+					this.container = document.createElement("div");
+					this.container.className = "color-control-container";
+					this.header = document.createElement("div");
+					this.header.className = "color-header";
+					const modes = [{
+						label: "Basic",
+						value: "basic"
+					}, {
+						label: "Gradient",
+						value: "linearGradient"
+					}, {
+						label: "Image",
+						value: "backgroundIMG",
+						hidden: !this.allowBackgroundIMG
+					}, {
+						label: "Inherit",
+						value: "inherit"
+					}];
+					this.modeButtons = {};
+					let activeMode = ["inherit"].includes(this.dataArray.mode) ? "inherit" : (this.dataArray.mode || "basic");
+					modes.forEach(mode => {
+						if (mode.hidden) return;
+						const btn = document.createElement("div");
+						btn.className = `color-switch-btn ${
+							activeMode === mode.value ? "active" : ""
+						}`;
+						btn.textContent = mode.label;
+						btn.addEventListener("click", () => {
+							if (activeMode === mode.value) return;
+							Object.values(this.modeButtons).forEach(button => {
+								button.classList.remove("active");
+							});
+							btn.classList.add("active");
+							activeMode = mode.value;
+							this.initializeDataForMode(mode.value);
+							this.renderUI();
+						});
+						this.modeButtons[mode.value] = btn;
+						this.header.appendChild(btn);
+					});
+					this.container.appendChild(this.header);
+					this.contentArea = document.createElement("div");
+					this.contentArea.className = "color-content-area";
+					this.container.appendChild(this.contentArea);
+					this.renderUI();
+					this.entryElement.innerHTML = "";
+					this.entryElement.appendChild(this.container);
+				}
+				// Stop offset calculation
+				recalculateStopsOffsets() {
+					if (!this.dataArray.stops || this.dataArray.stops.length === 0) {
+						return;
+					}
+					const count = this.dataArray.stops.length;
+					if (count === 1) {
+						this.dataArray.stops[0].offset = 0;
+						return;
+					}
+					const step = 100 / (count - 1);
+					this.dataArray.stops.forEach((stop, index) => {
+						stop.offset = Math.round(index * step);
+					});
+				}
+				// Initialize mode
+				initializeDataForMode(mode) {
+					let newData = {
+						mode
+					};
+					switch (mode) {
+						case "basic":
+							newData.color = this.dataArray.color || "color-primaryColor";
+							break;
+						case "backgroundIMG":
+							newData.src = this.dataArray.src || "";
+							newData.repeatX = this.dataArray.repeatX ?? true;
+							newData.repeatY = this.dataArray.repeatY ?? false;
+							newData.positionX = this.dataArray.positionX || 2;
+							newData.positionY = this.dataArray.positionY || 2;
+							newData.attachment = this.dataArray.attachment ?? false;
+							newData.coloroverlay = this.dataArray.coloroverlay || "transparent";
+							break;
+						case "linearGradient":
+							newData.angle = this.dataArray.angle || 90;
+							newData.stops = this.dataArray.stops?.length >= 2 ? this.dataArray.stops : [{
+								color: "color-primaryColor",
+								offset: 0
+							}, {
+								color: "color-secondaryColor",
+								offset: 100
+							}];
+							break;
+						case "inherit":
+							break;
+					}
+					/*
+					 * These are ordinary mutations.
+					 *
+					 * If dataArray is a Proxy,
+					 * the external Proxy sees them.
+					 */
+					Object.keys(this.dataArray).forEach(key => {
+						delete this.dataArray[key];
+					});
+					Object.assign(this.dataArray, newData);
+					if (mode === "linearGradient") {
+						this.recalculateStopsOffsets();
+					}
+				}
+				// Render UI
+				renderUI() {
+					this.contentArea.innerHTML = "";
+					const mode = this.dataArray.mode;
+					if (!this.themeColors) {
+						const loadingMsg = document.createElement("div");
+						loadingMsg.className = "color-row";
+						loadingMsg.style.color = "#888";
+						loadingMsg.textContent = "Loading theme variables...";
+						this.contentArea.appendChild(loadingMsg);
+						return;
+					}
+					if (mode === "basic") {
+						this.buildBasicUI();
+					} else if (mode === "backgroundIMG") {
+						this.buildBackgroundImgUI();
+					} else if (mode === "linearGradient") {
+						this.buildGradientUI();
+					} else if (mode === "inherit") {
+						this.buildInheritUI();
+					}
+				}
+				// Color resolution
+				getDisplayColor(colorVal) {
+					if (!colorVal || colorVal === "transparent") {
+						return "transparent";
+					}
+					if (colorVal.startsWith("color-")) {
+						const key = colorVal.replace("color-", "");
+						const raw = this.themeColors ? this.themeColors[key] : null;
+						return typeof raw === "object" && raw !== null ? (raw.hex || "#e5e5ea") : (raw || "#e5e5ea");
+					}
+					return colorVal;
+				}
+				// Palette
+				buildPaletteSelector(currentValue, onSelectCallback) {
+					const container = document.createElement("div");
+					container.style.display = "grid";
+					container.style.gridTemplateColumns = "repeat(4, 1fr)";
+					container.style.gap = "8px";
+					container.style.padding = "10px";
+					container.style.background = "#f9f9fb";
+					container.style.borderRadius = "8px";
+					container.style.border = "1px solid #eaeaea";
+					container.style.justifyItems = "center";
+					const keys = ["primaryColor", "secondaryColor", "accentColor", "secondaryAccentColor", "costomColor1", "costomColor2", "costomColor3", "costomColor4", "neutralTextColor", "neutralBackgroundColor"];
+					const renderSwatch = (displayBg, isSelected, icon = "", title = "") => {
+						const swatch = document.createElement("div");
+						swatch.style.width = "32px";
+						swatch.style.height = "32px";
+						swatch.style.borderRadius = "50%";
+						swatch.style.background = displayBg;
+						swatch.style.cursor = "pointer";
+						swatch.style.display = "flex";
+						swatch.style.alignItems = "center";
+						swatch.style.justifyContent = "center";
+						swatch.title = title;
+						if (icon) {
+							swatch.innerHTML = icon;
+							swatch.style.fontSize = "14px";
+						}
+						if (isSelected) {
+							swatch.style.border = "2px solid #007aff";
+							swatch.style.boxShadow = "0 0 0 2px rgba(0,122,255,0.2)";
+						} else {
+							swatch.style.border = "1px solid rgba(0,0,0,0.15)";
+						}
+						return swatch;
+					};
+					const isTransparent = currentValue === "transparent";
+					const isThemeColor = currentValue && currentValue.startsWith("color-");
+					const isCustomHex = currentValue && !isThemeColor && !isTransparent;
+					keys.forEach(key => {
+						const expectedVar = `color-${key}`;
+						const rawColor = this.themeColors[key];
+						const displayColor = typeof rawColor === "object" && rawColor !== null ? (rawColor.hex || "#e5e5ea") : (rawColor || "#e5e5ea");
+						const isSelected = currentValue === expectedVar;
+						const swatch = renderSwatch(displayColor, isSelected, "", expectedVar);
+						swatch.addEventListener("click", () => onSelectCallback(expectedVar));
+						container.appendChild(swatch);
+					});
+					const customBg = isCustomHex ? currentValue : "#000000";
+					const customWrap = document.createElement("div");
+					customWrap.className = "color-custom-picker";
+					customWrap.style.border = isCustomHex ? "2px solid #007aff" : "1px solid rgba(0,0,0,0.15)";
+					customWrap.style.boxShadow = isCustomHex ? "0 0 0 2px rgba(0,122,255,0.2)" : "none";
+					const nativePicker = document.createElement("input");
+					nativePicker.type = "color";
+					nativePicker.value = customBg;
+					nativePicker.title = "Custom Color";
+					nativePicker.addEventListener("input", e => {
+						this.dataArray.color = e.target.value;
+					});
+					nativePicker.addEventListener("blur", e => {
+						// Stop this event from reaching the surrounding color-system controls.
+						e.stopPropagation();
+						// Save the selected value BEFORE anything causes the UI to re-render.
+						const selectedColor = e.target.value;
+						// IMPORTANT:
+						// Close the native color picker FIRST.
+						//
+						// onSelectCallback() can cause renderUI(),
+						// which destroys this input element.
+						//
+						// Therefore blur MUST happen before onSelectCallback().
+						nativePicker.blur();
+						// Now allow the color system to process the new value and re-render.
+						onSelectCallback(selectedColor);
+					});
+					customWrap.appendChild(nativePicker);
+					const brushOverlay = document.createElement("span");
+					brushOverlay.className = "color-custom-picker-brush";
+					brushOverlay.textContent = "🖌️";
+					customWrap.appendChild(brushOverlay);
+					container.appendChild(customWrap);
+					const checkerboard = "repeating-linear-gradient(" + "45deg, #e0e0e0 25%, transparent 25%, " + "transparent 75%, #e0e0e0 75%, #e0e0e0), " + "repeating-linear-gradient(" + "45deg, #e0e0e0 25%, #ffffff 25%, " + "#ffffff 75%, #e0e0e0 75%, #e0e0e0)";
+					const transparentSwatch = renderSwatch("transparent", isTransparent, "🚫", "Transparent / None");
+					transparentSwatch.style.backgroundImage = checkerboard;
+					transparentSwatch.style.backgroundPosition = "0 0, 6px 6px";
+					transparentSwatch.style.backgroundSize = "12px 12px";
+					transparentSwatch.addEventListener("click",
+						() => onSelectCallback("transparent"));
+					container.appendChild(transparentSwatch);
+					return container;
+				}
+				// Basic
+				buildBasicUI() {
+					const palette = this.buildPaletteSelector(this.dataArray.color, newVal => {
+						/*
+						 * This mutation goes directly
+						 * through the external Proxy.
+						 */
+						this.dataArray.color = newVal;
+						this.renderUI();
+					});
+					this.contentArea.appendChild(palette);
+				}
+				// Gradient
+				buildGradientUI() {
+					/* =========================================================
+					   ENSURE VALID STOPS
+					========================================================= */
+
+					if (
+						!Array.isArray(this.dataArray.stops) ||
+						this.dataArray.stops.length < 2
+					) {
+						this.dataArray.stops = [{
+								color: "color-primaryColor",
+								offset: 0
+							},
+							{
+								color: "color-secondaryColor",
+								offset: 100
+							}
+						];
+					}
+
+					/* =========================================================
+					   ACTIVE STOP
+					========================================================= */
+
+					if (
+						typeof this.openStopIndex !== "number" ||
+						this.openStopIndex < 0 ||
+						this.openStopIndex >= this.dataArray.stops.length
+					) {
+						this.openStopIndex = 0;
+					}
+
+
+					/* =========================================================
+					   ANGLE
+					========================================================= */
+
+					const angleRow = document.createElement("div");
+					angleRow.className = "color-row";
+
+					const range = document.createElement("input");
+					range.type = "range";
+					range.className = "color-angle-slider";
+					range.min = "0";
+					range.max = "360";
+					range.value = this.dataArray.angle ?? 90;
+					range.style.flex = "1";
+
+					const num = document.createElement("input");
+					num.type = "number";
+					num.min = "0";
+					num.max = "360";
+					num.className = "color-input";
+					num.style.width = "60px";
+					num.style.flex = "none";
+					num.value = this.dataArray.angle ?? 90;
+
+					const syncAngle = value => {
+						let safeValue = Number(value);
+
+						if (!Number.isFinite(safeValue)) {
+							safeValue = 90;
+						}
+
+						safeValue = Math.max(
+							0,
+							Math.min(360, safeValue)
+						);
+
+						this.dataArray.angle = safeValue;
+
+						range.value = safeValue;
+						num.value = safeValue;
+					};
+
+					range.addEventListener("input", event => {
+						syncAngle(event.target.value);
+					});
+
+					num.addEventListener("input", event => {
+						syncAngle(event.target.value);
+					});
+
+					angleRow.appendChild(
+						document.createTextNode("Angle (°):")
+					);
+
+					angleRow.appendChild(range);
+					angleRow.appendChild(num);
+
+					this.contentArea.appendChild(angleRow);
+
+
+					/* =========================================================
+					   STOP TABS CONTAINER
+					========================================================= */
+
+					const stopsTabsContainer =
+						document.createElement("div");
+
+					stopsTabsContainer.className =
+						"color-header";
+
+					stopsTabsContainer.style.marginTop = "10px";
+					stopsTabsContainer.style.display = "flex";
+					stopsTabsContainer.style.alignItems = "center";
+					stopsTabsContainer.style.gap = "4px";
+
+
+					/* =========================================================
+					   SORTABLE STOP GROUP
+
+					   IMPORTANT:
+					   Only stopsGroup is sortable.
+					   The "+" button is outside it.
+					========================================================= */
+
+					const stopsGroup =
+						document.createElement("div");
+
+					stopsGroup.style.display = "flex";
+					stopsGroup.style.alignItems = "center";
+					stopsGroup.style.gap = "4px";
+					stopsGroup.style.minWidth = "0";
+					stopsGroup.style.flex = "1";
+					stopsGroup.style.overflowX = "auto";
+
+
+					/* =========================================================
+					   BUILD STOP TABS
+					========================================================= */
+
+					this.dataArray.stops.forEach((stop, index) => {
+
+						const tab =
+							document.createElement("div");
+
+						tab.className =
+							"color-switch-btn" +
+							(
+								this.openStopIndex === index ?
+								" active" :
+								""
+							);
+
+						/*
+						 * Allow the stop itself to receive focus.
+						 */
+						tab.tabIndex = 0;
+
+						tab.dataset.stopIndex = index;
+
+						tab.style.flex = "0 0 auto";
+						tab.style.display = "flex";
+						tab.style.alignItems = "center";
+						tab.style.justifyContent = "center";
+						tab.style.padding = "6px 10px";
+						tab.style.cursor = "grab";
+						tab.style.userSelect = "none";
+
+
+						/* =====================================================
+						   COLOR SWATCH
+						===================================================== */
+
+						const iconSwatch =
+							document.createElement("div");
+
+						iconSwatch.style.width = "18px";
+						iconSwatch.style.height = "18px";
+						iconSwatch.style.borderRadius = "50%";
+						iconSwatch.style.border =
+							"1px solid rgba(0,0,0,0.2)";
+						iconSwatch.style.flex = "0 0 auto";
+
+						if (stop.color === "transparent") {
+
+							iconSwatch.style.backgroundImage =
+								"repeating-linear-gradient(" +
+								"45deg, #e0e0e0 25%, transparent 25%, " +
+								"transparent 75%, #e0e0e0 75%, #e0e0e0), " +
+								"repeating-linear-gradient(" +
+								"45deg, #e0e0e0 25%, #ffffff 25%, " +
+								"#ffffff 75%, #e0e0e0 75%, #e0e0e0)";
+
+							iconSwatch.style.backgroundSize =
+								"8px 8px";
+
+						} else {
+
+							iconSwatch.style.background =
+								this.getDisplayColor(stop.color);
+						}
+
+						tab.appendChild(iconSwatch);
+
+
+						/* =====================================================
+						   TOOLTIP
+						===================================================== */
+
+						tab.title =
+							`Stop ${index + 1} (${stop.offset}%)`;
+
+
+						/* =====================================================
+						   CLICK / SELECT
+						===================================================== */
+
+						tab.addEventListener("click", event => {
+
+							/*
+							 * If Sortable is currently finishing a drag,
+							 * don't treat the generated click as a normal
+							 * selection.
+							 */
+							if (tab.dataset.dragging === "true") {
+								event.preventDefault();
+								event.stopPropagation();
+								return;
+							}
+
+							const currentIndex =
+								Array.from(
+									stopsGroup.children
+								).indexOf(tab);
+
+							if (currentIndex < 0) {
+								return;
+							}
+
+							this.openStopIndex =
+								currentIndex;
+
+							this.renderUI();
+						});
+
+
+						/* =====================================================
+						   KEYBOARD SELECTION
+						===================================================== */
+
+						tab.addEventListener("keydown", event => {
+
+							if (
+								event.key === "Enter" ||
+								event.key === " "
+							) {
+
+								event.preventDefault();
+
+								const currentIndex =
+									Array.from(
+										stopsGroup.children
+									).indexOf(tab);
+
+								if (currentIndex < 0) {
+									return;
+								}
+
+								this.openStopIndex =
+									currentIndex;
+
+								this.renderUI();
+							}
+						});
+
+
+						stopsGroup.appendChild(tab);
+					});
+
+
+					/* =========================================================
+					   ADD STOP BUTTON
+					========================================================= */
+
+					const addTab =
+						document.createElement("div");
+
+					addTab.className =
+						"color-switch-btn";
+
+					addTab.style.flex =
+						"0 0 auto";
+
+					addTab.style.fontWeight =
+						"bold";
+
+					addTab.style.padding =
+						"6px 10px";
+
+					addTab.style.cursor =
+						"pointer";
+
+					addTab.textContent =
+						"+";
+
+					addTab.title =
+						"Add Stop";
+
+
+					addTab.addEventListener("click", () => {
+
+						this.dataArray.stops.push({
+							color: "transparent",
+							offset: 100
+						});
+
+						/*
+						 * Redistribute offsets.
+						 */
+						this.recalculateStopsOffsets();
+
+						/*
+						 * Select the newly-created stop.
+						 */
+						this.openStopIndex =
+							this.dataArray.stops.length - 1;
+
+						this.renderUI();
+					});
+
+
+					/* =========================================================
+					   HEADER
+					========================================================= */
+
+					stopsTabsContainer.appendChild(
+						stopsGroup
+					);
+
+					stopsTabsContainer.appendChild(
+						addTab
+					);
+
+					this.contentArea.appendChild(
+						stopsTabsContainer
+					);
+
+
+					/* =========================================================
+					   SORTABLE.JS
+					========================================================= */
+
+					if (typeof Sortable !== "undefined") {
+
+						new Sortable(stopsGroup, {
+
+							animation: 150,
+
+							direction: "horizontal",
+
+							ghostClass: "gradient-stop-ghost",
+
+							chosenClass: "gradient-stop-chosen",
+
+							dragClass: "gradient-stop-drag",
+
+							forceFallback: false,
+
+							draggable: ".color-switch-btn",
+
+
+							/* =================================================
+							   DRAG START
+
+							   THIS IS THE IMPORTANT PART.
+
+							   As soon as Sortable detects dragging:
+
+							   1. Find dragged stop.
+							   2. Make it active.
+							   3. Focus it.
+							   4. Do NOT renderUI().
+							================================================= */
+
+							onStart: event => {
+
+								const draggedTab =
+									event.item;
+
+
+								/*
+								 * Find its current position.
+								 */
+								const currentIndex =
+									Array.from(
+										stopsGroup.children
+									).indexOf(draggedTab);
+
+								if (currentIndex < 0) {
+									return;
+								}
+
+
+								/*
+								 * Make dragged stop the active stop
+								 * immediately.
+								 */
+								this.openStopIndex =
+									currentIndex;
+
+
+								/*
+								 * Remove active state from every
+								 * other stop.
+								 */
+								Array.from(
+									stopsGroup.children
+								).forEach(tab => {
+
+									tab.classList.remove(
+										"active"
+									);
+								});
+
+
+								/*
+								 * Make dragged stop active.
+								 */
+								draggedTab.classList.add(
+									"active"
+								);
+
+
+								/*
+								 * Focus the dragged stop immediately.
+								 *
+								 * This is effectively the same focus
+								 * behavior as clicking the menu.
+								 */
+								draggedTab.focus({
+									preventScroll: true
+								});
+
+
+								/*
+								 * Mark as dragging so the click event
+								 * generated by Sortable doesn't cause
+								 * another selection.
+								 */
+								draggedTab.dataset.dragging =
+									"true";
+
+
+								/*
+								 * Change cursor.
+								 */
+								draggedTab.style.cursor =
+									"grabbing";
+							},
+
+
+							/* =================================================
+							   DRAG END
+							================================================= */
+
+							onEnd: event => {
+
+								const draggedTab =
+									event.item;
+
+								draggedTab.style.cursor =
+									"grab";
+
+
+								/*
+								 * The DOM order has already been changed
+								 * by Sortable.
+								 *
+								 * Use newIndex as the final stop index.
+								 */
+								this.openStopIndex =
+									event.newIndex;
+
+
+								/* =================================================
+								   NOTHING MOVED
+								================================================= */
+
+								if (
+									event.oldIndex ===
+									event.newIndex
+								) {
+
+									/*
+									 * Clear dragging state after the
+									 * current pointer/click cycle.
+									 */
+									setTimeout(() => {
+
+										draggedTab.dataset.dragging =
+											"false";
+
+									}, 0);
+
+
+									/*
+									 * Keep focus on the same element.
+									 */
+									requestAnimationFrame(() => {
+
+										draggedTab.focus({
+											preventScroll: true
+										});
+
+									});
+
+									return;
+								}
+
+
+								/* =================================================
+								   MOVE DATA ARRAY
+								================================================= */
+
+								const movedStop =
+									this.dataArray.stops.splice(
+										event.oldIndex,
+										1
+									)[0];
+
+
+								this.dataArray.stops.splice(
+									event.newIndex,
+									0,
+									movedStop
+								);
+
+
+								/* =================================================
+								   RECALCULATE OFFSETS
+								================================================= */
+
+								this.recalculateStopsOffsets();
+
+
+								/* =================================================
+								   REBUILD UI
+								================================================= */
+
+								/*
+								 * The current DOM belongs to Sortable and is
+								 * about to be destroyed by renderUI().
+								 */
+								this.renderUI();
+
+
+								/*
+								 * renderUI() creates a new tab.
+								 *
+								 * Focus that newly-created tab after the
+								 * new DOM is ready.
+								 */
+								requestAnimationFrame(() => {
+
+									const newTabs =
+										this.contentArea.querySelectorAll(
+											".color-switch-btn[data-stop-index]"
+										);
+
+									const newActiveTab =
+										newTabs[this.openStopIndex];
+
+									if (newActiveTab) {
+
+										newActiveTab.focus({
+											preventScroll: true
+										});
+									}
+								});
+
+
+								/*
+								 * Prevent Sortable's generated click from
+								 * being interpreted as a normal click.
+								 */
+								setTimeout(() => {
+
+									if (newTabsAreStillDragging()) {
+										return;
+									}
+
+								}, 0);
+							}
+						});
+
+					} else {
+
+						console.warn(
+							"Sortable.js is not loaded. " +
+							"Gradient stops will not be draggable."
+						);
+					}
+
+
+					/* =========================================================
+					   ACTIVE STOP EDITOR
+					========================================================= */
+
+					const activeStop =
+						this.dataArray.stops[
+							this.openStopIndex
+						];
+
+					if (!activeStop) {
+						return;
+					}
+
+
+					const editorArea =
+						document.createElement("div");
+
+					editorArea.style.padding =
+						"10px";
+
+					editorArea.style.background =
+						"#fdfdfd";
+
+					editorArea.style.border =
+						"1px solid #d2d2d7";
+
+					editorArea.style.borderRadius =
+						"8px";
+
+					editorArea.style.marginTop =
+						"4px";
+
+
+					/* =========================================================
+					   CONTROLS ROW
+					========================================================= */
+
+					const controlsRow =
+						document.createElement("div");
+
+					controlsRow.className =
+						"color-row";
+
+					controlsRow.style.marginBottom =
+						"10px";
+
+					controlsRow.style.justifyContent =
+						"space-between";
+
+
+					/* =========================================================
+					   OFFSET
+					========================================================= */
+
+					const offsetWrap =
+						document.createElement("div");
+
+					offsetWrap.className =
+						"color-row";
+
+					offsetWrap.style.fontSize =
+						"12px";
+
+					offsetWrap.style.color =
+						"#666";
+
+					offsetWrap.textContent =
+						`Offset: ${activeStop.offset}% (Auto)`;
+
+					controlsRow.appendChild(
+						offsetWrap
+					);
+
+
+					/* =========================================================
+					   REMOVE STOP
+					========================================================= */
+
+					const delBtn =
+						document.createElement("button");
+
+					delBtn.className =
+						"btn-action";
+
+					delBtn.type =
+						"button";
+
+					delBtn.textContent =
+						"Remove Stop";
+
+					delBtn.style.color =
+						"#d93025";
+
+					delBtn.disabled =
+						this.dataArray.stops.length <= 2;
+
+					if (delBtn.disabled) {
+
+						delBtn.style.opacity =
+							"0.5";
+
+						delBtn.style.cursor =
+							"not-allowed";
+					}
+
+
+					delBtn.addEventListener("click", () => {
+
+						if (
+							this.dataArray.stops.length <= 2
+						) {
+							return;
+						}
+
+
+						this.dataArray.stops.splice(
+							this.openStopIndex,
+							1
+						);
+
+
+						this.recalculateStopsOffsets();
+
+
+						this.openStopIndex =
+							Math.min(
+								this.openStopIndex,
+								this.dataArray.stops.length - 1
+							);
+
+
+						this.renderUI();
+					});
+
+
+					controlsRow.appendChild(
+						delBtn
+					);
+
+					editorArea.appendChild(
+						controlsRow
+					);
+
+
+					/* =========================================================
+					   COLOR PALETTE
+					========================================================= */
+
+					const palette =
+						this.buildPaletteSelector(
+							activeStop.color,
+							newVal => {
+
+								activeStop.color =
+									newVal;
+
+								this.renderUI();
+							}
+						);
+
+					editorArea.appendChild(
+						palette
+					);
+
+
+					/* =========================================================
+					   APPEND EDITOR
+					========================================================= */
+
+					this.contentArea.appendChild(
+						editorArea
+					);
+				}
+				// Image
+				// Image
+				buildBackgroundImgUI() {
+					/* ---------------------------------------------
+					HEX COLOR HELPERS
+					--------------------------------------------- */
+					const normalizeHex = value => {
+						if (!value || typeof value !== "string") {
+							return null;
+						}
+						let hex = value.trim();
+						// #RGB -> #RRGGBB
+						if (/^#[0-9a-fA-F]{3}$/.test(hex)) {
+							hex = "#" + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+						}
+						// #RGBA -> #RRGGBBAA
+						else if (/^#[0-9a-fA-F]{4}$/.test(hex)) {
+							hex = "#" + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3] + hex[4] + hex[4];
+						}
+						if (!/^#[0-9a-fA-F]{6}$/.test(hex) && !/^#[0-9a-fA-F]{8}$/.test(hex)) {
+							return null;
+						}
+						return hex.toLowerCase();
+					};
+					const hexToOverlayState = value => {
+						const hex = normalizeHex(value);
+						if (!hex) {
+							return {
+								color: "#000000",
+								opacity: 100,
+								enabled: false
+							};
+						}
+						if (hex.length === 7) {
+							return {
+								color: hex,
+								opacity: 100,
+								enabled: true
+							};
+						}
+						const color = hex.substring(0, 7);
+						const alphaHex = hex.substring(7, 9);
+						const alpha = parseInt(alphaHex, 16);
+						return {
+							color,
+							opacity: Math.round((alpha / 255) * 100),
+							enabled: alpha > 0
+						};
+					};
+					const overlayState = hexToOverlayState(this.dataArray.coloroverlay);
+					/*
+					 * IMPORTANT:
+					 *
+					 * Do not modify dataArray here.
+					 *
+					 * Existing JSON should be read as-is.
+					 */
+					let overlayColor = overlayState.color;
+					let overlayOpacity = overlayState.opacity;
+					let overlayEnabled = this.dataArray.coloroverlay !== "transparent" && overlayState.enabled;
+					const opacityToHex = opacity => {
+						const safeOpacity = Math.max(0, Math.min(100, Number(opacity)));
+						return Math.round(
+							(safeOpacity / 100) * 255).toString(16).padStart(2, "0").toLowerCase();
+					};
+					const writeOverlayColor = () => {
+						if (!overlayEnabled) {
+							this.dataArray.coloroverlay = "transparent";
+							return;
+						}
+						const hex = normalizeHex(overlayColor);
+						if (!hex) {
+							this.dataArray.coloroverlay = "transparent";
+							return;
+						}
+						/*
+						 * 100% opacity keeps the original
+						 * six-digit HEX representation.
+						 *
+						 * This is important for backward compatibility.
+						 */
+						if (overlayOpacity >= 100) {
+							this.dataArray.coloroverlay = hex.substring(0, 7);
+							return;
+						}
+						/*
+						 * Less than 100% becomes HEX8:
+						 *
+						 * #RRGGBBAA
+						 */
+						const alphaHex = opacityToHex(overlayOpacity);
+						this.dataArray.coloroverlay = hex.substring(0, 7) + alphaHex;
+					};
+					/* ---------------------------------------------
+					IMAGE SOURCE
+					--------------------------------------------- */
+					const srcRow = document.createElement("div");
+					srcRow.className = "color-row";
+					const srcInput = document.createElement("input");
+					srcInput.type = "text";
+					srcInput.className = "color-input";
+					srcInput.placeholder = "Image URL (src)";
+					srcInput.value = this.dataArray.src || "";
+					srcInput.addEventListener("input", e => {
+						this.dataArray.src = e.target.value;
+					});
+					srcRow.appendChild(srcInput);
+					this.contentArea.appendChild(srcRow);
+					/* ---------------------------------------------
+					REPEAT / ATTACHMENT
+					--------------------------------------------- */
+					const repeatRow = document.createElement("div");
+					repeatRow.className = "color-row";
+					repeatRow.innerHTML = `
+						
+					<label>
+						<input type="checkbox" id="rx">
+							Repeat X
+						
+						</label>
+						<label>
+							<input type="checkbox" id="ry">
+							Repeat Y
+						
+							</label>
+							<label>
+								<input type="checkbox" id="atch">
+							Fixed Attach
+						
+								</label>
+					`;
+					const rx = repeatRow.querySelector("#rx");
+					const ry = repeatRow.querySelector("#ry");
+					const atch = repeatRow.querySelector("#atch");
+					rx.checked = !!this.dataArray.repeatX;
+					ry.checked = !!this.dataArray.repeatY;
+					atch.checked = !!this.dataArray.attachment;
+					rx.addEventListener("change", e => {
+						this.dataArray.repeatX = e.target.checked;
+					});
+					ry.addEventListener("change", e => {
+						this.dataArray.repeatY = e.target.checked;
+					});
+					atch.addEventListener("change", e => {
+						this.dataArray.attachment = e.target.checked;
+					});
+					this.contentArea.appendChild(repeatRow);
+					/* ---------------------------------------------
+					POSITION
+					--------------------------------------------- */
+					const posRow = document.createElement("div");
+					posRow.className = "color-row";
+					const posX = document.createElement("select");
+					posX.className = "color-mode-select";
+					posX.innerHTML = `
+						
+								<option value="1">Left</option>
+								<option value="2">Center</option>
+								<option value="3">Right</option>
+					`;
+					posX.value = this.dataArray.positionX || 2;
+					posX.addEventListener("change", e => {
+						this.dataArray.positionX = Number(e.target.value);
+					});
+					const posY = document.createElement("select");
+					posY.className = "color-mode-select";
+					posY.innerHTML = `
+						
+								<option value="1">Top</option>
+								<option value="2">Center</option>
+								<option value="3">Bottom</option>
+					`;
+					posY.value = this.dataArray.positionY || 2;
+					posY.addEventListener("change", e => {
+						this.dataArray.positionY = Number(e.target.value);
+					});
+					posRow.appendChild(document.createTextNode("PosX:"));
+					posRow.appendChild(posX);
+					posRow.appendChild(document.createTextNode("PosY:"));
+					posRow.appendChild(posY);
+					this.contentArea.appendChild(posRow);
+					/* ---------------------------------------------
+					COLOR OVERLAY TOGGLE
+					--------------------------------------------- */
+					const toggle = document.createElement("button");
+					toggle.type = "button";
+					toggle.className = "color-overlay-toggle" + (overlayEnabled ? " active" : "");
+					const toggleLabel = document.createElement("span");
+					toggleLabel.className = "color-overlay-label";
+					const toggleIndicator = document.createElement("span");
+					toggleIndicator.className = "color-overlay-toggle-indicator";
+					const toggleText = document.createElement("span");
+					toggleText.textContent = "Color Overlay";
+					toggleLabel.appendChild(toggleIndicator);
+					toggleLabel.appendChild(toggleText);
+					toggle.appendChild(toggleLabel);
+					const toggleState = document.createElement("span");
+					toggleState.textContent = overlayEnabled ? "On" : "Off";
+					toggle.appendChild(toggleState);
+					const updateToggleUI = () => {
+						toggle.classList.toggle("active", overlayEnabled);
+						toggleState.textContent = overlayEnabled ? "On" : "Off";
+					};
+					toggle.addEventListener("click", () => {
+						overlayEnabled = !overlayEnabled;
+						if (overlayEnabled) {
+							/*
+							 * If the previous value was transparent,
+							 * start with the primary theme color.
+							 *
+							 * Otherwise preserve the existing color.
+							 */
+							if (!normalizeHex(overlayColor)) {
+								overlayColor = this.getDisplayColor("color-primaryColor");
+							}
+							if (!normalizeHex(overlayColor)) {
+								overlayColor = "#007aff";
+							}
+							if (!Number.isFinite(overlayOpacity)) {
+								overlayOpacity = 100;
+							}
+						}
+						writeOverlayColor();
+						updateToggleUI();
+						this.renderUI();
+					});
+					this.contentArea.appendChild(toggle);
+					/* ---------------------------------------------
+					OVERLAY EDITOR
+					--------------------------------------------- */
+					if (!overlayEnabled) {
+						return;
+					}
+					const overlaySection = document.createElement("div");
+					overlaySection.className = "color-overlay-section";
+					/* ---------------------------------------------
+					COLOR
+					--------------------------------------------- */
+					const colorLabel = document.createElement("div");
+					colorLabel.className = "color-overlay-color-label";
+					colorLabel.textContent = "Overlay Color";
+					overlaySection.appendChild(colorLabel);
+					/*
+					 * The existing palette is used here.
+					 *
+					 * It already supports:
+					 *
+					 * - theme colors
+					 * - custom HEX
+					 * - transparent
+					 */
+					const palette = this.buildPaletteSelector(overlayColor, newVal => {
+						/*
+						 * If the user explicitly chooses
+						 * transparent, treat that as turning
+						 * the overlay OFF.
+						 */
+						if (newVal === "transparent") {
+							overlayEnabled = false;
+							this.dataArray.coloroverlay = "transparent";
+							this.renderUI();
+							return;
+						}
+						/*
+						 * Theme variables need to be resolved
+						 * into their actual HEX value because
+						 * coloroverlay is persisted as HEX.
+						 */
+						const resolved = this.getDisplayColor(newVal);
+						const normalized = normalizeHex(resolved);
+						if (!normalized) {
+							return;
+						}
+						overlayColor = normalized.substring(0, 7);
+						writeOverlayColor();
+						this.renderUI();
+					});
+					overlaySection.appendChild(palette);
+					/* ---------------------------------------------
+					OPACITY
+					--------------------------------------------- */
+					const opacityRow = document.createElement("div");
+					opacityRow.className = "color-overlay-opacity-row";
+					const opacityLabel = document.createElement("span");
+					opacityLabel.textContent = "Opacity:";
+					const opacitySlider = document.createElement("input");
+					opacitySlider.type = "range";
+					opacitySlider.min = "0";
+					opacitySlider.max = "100";
+					opacitySlider.step = "1";
+					opacitySlider.className = "color-overlay-opacity-slider";
+					opacitySlider.value = overlayOpacity;
+					const opacityValue = document.createElement("span");
+					opacityValue.className = "color-overlay-opacity-value";
+					const updateOpacityUI = value => {
+						overlayOpacity = Math.max(0, Math.min(100, Number(value)));
+						opacitySlider.value = overlayOpacity;
+						opacityValue.textContent = `${overlayOpacity}%`;
+						/*
+						 * Opacity 0 means the resulting overlay
+						 * is transparent.
+						 *
+						 * Keep the color available in memory/UI,
+						 * but persist transparent because that is
+						 * the original OFF representation.
+						 */
+						if (overlayOpacity <= 0) {
+							this.dataArray.coloroverlay = "transparent";
+						} else {
+							writeOverlayColor();
+						}
+					};
+					updateOpacityUI(overlayOpacity);
+					opacitySlider.addEventListener("input", e => {
+						updateOpacityUI(e.target.value);
+					});
+					opacityRow.appendChild(opacityLabel);
+					opacityRow.appendChild(opacitySlider);
+					opacityRow.appendChild(opacityValue);
+					overlaySection.appendChild(opacityRow);
+					this.contentArea.appendChild(overlaySection);
+				}
+				// Inherit
+				buildInheritUI() {
+					const row = document.createElement("div");
+					row.className = "color-row";
+					row.style.color = "#666";
+					row.textContent = "Color will be inherited from the parent.";
+					this.contentArea.appendChild(row);
+				}
+				// Init
+				initResult() {
+					return async () => {
+						try {
+							const themeName = typeof thisPageObject !== "undefined" ? thisPageObject.theme : "defaultTheme";
+							const themeData = await flexEngineFlieSystem.readTheme(themeName);
+							const parsedTheme = typeof themeData === "string" ? JSON.parse(themeData) : themeData;
+							this.themeColors = parsedTheme.colors || {};
+							this.renderUI();
+						} catch (error) {
+							console.error("Theme variables failed to load:", error);
+						}
+						return {
+							code: 0
+						};
+					};
+				}
+				onSave() {
+					/*
+					 * Return the actual data object.
+					 *
+					 * No onChange mechanism is used.
+					 */
+					return this.dataArray;
+				}
+			},
+			// Color renderer
+			render: function(colorObj) {
+				if (!colorObj || !colorObj.mode) {
+					return "transparent";
+				}
+				const resolveColor = cStr => {
+					if (!cStr || cStr === "transparent") {
+						return "transparent";
+					}
+					return cStr.startsWith("color-") ? `var(--${cStr})` : cStr;
+				};
+				switch (colorObj.mode) {
+					case "basic":
+						return resolveColor(colorObj.color);
+					case "hex":
+						return colorObj.hex;
+					case "variables":
+						return `var(--${colorObj.variables})`;
+					case "linearGradient": {
+						const gradientStops = (colorObj.stops || []).map(stop => `${resolveColor(stop.color)} ${stop.offset}%`).join(", ");
+						return `linear-gradient(
+							${colorObj.angle}deg,
+							${gradientStops}
+						)`;
+					}
+					case "backgroundIMG": {
+						const repeat = `
+							${colorObj.repeatX ? "repeat-x" : ""}
+							${colorObj.repeatY ? "repeat-y" : ""}
+						`.trim() || "no-repeat";
+						const posX = ["left", "center", "right"][colorObj.positionX - 1] || "center";
+						const posY = ["top", "center", "bottom"][colorObj.positionY - 1] || "center";
+						const attachment = colorObj.attachment ? "fixed" : "scroll";
+						if (colorObj.coloroverlay && colorObj.coloroverlay !== "transparent") {
+							const overlayStr = resolveColor(colorObj.coloroverlay);
+							return `
+								linear-gradient(
+									${overlayStr},
+									${overlayStr}
+								),
+								url("${colorObj.src}")
+								${posX}
+								${posY}
+								/ auto
+								${repeat}
+								${attachment}
+							`;
+						}
+						return `
+							url("${colorObj.src}")
+							${posX}
+							${posY}
+							/ auto
+							${repeat}
+							${attachment}
+						`;
+					}
+					case "inherit":
+						return "inherit";
+					case "none":
+					default:
+						return "transparent";
+				}
+			}
+		};
+	</script>
+	<script>
+		// Inject component CSS
+		function injectColorSystemCSS() {
+			const styleTag = document.getElementById("demytric");
+			let cssText = "";
+			colorSystem.cssStyles.forEach(rule => {
+				cssText += `${rule.object}{`;
+				rule.info.forEach(pair => {
+					cssText += `${pair.key}:${pair.value};`;
+				});
+				cssText += "}\n";
+			});
+			styleTag.textContent = cssText;
+		}
+		injectColorSystemCSS();
+	</script>
+	<script>
+		// Deep external Proxy
+		/*
+		 * This is deliberately OUTSIDE the component.
+		 *
+		 * The component doesn't know that this is a Proxy.
+		 *
+		 * It simply receives an object and mutates it normally.
+		 *
+		 * The Proxy intercepts:
+		 *
+		 *   proxyData.color = ...
+		 *   proxyData.angle = ...
+		 *   proxyData.mode = ...
+		 *
+		 * AND nested mutations:
+		 *
+		 *   proxyData.stops[0].color = ...
+		 *   proxyData.stops.push(...)
+		 *   proxyData.stops.splice(...)
+		 *
+		 * The preview is therefore controlled externally.
+		 */
+		function createReactiveProxy(target, onChange, cache = new WeakMap()) {
+			if (!target || typeof target !== "object") {
+				return target;
+			}
+			if (cache.has(target)) {
+				return cache.get(target);
+			}
+			const proxy = new Proxy(target, {
+				get(target, key, receiver) {
+					const value = Reflect.get(target, key, receiver);
+					if (value && typeof value === "object") {
+						return createReactiveProxy(value, onChange, cache);
+					}
+					return value;
+				},
+				set(target, key, value, receiver) {
+					const result = Reflect.set(target, key, value, receiver);
+					onChange();
+					return result;
+				},
+				deleteProperty(target, key) {
+					const result = Reflect.deleteProperty(target, key);
+					onChange();
+					return result;
+				}
+			});
+			cache.set(target, proxy);
+			return proxy;
+		}
+	</script>
+	<script>
+		// Demo / external engine
+		document.addEventListener("DOMContentLoaded", async () => {
+			const previewBox = document.getElementById("enginePreview");
+			const container = document.getElementById("engineDemo");
+			/*
+			 * This is the real data object.
+			 */
+			const data = {
+				mode: "basic",
+				color: "color-primaryColor"
+			};
+			/*
+			 * Preview updater.
+			 *
+			 * Notice:
+			 *
+			 * colorSystem.component does NOT
+			 * receive this function.
+			 *
+			 * The component doesn't need to know
+			 * anything about the preview.
+			 */
+			let proxyData;
+			const updatePreview = () => {
+				const css = colorSystem.render(proxyData);
+				previewBox.style.background = css;
+			};
+			/*
+			 * The Proxy is created OUTSIDE
+			 * the color component.
+			 */
+			proxyData = createReactiveProxy(data, updatePreview);
+			/*
+			 * Give the Proxy directly to
+			 * the component.
+			 */
+			const component = new colorSystem.component(proxyData, container, {
+				backgroundIMG: true
+			});
+			/*
+			 * Load theme variables.
+			 */
+			const init = component.initResult();
+			await init();
+			/*
+			 * Initial preview.
+			 */
+			updatePreview();
+		});
+	</script>
+</body>
+
+</html>
