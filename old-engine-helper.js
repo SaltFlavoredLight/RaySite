@@ -5,48 +5,72 @@
  */
 
 
+
 // Note: replace it by flexEngineDefaultVaribles
 // Variable system
 const flexEngineStyleVarible = {
 	color: function(colorObj) {
-		if (!colorObj || !colorObj.mode) return 'transparent';
-
-		switch (colorObj.mode) {
-			case 'hex':
-				return colorObj.hex;
-
-			case 'linearGradient':
-				// Map the stops array into "color offset, color offset" format
-				const gradientStops = colorObj.stops
-					.map(stop => `${stop.color} ${stop.offset}`)
-					.join(', ');
-				return `linear-gradient(${colorObj.angle}, ${gradientStops})`;
-
-			case 'backgroundIMG':
-				const repeat = `${colorObj.repeatX ? 'repeat-x' : ''} ${colorObj.repeatY ? 'repeat-y' : ''}`.trim() || 'no-repeat';
-
-				// Mapping 1-3 to CSS position keywords
-				const posX = ['left', 'center', 'right'][colorObj.positionX - 1] || 'center';
-				const posY = ['top', 'center', 'bottom'][colorObj.positionY - 1] || 'center';
-				const attachment = colorObj.attachment ? 'fixed' : 'scroll';
-
-				// If a color overlay is provided, we use a linear-gradient trick 
-				// to layer the color over the image.
-				if (colorObj.coloroverlay && colorObj.coloroverlay !== 'transparent') {
-					return `linear-gradient(${colorObj.coloroverlay}, ${colorObj.coloroverlay}), url("${colorObj.src}") ${posX} ${posY} / auto ${repeat} ${attachment}`;
-				}
-				return `url("${colorObj.src}") ${posX} ${posY} / auto ${repeat} ${attachment}`;
-
-			case 'variables':
-				return `var(--${colorObj.variables})`;
-
-			case 'inherit':
-				return 'inherit';
-
-			case 'none':
-			default:
-				return 'transparent';
-		}
+                if (!colorObj || !colorObj.mode) {
+                    return "transparent";
+                }
+                const resolveColor = cStr => {
+                    if (!cStr || cStr === "transparent") {
+                        return "transparent";
+                    }
+                    return cStr.startsWith("color-") ? `var(--${cStr})` : cStr;
+                };
+                switch (colorObj.mode) {
+                    case "basic":
+                        return resolveColor(colorObj.color);
+                    case "hex":
+                        return colorObj.hex;
+                    case "variables":
+                        return `var(--${colorObj.variables})`;
+                    case "linearGradient": {
+                        const gradientStops = (colorObj.stops || []).map(stop => `${resolveColor(stop.color)} ${stop.offset}%`).join(", ");
+                        return `linear-gradient(
+                                    ${colorObj.angle}deg,
+                                    ${gradientStops}
+                                )`;
+                    }
+                    case "backgroundIMG": {
+                        const repeat = `
+                                    ${colorObj.repeatX ? "repeat-x" : ""}
+                                    ${colorObj.repeatY ? "repeat-y" : ""}
+                                `.trim() || "no-repeat";
+                        const posX = ["left", "center", "right"][colorObj.positionX - 1] || "center";
+                        const posY = ["top", "center", "bottom"][colorObj.positionY - 1] || "center";
+                        const attachment = colorObj.attachment ? "fixed" : "scroll";
+                        if (colorObj.coloroverlay && colorObj.coloroverlay !== "transparent") {
+                            const overlayStr = resolveColor(colorObj.coloroverlay);
+                            return `
+                                        linear-gradient(
+                                            ${overlayStr},
+                                            ${overlayStr}
+                                        ),
+                                        url("${colorObj.src}")
+                                        ${posX}
+                                        ${posY}
+                                        / auto
+                                        ${repeat}
+                                        ${attachment}
+                                    `;
+                        }
+                        return `
+                                    url("${colorObj.src}")
+                                    ${posX}
+                                    ${posY}
+                                    / auto
+                                    ${repeat}
+                                    ${attachment}
+                                `;
+                    }
+                    case "inherit":
+                        return "inherit";
+                    case "none":
+                    default:
+                        return "transparent";
+                }
 	},
 
 	space: function(spaceObj) {
