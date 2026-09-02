@@ -1,6 +1,4 @@
 ## Todo:
-there also missing color. (fixing the error, Proof of concept works)
-
 then, use each animation setting, check those setting like space, degrees and number stuff.
 
 for render part, just migrate them each to correspond to the new version, note that some of them were different
