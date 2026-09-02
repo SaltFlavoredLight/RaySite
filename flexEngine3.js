@@ -1,34 +1,3 @@
-
-
-/*
-Styling system
-*/
-// helper function for check this system
-const flexEngineCheckContext = function(contextSetting, label) {
-
-    // Normalize into array
-    let list = [];
-
-    if (Array.isArray(contextSetting)) {
-        // Already an array
-        list = contextSetting.map(s => String(s).trim());
-    } 
-    else if (typeof contextSetting === "string") {
-        // Replace commas with spaces, split on spaces
-        list = contextSetting
-            .replace(/,/g, " ")
-            .split(/\s+/)
-            .map(s => s.trim())
-            .filter(s => s.length > 0);
-    }
-
-    // Check if label exists
-    return list.includes(label);
-}
-
-
-
-
 // Setting List for nodes.
 const SizeSettingList = {
 
@@ -892,7 +861,7 @@ const flexEngineAnimationSection = function(dataArray, node, expend) {
 	flexEngineAnimationContextsNode(animationReadyData, node);
 
 	// Step 4, cleanup for this part
-	delete animationReadyData;
+
 
 	// STEP 5, Label all animation
 	const prefix = BUILDER_CONFIG.classPrefix; // e.g. "cw-"
