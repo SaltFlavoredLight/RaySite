@@ -7099,7 +7099,7 @@ const flexEngineDefaultVaribles = {
 
 
 /*
-Animation apepar it!
+Animation apepar it! 0-14
 */
 const flexEngineDefaultAnimation = {
 	0: {
@@ -7628,6 +7628,9 @@ const flexEngineDefaultAnimation = {
 	}
 };
 
+/*
+Start with appeared, CSS!
+*/
 
 
 debugger; // FLAG for future change - flexEngineDefaultElements need to shift to new StyleVarible, for safety, keep the original ones, but we will delete soon after.
@@ -9975,7 +9978,7 @@ const flexEngineDefaultElements = {
 /**
  * Share some infomation
  * every catergory is included with a sizeQuery, sizeDefault, sizeMobile, elements and setting.
- * Setting will include systemClass, allowedSortIn, dependencyAnimation, allowedSortTo those 4 types.
+ * Setting will include allowedSortIn, dependencyAnimation those 2 types.
  * Now for each element, they need include a className, alts, icon, contentQuery, layoutQuery, initQuery(optional), 
  * initFunction(optional), contentFunction, cssStyles, jsRuntime and setting.
  * a setting may have some questions, check in to see what there have.
