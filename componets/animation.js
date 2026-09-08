@@ -595,7 +595,7 @@ const flexEngineDefaultAnimation = {
 /**
  * Query
  */
-
+debugger; // Moved, remove when done
 const flexEngineGetAnimationSelfQuery = function() {
 
 	let query = [
@@ -877,6 +877,7 @@ const flexEngineGetAnimationAllQuery = function() {
 /*
 Apply animation configuration to a node. (animation as 1)
 */
+debugger; // Moved, remove when done
 const flexEngineAnimationContextsNode = function(dataArray, node) {
 	const prefix = BUILDER_CONFIG.classPrefix;
 
@@ -1156,6 +1157,7 @@ const flexEngineAnimationSection = function(dataArray, node, expend = true) {
 
 	selfData.animation = animationData.self || {};
 
+	debugger; //don;t forgot dependicy!
 	flexEngineAnimationContextsNode(selfData, node);
 
 
@@ -1168,6 +1170,7 @@ const flexEngineAnimationSection = function(dataArray, node, expend = true) {
 		node.setAttribute(attrTimeRange, "");
 
 		if (expend === true) {
+			debugger; //don;t forgot dependicy!
 			flexEngineApplyAnimationSection(node);
 		}
 
@@ -1265,6 +1268,7 @@ const flexEngineAnimationSection = function(dataArray, node, expend = true) {
 
 
 	if (expend === true) {
+		debugger; //don;t forgot dependicy!
 		flexEngineApplyAnimationSection(node);
 	}
 };
@@ -1278,7 +1282,6 @@ const flexEngineAnimationRender = function(dataArray, node, mode) {
 	}
 
 	switch (Number(mode)) {
-		// Animation completely disabled.
 		case 0: {
 			const prefix = BUILDER_CONFIG.classPrefix;
 
@@ -1315,7 +1318,6 @@ const flexEngineAnimationRender = function(dataArray, node, mode) {
 			return;
 		}
 
-		// Animation enabled for this node itself.
 		case 1: {
 			flexEngineAnimationContextsNode(
 				dataArray,
@@ -1363,18 +1365,504 @@ const flexEngineAnimationRender = function(dataArray, node, mode) {
 
 
 /**
- * FlexEnginePropertyMiddleware
+ * FlexEngineProperty
  * Scope:
  * selfQuery = about self
  * allQuery = about all
  * 
  * 
  * render: a object also show the infomation.
+ * render is also another object thst can start with numbers
+ * like code 0 using 0: function() {} to indicate 0.
+ * "other" = fallback.
  */
 const flexEngineAnimation = {
 	name: "animation",
 
+	// selfQuery and allQuery, 
+	// however those were demytric, we use get name().
+	get selfQuery() {
+		let query = [
+			{
+				name: "animationType",
+				label: "Animation",
+				type: "selection",
+				choice: [
+					{
+						name: "Inherit",
+						value: -1
+					},
+					...Object.keys(flexEngineDefaultAnimation).map(key => ({
+						name: flexEngineDefaultAnimation[key].name,
+						value: Number(key)
+					}))
+				],
+				default: 1
+			},
+
+			{
+				name: "animationCurve",
+				label: "Curve",
+				type: "curve",
+				visibleIf: {
+					name: "animationType",
+					value: [
+						0, 1, 2, 3, 4, 5, 6, 7,
+						8, 9, 10, 11, 12, 13, 14
+					]
+				}
+			},
+
+			{
+				name: "duration",
+				label: "Duration",
+				type: "number",
+				default: 0.6,
+				visibleIf: {
+					name: "animationType",
+					value: [
+						0, 1, 2, 3, 4, 5, 6, 7,
+						8, 9, 10, 11, 12, 13, 14
+					]
+				}
+			},
+
+			{
+				name: "delayTime",
+				label: "Delay",
+				type: "number",
+				default: 0,
+				visibleIf: {
+					name: "animationType",
+					value: [
+						0, 1, 2, 3, 4, 5, 6, 7,
+						8, 9, 10, 11, 12, 13, 14
+					]
+				}
+			},
+
+			{
+				name: "trigger",
+				label: "Trigger",
+				type: "integer",
+				default: 1,
+				visibleIf: {
+					name: "animationType",
+					value: [
+						0, 1, 2, 3, 4, 5, 6, 7,
+						8, 9, 10, 11, 12, 13, 14
+					]
+				}
+			}
+		];
+
+		const optionalQueryMap = {};
+		const optionalQueryOrder = [];
+
+		Object.keys(flexEngineDefaultAnimation).forEach(function(key) {
+
+			const animationType = Number(key);
+			const animation = flexEngineDefaultAnimation[animationType];
+
+			if (!animation || !Array.isArray(animation.query)) {
+				return;
+			}
+
+			animation.query.forEach(function(animationQuery) {
+
+				if (!animationQuery || !animationQuery.name) {
+					return;
+				}
+
+				const name = animationQuery.name;
+
+				if (!optionalQueryMap[name]) {
+
+					optionalQueryMap[name] = {
+						...animationQuery,
+						visibleIf: {
+							name: "animationType",
+							value: [animationType]
+						}
+					};
+
+					optionalQueryOrder.push(name);
+
+				} else {
+
+					optionalQueryMap[name].visibleIf.value.push(animationType);
+
+				}
+
+			});
+
+		});
+
+		optionalQueryOrder.forEach(function(name) {
+			query.push(optionalQueryMap[name]);
+		});
+
+		return query;
+	},
+	
+	get allQuery() {
+		const query = [
+			{
+				name: "animationType",
+				label: "Animation",
+				type: "selection",
+				choice: Object.keys(flexEngineDefaultAnimation).map(key => ({
+					name: flexEngineDefaultAnimation[key].name,
+					value: Number(key)
+				}))
+			},
+
+			{
+				name: "animationCurve",
+				label: "Curve",
+				type: "curve"
+			},
+
+			{
+				name: "duration",
+				label: "Duration",
+				type: "number",
+				default: 0.6
+			},
+
+			{
+				name: "delayTime",
+				label: "First Delay",
+				type: "number",
+				default: 0
+			},
+
+			{
+				name: "executionInterval",
+				label: "Execution Interval",
+				type: "number",
+				default: 0
+			},
+
+			{
+				name: "trigger",
+				label: "Trigger",
+				type: "integer",
+				default: 1
+			}
+		];
+
+
+		/*
+			Keep track of which animation IDs
+			contain each optional query.
+
+			Example:
+
+			{
+				direction: {
+					query: {...},
+					animationTypes: [2, 6, 7, 8, 9]
+				}
+			}
+		*/
+		const optionalQueries = new Map();
+
+
+		/*
+			Check every animation.
+		*/
+		Object.keys(flexEngineDefaultAnimation).forEach(key => {
+
+			const animationNumber = Number(key);
+			const animation =
+				flexEngineDefaultAnimation[animationNumber];
+
+			/*
+				Check every optional query belonging
+				to this animation.
+			*/
+			(animation.query || []).forEach(animationQuery => {
+
+				const name = animationQuery.name;
+
+				/*
+					First definition wins.
+
+					If another animation later uses the
+					same name, we DO NOT replace the query.
+				*/
+				if (!optionalQueries.has(name)) {
+
+					optionalQueries.set(name, {
+						query: {
+							...animationQuery
+						},
+						animationTypes: [
+							animationNumber
+						]
+					});
+
+					return;
+				}
+
+
+				/*
+					Same variable already exists.
+
+					Only add this animation number.
+				*/
+				const existing =
+					optionalQueries.get(name);
+
+				if (
+					!existing.animationTypes.includes(
+						animationNumber
+					)
+				) {
+					existing.animationTypes.push(
+						animationNumber
+					);
+				}
+
+			});
+
+		});
+
+
+		/*
+			Convert the collected optional queries
+			into actual query definitions.
+		*/
+		optionalQueries.forEach(function(data) {
+
+			const optionalQuery = {
+				...data.query,
+
+				visibleIf: {
+					name: "animationType",
+					value: data.animationTypes
+				}
+			};
+
+			query.push(optionalQuery);
+
+		});
+
+
+		return query;
+	},
+
+	// render part.
 	render: {
+		// Animation completely disabled.
+		0: function(dataArray, node) {
+			const prefix = BUILDER_CONFIG.classPrefix;
+
+			node.setAttribute(
+				`${prefix}animation-config-self`,
+				""
+			);
+
+			node.setAttribute(
+				`${prefix}animation-config-self-trigger`,
+				""
+			);
+
+			node.setAttribute(
+				`${prefix}animation-config-all`,
+				""
+			);
+
+			node.setAttribute(
+				`${prefix}animation-config-all-trigger`,
+				""
+			);
+
+			node.setAttribute(
+				`${prefix}animation-config-all-firstdelay`,
+				""
+			);
+
+			node.setAttribute(
+				`${prefix}animation-config-all-timeRange`,
+				""
+			);
+
+			return;			
+		},
+
+		// Animation enabled for this node itself
+		1: function(dataArray, node) {
+			const prefix = BUILDER_CONFIG.classPrefix;
+
+			const attrName = `${prefix}animation-config-self`;
+			const triggerAttr = `${prefix}animation-config-self-trigger`;
+
+			const anim = dataArray.animation;
+
+			/*
+				Inherit animation from another animation context.
+
+				This must happen before resolving animationType,
+				variables, curve, duration, etc.
+			*/
+			if (Number(anim.animationType) === -1) {
+				node.setAttribute(attrName, "inherit");
+				node.setAttribute(triggerAttr, "");
+				return;
+			}
+
+
+			/*
+				Resolve animation type.
+
+				Animation IDs:
+				0  showup
+				1  fade
+				2  flyIn
+				3  growTurn
+				4  zoom
+				5  basicZoom
+				6  rise
+				7  stretch
+				8  wipe
+				9  peekIn
+				10 box
+				11 expand
+				12 tumble
+				13 rotate
+				14 slideRotate
+			*/
+			let animationNumber = Number(anim.animationType);
+
+			if (!Number.isInteger(animationNumber) || !flexEngineDefaultAnimation[animationNumber]) {
+				animationNumber = 1;
+			}
+
+			const entry = flexEngineDefaultAnimation[animationNumber];
+
+
+			/*
+				Build animation-specific CSS variables.
+			*/
+			let cssVars = "";
+
+			if (typeof entry.variables === "function") {
+				try {
+					cssVars = entry.variables(anim) || "";
+				}
+				catch (e) {
+					cssVars = "";
+				}
+			}
+
+
+			/*
+				Animation duration.
+
+				If the animation's setting explicitly overrides
+				the time, use that value instead of anim.duration.
+
+				Example:
+				showup -> timeOverride = true
+				showup -> timeOverrideSeconds = 0
+
+				So showup always uses 0s regardless of anim.duration.
+			*/
+			let duration;
+
+			if (
+				entry.setting &&
+				entry.setting.timeOverride === true
+			) {
+				duration = `${entry.setting.timeOverrideSeconds}s`;
+			}
+			else {
+				duration = `${num(anim.duration) || 0.6}s`;
+			}
+
+
+			/*
+				Animation curve.
+
+				anim.animationCurve is the raw curve data/array.
+
+				Do NOT treat it as the final CSS string.
+
+				The curve renderer converts the stored data
+				into the actual CSS timing-function value.
+			*/
+			let curve = "";
+
+			try {
+				curve = flexEngineDefaultVariables.curve.curve.render(
+					anim.animationCurve
+				) || "";
+			}
+			catch (e) {
+				curve = "";
+			}
+
+
+			/*
+				Animation delay.
+			*/
+			const delay = `${anim.delayTime || 0}s`;
+
+
+			/*
+				Build final animation shorthand.
+			*/
+			const animationName = entry.name;
+
+			const cssAnim =
+				`animation:${prefix}animation-${animationName} ` +
+				`${duration} ${curve} ${delay} 1 normal both;`;
+
+
+			/*
+				Write final attributes.
+			*/
+			node.setAttribute(
+				attrName,
+				cssVars + cssAnim
+			);
+
+			node.setAttribute(
+				triggerAttr,
+				anim.trigger || 1
+			);
+		},
+
+		// Animation enabled as a SECTION.
+		2: function(dataArray, node, expend = true) {
+
+		},
 		
-	}
+		// Animation bepass, as inherit only.
+		3: function(dataArray, node) {
+			const prefix = BUILDER_CONFIG.classPrefix;
+
+			node.setAttribute(
+				`${prefix}animation-config-self`,
+				"inherit"
+			);
+
+			node.setAttribute(
+				`${prefix}animation-config-self-trigger`,
+				""
+			);
+
+			return;
+		},
+
+		// for unKnown node, if we cannot find one, atuo fallback.
+		"other": function(dataArray, node) {
+			return;
+		}
+	},
+
+	//this schema allow custom helper functions.
+
 };

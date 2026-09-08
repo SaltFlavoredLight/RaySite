@@ -52,12 +52,6 @@ const flexEngineTransition = {
 				{
 					label: "Spacing",
 					choice: [
-						{ name: "margin", label: "Margin" },
-						{ name: "margin-top", label: "Margin Top" },
-						{ name: "margin-right", label: "Margin Right" },
-						{ name: "margin-bottom", label: "Margin Bottom" },
-						{ name: "margin-left", label: "Margin Left" },
-
 						{ name: "padding", label: "Padding" },
 						{ name: "padding-top", label: "Padding Top" },
 						{ name: "padding-right", label: "Padding Right" },
