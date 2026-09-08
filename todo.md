@@ -82,3 +82,5 @@ color/picker
 Required fields: name, label, type
 backgroundIMG: false is optional.
 Set backgroundIMG: false when background-image mode should not be available for that particular color field.
+
+
