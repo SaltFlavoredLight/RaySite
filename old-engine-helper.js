@@ -6,7 +6,7 @@
 
 
 
-// Note: replace it by flexEngineDefaultVaribles
+// Note: replace it by flexEngineDefaultVariables
 // Variable system
 const flexEngineStyleVarible = {
 	color: function(colorObj) {
