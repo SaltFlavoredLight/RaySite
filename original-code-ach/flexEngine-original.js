@@ -1506,9 +1506,6 @@ const flexEngineAnimationSection = function(dataArray, node, expend) {
 	// Step 3, Run the animation engine render
 	flexEngineAnimationContextsNode(animationReadyData, node);
 
-	// Step 4, cleanup for this part
-	delete animationReadyData;
-
 	// STEP 5, Label all animation
 	const prefix = BUILDER_CONFIG.classPrefix; // e.g. "cw-"
 	const attrName = `${prefix}animation-config-all`;
