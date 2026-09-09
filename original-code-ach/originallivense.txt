@@ -1,0 +1,164 @@
+CubicWorld Open License (CWOL)
+Version 1
+
+Copyright (c) [YEAR] [YOUR NAME]
+
+DEFINITIONS
+“Software” refers to the original program, its assets, and all associated
+files provided by the author.
+
+“Use” means running the Software without modifying its source code or
+internal structure.
+
+“Extend” means creating SDK-based integrations, plug-ins, add-ons,
+themes, modules, external tools, or other components that interact with
+the Software solely through the SDK or API provided by the Software
+(such as CubicWorld.plugin()) and do not modify the Software’s source
+code or internal structure.
+
+“Edit” means modifying the Software’s source code, internal structure, or
+behavior, including embedding it into another program or automating it
+with bots.
+
+“Embed Scripts” means HTML <iframe> embeds, JavaScript imports, or API
+calls included in the user’s final website or project, which do not
+modify the Software and do not interact with the Software through its
+SDK or API.
+
+“Distribute” means making the Software, any edited version, or any
+extended version available to the public in any form.
+
+-----------------------------------------------------------------------
+
+1. USE
+Permission is granted to any person to Use the Software for any purpose,
+including commercial use. All output created through Use of the Software
+belongs solely to the user, including copyright. The author assumes no
+liability for any actions or outcomes resulting from Use of the Software.
+
+Use by any charitable organization, educational institution, public
+research organization, public safety or health organization,
+environmental protection organization, or government institution is Use
+for a permitted purpose regardless of the source of funding or
+obligations resulting from the funding.
+
+Religious use, including use by or for the Catholic Church or any other
+religious body, is permitted under this section.
+
+-----------------------------------------------------------------------
+
+2. EMBED SCRIPTS (iframes, JS imports, API embeds)
+Embed Scripts are not considered Extensions or Edits. Embed Scripts may
+be used freely for commercial or non-commercial purposes as part of the
+user’s final website or project.
+
+-----------------------------------------------------------------------
+
+3. EXTEND (SDK Integrations, Plug‑ins, Add‑ons, Modules)
+Permission is granted to create and use Extensions, including SDK-based
+integrations, plug-ins, add-ons, themes, modules, external tools, or
+other components, provided that such Extensions do not modify the
+Software’s source code or internal structure.
+
+Extensions may be used for commercial or non-commercial purposes, unless
+they are designed to circumvent or violate the restrictions of this
+license, including but not limited to enabling commercial use of edited
+versions of the Software or embedding the Software into another product
+or service.
+
+Extensions must operate solely through the SDK or API provided by the
+Software, such as CubicWorld.plugin(), and must not replicate, replace,
+or repackage core functionality of the Software in a way that bypasses
+this license.
+
+Extensions must not include or distribute any portion of the Software’s
+source code unless permitted under Section 5 (Distribute).
+
+-----------------------------------------------------------------------
+
+4. EDIT
+Permission is granted to Edit the Software only for private, internal,
+non‑commercial purposes. Any edited version must retain clear attribution
+to the original author.
+
+Personal use for research, experiment, and testing for the benefit of
+public knowledge, personal study, private entertainment, hobby projects,
+amateur pursuits, or religious observance, without any anticipated
+commercial application, is considered a permitted purpose under this
+section.
+
+Edited versions may not be used for any commercial purpose.
+
+-----------------------------------------------------------------------
+
+5. DISTRIBUTE
+Permission is granted to Distribute the Software, any edited version, or
+any extended version only if:
+
+  a. The distribution is entirely non‑commercial.
+  b. No profit, revenue, donation, or material benefit is received.
+  c. The distribution does not provide commercial advantage.
+  d. Attribution to the original author is retained and clearly visible.
+  e. The distributed version does not circumvent or weaken the
+     restrictions of this license.
+
+-----------------------------------------------------------------------
+
+6. THIRD‑PARTY SERVICES
+Some features of the Software may interact with third‑party services.
+Such services are governed solely by their own terms, and the user is
+responsible for complying with those terms. The author does not grant
+any rights to third‑party services and is not responsible for their
+availability, behavior, or licensing.
+
+Use of third‑party services through the Software is permitted unless the
+integration is designed to circumvent or violate this license.
+
+-----------------------------------------------------------------------
+
+7. FAIR USE
+You may have “fair use” rights for the Software under the law. These
+terms do not limit them.
+
+-----------------------------------------------------------------------
+
+8. NO OTHER RIGHTS
+These terms do not allow you to sublicense or transfer any of your
+licenses to anyone else, or prevent the author from granting licenses to
+anyone else. These terms do not imply any other licenses.
+
+-----------------------------------------------------------------------
+
+9. PROHIBITED ACTIONS
+The following are strictly prohibited:
+
+  a. Commercial distribution of the Software, any edited version, or any
+     extended version.
+  b. Use of edited versions for commercial purposes.
+  c. Offering the Software, any edited version, or any extended version
+     as part of a paid, monetized, or revenue‑generating service.
+  d. Embedding the Software into another product or service except
+     through permitted Extensions under Section 3.
+  e. Distributing the Software, edited versions, or extended versions
+     without attribution.
+  f. Creating Extensions intended to bypass or weaken this license.
+
+-----------------------------------------------------------------------
+
+10. FINAL INTERPRETATION
+The author reserves the right of final interpretation of this license,
+provided that such interpretation is consistent with the written terms
+above.
+
+-----------------------------------------------------------------------
+
+11. WARRANTY AND LIABILITY
+As far as the law allows, the Software is provided “AS IS”, without any
+warranty or condition of any kind. The author will not be liable to you
+for any damages arising out of these terms or the use or nature of the
+Software, under any kind of legal claim.
+
+-----------------------------------------------------------------------
+
+12. COPYRIGHT
+The copyright to the original Software remains solely with the author.
