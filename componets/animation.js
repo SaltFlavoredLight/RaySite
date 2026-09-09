@@ -591,779 +591,6 @@ const flexEngineDefaultAnimation = {
 	}
 };
 
-
-/**
- * Query
- */
-debugger; // Moved, remove when done
-const flexEngineGetAnimationSelfQuery = function() {
-
-	let query = [
-		{
-			name: "animationType",
-			label: "Animation",
-			type: "selection",
-			choice: [
-				{
-					name: "Inherit",
-					value: -1
-				},
-				...Object.keys(flexEngineDefaultAnimation).map(key => ({
-					name: flexEngineDefaultAnimation[key].name,
-					value: Number(key)
-				}))
-			],
-			default: 1
-		},
-
-		{
-			name: "animationCurve",
-			label: "Curve",
-			type: "curve",
-			visibleIf: {
-				name: "animationType",
-				value: [
-					0, 1, 2, 3, 4, 5, 6, 7,
-					8, 9, 10, 11, 12, 13, 14
-				]
-			}
-		},
-
-		{
-			name: "duration",
-			label: "Duration",
-			type: "number",
-			default: 0.6,
-			visibleIf: {
-				name: "animationType",
-				value: [
-					0, 1, 2, 3, 4, 5, 6, 7,
-					8, 9, 10, 11, 12, 13, 14
-				]
-			}
-		},
-
-		{
-			name: "delayTime",
-			label: "Delay",
-			type: "number",
-			default: 0,
-			visibleIf: {
-				name: "animationType",
-				value: [
-					0, 1, 2, 3, 4, 5, 6, 7,
-					8, 9, 10, 11, 12, 13, 14
-				]
-			}
-		},
-
-		{
-			name: "trigger",
-			label: "Trigger",
-			type: "integer",
-			default: 1,
-			visibleIf: {
-				name: "animationType",
-				value: [
-					0, 1, 2, 3, 4, 5, 6, 7,
-					8, 9, 10, 11, 12, 13, 14
-				]
-			}
-		}
-	];
-
-	const optionalQueryMap = {};
-	const optionalQueryOrder = [];
-
-	Object.keys(flexEngineDefaultAnimation).forEach(function(key) {
-
-		const animationType = Number(key);
-		const animation = flexEngineDefaultAnimation[animationType];
-
-		if (!animation || !Array.isArray(animation.query)) {
-			return;
-		}
-
-		animation.query.forEach(function(animationQuery) {
-
-			if (!animationQuery || !animationQuery.name) {
-				return;
-			}
-
-			const name = animationQuery.name;
-
-			if (!optionalQueryMap[name]) {
-
-				optionalQueryMap[name] = {
-					...animationQuery,
-					visibleIf: {
-						name: "animationType",
-						value: [animationType]
-					}
-				};
-
-				optionalQueryOrder.push(name);
-
-			} else {
-
-				optionalQueryMap[name].visibleIf.value.push(animationType);
-
-			}
-
-		});
-
-	});
-
-	optionalQueryOrder.forEach(function(name) {
-		query.push(optionalQueryMap[name]);
-	});
-
-	return query;
-
-};
-
-const flexEngineGetAnimationAllQuery = function() {
-
-	const query = [
-		{
-			name: "animationType",
-			label: "Animation",
-			type: "selection",
-			choice: Object.keys(flexEngineDefaultAnimation).map(key => ({
-				name: flexEngineDefaultAnimation[key].name,
-				value: Number(key)
-			}))
-		},
-
-		{
-			name: "animationCurve",
-			label: "Curve",
-			type: "curve"
-		},
-
-		{
-			name: "duration",
-			label: "Duration",
-			type: "number",
-			default: 0.6
-		},
-
-		{
-			name: "delayTime",
-			label: "First Delay",
-			type: "number",
-			default: 0
-		},
-
-		{
-			name: "executionInterval",
-			label: "Execution Interval",
-			type: "number",
-			default: 0
-		},
-
-		{
-			name: "trigger",
-			label: "Trigger",
-			type: "integer",
-			default: 1
-		}
-	];
-
-
-	/*
-		Keep track of which animation IDs
-		contain each optional query.
-
-		Example:
-
-		{
-			direction: {
-				query: {...},
-				animationTypes: [2, 6, 7, 8, 9]
-			}
-		}
-	*/
-	const optionalQueries = new Map();
-
-
-	/*
-		Check every animation.
-	*/
-	Object.keys(flexEngineDefaultAnimation).forEach(key => {
-
-		const animationNumber = Number(key);
-		const animation =
-			flexEngineDefaultAnimation[animationNumber];
-
-		/*
-			Check every optional query belonging
-			to this animation.
-		*/
-		(animation.query || []).forEach(animationQuery => {
-
-			const name = animationQuery.name;
-
-			/*
-				First definition wins.
-
-				If another animation later uses the
-				same name, we DO NOT replace the query.
-			*/
-			if (!optionalQueries.has(name)) {
-
-				optionalQueries.set(name, {
-					query: {
-						...animationQuery
-					},
-					animationTypes: [
-						animationNumber
-					]
-				});
-
-				return;
-			}
-
-
-			/*
-				Same variable already exists.
-
-				Only add this animation number.
-			*/
-			const existing =
-				optionalQueries.get(name);
-
-			if (
-				!existing.animationTypes.includes(
-					animationNumber
-				)
-			) {
-				existing.animationTypes.push(
-					animationNumber
-				);
-			}
-
-		});
-
-	});
-
-
-	/*
-		Convert the collected optional queries
-		into actual query definitions.
-	*/
-	optionalQueries.forEach(function(data) {
-
-		const optionalQuery = {
-			...data.query,
-
-			visibleIf: {
-				name: "animationType",
-				value: data.animationTypes
-			}
-		};
-
-		query.push(optionalQuery);
-
-	});
-
-
-	return query;
-};
-
-
-
-
-/*
-Apply animation configuration to a node. (animation as 1)
-*/
-debugger; // Moved, remove when done
-const flexEngineAnimationContextsNode = function(dataArray, node) {
-	const prefix = BUILDER_CONFIG.classPrefix;
-
-	const attrName = `${prefix}animation-config-self`;
-	const triggerAttr = `${prefix}animation-config-self-trigger`;
-
-	const anim = dataArray.animation;
-
-	/*
-		Inherit animation from another animation context.
-
-		This must happen before resolving animationType,
-		variables, curve, duration, etc.
-	*/
-	if (Number(anim.animationType) === -1) {
-		node.setAttribute(attrName, "inherit");
-		node.setAttribute(triggerAttr, "");
-		return;
-	}
-
-
-	/*
-		Resolve animation type.
-
-		Animation IDs:
-		0  showup
-		1  fade
-		2  flyIn
-		3  growTurn
-		4  zoom
-		5  basicZoom
-		6  rise
-		7  stretch
-		8  wipe
-		9  peekIn
-		10 box
-		11 expand
-		12 tumble
-		13 rotate
-		14 slideRotate
-	*/
-	let animationNumber = Number(anim.animationType);
-
-	if (!Number.isInteger(animationNumber) || !flexEngineDefaultAnimation[animationNumber]) {
-		animationNumber = 1;
-	}
-
-	const entry = flexEngineDefaultAnimation[animationNumber];
-
-
-	/*
-		Build animation-specific CSS variables.
-	*/
-	let cssVars = "";
-
-	if (typeof entry.variables === "function") {
-		try {
-			cssVars = entry.variables(anim) || "";
-		}
-		catch (e) {
-			cssVars = "";
-		}
-	}
-
-
-	/*
-		Animation duration.
-
-		If the animation's setting explicitly overrides
-		the time, use that value instead of anim.duration.
-
-		Example:
-		showup -> timeOverride = true
-		showup -> timeOverrideSeconds = 0
-
-		So showup always uses 0s regardless of anim.duration.
-	*/
-	let duration;
-
-	if (
-		entry.setting &&
-		entry.setting.timeOverride === true
-	) {
-		duration = `${entry.setting.timeOverrideSeconds}s`;
-	}
-	else {
-		duration = `${num(anim.duration) || 0.6}s`;
-	}
-
-
-	/*
-		Animation curve.
-
-		anim.animationCurve is the raw curve data/array.
-
-		Do NOT treat it as the final CSS string.
-
-		The curve renderer converts the stored data
-		into the actual CSS timing-function value.
-	*/
-	let curve = "";
-
-	try {
-		curve = flexEngineDefaultVariables.curve.curve.render(
-			anim.animationCurve
-		) || "";
-	}
-	catch (e) {
-		curve = "";
-	}
-
-
-	/*
-		Animation delay.
-	*/
-	const delay = `${anim.delayTime || 0}s`;
-
-
-	/*
-		Build final animation shorthand.
-	*/
-	const animationName = entry.name;
-
-	const cssAnim =
-		`animation:${prefix}animation-${animationName} ` +
-		`${duration} ${curve} ${delay} 1 normal both;`;
-
-
-	/*
-		Write final attributes.
-	*/
-	node.setAttribute(
-		attrName,
-		cssVars + cssAnim
-	);
-
-	node.setAttribute(
-		triggerAttr,
-		anim.trigger || 1
-	);
-};
-
-/*
-Apply animation configuration to a section (animation as 2).
-*/
-const flexEngineApplyAnimationSection = function(node) {
-	const prefix = BUILDER_CONFIG.classPrefix;
-
-	const attrAll = `${prefix}animation-config-all`;
-	const attrAllTrigger = `${prefix}animation-config-all-trigger`;
-
-	const attrSelf = `${prefix}animation-config-self`;
-	const attrSelfTrigger = `${prefix}animation-config-self-trigger`;
-
-	const attrFirstDelay = `${prefix}animation-config-all-firstdelay`;
-	const attrTimeRange = `${prefix}animation-config-all-timeRange`;
-
-	const attrInherit = `${prefix}animation-self-inherit`;
-
-	const DELAY_PLACEHOLDER = "<delay>";
-
-
-	const allConfig = node.getAttribute(attrAll) || "";
-	const allTrigger = node.getAttribute(attrAllTrigger) || "";
-
-
-	if (
-		!allConfig ||
-		allConfig === "inherit"
-	) {
-		return;
-	}
-
-
-	const parseNumber = function(value) {
-		if (value === null || value === undefined) {
-			return 0;
-		}
-
-		const parsed = parseFloat(
-			String(value).trim()
-		);
-
-		return Number.isFinite(parsed)
-			? parsed
-			: 0;
-	};
-
-	const firstDelay = parseNumber(
-		node.getAttribute(attrFirstDelay)
-	);
-
-	const timeRange = parseNumber(
-		node.getAttribute(attrTimeRange)
-	);
-
-
-	let count = 0;
-
-
-	const walk = function(currentNode, depth) {
-
-		const currentInherit =
-			currentNode.getAttribute(attrInherit);
-
-		const enabled =
-			currentInherit !== null &&
-			currentInherit !== "" &&
-			currentInherit !== "0";
-
-		if (enabled) {
-
-			currentNode.setAttribute(
-				attrInherit,
-				String(depth)
-			);
-
-
-			const delayValue =
-				firstDelay + count * timeRange;
-
-
-			const selfConfig =
-				allConfig.replace(
-					new RegExp(DELAY_PLACEHOLDER, "g"),
-					String(delayValue)
-				);
-
-			currentNode.setAttribute(
-				attrSelf,
-				selfConfig
-			);
-
-			currentNode.setAttribute(
-				attrSelfTrigger,
-				allTrigger
-			);
-
-
-			count++;
-		}
-
-
-		[...currentNode.children].forEach(child => {
-			walk(child, depth + 1);
-		});
-	};
-
-
-	[...node.children].forEach(child => {
-		walk(child, 1);
-	});
-};
-
-const flexEngineAnimationSection = function(dataArray, node, expend = true) {
-	const prefix = BUILDER_CONFIG.classPrefix;
-
-	const attrSelf = `${prefix}animation-config-self`;
-	const attrSelfTrigger = `${prefix}animation-config-self-trigger`;
-
-	const attrAll = `${prefix}animation-config-all`;
-	const attrAllTrigger = `${prefix}animation-config-all-trigger`;
-
-	const attrFirstDelay = `${prefix}animation-config-all-firstdelay`;
-	const attrTimeRange = `${prefix}animation-config-all-timeRange`;
-
-	const attrInherit = `${prefix}animation-self-inherit`;
-
-	if (!node || !dataArray) {
-		return;
-	}
-
-	const animationData = dataArray.animation || {};
-
-
-	const selfData = structuredClone(dataArray);
-
-	selfData.animation = animationData.self || {};
-
-	debugger; //don;t forgot dependicy!
-	flexEngineAnimationContextsNode(selfData, node);
-
-
-	const allAnimation = animationData.all;
-
-	if (!allAnimation) {
-		node.setAttribute(attrAll, "");
-		node.setAttribute(attrAllTrigger, "");
-		node.setAttribute(attrFirstDelay, "");
-		node.setAttribute(attrTimeRange, "");
-
-		if (expend === true) {
-			debugger; //don;t forgot dependicy!
-			flexEngineApplyAnimationSection(node);
-		}
-
-		return;
-	}
-
-
-	if (Number(allAnimation.animationType) === -1) {
-		node.setAttribute(attrAll, "inherit");
-		node.setAttribute(attrAllTrigger, "");
-
-		node.setAttribute(attrFirstDelay, "");
-		node.setAttribute(attrTimeRange, "");
-
-		return;
-	}
-
-
-	let animationNumber = Number(allAnimation.animationType);
-
-	if (
-		!Number.isInteger(animationNumber) ||
-		!flexEngineDefaultAnimation[animationNumber]
-	) {
-		animationNumber = 1;
-	}
-
-	const entry = flexEngineDefaultAnimation[animationNumber];
-
-
-	let cssVars = "";
-
-	if (typeof entry.variables === "function") {
-		try {
-			cssVars = entry.variables(allAnimation) || "";
-		} catch (e) {
-			cssVars = "";
-		}
-	}
-
-
-	let duration;
-
-	if (
-		entry.setting &&
-		entry.setting.timeOverride === true
-	) {
-		duration =
-			`${num(entry.setting.timeOverrideSeconds) || 0}s`;
-	} else {
-		duration =
-			`${num(allAnimation.duration) || 0.6}s`;
-	}
-
-
-	let curve = "";
-
-	try {
-		curve =
-			flexEngineDefaultVariables.curve.curve.render(
-				allAnimation.animationCurve
-			) || "";
-	} catch (e) {
-		curve = "";
-	}
-
-
-	const animationName = entry.name;
-
-	const cssAnim =
-		`animation:${prefix}animation-${animationName} ` +
-		`${duration} ${curve} <delay>s 1 normal both;`;
-
-
-	node.setAttribute(
-		attrAll,
-		cssVars + cssAnim
-	);
-
-	node.setAttribute(
-		attrAllTrigger,
-		allAnimation.trigger || 1
-	);
-
-
-	node.setAttribute(
-		attrFirstDelay,
-		num(allAnimation.delayTime) || 0
-	);
-
-	node.setAttribute(
-		attrTimeRange,
-		num(allAnimation.executionInterval) || 0
-	);
-
-
-	if (expend === true) {
-		debugger; //don;t forgot dependicy!
-		flexEngineApplyAnimationSection(node);
-	}
-};
-
-/*
-Main Animation Function
-*/
-const flexEngineAnimationRender = function(dataArray, node, mode) {
-	if (!node || !dataArray) {
-		return;
-	}
-
-	switch (Number(mode)) {
-		case 0: {
-			const prefix = BUILDER_CONFIG.classPrefix;
-
-			node.setAttribute(
-				`${prefix}animation-config-self`,
-				""
-			);
-
-			node.setAttribute(
-				`${prefix}animation-config-self-trigger`,
-				""
-			);
-
-			node.setAttribute(
-				`${prefix}animation-config-all`,
-				""
-			);
-
-			node.setAttribute(
-				`${prefix}animation-config-all-trigger`,
-				""
-			);
-
-			node.setAttribute(
-				`${prefix}animation-config-all-firstdelay`,
-				""
-			);
-
-			node.setAttribute(
-				`${prefix}animation-config-all-timeRange`,
-				""
-			);
-
-			return;
-		}
-
-		case 1: {
-			flexEngineAnimationContextsNode(
-				dataArray,
-				node
-			);
-
-			return;
-		}
-
-		// Animation enabled as a SECTION.
-		case 2: {
-			flexEngineAnimationSection(
-				dataArray,
-				node,
-				true
-			);
-
-			return;
-		}
-
-		// Animation enabled, but controlled entirely
-		// by the parent SECTION.
-		case 3: {
-			const prefix = BUILDER_CONFIG.classPrefix;
-
-			node.setAttribute(
-				`${prefix}animation-config-self`,
-				"inherit"
-			);
-
-			node.setAttribute(
-				`${prefix}animation-config-self-trigger`,
-				""
-			);
-
-			return;
-		}
-
-		// Unknown mode.
-		default: {
-			return;
-		}
-	}
-};
-
-
 /**
  * FlexEngineProperty
  * Scope:
@@ -1837,7 +1064,140 @@ const flexEngineAnimation = {
 
 		// Animation enabled as a SECTION.
 		2: function(dataArray, node, expend = true) {
+			const prefix = BUILDER_CONFIG.classPrefix;
 
+			const attrSelf = `${prefix}animation-config-self`;
+			const attrSelfTrigger = `${prefix}animation-config-self-trigger`;
+
+			const attrAll = `${prefix}animation-config-all`;
+			const attrAllTrigger = `${prefix}animation-config-all-trigger`;
+
+			const attrFirstDelay = `${prefix}animation-config-all-firstdelay`;
+			const attrTimeRange = `${prefix}animation-config-all-timeRange`;
+
+			const attrInherit = `${prefix}animation-self-inherit`;
+
+			if (!node || !dataArray) {
+				return;
+			}
+
+			const animationData = dataArray.animation || {};
+
+
+			const selfData = structuredClone(dataArray);
+
+			selfData.animation = animationData.self || {};
+
+			flexEngineAnimation.render[1](selfData, node);
+
+			const allAnimation = animationData.all;
+
+			if (!allAnimation) {
+				node.setAttribute(attrAll, "");
+				node.setAttribute(attrAllTrigger, "");
+				node.setAttribute(attrFirstDelay, "");
+				node.setAttribute(attrTimeRange, "");
+
+				if (expend === true) {
+					flexEngineAnimation.applySectionAnimation(node);
+				}
+
+				return;
+			}
+
+
+			if (Number(allAnimation.animationType) === -1) {
+				node.setAttribute(attrAll, "inherit");
+				node.setAttribute(attrAllTrigger, "");
+
+				node.setAttribute(attrFirstDelay, "");
+				node.setAttribute(attrTimeRange, "");
+
+				return;
+			}
+
+
+			let animationNumber = Number(allAnimation.animationType);
+
+			if (
+				!Number.isInteger(animationNumber) ||
+				!flexEngineDefaultAnimation[animationNumber]
+			) {
+				animationNumber = 1;
+			}
+
+			const entry = flexEngineDefaultAnimation[animationNumber];
+
+
+			let cssVars = "";
+
+			if (typeof entry.variables === "function") {
+				try {
+					cssVars = entry.variables(allAnimation) || "";
+				} catch (e) {
+					cssVars = "";
+				}
+			}
+
+
+			let duration;
+
+			if (
+				entry.setting &&
+				entry.setting.timeOverride === true
+			) {
+				duration =
+					`${num(entry.setting.timeOverrideSeconds) || 0}s`;
+			} else {
+				duration =
+					`${num(allAnimation.duration) || 0.6}s`;
+			}
+
+
+			let curve = "";
+
+			try {
+				curve =
+					flexEngineDefaultVariables.curve.curve.render(
+						allAnimation.animationCurve
+					) || "";
+			} catch (e) {
+				curve = "";
+			}
+
+
+			const animationName = entry.name;
+
+			const cssAnim =
+				`animation:${prefix}animation-${animationName} ` +
+				`${duration} ${curve} <delay>s 1 normal both;`;
+
+
+			node.setAttribute(
+				attrAll,
+				cssVars + cssAnim
+			);
+
+			node.setAttribute(
+				attrAllTrigger,
+				allAnimation.trigger || 1
+			);
+
+
+			node.setAttribute(
+				attrFirstDelay,
+				num(allAnimation.delayTime) || 0
+			);
+
+			node.setAttribute(
+				attrTimeRange,
+				num(allAnimation.executionInterval) || 0
+			);
+
+
+			if (expend === true) {
+				flexEngineAnimation.applySectionAnimation(node);
+			};
 		},
 		
 		// Animation bepass, as inherit only.
@@ -1864,5 +1224,112 @@ const flexEngineAnimation = {
 	},
 
 	//this schema allow custom helper functions.
+	applySectionAnimation: function(node) {
+		const prefix = BUILDER_CONFIG.classPrefix;
 
+		const attrAll = `${prefix}animation-config-all`;
+		const attrAllTrigger = `${prefix}animation-config-all-trigger`;
+
+		const attrSelf = `${prefix}animation-config-self`;
+		const attrSelfTrigger = `${prefix}animation-config-self-trigger`;
+
+		const attrFirstDelay = `${prefix}animation-config-all-firstdelay`;
+		const attrTimeRange = `${prefix}animation-config-all-timeRange`;
+
+		const attrInherit = `${prefix}animation-self-inherit`;
+
+		const DELAY_PLACEHOLDER = "<delay>";
+
+
+		const allConfig = node.getAttribute(attrAll) || "";
+		const allTrigger = node.getAttribute(attrAllTrigger) || "";
+
+
+		if (
+			!allConfig ||
+			allConfig === "inherit"
+		) {
+			return;
+		}
+
+
+		const parseNumber = function(value) {
+			if (value === null || value === undefined) {
+				return 0;
+			}
+
+			const parsed = parseFloat(
+				String(value).trim()
+			);
+
+			return Number.isFinite(parsed)
+				? parsed
+				: 0;
+		};
+
+		const firstDelay = parseNumber(
+			node.getAttribute(attrFirstDelay)
+		);
+
+		const timeRange = parseNumber(
+			node.getAttribute(attrTimeRange)
+		);
+
+
+		let count = 0;
+
+
+		const walk = function(currentNode, depth) {
+
+			const currentInherit =
+				currentNode.getAttribute(attrInherit);
+
+			const enabled =
+				currentInherit !== null &&
+				currentInherit !== "" &&
+				currentInherit !== "0";
+
+			if (enabled) {
+
+				currentNode.setAttribute(
+					attrInherit,
+					String(depth)
+				);
+
+
+				const delayValue =
+					firstDelay + count * timeRange;
+
+
+				const selfConfig =
+					allConfig.replace(
+						new RegExp(DELAY_PLACEHOLDER, "g"),
+						String(delayValue)
+					);
+
+				currentNode.setAttribute(
+					attrSelf,
+					selfConfig
+				);
+
+				currentNode.setAttribute(
+					attrSelfTrigger,
+					allTrigger
+				);
+
+
+				count++;
+			}
+
+
+			[...currentNode.children].forEach(child => {
+				walk(child, depth + 1);
+			});
+		};
+
+
+		[...node.children].forEach(child => {
+			walk(child, 1);
+		});
+	}
 };
