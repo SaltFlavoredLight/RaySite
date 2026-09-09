@@ -1,25 +1,33 @@
 /*
-Transition system
-*/
+ * Transition system
+ */
 const flexEngineTransition = {
+
+	name: "transition",
+
 
 	/*
 	 * ============================================================
 	 * SELF QUERY
 	 * ============================================================
 	 *
-	 * Used when mode = 1.
-	 *
-	 * Data is stored under:
+	 * Data:
 	 *
 	 * transition.self.*
 	 */
 	selfQuery: [
 
 		{
-			name: "transition.self.property",
+			name: "inherit",
+			label: "Inherit",
+			type: "boolean/checkmark"
+		},
+
+		{
+			name: "property",
 			label: "Property",
 			type: "selection/popup",
+
 			catergory: [
 				{
 					label: "Basic",
@@ -105,27 +113,48 @@ const flexEngineTransition = {
 					]
 				}
 			],
-			default: []
+
+			default: [],
+
+			visibleIf: {
+				name: "inherit",
+				value: false
+			}
 		},
 
 		{
-			name: "transition.self.duration",
+			name: "duration",
 			label: "Duration",
 			type: "integer/noNeg",
-			default: 300
+			default: 300,
+
+			visibleIf: {
+				name: "inherit",
+				value: false
+			}
 		},
 
 		{
-			name: "transition.self.delay",
+			name: "delay",
 			label: "Delay",
 			type: "integer/noNeg",
-			default: 0
+			default: 0,
+
+			visibleIf: {
+				name: "inherit",
+				value: false
+			}
 		},
 
 		{
-			name: "transition.self.curve",
+			name: "curve",
 			label: "Timing Curve",
-			type: "curve/curve"
+			type: "curve/curve",
+
+			visibleIf: {
+				name: "inherit",
+				value: false
+			}
 		}
 	],
 
@@ -134,19 +163,14 @@ const flexEngineTransition = {
 	 * ============================================================
 	 * ALL QUERY
 	 * ============================================================
-	 *
-	 * Used when mode = 2.
-	 *
-	 * Data is stored under:
-	 *
-	 * transition.all.*
 	 */
 	allQuery: [
 
 		{
-			name: "transition.all.property",
+			name: "property",
 			label: "Property",
 			type: "selection/popup",
+
 			catergory: [
 				{
 					label: "Basic",
@@ -238,25 +262,26 @@ const flexEngineTransition = {
 					]
 				}
 			],
+
 			default: []
 		},
 
 		{
-			name: "transition.all.duration",
+			name: "duration",
 			label: "Duration",
 			type: "integer/noNeg",
 			default: 300
 		},
 
 		{
-			name: "transition.all.delay",
+			name: "delay",
 			label: "Delay",
 			type: "integer/noNeg",
 			default: 0
 		},
 
 		{
-			name: "transition.all.curve",
+			name: "curve",
 			label: "Timing Curve",
 			type: "curve/curve"
 		}
@@ -265,12 +290,326 @@ const flexEngineTransition = {
 
 	/*
 	 * ============================================================
+	 * RENDER
+	 * ============================================================
+	 */
+	render: {
+
+		/*
+		 * --------------------------------------------------------
+		 * MODE 0
+		 * --------------------------------------------------------
+		 */
+		0: function(dataArray, node) {
+
+			if (!node) {
+				return;
+			}
+
+			const prefix =
+				BUILDER_CONFIG.classPrefix;
+
+			node.setAttribute(
+				`${prefix}transition-config-self`,
+				""
+			);
+
+			node.setAttribute(
+				`${prefix}transition-config-all`,
+				""
+			);
+
+			node.setAttribute(
+				`${prefix}transition-self-inherit`,
+				""
+			);
+
+			return;
+		},
+
+
+		/*
+		 * --------------------------------------------------------
+		 * MODE 1
+		 * --------------------------------------------------------
+		 *
+		 * Transition enabled for SELF.
+		 */
+		1: function(dataArray, node) {
+
+			if (!node) {
+				return;
+			}
+
+			const prefix =
+				BUILDER_CONFIG.classPrefix;
+
+			const attrSelf =
+				`${prefix}transition-config-self`;
+
+			const attrInherit =
+				`${prefix}transition-self-inherit`;
+
+			const transition =
+				dataArray &&
+				dataArray.transition &&
+				dataArray.transition.self;
+
+
+			/*
+			 * Inherit from parent SECTION.
+			 */
+			if (
+				transition &&
+				transition.inherit === true
+			) {
+
+				node.setAttribute(
+					attrInherit,
+					"1"
+				);
+
+				node.setAttribute(
+					attrSelf,
+					"inherit"
+				);
+
+				return;
+			}
+
+
+			/*
+			 * Normal SELF transition.
+			 */
+			node.setAttribute(
+				attrInherit,
+				""
+			);
+
+
+			const selfCSS =
+				flexEngineTransition.renderSingle(
+					transition
+				);
+
+
+			node.setAttribute(
+				attrSelf,
+				selfCSS
+					? `transition:${selfCSS};`
+					: ""
+			);
+
+			return;
+		},
+
+
+		/*
+		 * --------------------------------------------------------
+		 * MODE 2
+		 * --------------------------------------------------------
+		 *
+		 * SECTION owns both SELF and ALL.
+		 */
+		2: function(dataArray, node) {
+
+			if (!node || !dataArray) {
+				return;
+			}
+
+			const prefix =
+				BUILDER_CONFIG.classPrefix;
+
+			const attrSelf =
+				`${prefix}transition-config-self`;
+
+			const attrAll =
+				`${prefix}transition-config-all`;
+
+			const transitionData =
+				dataArray.transition || {};
+
+
+			/*
+			 * Render SELF.
+			 */
+			const selfData =
+				structuredClone(dataArray);
+
+			selfData.transition =
+				transitionData.self || {};
+
+			flexEngineTransition.render[1](
+				selfData,
+				node
+			);
+
+
+			/*
+			 * Render ALL.
+			 */
+			const allTransition =
+				transitionData.all;
+
+
+			if (!allTransition) {
+
+				node.setAttribute(
+					attrAll,
+					""
+				);
+
+				return;
+			}
+
+
+			const allCSS =
+				flexEngineTransition.renderSingle(
+					allTransition
+				);
+
+
+			node.setAttribute(
+				attrAll,
+				allCSS
+					? `transition:${allCSS};`
+					: ""
+			);
+
+			return;
+		},
+
+
+		/*
+		 * --------------------------------------------------------
+		 * MODE 3
+		 * --------------------------------------------------------
+		 *
+		 * Controlled by a SECTION.
+		 */
+		3: function(dataArray, node) {
+
+			if (!node) {
+				return;
+			}
+
+			const prefix =
+				BUILDER_CONFIG.classPrefix;
+
+			node.setAttribute(
+				`${prefix}transition-config-self`,
+				"inherit"
+			);
+
+			node.setAttribute(
+				`${prefix}transition-self-inherit`,
+				"1"
+			);
+
+			return;
+		},
+
+
+		/*
+		 * --------------------------------------------------------
+		 * UNKNOWN MODE
+		 * --------------------------------------------------------
+		 */
+		other: function(dataArray, node) {
+
+			return;
+		}
+	},
+
+
+	/*
+	 * ============================================================
+	 * APPLY SECTION TRANSITION
+	 * ============================================================
+	 */
+	applySectionTransition: function(node) {
+
+		if (!node) {
+			return;
+		}
+
+		const prefix =
+			BUILDER_CONFIG.classPrefix;
+
+		const attrAll =
+			`${prefix}transition-config-all`;
+
+		const attrSelf =
+			`${prefix}transition-config-self`;
+
+		const attrSelfInherit =
+			`${prefix}transition-self-inherit`;
+
+		const allConfig =
+			node.getAttribute(attrAll) || "";
+
+
+		if (
+			!allConfig ||
+			allConfig === "inherit"
+		) {
+			return;
+		}
+
+
+		const walk =
+			function(currentNode, currentDepth) {
+
+				const currentInherit =
+					currentNode.getAttribute(
+						attrSelfInherit
+					);
+
+				const enabled =
+					currentInherit !== null &&
+					currentInherit !== "" &&
+					currentInherit !== "0";
+
+
+				if (enabled) {
+
+					currentNode.setAttribute(
+						attrSelfInherit,
+						String(currentDepth)
+					);
+
+					currentNode.setAttribute(
+						attrSelf,
+						allConfig
+					);
+				}
+
+
+				[...currentNode.children].forEach(
+					function(child) {
+						walk(
+							child,
+							currentDepth + 1
+						);
+					}
+				);
+			};
+
+
+		[...node.children].forEach(
+			function(child) {
+				walk(child, 1);
+			}
+		);
+	},
+
+
+	/*
+	 * ============================================================
 	 * INTERNAL RENDERER
 	 * ============================================================
 	 *
-	 * Render one transition object into CSS.
-	 *
-	 * This does not know about SELF / SECTION.
+	 * Kept at the BACK.
 	 */
 	renderSingle: function(transition) {
 
@@ -325,7 +664,10 @@ const flexEngineTransition = {
 
 		const parts = [];
 
-		for (const property of transition.property) {
+
+		for (
+			const property of transition.property
+		) {
 
 			if (
 				typeof property !== "string" ||
@@ -341,179 +683,5 @@ const flexEngineTransition = {
 
 
 		return parts.join(",");
-	},
-
-
-	/*
-	 * ============================================================
-	 * MAIN RENDER
-	 * ============================================================
-	 *
-	 * mode:
-	 *
-	 * 0 = None
-	 * 1 = Self
-	 * 2 = Section
-	 * 3 = Inherit
-	 *
-	 * Returns an object because SECTION mode needs both
-	 * self and all output.
-	 */
-	render: function(transition, mode) {
-
-		const renderMode =
-			Number(mode);
-
-
-		/*
-		 * --------------------------------------------------------
-		 * MODE 0
-		 * --------------------------------------------------------
-		 */
-
-		if (renderMode === 0) {
-			return {
-				self: "",
-				all: ""
-			};
-		}
-
-
-		/*
-		 * --------------------------------------------------------
-		 * MODE 1
-		 * --------------------------------------------------------
-		 *
-		 * Only SELF is active.
-		 */
-
-		if (renderMode === 1) {
-
-			const selfCSS =
-				this.renderSingle(
-					transition &&
-					transition.self
-				);
-
-			return {
-				self: selfCSS
-					? `transition:${selfCSS};`
-					: "",
-				all: ""
-			};
-		}
-
-
-		/*
-		 * --------------------------------------------------------
-		 * MODE 2
-		 * --------------------------------------------------------
-		 *
-		 * SECTION owns both SELF and ALL.
-		 */
-
-		if (renderMode === 2) {
-
-			const selfCSS =
-				this.renderSingle(
-					transition &&
-					transition.self
-				);
-
-			const allCSS =
-				this.renderSingle(
-					transition &&
-					transition.all
-				);
-
-			return {
-				self: selfCSS
-					? `transition:${selfCSS};`
-					: "",
-
-				all: allCSS
-					? `transition:${allCSS};`
-					: ""
-			};
-		}
-
-
-		/*
-		 * --------------------------------------------------------
-		 * MODE 3
-		 * --------------------------------------------------------
-		 *
-		 * Controlled by a SECTION.
-		 *
-		 * Do not generate actual transition CSS.
-		 *
-		 * The section will later write it.
-		 */
-
-		if (renderMode === 3) {
-			return {
-				self: "inherit",
-				all: ""
-			};
-		}
-
-
-		/*
-		 * --------------------------------------------------------
-		 * UNKNOWN MODE
-		 * --------------------------------------------------------
-		 */
-
-		return {
-			self: "",
-			all: ""
-		};
 	}
-};
-
-
-/*
-Apply transition configuration to a node.
-*/
-const flexEngineTransitionContextsNode = function(
-	dataArray,
-	node,
-	mode
-) {
-
-	if (!node) {
-		return;
-	}
-
-	const prefix =
-		BUILDER_CONFIG.classPrefix;
-
-	const attrSelf =
-		`${prefix}transition-config-self`;
-
-	const attrAll =
-		`${prefix}transition-config-all`;
-
-
-	const transition =
-		dataArray &&
-		dataArray.transition;
-
-
-	const result =
-		flexEngineTransition.render(
-			transition,
-			mode
-		);
-
-
-	node.setAttribute(
-		attrSelf,
-		result.self || ""
-	);
-
-	node.setAttribute(
-		attrAll,
-		result.all || ""
-	);
 };
