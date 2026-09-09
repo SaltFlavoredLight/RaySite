@@ -1,3 +1,3 @@
-# Welcome to my New Website
+# Hi
 
-This is Ray's new website, as a project for lean Astro.
+this is offical repo of RaySite.
