@@ -1,6 +1,10 @@
 // Flex Engine!
 'use strict';
 
+// need Flies
+import { openDB } from 'https://cdn.jsdelivr.net/npm/idb@8/+esm';
+import JSZip from 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm';
+
 // Nesserary for have a Quill delta element
 import quill from 'https://cdn.jsdelivr.net/npm/quill@2.0.3/+esm';
 import quillDeltaToHtml from 'https://cdn.jsdelivr.net/npm/quill-delta-to-html@0.12.1/+esm';
@@ -8,27 +12,962 @@ import quillDeltaToHtml from 'https://cdn.jsdelivr.net/npm/quill-delta-to-html@0
 // And Sortable, another important part.
 import Sortable from 'https://cdn.jsdelivr.net/npm/sortablejs/+esm';
 
-// Our import of Editors:
-import CubicBezierEditor from 'CubicBezierEditor.js';
 
-
-// and configs (delete this since it will be deplicated!)
+// Builder Configs
 export const BUILDER_CONFIG = {
 	brandName: "RaySite",
 	classPrefix: "rs-",
 	attribution: "Spread the message with RaySite! RaySite is a Free Website builder for you!"
 };
 
-// use this for get Pae JSON - to keep that simple
-// const thisPageObject = . (need add it in ctx)
-// any class can acsess this, but read only.
+/**
+ * ------------------------------------------------------------------------------
+ * Flie System for Website
+ * 
+ * a 2 part program where 1 provide a vitual File System
+ * and another program edit Theme, Assets and Many More.
+ * Important Module since it's foundation of Module 
+ * ------------------------------------------------------------------------------
+ */
+class openDBFlieMaagement {
 
+    constructor(dbName = 'ZipContainerDB', storeName = 'files') {
+        this.dbName = dbName;
+        this.storeName = storeName;
+        this.db = null;
+    }
+
+    _normalizePath(path) {
+        return path.startsWith('/') ? path : '/' + path;
+    }
+
+    async _checkPersistence() {
+        if (navigator.storage && navigator.storage.persisted) {
+            let isPersisted = await navigator.storage.persisted();
+            if (!isPersisted && navigator.storage.persist) {
+
+                isPersisted = await navigator.storage.persist();
+            }
+            return isPersisted;
+        }
+        return false;
+    }
+
+    async _execute(actionFunc) {
+        try {
+            const data = await actionFunc();
+            const isPersistent = await this._checkPersistence();
+            return {
+                code: isPersistent ? 0 : 2,
+                data: data
+            };
+        } catch (error) {
+            console.error("[ZipContainer Error]:", error);
+            return {
+                code: 1,
+                error: error.message || "Unknown error occurred"
+            };
+        }
+    }
+
+    async register() {
+        return this._execute(async () => {
+            this.db = await openDB(this.dbName, 1, {
+                upgrade: (db) => {
+                    if (!db.objectStoreNames.contains(this.storeName)) {
+                        db.createObjectStore(this.storeName);
+                    }
+                },
+            });
+            return { message: "Database registered and connected successfully." };
+        });
+    }
+
+    async read(path) {
+        return this._execute(async () => {
+            const normPath = this._normalizePath(path);
+            const data = await this.db.get(this.storeName, normPath);
+            return data;
+        });
+    }
+
+    async add(path, fileData) {
+        return this._execute(async () => {
+            const normPath = this._normalizePath(path);
+            await this.db.put(this.storeName, fileData, normPath);
+            return { path: normPath, status: "Added/Replaced" };
+        });
+    }
+
+    async edit(path, fileData) {
+        return this.add(path, fileData);
+    }
+
+    async change(path, fileData) {
+        return this.add(path, fileData);
+    }
+
+    async bulkAdd(files) {
+        return this._execute(async () => {
+            const tx = this.db.transaction(this.storeName, 'readwrite');
+            const store = tx.objectStore(this.storeName);
+
+            const promises = files.map(file => {
+                const normPath = this._normalizePath(file.path);
+                return store.put(file.data, normPath);
+            });
+
+            await Promise.all([...promises, tx.done]);
+            return { addedCount: files.length };
+        });
+    }
+
+    async delete(path) {
+        return this._execute(async () => {
+            const normPath = this._normalizePath(path);
+            await this.db.delete(this.storeName, normPath);
+            return { path: normPath, status: "Deleted" };
+        });
+    }
+
+    async clear() {
+        return this._execute(async () => {
+            await this.db.clear(this.storeName);
+            return { status: "Database cleared completely." };
+        });
+    }
+
+    async list() {
+        return this._execute(async () => {
+            const keys = await this.db.getAllKeys(this.storeName);
+            return keys;
+        });
+    }
+
+    async importZip(zipBlob) {
+        return this._execute(async () => {
+            const zip = new JSZip();
+            const loadedZip = await zip.loadAsync(zipBlob);
+            const filesToAdd = [];
+            const readPromises = [];
+
+            loadedZip.forEach((relativePath, zipEntry) => {
+                if (!zipEntry.dir) {
+                    readPromises.push(
+                        zipEntry.async('blob').then(blob => {
+                            filesToAdd.push({
+                                path: '/' + relativePath, 
+                                data: blob
+                            });
+                        })
+                    );
+                }
+            });
+
+            await Promise.all(readPromises);
+
+            const tx = this.db.transaction(this.storeName, 'readwrite');
+            const store = tx.objectStore(this.storeName);
+            filesToAdd.forEach(file => {
+                store.put(file.data, file.path);
+            });
+            await tx.done;
+
+            return { importedCount: filesToAdd.length };
+        });
+    }
+
+    async exportZip() {
+        return this._execute(async () => {
+            const zip = new JSZip();
+            const tx = this.db.transaction(this.storeName, 'readonly');
+            const store = tx.objectStore(this.storeName);
+
+            let cursor = await store.openCursor();
+            let fileCount = 0;
+
+            while (cursor) {
+                const path = cursor.key;
+                const data = cursor.value;
+
+                const zipPath = path.startsWith('/') ? path.slice(1) : path;
+                zip.file(zipPath, data);
+
+                fileCount++;
+                cursor = await cursor.continue();
+            }
+
+            const blob = await zip.generateAsync({ type: 'blob' });
+            return { 
+                blob: blob,
+                exportedCount: fileCount,
+                filename: `export_${new Date().getTime()}.zip`
+            };
+        });
+    }
+};
+
+export class FlexEngineFileSystem {
+    constructor(dbName = 'ZipContainerDB', storeName = 'files') {
+        this.zipManager = new openDBFlieMaagement(dbName, storeName);
+    }
+
+    async init() {
+        return await this.zipManager.register();
+    }
+
+
+    _routeToPagePath(route) {
+        let cleanRoute = route.trim();
+        if (cleanRoute === '404' || cleanRoute === '/404') {
+            return '/pages/404.json';
+        }
+        if (cleanRoute.startsWith('/')) {
+            cleanRoute = cleanRoute.substring(1);
+        }
+        if (cleanRoute === '') {
+            return '/pages/_.json';
+        }
+        const filename = '_' + cleanRoute.replace(/\//g, '_') + '.json';
+        return `/pages/${filename}`;
+    }
+
+    _pagePathToRoute(filePath) {
+        const parts = filePath.split('/');
+        const filename = parts[parts.length - 1];
+
+        if (filename === '404.json') {
+            return '404';
+        }
+
+        if (filename === '_.json') {
+            return '/';
+        }
+
+        if (filename.startsWith('_') && filename.endsWith('.json')) {
+            const rawName = filename.slice(1, -5);
+            return '/' + rawName.replace(/_/g, '/');
+        }
+
+        return null;
+    }
+
+    async _readJson(path) {
+        const res = await this.zipManager.read(path);
+        if (res.code === 1) return res;
+        if (!res.data) {
+            return { code: 1, error: `File not found at path: ${path}` };
+        }
+
+        try {
+            let jsonText = '';
+            if (typeof res.data === 'string') {
+                jsonText = res.data;
+            } else if (res.data instanceof Blob) {
+                jsonText = await res.data.text();
+            } else {
+                return { code: res.code, data: res.data };
+            }
+            const parsed = JSON.parse(jsonText);
+            return { code: res.code, data: parsed };
+        } catch (e) {
+            return { code: 1, error: `Failed to parse JSON at path: ${path}. ${e.message}` };
+        }
+    }
+
+    async _writeJson(path, jsonData) {
+        let textData = '';
+        if (typeof jsonData === 'string') {
+            textData = jsonData;
+        } else {
+            textData = JSON.stringify(jsonData, null, 2);
+        }
+        const blob = new Blob([textData], { type: 'application/json' });
+        return await this.zipManager.add(path, blob);
+    }
+
+
+
+    async listPages() {
+        const res = await this.zipManager.list();
+        if (res.code === 1) return res;
+
+        const allPaths = res.data || [];
+        const routes = allPaths
+            .filter(p => p.startsWith('/pages/') && p.endsWith('.json'))
+            .map(p => this._pagePathToRoute(p))
+            .filter(Boolean);
+
+        return { code: res.code, data: routes };
+    }
+
+    async readPage(route) {
+        const filePath = this._routeToPagePath(route);
+        return await this._readJson(filePath);
+    }
+
+    async updatePage(route, pageData) {
+        const filePath = this._routeToPagePath(route);
+        return await this._writeJson(filePath, pageData);
+    }
+
+    async deletePage(route) {
+        const filePath = this._routeToPagePath(route);
+        return await this.zipManager.delete(filePath);
+    }
+
+
+
+    async listAssets(folderPath = '') {
+        const res = await this.zipManager.list();
+        if (res.code === 1) return res;
+
+        let cleanFolder = folderPath.trim();
+        if (!cleanFolder.startsWith('/')) cleanFolder = '/' + cleanFolder;
+        if (!cleanFolder.startsWith('/assets')) cleanFolder = '/assets' + cleanFolder;
+        if (!cleanFolder.endsWith('/')) cleanFolder += '/';
+
+        const allPaths = res.data || [];
+        const assets = allPaths.filter(p => p.startsWith(cleanFolder));
+
+        const formattedAssets = assets.map(p => p.replace(/^\/assets/, ''));
+
+        return { code: res.code, data: formattedAssets };
+    }
+
+    async updateAsset(assetPath, assetData) {
+        const cleanPath = assetPath.startsWith('/') ? assetPath : '/' + assetPath;
+        const fullPath = `/assets${cleanPath}`;
+        return await this.zipManager.add(fullPath, assetData);
+    }
+
+    async deleteAsset(assetPath) {
+        const cleanPath = assetPath.startsWith('/') ? assetPath : '/' + assetPath;
+        const fullPath = `/assets${cleanPath}`;
+        return await this.zipManager.delete(fullPath);
+    }
+
+    async readAsset(assetPath) {
+        const cleanPath = assetPath.startsWith('/') ? assetPath : '/' + assetPath;
+        const fullPath = `/assets${cleanPath}`;
+        return await this.zipManager.read(fullPath);
+    }
+
+
+
+    async listThemes() {
+        const res = await this.zipManager.list();
+        if (res.code === 1) return res;
+
+        const allPaths = res.data || [];
+        const themes = allPaths
+            .filter(p => p.startsWith('/themes/') && p.endsWith('.json'))
+            .map(p => p.replace('/themes/', '').replace('.json', ''));
+
+        return { code: res.code, data: themes };
+    }
+
+    async readTheme(themeName) {
+        const cleanName = themeName.replace('.json', '');
+        const filePath = `/themes/${cleanName}.json`;
+        return await this._readJson(filePath);
+    }
+
+    async updateTheme(themeName, themeData) {
+        const cleanName = themeName.replace('.json', '');
+        const filePath = `/themes/${cleanName}.json`;
+        return await this._writeJson(filePath, themeData);
+    }
+
+    async deleteTheme(themeName) {
+        const cleanName = themeName.replace('.json', '');
+        const filePath = `/themes/${cleanName}.json`;
+        return await this.zipManager.delete(filePath);
+    }
+
+
+
+    async listComponents() {
+        const res = await this.zipManager.list();
+        if (res.code === 1) return res;
+
+        const allPaths = res.data || [];
+        const components = allPaths
+            .filter(p => p.startsWith('/componets/') && p.endsWith('.json'))
+            .map(p => p.replace('/componets/', '').replace('.json', ''));
+
+        return { code: res.code, data: components };
+    }
+
+    async readComponent(componentName) {
+        const cleanName = componentName.replace('.json', '');
+        const filePath = `/componets/${cleanName}.json`;
+        return await this._readJson(filePath);
+    }
+
+    async updateComponent(componentName, componentData) {
+        const cleanName = componentName.replace('.json', '');
+        const filePath = `/componets/${cleanName}.json`;
+        return await this._writeJson(filePath, componentData);
+    }
+
+    async deleteComponent(componentName) {
+        const cleanName = componentName.replace('.json', '');
+        const filePath = `/componets/${cleanName}.json`;
+        return await this.zipManager.delete(filePath);
+    }
+
+
+
+    async readMain() {
+        return await this._readJson('/main.json');
+    }
+
+    async updateMain(mainData) {
+        return await this._writeJson('/main.json', mainData);
+    }
+
+
+
+    async exportFile() {
+        return await this.zipManager.exportZip();
+    }
+
+    async deleteWholeFile() {
+        return await this.zipManager.clear();
+    }
+
+    async importZipFile(zipBlob) {
+        const listRes = await this.zipManager.list();
+        if (listRes.code === 1) {
+            return listRes;
+        }
+
+        if (listRes.data && listRes.data.length > 0) {
+            return {
+                code: 1,
+                error: "Cannot import zip: Storage is not empty. Delete whole file first."
+            };
+        }
+
+        return await this.zipManager.importZip(zipBlob);
+    }
+};
+
+
+
+/**
+ * ------------------------------------------------------------------------------
+ * Cubic Bezier Editor
+ * 
+ * a simple JS program that allows you to create anomation curve
+ * Nesserary in some part of the software.
+ * ------------------------------------------------------------------------------
+ */
+
+// Helper
+class CubicBezierCanvas {
+    constructor(canvas, bezier) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.bezier = bezier;
+    }
+
+    plot() {
+        const ctx = this.ctx;
+        const theme = this.bezier.theme;
+        const [x1, y1, x2, y2] = this.bezier.coordinates;
+
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        if (theme.backgroundColor && theme.backgroundColor !== 'transparent') {
+            ctx.fillStyle = theme.backgroundColor;
+            ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+
+        ctx.save();
+        ctx.translate(0, this.canvas.height);
+        ctx.scale(this.canvas.width, -this.canvas.height);
+
+        ctx.lineWidth = 0.01;
+        ctx.strokeStyle = theme.lineColor;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(x1, y1);
+        ctx.moveTo(1, 1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        ctx.fillStyle = theme.handleColor;
+        ctx.beginPath();
+        ctx.arc(x1, y1, 0.015, 0, Math.PI * 2);
+        ctx.arc(x2, y2, 0.015, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = theme.curveColor;
+        ctx.lineWidth = 0.02;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(x1, y1, x2, y2, 1, 1);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    canvasToBezier(px, py) {
+        const clampedPx = Math.max(0, Math.min(this.canvas.width, Math.round(px)));
+        const clampedPy = Math.max(0, Math.min(this.canvas.height, Math.round(py)));
+        return [clampedPx / this.canvas.width, 1 - clampedPy / this.canvas.height];
+    }
+
+    bezierToCanvas(x, y) {
+        return [
+            Math.round(x * this.canvas.width),
+            Math.round((1 - y) * this.canvas.height)
+        ];
+    }
+};
+
+// Main Program for the editor.
+export class CubicBezierEditor {
+    /**
+     * container: DOM element where the editor will be mounted
+     * options: {
+     *   entry: [x1, y1, x2, y2], // initial coordinates (numbers 0..1)
+     *   easyMode: false,         // toggle easy mode
+     *   roundTo: 2,              // decimal places precision
+     *   size: 'auto',            // 'width', 'height', 'auto', or CSS size (e.g. '400px')
+     *   showPreview: false,      // toggle text output label
+     *   theme: {
+     *     handleColor: '#ff4080',     // color of the control handles & points
+     *     backgroundColor: '#fafafa', // canvas background (set 'transparent' for no fill)
+     *     curveColor: '#000000',      // bezier curve stroke color
+     *     lineColor: '#aaaaaa'        // handle connecting lines color
+     *   },
+     *   onChange: function(data)
+     * }
+     */
+    constructor(container, options = {}) {
+        if (!container || !(container instanceof Element)) {
+            throw new Error('CubicBezierEditor requires a DOM container element');
+        }
+
+        this.container = container;
+        this.options = options;
+        this.easyMode = Boolean(options.easyMode);
+        this.roundTo = typeof options.roundTo === 'number' && options.roundTo >= 0 ? options.roundTo : 2;
+        this.sizeOption = options.size || 'auto';
+        this.showPreview = Boolean(options.showPreview);
+
+        const defaultTheme = {
+            handleColor: '#ff4080',
+            backgroundColor: '#fafafa',
+            curveColor: '#000000',
+            lineColor: '#aaaaaa'
+        };
+        this.theme = Object.assign({}, defaultTheme, options.theme || {});
+
+        const initialEntry = Array.isArray(options.entry) && options.entry.length === 4 ?
+            options.entry.map(Number) :
+            [0.25, 0.1, 0.25, 1];
+
+        this.coordinates = this._roundCoords(initialEntry);
+        this.onChange = typeof options.onChange === 'function' ? options.onChange : null;
+
+        this.presets = {
+            'linear': [0, 0, 1, 1],
+            'ease': [0.25, 0.1, 0.25, 1],
+            'ease-in': [0.42, 0, 1, 1],
+            'ease-out': [0, 0, 0.58, 1],
+            'ease-in-out': [0.42, 0, 0.58, 1]
+        };
+
+        this._elements = {};
+        this._listeners = [];
+        this._isInitialized = false;
+        this._resizeObserver = null;
+    }
+
+    get coords() {
+        return this.coordinates;
+    }
+    set coords(val) {
+        this.coordinates = val;
+    }
+
+    toString() {
+        return `cubic-bezier(${this.coordinates.join(',')})`;
+    }
+
+    init() {
+        if (this._isInitialized) return;
+        this._isInitialized = true;
+
+        if (getComputedStyle(this.container).overflow === 'visible') {
+            this.container.style.overflow = 'hidden';
+        }
+
+        // Outer root wrapper to manage flex flow
+        const mainWrap = document.createElement('div');
+        mainWrap.className = 'cbe-main-wrap';
+        Object.assign(mainWrap.style, {
+            display: 'inline-flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            boxSizing: 'border-box',
+            width: '100%',
+            height: '100%'
+        });
+
+        const wrap = document.createElement('div');
+        wrap.className = 'cbe-wrap';
+        Object.assign(wrap.style, {
+            position: 'relative',
+            display: 'block',
+            lineHeight: '0',
+            fontSize: '0',
+            verticalAlign: 'top',
+            flexShrink: '0'
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.className = 'cbe-canvas';
+        Object.assign(canvas.style, {
+            border: '1px solid #ccc',
+            boxSizing: 'border-box',
+            background: this.theme.backgroundColor === 'transparent' ? 'none' : this.theme.backgroundColor,
+            display: 'block',
+            verticalAlign: 'bottom'
+        });
+
+        const handle1 = document.createElement('div');
+        const handle2 = document.createElement('div');
+        [handle1, handle2].forEach(h => {
+            h.className = 'cbe-handle';
+            Object.assign(h.style, {
+                width: '14px',
+                height: '14px',
+                background: this.theme.handleColor,
+                borderRadius: '50%',
+                position: 'absolute',
+                cursor: 'pointer',
+                transform: 'translate(-7px, -7px)',
+                touchAction: 'none',
+                zIndex: '2'
+            });
+        });
+
+        wrap.appendChild(canvas);
+        wrap.appendChild(handle1);
+        wrap.appendChild(handle2);
+        mainWrap.appendChild(wrap);
+
+        this._elements = {
+            mainWrap,
+            wrap,
+            canvas,
+            handle1,
+            handle2
+        };
+
+        if (this.showPreview) {
+            const output = document.createElement('p');
+            output.className = 'cbe-output';
+            Object.assign(output.style, {
+                marginTop: '8px',
+                marginBottom: '0',
+                fontFamily: 'sans-serif',
+                fontSize: '14px',
+                lineHeight: '1.4',
+                textAlign: 'center',
+                boxSizing: 'border-box',
+                flexShrink: '0'
+            });
+            mainWrap.appendChild(output);
+            this._elements.output = output;
+        }
+
+        this.container.appendChild(mainWrap);
+
+        this._bc = new CubicBezierCanvas(canvas, this);
+
+        this._updateDimensions();
+        this._setupResizeObserver();
+
+        this._makeDraggable(handle1, 0);
+        this._makeDraggable(handle2, 1);
+        this._addTouchSupport(handle1, 0);
+        this._addTouchSupport(handle2, 1);
+    }
+
+    _updateDimensions() {
+        if (!this._elements.canvas) return;
+
+        const parentRect = this.container.getBoundingClientRect();
+
+        // Subtract preview element height + top margin if visible
+        let reservedHeight = 0;
+        if (this.showPreview && this._elements.output) {
+            const outputRect = this._elements.output.getBoundingClientRect();
+            reservedHeight = outputRect.height + 8; // 8px margin
+        }
+
+        const availWidth = parentRect.width;
+        const availHeight = Math.max(0, parentRect.height - reservedHeight);
+
+        let targetSize = 300;
+
+        if (this.sizeOption === 'width') {
+            targetSize = availWidth;
+        } else if (this.sizeOption === 'height') {
+            targetSize = availHeight;
+        } else if (this.sizeOption === 'auto') {
+            if (availWidth > 0 && availHeight > 0) {
+                targetSize = Math.min(availWidth, availHeight);
+            } else {
+                targetSize = availWidth || availHeight || 300;
+            }
+        } else {
+            const tempEl = document.createElement('div');
+            tempEl.style.width = this.sizeOption;
+            tempEl.style.position = 'absolute';
+            tempEl.style.visibility = 'hidden';
+            document.body.appendChild(tempEl);
+            targetSize = tempEl.getBoundingClientRect().width || 300;
+            document.body.removeChild(tempEl);
+        }
+
+        const sizePx = Math.max(50, Math.floor(targetSize));
+
+        // Force strict square bounds for canvas and handle wrap
+        this._elements.canvas.width = sizePx;
+        this._elements.canvas.height = sizePx;
+        this._elements.canvas.style.width = `${sizePx}px`;
+        this._elements.canvas.style.height = `${sizePx}px`;
+
+        this._elements.wrap.style.width = `${sizePx}px`;
+        this._elements.wrap.style.height = `${sizePx}px`;
+
+        this._updateHandles();
+        this._redraw();
+    }
+
+    _setupResizeObserver() {
+        if (typeof ResizeObserver !== 'undefined') {
+            this._resizeObserver = new ResizeObserver(() => {
+                this._updateDimensions();
+            });
+            this._resizeObserver.observe(this.container);
+        }
+    }
+
+    getResult() {
+        return this.coordinates.slice();
+    }
+
+    getPreview() {
+        const coordsStr = this.coordinates.join(', ');
+        if (this.easyMode) {
+            const match = this._getMatchingPreset();
+            if (match) return `${coordsStr} - ${match}`;
+        }
+        return coordsStr;
+    }
+
+    getHTML() {
+        if (this.easyMode) {
+            const match = this._getMatchingPreset();
+            if (match) return match;
+        }
+        return `cubic-bezier(${this.coordinates.join(', ')})`;
+    }
+
+    setPreset(name) {
+        if (this.presets[name]) {
+            this.setEntry(this.presets[name]);
+        }
+    }
+
+    setEntry(entry) {
+        if (!Array.isArray(entry) || entry.length !== 4) {
+            throw new Error('setEntry expects an array of 4 numbers');
+        }
+        this.coordinates = this._roundCoords(entry);
+        if (this._bc) {
+            this._updateHandles();
+            this._redraw();
+            this._emitChange();
+        }
+    }
+
+    destroy() {
+        if (this._resizeObserver) {
+            this._resizeObserver.disconnect();
+            this._resizeObserver = null;
+        }
+
+        this._listeners.forEach(({
+            target,
+            type,
+            fn
+        }) => target.removeEventListener(type, fn));
+        this._listeners = [];
+
+        if (this._elements.mainWrap && this._elements.mainWrap.parentNode) {
+            this._elements.mainWrap.parentNode.removeChild(this._elements.mainWrap);
+        }
+
+        this._elements = {};
+        this._isInitialized = false;
+    }
+
+    _roundNumber(val) {
+        return Number(Math.round(val + 'e' + this.roundTo) + 'e-' + this.roundTo);
+    }
+
+    _roundCoords(coords) {
+        return coords.map(n => this._roundNumber(Number(n)));
+    }
+
+    _getMatchingPreset() {
+        const [x1, y1, x2, y2] = this.coordinates;
+
+        if (Math.abs(x1 - y1) <= 0.001 && Math.abs(x2 - y2) <= 0.001) {
+            return 'linear';
+        }
+
+        for (const [name, values] of Object.entries(this.presets)) {
+            if (name === 'linear') continue;
+            if (values.every((v, i) => Math.abs(v - this.coordinates[i]) <= 0.001)) {
+                return name;
+            }
+        }
+        return null;
+    }
+
+    _emitChange() {
+        const css = `cubic-bezier(${this.coordinates.join(',')})`;
+        const preview = this.getPreview();
+        const html = this.getHTML();
+
+        if (this._elements.output) {
+            this._elements.output.textContent = html;
+        }
+        if (this.onChange) {
+            try {
+                this.onChange({
+                    coords: this.getResult(),
+                    css,
+                    preview,
+                    html
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    }
+
+    _updateHandles() {
+        const [x1, y1, x2, y2] = this.coordinates;
+        const [cx1, cy1] = this._bc.bezierToCanvas(x1, y1);
+        const [cx2, cy2] = this._bc.bezierToCanvas(x2, y2);
+
+        this._elements.handle1.style.left = Math.round(cx1) + 'px';
+        this._elements.handle1.style.top = Math.round(cy1) + 'px';
+        this._elements.handle2.style.left = Math.round(cx2) + 'px';
+        this._elements.handle2.style.top = Math.round(cy2) + 'px';
+    }
+
+    _redraw() {
+        this._bc.plot();
+        this._emitChange();
+    }
+
+    _makeDraggable(handle, index) {
+        const onMouseDown = (e) => {
+            e.preventDefault();
+            const move = (ev) => {
+                const rect = this._elements.canvas.getBoundingClientRect();
+                const px = Math.round(ev.clientX - rect.left);
+                const py = Math.round(ev.clientY - rect.top);
+                this._applyPointerToCoord(px, py, index);
+            };
+            const up = () => {
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('mouseup', up);
+            };
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup', up);
+        };
+        handle.addEventListener('mousedown', onMouseDown);
+        this._listeners.push({
+            target: handle,
+            type: 'mousedown',
+            fn: onMouseDown
+        });
+    }
+
+    _addTouchSupport(handle, index) {
+        const onTouchStart = (e) => {
+            e.preventDefault();
+            const move = (ev) => {
+                const touch = ev.touches[0];
+                if (!touch) return;
+                const rect = this._elements.canvas.getBoundingClientRect();
+                const px = Math.round(touch.clientX - rect.left);
+                const py = Math.round(touch.clientY - rect.top);
+                this._applyPointerToCoord(px, py, index);
+            };
+            const end = () => {
+                document.removeEventListener('touchmove', move);
+                document.removeEventListener('touchend', end);
+                document.removeEventListener('touchcancel', end);
+            };
+            document.addEventListener('touchmove', move, {
+                passive: false
+            });
+            document.addEventListener('touchend', end);
+            document.addEventListener('touchcancel', end);
+        };
+        handle.addEventListener('touchstart', onTouchStart, {
+            passive: false
+        });
+        this._listeners.push({
+            target: handle,
+            type: 'touchstart',
+            fn: onTouchStart
+        });
+    }
+
+    _applyPointerToCoord(px, py, index) {
+        const [bx, by] = this._bc.canvasToBezier(px, py);
+        const cx = Math.max(0, Math.min(1, bx));
+        const cy = Math.max(0, Math.min(1, by));
+
+        this.coordinates[index * 2] = this._roundNumber(cx);
+        this.coordinates[index * 2 + 1] = this._roundNumber(cy);
+
+        this._updateHandles();
+        this._redraw();
+    }
+}
+
+
+
+/**
+ * ------------------------------------------------------------------------------
+ * Registery
+ * 
+ * Those were Resource of Regetstry, We can just edit this to get experience.
+ * Also can contorl the system to use this registery and don't need to update for too long
+ * Last Update: 1.0.0
+ * ------------------------------------------------------------------------------
+ */
 
 /**
  * How we check the Element? and element should be named like {catergory}/{name}, like basic/image
  * Set @global direct mean that's the only 1, and that will make only 1 can accapt this.
- * 
-
  * 
  * one note: 
  * {Width/Hwight} when is along, {Height/Width} when is across
@@ -9049,7 +9988,7 @@ export const flexEngineTransition = {
 /*
 Action System - we cannt put in since action is too different
 */
-const flexEngineActionQuery = [
+export const flexEngineActionQuery = [
 	{
 		name: "enable",
 		label: "Clickable",
@@ -9127,7 +10066,7 @@ const flexEngineActionQuery = [
 	}
 ];
 
-const flexEngineCreateAction = function(documentHTML, clickable, nodeStyleDefault) {
+export const flexEngineCreateAction = function(documentHTML, clickable, nodeStyleDefault) {
 	let node = documentHTML.createElement(nodeStyleDefault);
 	if (!clickable || clickable.enable !== true || !clickable.action) {
 		return node;
@@ -11548,3 +12487,10 @@ export const flexEngineRootElement = {
 
     }
 };
+
+
+/**
+ * Main Function
+ */
+
+const flexEngineFileSystem = new FlexEngineFileSystem();
