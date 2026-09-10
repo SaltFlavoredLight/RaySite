@@ -1,0 +1,9 @@
+so get started:
+I want simply the system, not those 8, but now you need to get:
+
+dataArray.position:
+first one is:
+dataArray.position.yPosition: if it's 1 then second one is mean top, 3 is mean bottom, 2 is reservered.
+dataArray.position.yOffset: that show the offset, defalut 0 makes that completely stick to top or bottom.
+dataArray.position.xPosition: 1 is on left, 2 is on center (ignore the 4th one), 3 is right.
+dataArray.position.xOffset: that show the offset of the left, right, ignore this when the xPosition is on center (both set to )
