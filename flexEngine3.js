@@ -113,36 +113,6 @@ const flexEngineContextCreator = {
 	*/
 };
 
-// Transition for the END NODE (1) and CONTAINER NODE (2) and SECTION (3)
-const flexEngineTransitionContextsNode = function(dataArray, node) {
-	const anim = dataArray && dataArray.transition;
-
-	if (!Array.isArray(anim) || anim.length === 0) {
-		return "";
-	}
-
-	const parts = [];
-
-	for (const t of anim) {
-		if (!t || !t.property) continue;
-
-		const duration = (t.timing || 0) + "s";
-		const delay = (t.delay || 0) + "s";
-		const curve = flexEngineStyleVarible.curve(t.animationCurve);
-
-		parts.push(`${t.property} ${duration} ${curve} ${delay}`);
-	}
-
-	const finalCSS = parts.length ?
-		`transition:${parts.join(",")};` :
-		"";
-
-	const prefix = BUILDER_CONFIG.classPrefix; // e.g. "cw-"
-	const attrName = `${prefix}transition-config-self`;
-
-	node.setAttribute(attrName, finalCSS);
-};
-
 // Create a new END NODE (1) and CONTAINER NODE (2)
 const flexEngineCreateEndNode = function(dataArray, documentHTML, parentVertical = true) {
 	const node = flexEngineCreateAction(documentHTML, dataArray.clickable, "div");
