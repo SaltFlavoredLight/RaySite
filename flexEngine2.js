@@ -27,6 +27,7 @@ export const BUILDER_CONFIG = {
  * a 2 part program where 1 provide a vitual File System
  * and another program edit Theme, Assets and Many More.
  * Important Module since it's foundation of Module 
+ * Last Update: 1.0.0
  * ------------------------------------------------------------------------------
  */
 class openDBFlieMaagement {
@@ -462,6 +463,7 @@ export class FlexEngineFileSystem {
  * 
  * a simple JS program that allows you to create anomation curve
  * Nesserary in some part of the software.
+ * Last Update: 1.0.0
  * ------------------------------------------------------------------------------
  */
 
@@ -957,33 +959,24 @@ export class CubicBezierEditor {
 
 /**
  * ------------------------------------------------------------------------------
- * Registery
+ * Input Registery
  * 
- * Those were Resource of Regetstry, We can just edit this to get experience.
+ * Those were for Input format
  * Also can contorl the system to use this registery and don't need to update for too long
  * Last Update: 1.0.0
  * ------------------------------------------------------------------------------
- */
-
-/**
- * How we check the Element? and element should be named like {catergory}/{name}, like basic/image
- * Set @global direct mean that's the only 1, and that will make only 1 can accapt this.
  * 
  * one note: 
  * {Width/Hwight} when is along, {Height/Width} when is across
  * 
- * and also when it's unaliable shown, there will set something.
- * default is what you can fill before, default is blank or true.
- * 
  * All query need include:
  * name, label, mode, visibleIf and optional choice.
  * visibleIf is mean when name visibleIf.name match any of the node in string (wither string or array), otherwise, visibleIf.otherwise will use that value
+ * ------------------------------------------------------------------------------
  */
 
 
-/*
-Input type - those parts will define the input and how to process it to work.
-*/
+// Input Registery
 export const flexEngineDefaultVariables = {
     /*
     Let system pass out first.
@@ -8022,9 +8015,22 @@ export const flexEngineDefaultVariables = {
 };
 
 
-/*
-Animation appear: 0-14
-*/
+/**
+ * ------------------------------------------------------------------------------
+ * Property Manager
+ * 
+ * Those were for Property like Animation, Style, and More.
+ * Last Update: 1.0.0
+ * ------------------------------------------------------------------------------
+ * 
+ * All query need include:
+ * selfQuery, allQuery, render: [0, 1, 2, 3] and internal stuff.
+ * ------------------------------------------------------------------------------
+ */
+
+
+
+// Animation Registery
 export const flexEngineDefaultAnimation = {
 	0: {
 		name: "showup",
@@ -8616,22 +8622,7 @@ export const flexEngineDefaultAnimation = {
 };
 
 
-/**
- * FlexEngine Property
- * Scope:
- * selfQuery = about self
- * allQuery = about all
- * 
- * 
- * render: a object also show the infomation.
- * render is also another object thst can start with numbers
- * like code 0 using 0: function() {} to indicate 0.
- * "other" = fallback.
- */
-
-/**
-Animation System
- */
+// Animation
 export const flexEngineAnimation = {
 	name: "animation",
 
@@ -9364,9 +9355,7 @@ export const flexEngineAnimation = {
 };
 
 
-/*
-Transition system
- */
+// Trans. System
 export const flexEngineTransition = {
 	name: "transition",
 
@@ -9985,9 +9974,8 @@ export const flexEngineTransition = {
 	}
 };
 
-/*
-Action System - we cannt put in since action is too different
-*/
+
+// Action System, that's too Strange so we cannot count.
 export const flexEngineActionQuery = [
 	{
 		name: "enable",
@@ -10104,21 +10092,29 @@ export const flexEngineCreateAction = function(documentHTML, clickable, nodeStyl
 };
 
 
-debugger; // FLAG for future change - flexEngineDefaultElements need to shift to new StyleVarible, for safety, keep the original ones, but we will delete soon after.
 /**
+ * ------------------------------------------------------------------------------
+ * Element Registery
+ * 
+ * Main Registery that control all of the elements. @root being treat differently.
+ * Later we will use a function to start registery extension process.
+ * ------------------------------------------------------------------------------
  * Share some infomation:
  * every catergory is included with a sizeQuery, sizeDefault, sizeMobile, elements and setting.
  * Setting will include systemClass, allowedSortIn, dependencyAnimation, allowedSortTo those 4 types.
+ * 
  * Now for each element, they need include a className, alts, icon, contentQuery, layoutQuery, initQuery(optional), 
  * initFunction(optional), contentFunction, cssStyles, jsRuntime and setting.
  * a setting may have some questions, check in to see what there have.
  * contentFunction need include function(dataArray, documentHTML, node, createAnotherNode)
+ * 
+ * You can override the class by simply using the same name field in element.
+ * ------------------------------------------------------------------------------
  */
 
-/*
-Elements - those will define what the elements will be
-*/
-// defaults elements.
+
+debugger; // FLAG for future change - flexEngineDefaultElements need to shift to new StyleVarible, for safety, keep the original ones, but we will delete soon after.
+// defaults elements
 export const flexEngineDefaultElements = {
     basic: {
         sizeQuery: [
@@ -12451,15 +12447,6 @@ export const flexEngineDefaultElements = {
     },
 };
 
-/**
- * Share some infomation
- * every catergory is included with a sizeQuery, sizeDefault, sizeMobile, elements and setting.
- * Setting will include allowedSortIn, dependencyAnimation those 2 types.
- * Now for each element, they need include a className, alts, icon, contentQuery, layoutQuery, initQuery(optional), 
- * initFunction(optional), contentFunction, cssStyles, jsRuntime and setting.
- * a setting may have some questions, check in to see what there have.
- * contentFunction need include function(dataArray, documentHTML, node, createAnotherNode)
- */
 
 // @root Elements 
 export const flexEngineRootElement = {
