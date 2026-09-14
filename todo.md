@@ -1,11 +1,18 @@
 ## Todo:
-[] for render part, just migrate them each to correspond to the new version, note that some of them were different
+[x] complete everything beside header
 
-[] start the UI and AppAPIs - remember appAPIs is different than App.js since one handle UI and another one handle the appAPIs,
+### est. Sept.
+#### est. 14-15
+[ ] complete header. 
+[ ] We got a problem in SortTable: everytime when update it cause a forced render, which cause you cannot focus on `<input>` unless using tab
+[ ] we need to start sortableFinal (use final to put to `<main>`) to get it
 
-[] also need web-render.js
+#### est. 16-20
+[ ] ready App API
+[ ] ready UI part, this time UI using the normal UI, AKA AppAPI
 
-[] lastly, get tested by teacher!
+### est. Oct
+[ ] lastly review it by teacher! 
 
 ## Reminders:
 

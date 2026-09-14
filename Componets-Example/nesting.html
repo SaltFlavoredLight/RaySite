@@ -1,3 +1,4 @@
+<!-- DETERMINE: PASSED-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -1153,6 +1154,12 @@ cssStyles: [{
         // =====================================================
 
         createHeader() {
+            const message = document.createElement("div");
+            message.classList.add("advance-nest-space-text");
+            message.style.fontSize = "14px"
+            message.textContent = "(Hint: you can drag the element to the bottom of the other element for nesting)"
+            this.tableElement.appendChild(message)
+
             const header =
                 document.createElement(
                     "div"
@@ -1595,7 +1602,7 @@ cssStyles: [{
                 // ---------------------------------------------
                 // NEST SPACE
                 // ---------------------------------------------
-
+                /*
                 const nestSpace =
                     document.createElement(
                         "div"
@@ -1607,6 +1614,8 @@ cssStyles: [{
                 nestSpace.dataset.ownerId =
                     item.__advanceId;
 
+
+            
                 const nestText =
                     document.createElement(
                         "span"
@@ -1625,6 +1634,7 @@ cssStyles: [{
                 childrenArea.appendChild(
                     nestSpace
                 );
+                */
 
                 wrapper.appendChild(
                     childrenArea
