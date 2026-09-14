@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SortableJS Stable Cross-Iframe</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
+
+    <style>
+        body { font-family: sans-serif; display: flex; gap: 20px; flex-wrap: nowrap; flex-direction: column; }
+        .sortableGroup { padding: 0; list-style: none; width: 200px; border: 1px solid #ccc; min-height: 150px; }
+        .sortableGroup > .div { padding: 8px; margin: 4px; background: #eee; border: 1px solid #aaa; cursor: grab; }
+        iframe { width: 600px; height: calc(100vh - 60px); border: 1px solid #666; }
+
+
+        .type-C { background: #e0f2fe; border-color: #7dd3fc; }
+        .type-D { background: #fee2e2; border-color: #fca5a5; }
+        .type-E { background: #fef3c7; border-color: #fcd34d; }
+        .type-F { background: #dcfce7; border-color: #86efac; }
+        .type-A, .type-B { background: #f1f5f9; border-color: #cbd5e1; }
+        
+        .label { font-weight: 600; color: #334155; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <div>
+        <h3>Left List (Clone Only)</h3>
+        <div id="leftList" class="sortableGroup">
+            <div class="item type-C"><span class="label">C (Accepts: D, B, A)</span><div class="nest"></div></div>
+            <div class="item type-D"><span class="label">D (Accepts: A, B, D)</span><div class="nest"></div></div>
+            <div class="item type-F"><span class="label">F (Accepts: E, B)</span><div class="nest"></div></div>
+            <div class="item type-E"><span class="label">E (Accepts: B)</span><div class="nest"></div></div>
+            <div class="item type-B"><span class="label">B (Leaf)</span></div>
+            <div class="item type-A"><span class="label">A (Leaf)</span></div>
+        </ul>
+    </div>
+
+    <iframe id="preview" sandbox="allow-scripts allow-same-origin" srcdoc="
+        <html>
+        <head>
+            <style>
+                body { font-family: sans-serif; display: flex; gap: 20px; flex-direction: column; }
+                div { padding: 0; list-style: none; width: 100%; border: 1px solid #ccc; min-height: 150px; }
+                .placeholder { position: absolute; left: 0; top: 0; opacity: 0; pointer-events: none; margin: 0; padding: 0; height: 1px; width: 1px;}
+
+                    .item { 
+                        border: 1px solid #94a3b8; 
+                        border-radius: 6px;
+                        padding: 10px; 
+                        margin: 8px 0; 
+                        cursor: grab; 
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                        
+                        /* CRITICAL FIX: Stops the browser from highlighting text while dragging */
+                        user-select: none;
+                        -webkit-user-select: none;
+                    }
+
+                .sortableGroup { padding: 0; list-style: none; margin: 0; min-height: 100vw; height: 10vh%;}
+                .sortableGroup > .div { padding: 8px; margin: 40px; background: #eee; border: 1px solid #aaa; cursor: grab; }
+
+                .type-C { background: #e0f2fe; border-color: #7dd3fc; }
+                .type-D { background: #fee2e2; border-color: #fca5a5; }
+                .type-E { background: #fef3c7; border-color: #fcd34d; }
+                .type-F { background: #dcfce7; border-color: #86efac; }
+                .type-A, .type-B { background: #f1f5f9; border-color: #cbd5e1; }
+                
+                .label { font-weight: 600; color: #334155; pointer-events: none; }
+
+
+            </style>
+        </head>
+        <body>
+
+            <main id='root' class='sortableGroup'><div class='placeholder'></div></div>
+
+        </body>
+        </html>
+    "></iframe>
+
+    <script>
+        //second part
+        const allowedChildren = {
+            root: ['C', 'F'],
+            C: ['D', 'B', 'A'],
+            D: ['A', 'B', 'D'],
+            F: ['E', 'B'],
+            E: ['B']
+        };
+
+        // this is a helper function that determine which type they are, we will soon replace in real Demo
+        function getType(element) {
+            if (!element) return null;
+            const typeClass = Array.from(element.classList).find(c => c.startsWith("type-"));
+            return typeClass ? typeClass.replace("type-", "") : null;
+        }
+
+        // check which element in here.
+        function getContainerType(container) {
+            if (
+                container.id === "root"
+            ) {
+                return "root";
+            }
+
+            const parentItem = container.closest(".item");
+            return parentItem ? getType(parentItem) : null;
+        }
+
+        // check if it can drop, using this function
+        function checkDrop(draggedEl, targetContainer) {
+            const draggedType = getType(draggedEl);
+            const parentType = getContainerType(targetContainer);
+            if (!parentType || !draggedType) return false;
+            return (allowedChildren[parentType] || []).includes(draggedType);
+        }
+
+
+        // --- LEFT LIST (clone only, no placeholder logic) ---
+        Sortable.create(document.getElementById("leftList"), {
+            group: {
+                name: "builder",
+                pull: "clone",
+                put: false
+            },
+            sort: false,
+            animation: 150,
+
+            
+            onMove: (evt) => {
+                return checkDrop(evt.dragged, evt.to);
+            },
+        });
+
+        const iframe = document.getElementById("preview");
+        iframe.addEventListener("load", () => {
+            const doc = iframe.contentDocument;
+
+
+            const oneSortableConfig = {
+                group: {
+                    name: "builder",
+                    pull: true,
+                    put: true
+                },
+
+                animation: 150,
+                swapThreshold: 0.4,
+                invertSwap: true,
+                dragoverBubble: true,
+                fallbackOnBody: true,
+                document: doc,
+                emptyInsertThreshold: 20,
+
+                onMove: (evt) => {
+                    return checkDrop(
+                        evt.dragged,
+                        evt.to
+                    );
+                },
+
+                onAdd: (evt) => {
+                    const item = evt.item;
+
+                    item
+                        .querySelectorAll(".nest")
+                        .forEach(nest => {
+                            makeSortable(nest);
+                        });
+                }
+            };
+
+            function makeSortable(element) {
+
+                if (!element || element._sortableInstance) {
+                    return;
+                }
+
+                element._sortableInstance =
+                    new Sortable(
+                        element,
+                        oneSortableConfig
+                    );
+            }
+
+            makeSortable(
+                doc.getElementById("root")
+            );
+
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach(mutation => {
+                    mutation.addedNodes.forEach(node => {
+                        if (node.nodeType === Node.ELEMENT_NODE) { 
+                            if (node.classList.contains("nest")) makeSortable(node);
+                            node.querySelectorAll(".nest").forEach(nest => makeSortable(nest));
+                        }
+                    });
+                });
+            });
+
+            observer.observe(doc.getElementById("root"), { childList: true, subtree: true });
+        });
+
+        
+    </script>
+
+</body>
+</html>

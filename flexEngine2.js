@@ -20,6 +20,177 @@ export const BUILDER_CONFIG = {
 	attribution: "Spread the message with RaySite! RaySite is a Free Website builder for you!"
 };
 
+
+/**
+ * ------------------------------------------------------------------------------
+ * Flie System for Website
+ * 
+ * LEGACY MODULE
+ * Do not add new features here.
+ * It will be removed from flexEngine and flexEngine Modules
+ * ------------------------------------------------------------------------------
+ */
+
+// Note: replace it by flexEngineDefaultVariables
+// Variable system
+const flexEngineStyleVarible = {
+	color: function(colorObj) {
+                if (!colorObj || !colorObj.mode) {
+                    return "transparent";
+                }
+                const resolveColor = cStr => {
+                    if (!cStr || cStr === "transparent") {
+                        return "transparent";
+                    }
+                    return cStr.startsWith("color-") ? `var(--${cStr})` : cStr;
+                };
+                switch (colorObj.mode) {
+                    case "basic":
+                        return resolveColor(colorObj.color);
+                    case "hex":
+                        return colorObj.hex;
+                    case "variables":
+                        return `var(--${colorObj.variables})`;
+                    case "linearGradient": {
+                        const gradientStops = (colorObj.stops || []).map(stop => `${resolveColor(stop.color)} ${stop.offset}%`).join(", ");
+                        return `linear-gradient(
+                                    ${colorObj.angle}deg,
+                                    ${gradientStops}
+                                )`;
+                    }
+                    case "backgroundIMG": {
+                        const repeat = `
+                                    ${colorObj.repeatX ? "repeat-x" : ""}
+                                    ${colorObj.repeatY ? "repeat-y" : ""}
+                                `.trim() || "no-repeat";
+                        const posX = ["left", "center", "right"][colorObj.positionX - 1] || "center";
+                        const posY = ["top", "center", "bottom"][colorObj.positionY - 1] || "center";
+                        const attachment = colorObj.attachment ? "fixed" : "scroll";
+                        if (colorObj.coloroverlay && colorObj.coloroverlay !== "transparent") {
+                            const overlayStr = resolveColor(colorObj.coloroverlay);
+                            return `
+                                        linear-gradient(
+                                            ${overlayStr},
+                                            ${overlayStr}
+                                        ),
+                                        url("${colorObj.src}")
+                                        ${posX}
+                                        ${posY}
+                                        / auto
+                                        ${repeat}
+                                        ${attachment}
+                                    `;
+                        }
+                        return `
+                                    url("${colorObj.src}")
+                                    ${posX}
+                                    ${posY}
+                                    / auto
+                                    ${repeat}
+                                    ${attachment}
+                                `;
+                    }
+                    case "inherit":
+                        return "inherit";
+                    case "none":
+                    default:
+                        return "transparent";
+                }
+	},
+
+	space: function(spaceObj) {
+		if (!spaceObj || !spaceObj.mode) return '0px';
+
+		switch (spaceObj.mode) {
+			case 'auto':
+				return 'auto';
+
+            case 'none':
+                return '0px';
+
+			case 'variables':
+				return `var(--${BUILDER_CONFIG.classPrefix + spaceObj.variables})`;
+
+				// Handles: px, rem, em, %, vw, vh, vmin, vmax, ch
+			default:
+				const validUnits = ['px', 'rem', 'em', '%', 'vw', 'vh', 'vmin', 'vmax', 'ch'];
+				if (validUnits.includes(spaceObj.mode)) {
+					return `${spaceObj.value}${spaceObj.mode}`;
+				}
+
+				// Fallback for unexpected modes
+				return '0px';
+		}
+	},
+
+	media: function(mediaObj) {
+		if (!mediaObj || !mediaObj.mode) return '';
+
+		switch (mediaObj.mode) {
+			case 'internal':
+				const prefix = BUILDER_CONFIG.classPrefix;
+
+				// Constructing: prefix/assets/folder/name
+				return `/${prefix}assets/${mediaObj.folder}/${mediaObj.name}`;
+
+			case 'external':
+				return mediaObj.url;
+
+			default:
+				return '';
+		}
+	},
+
+	// for Head only
+	absMedia: function(mediaObj, mainArray, selfSlug) {
+		if (!mediaObj || !mediaObj.mode) return '';
+
+		switch (mediaObj.mode) {
+			case 'internal':
+
+				const prefix = BUILDER_CONFIG.classPrefix;
+
+				const absoluteDomainEnable = (selfSlug !== null && mainArray.domain !== null && selfSlug !== "" && mainArray.domain !== "");
+				const absoluteDomain = (absoluteDomainEnable) ? `https://${mainArray.domain}` : "/";
+
+				// Constructing: prefix/assets/folder/name
+				return `${absoluteDomain}/${prefix}assets/${mediaObj.folder}/${mediaObj.name}`;
+
+			case 'external':
+				return mediaObj.url;
+
+			default:
+				return '';
+		}
+	},
+
+	curve: function(curveObj) {
+                // Return CSS variable if set to theme mode
+                if (Array.isArray(coords) && coords.length === 1 && coords[0] === 'theme') {
+                    const prefix = (typeof BUILDER_CONFIG !== 'undefined' && BUILDER_CONFIG.classPrefix) 
+                        ? BUILDER_CONFIG.classPrefix 
+                        : 'default';
+                    return `var(--${prefix}-animation-animationCurve)`;
+                }
+
+                const presetMap = {
+                    '0,0,1,1': 'linear',
+                    '0.25,0.1,0.25,1': 'ease',
+                    '0.42,0,1,1': 'ease-in',
+                    '0,0,0.58,1': 'ease-out',
+                    '0.42,0,0.58,1': 'ease-in-out'
+                };
+
+                const key = Array.isArray(coords) ? coords.join(',') : '';
+
+                return presetMap[key] || `cubic-bezier(${key})`;
+	},
+};
+
+
+
+
+
 /**
  * ------------------------------------------------------------------------------
  * Flie System for Website
@@ -967,7 +1138,7 @@ export class CubicBezierEditor {
  * ------------------------------------------------------------------------------
  * 
  * one note: 
- * {Width/Hwight} when is along, {Height/Width} when is across
+ * {Width/Height} when is along, {Height/Width} when is across
  * 
  * All query need include:
  * name, label, mode, visibleIf and optional choice.
@@ -8011,6 +8182,243 @@ export const flexEngineDefaultVariables = {
                 }
             }
         }            
+    },
+
+    list: {
+		classic: {
+			strutureSample: [],
+
+			displayType: "popupMedium",
+
+			cssStyles: {},
+
+			component: class {
+				constructor(dataArray, entryElement, elementSetting) {
+					// entryElement = [previewElement, popupElement]
+					this.previewElement = entryElement[0];
+					this.popupElement = entryElement[1];
+					this.elementSetting = elementSetting;
+
+					// Keep the original Proxy/reference untouched.
+					// Work on a temporary array until onSave().
+					this.dataArray = Array.isArray(dataArray) ?
+						dataArray :
+						(elementSetting.default || []);
+
+					this.originalDataArray = dataArray;
+					this.workingArray = Array.from(this.dataArray);
+
+					this.sortable = null;
+
+					// -----------------------------
+					// PREVIEW AREA
+					// -----------------------------
+					this.previewText = document.createElement('p');
+					this.updatePreview();
+
+					this.previewElement.innerHTML = "";
+					this.previewElement.appendChild(this.previewText);
+
+					// -----------------------------
+					// POPUP AREA
+					// -----------------------------
+					this.popupElement.innerHTML = "";
+
+					// -----------------------------
+					// ADD ELEMENT AREA
+					// -----------------------------
+					const addArea = document.createElement('div');
+					addArea.className = "sort-list-add";
+
+					const input = document.createElement('input');
+					input.type = "text";
+					input.placeholder = "Add something, then hit 'enter'";
+					input.className = "sort-list-input";
+
+					const addButton = document.createElement('button');
+					addButton.type = "button";
+					addButton.textContent = "Add";
+					addButton.className = "sort-list-add-button";
+
+					addArea.appendChild(input);
+					addArea.appendChild(addButton);
+
+					this.popupElement.appendChild(addArea);
+
+					// -----------------------------
+					// LIST AREA
+					// -----------------------------
+					this.listElement = document.createElement('div');
+					this.listElement.className = "sort-list-container";
+
+					this.popupElement.appendChild(this.listElement);
+
+					// Render current working data
+					this.renderList();
+
+					// -----------------------------
+					// ADD BUTTON
+					// -----------------------------
+					const addItem = () => {
+						const value = input.value.trim();
+
+						if (!value) return;
+
+						this.workingArray.push(value);
+
+						input.value = "";
+
+						this.renderList();
+						input.focus();
+					};
+
+					addButton.addEventListener("click", addItem);
+
+					input.addEventListener("keydown", event => {
+						if (event.key === "Enter") {
+							event.preventDefault();
+							addItem();
+						}
+					});
+				}
+
+				initResult() {
+					return {
+						code: 0
+					};
+				}
+
+				updatePreview() {
+					this.previewText.textContent = this.workingArray.join(", ");
+				}
+
+				renderList() {
+					// Destroy the old Sortable instance before rebuilding
+					if (this.sortable) {
+						this.sortable.destroy();
+						this.sortable = null;
+					}
+
+					this.listElement.innerHTML = "";
+
+					this.workingArray.forEach((value, index) => {
+						const item = document.createElement('div');
+						item.className = "sort-list-item";
+						item.setAttribute("data-index", index);
+
+						// -----------------------------
+						// DRAG HANDLE
+						// -----------------------------
+						const handle = document.createElement('span');
+						handle.className = "sort-list-handle";
+						handle.textContent = "☷";
+
+						// -----------------------------
+						// EDITABLE INPUT
+						// -----------------------------
+						const input = document.createElement('input');
+						input.type = "text";
+						input.className = "sort-list-text";
+						input.value = value;
+
+						input.addEventListener("input", () => {
+							this.workingArray[index] = input.value;
+							this.updatePreview();
+						});
+
+						// -----------------------------
+						// REMOVE BUTTON
+						// -----------------------------
+						const removeButton = document.createElement('button');
+						removeButton.type = "button";
+						removeButton.className = "sort-list-remove";
+						removeButton.textContent = "×";
+
+						removeButton.addEventListener("click", event => {
+							event.preventDefault();
+							event.stopPropagation();
+
+							this.workingArray.splice(index, 1);
+
+							this.renderList();
+						});
+
+						item.appendChild(handle);
+						item.appendChild(input);
+						item.appendChild(removeButton);
+
+						this.listElement.appendChild(item);
+					});
+
+					// -----------------------------
+					// SORTABLE.JS
+					// -----------------------------
+					if (typeof Sortable !== "undefined") {
+						this.sortable = new Sortable(this.listElement, {
+							animation: 150,
+
+							handle: ".sort-list-handle",
+
+							ghostClass: "sort-list-ghost",
+
+							onEnd: event => {
+								if (
+									event.oldIndex === undefined ||
+									event.newIndex === undefined ||
+									event.oldIndex === event.newIndex
+								) {
+									return;
+								}
+
+								const movedItem = this.workingArray.splice(
+									event.oldIndex,
+									1
+								)[0];
+
+								this.workingArray.splice(
+									event.newIndex,
+									0,
+									movedItem
+								);
+
+								this.updatePreview();
+							}
+						});
+					}
+
+					this.updatePreview();
+				}
+
+				onPopupClose() {
+					this.updatePreview();
+				}
+
+				onSave() {
+					if (this.sortable) {
+						this.sortable.destroy();
+						this.sortable = null;
+					}
+
+					if (Array.isArray(this.originalDataArray)) {
+						this.originalDataArray.splice(
+							0,
+							this.originalDataArray.length,
+							...this.workingArray
+						);
+
+						return this.originalDataArray;
+					}
+
+					return this.workingArray;
+				}
+			},
+
+			render: function(dataArray) {
+				return Array.isArray(dataArray) ?
+					dataArray :
+					"";
+			}
+		}        
     }
 };
 
@@ -10113,7 +10521,8 @@ export const flexEngineCreateAction = function(documentHTML, clickable, nodeStyl
  */
 
 
-debugger; // FLAG for future change - flexEngineDefaultElements need to shift to new StyleVarible, for safety, keep the original ones, but we will delete soon after.
+debugger; // FLAG for future change - flexEngineDefaultElements need to shift to new StyleVarible, 
+// for safety, keep the original ones, but we will delete soon after.
 // defaults elements
 export const flexEngineDefaultElements = {
     basic: {
@@ -10126,7 +10535,7 @@ export const flexEngineDefaultElements = {
             },
             {
                 name: "overflowAlong",
-                label: "{Width/Hwight} Overflow Behavior",
+                label: "{Width/Height} Overflow Behavior",
                 type: "selection",
                 choice: [
                     { label: "Grow to fit", value: 1 },
@@ -10136,7 +10545,7 @@ export const flexEngineDefaultElements = {
             },
             {
                 name: "alongGrow",
-                label: "{Width/Hwight} Growth Amount",
+                label: "{Width/Height} Growth Amount",
                 type: "number"
             },
             {
@@ -10520,7 +10929,7 @@ export const flexEngineDefaultElements = {
             },
             {
                 name: "overflowAlong",
-                label: "{Width/Hwight} Overflow Behavior",
+                label: "{Width/Height} Overflow Behavior",
                 type: "selection",
                 choice: [
                     { label: "Grow to fit", value: 1 },
@@ -10530,7 +10939,7 @@ export const flexEngineDefaultElements = {
             },
             {
                 name: "alongGrow",
-                label: "{Width/Hwight} Growth Amount",
+                label: "{Width/Height} Growth Amount",
                 type: "number"
             },
             {
@@ -11888,7 +12297,7 @@ export const flexEngineDefaultElements = {
             },
             {
                 name: "overflowAlong",
-                label: "{Width/Hwight} Overflow Behavior",
+                label: "{Width/Height} Overflow Behavior",
                 type: "selection",
                 choice: [
                     { label: "Grow to fit", value: 1 },
@@ -11898,7 +12307,7 @@ export const flexEngineDefaultElements = {
             },
             {
                 name: "alongGrow",
-                label: "{Width/Hwight} Growth Amount",
+                label: "{Width/Height} Growth Amount",
                 type: "number"
             },
             {
@@ -12017,7 +12426,7 @@ export const flexEngineDefaultElements = {
                     },
                     {
                         name: "spaceAlong",
-                        label: "{Width/Hwight} Space Distribuation",
+                        label: "{Width/Height} Space Distribuation",
                         type: "selection",
                         choice: [
                             { label: "Start", value: 1 },
@@ -12438,40 +12847,1044 @@ export const flexEngineDefaultElements = {
             systemClass: true,
             allowedSortIn: true,
             animation: 2,
-            allowedSortTo: ["@root/popup", "@root/CTA", "@root/Footer"]
+            allowedSortTo: ["@root/main"]
         }
     },
 
     header: {
 
-    },
+    }
 };
 
 
 // @root Elements 
 export const flexEngineRootElement = {
-    popup: {
+	popup: {
+		name: "Popup",
+		className: "popup",
+        alts: [],
+		icon: `
+            <svg xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 -960 960 960"
+                fill="currentColor"
+                class="RaySiteUI-c-svg">
+                <path d="M533-408h187v-216H533v216ZM168-192q-29.7 0-50.85-21.16Q96-234.32 96-264.04v-432.24Q96-726 117.15-747T168-768h624q29.7 0 50.85 21.16Q864-725.68 864-695.96v432.24Q864-234 842.85-213T792-192H168Zm0-72h624v-432H168v432Zm0 0v-432 432Z"/>
+            </svg>
+        `,
+		contentQuery: [{
+			name: "@global",
+			label: "Elements",
+			type: "interactiveElements"
+		}],
 
-    },
+		layoutQuery: [{
+			name: "spaceAcross",
+			label: "Align it to...",
+			type: "selection",
+			choice: [{
+				label: "Left",
+				value: 1
+			}, {
+				label: "Center",
+				value: 2
+			}, {
+				label: "Right",
+				value: 3
+			}, {
+				label: "Stretch it",
+				value: 4
+			}],
+			default: 1
+		}, {
+			name: "spaceAlong",
+			label: "in Height, perfer...",
+			type: "selection",
+			choice: [{
+				label: "Top",
+				value: 1
+			}, {
+				label: "Center",
+				value: 2
+			}, {
+				label: "Buttom",
+				value: 3
+			}],
+			default: 1
+		}, {
+			name: "overflow",
+			label: "Height Overflow Behavior",
+			type: "selection",
+			choice: [{
+				label: "Scroll",
+				value: 1
+			}, {
+				label: "Hidden",
+				value: 2
+			}, {
+				label: "No Action",
+				value: 3
+			}],
+			default: 3
+		}, {
+			name: "gap",
+			label: "Gaps Length",
+			type: "space"
+		}, {
+			name: "mobileGap",
+			label: "Gap on Mobile",
+			type: "space"
+		}, {
+			name: "mobileReverseDirection",
+			label: "Reverse Direction on Mobile?",
+			type: "boolean/checkmark",
+			default: false
+		}],
 
-    float: {
+		initQuery: [],
+		initFunction: function(dataArray, element) {
+			debugger; // in future we will add some default views
+		},
 
-    },
+		contentFunction: function(dataArray, documentHTML, node, createAnotherNode) {
+			const layout = dataArray.layout;
+			let cssOutput = "";
+			let cssMobileOutput = "";
+			// spaceAcross
+			if (layout.spaceAcross) {
+				const map = {
+					1: "flex-start",
+					2: "center",
+					3: "flex-end",
+					4: "stretch"
+				};
+				cssOutput += `justify-content:${map[layout.spaceAcross]};`;
+			}
+			// spaceAlong
+			if (layout.spaceAlong) {
+				const map = {
+					1: "flex-start",
+					2: "center",
+					3: "flex-end"
+				};
+				cssOutput += `align-items:${map[layout.spaceAlong]};`;
+			}
+			// overflow
+			if (layout.overflow) {
+				const map = {
+					1: "scroll",
+					2: "hidden",
+					3: null
+				};
+				if (map[layout.overflow]) {
+					cssOutput += `overflow:${map[layout.overflow]};`;
+				}
+			}
+			// gap
+			if (layout.gap !== undefined) {
+				const gapValue = flexEngineStyleVariable.space[layout.gap];
+				cssOutput += `gap:${gapValue};`;
+			}
+			// mobile reverse direction
+			if (layout.mobileReverseDirection) {
+				cssMobileOutput += `flex-direction:column-reverse;`;
+			}
+			// mobile gap
+			if (layout.mobileGap !== undefined) {
+				const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
+				cssMobileOutput += `gap:${gapValue};`;
+			}
+			// apply attributes
+			const prefix = BUILDER_CONFIG.classPrefix + "styles-node-atFirstChild";
+			const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-atFirstChild";
+			node.setAttribute(prefix, cssOutput);
+			node.setAttribute(prefixMobile, cssMobileOutput);
+			let innerNode = documentHTML.createElement("div");
+            innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-popup`);
+			// children
+			if (Array.isArray(dataArray.context)) {
+				dataArray.context.forEach(ctx => {
+					const childNode = createAnotherNode(ctx, documentHTML, true);
+					if (childNode) {
+						innerNode.appendChild(childNode);
+					}
+				});
+			}
+			node.appendChild(innerNode);
+		},
+
+		jsRuntime: {},
+        cssStyles: [{
+            object: "@context",
+            info: [{
+                key: "position",
+                value: "absolute"
+            }, {
+                key: "inset",
+                value: "0"
+            }]
+        }],
+
+        // systems
+        sizeQuery: [
+            {
+                name: "height",
+                label: "Height",
+                type: "space",
+                defaultAsFull: true
+            },
+            {
+                name: "alongGrow",
+                label: "Allow section grow?",
+                type: "boolean/checkmark"
+            },
+            {
+                name: "alongShrink",
+                label: "Allow section shrink?",
+                type: "boolean/checkmark"
+            },
+            {
+                name: "mobileMinHeight",
+                label: "Mobile Minimum Height",
+                type: "space",
+                defaultAsFull: true
+            },
+            {
+                name: "marginTop",
+                label: "Margin Top",
+                type: "space",
+                defaultAsFull: true
+            },
+            {
+                name: "marginBottom",
+                label: "Margin Bottom",
+                type: "space",
+                defaultAsFull: true
+            },
+            {
+                name: "marginLeft",
+                label: "Margin Left",
+                type: "space",
+                defaultAsFull: true
+            },
+            {
+                name: "marginRight",
+                label: "Margin Right",
+                type: "space",
+                defaultAsFull: true
+            },
+            {
+                name: "mobileMarginTop",
+                label: "Mobile Margin Top",
+                type: "space",
+                defaultAsFull: true
+            },
+            {
+                name: "mobileMarginBottom",
+                label: "Mobile Margin Bottom",
+                type: "space",
+                defaultAsFull: true
+            },
+            {
+                name: "mobileMarginLeft",
+                label: "Mobile Margin Left",
+                type: "space",
+                defaultAsFull: true
+            },
+            {
+                name: "mobileMarginRight",
+                label: "Mobile Margin Right",
+                type: "space",
+                defaultAsFull: true
+            }
+        ],
+
+        sizeDefault: (sz, isVertical) => {
+            return {
+                "width": "100%",
+                "height": flexEngineStyleVarible.space(sz.height),
+                "flex-grow": sz.alongGrow === true ? 1 : 0,
+                "flex-shrink": sz.alongShrink === true ? 1 : 0,
+
+                "margin-top": flexEngineStyleVarible.space(sz.marginTop),
+                "margin-bottom": flexEngineStyleVarible.space(sz.marginBottom),
+                "margin-left": flexEngineStyleVarible.space(sz.marginLeft),
+                "margin-right": flexEngineStyleVarible.space(sz.marginRight),
+
+                "overflow-x": "visible",
+                "overflow-y": "visible",
+                "align-self": "center"
+            };
+        },
+
+        sizeMobile: (sz, isVertical) => {
+            return {
+                "min-height": flexEngineStyleVarible.space(sz.mobileMinHeight),
+
+                "margin-top": flexEngineStyleVarible.space(sz.mobileMarginTop),
+                "margin-bottom": flexEngineStyleVarible.space(sz.mobileMarginBottom),
+                "margin-left": flexEngineStyleVarible.space(sz.mobileMarginLeft),
+                "margin-right": flexEngineStyleVarible.space(sz.mobileMarginRight)
+            };
+        },      
+
+		settings: {
+			sortablePart: function(element) {
+				return element;
+			},
+            systemClass: true,
+            allowedSortIn: true,
+            hide: true,
+            animation: 2
+		}
+	},
+
+	float: {
+		name: "Float Button",
+		className: "float",
+		alts: [],
+		icon: `
+					<svg xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 -960 960 960"
+						fill="currentColor"
+						class="RaySiteUI-c-svg">
+						<path d="M533-408h187v-216H533v216ZM168-192q-29.7 0-50.85-21.16Q96-234.32 96-264.04v-432.24Q96-726 117.15-747T168-768h624q29.7 0 50.85 21.16Q864-725.68 864-695.96v432.24Q864-234 842.85-213T792-192H168Zm0-72h624v-432H168v432Zm0 0v-432 432Z"/>
+					</svg>
+				`,
+        contentQuery: [
+            {
+                name: "label",
+                type: "string/text",
+            }
+        ],
+		layoutQuery: [],
+
+
+		contentFunction: function(dataArray, documentHTML, node) {
+            const content = dataArray.content;
+            const label = content.label || "";
+
+            // SAFE: prevents XSS because it does not parse HTML
+            node.textContent = label;
+        },
+
+		jsRuntime: {},
+
+		// debugger
+		cssStyles: [{
+			object: "@main",
+			info: [{
+				key: "width",
+				value: "100%"
+			}, {
+				key: "height",
+				value: "100%"
+			}]
+		}],
+
+		sizeQuery: [
+			{
+				name: "minHeight",
+				label: "Minimum Height",
+				type: "space",
+				defaultAsFull: false
+			},
+
+			{
+				name: "minWidth",
+				label: "Minimum Width",
+				type: "space",
+				defaultAsFull: false
+			},
+
+			{
+				name: "floatOn",
+				label: "Float Button On",
+				type: "selection",
+				choice: [
+					{ label: "Top", value: 1 },
+					{ label: "Bottom", value: 2 },
+					{ label: "Left", value: 3 },
+					{ label: "Right", value: 4 },
+					{ label: "Top Left", value: 5 },
+					{ label: "Top Right", value: 6 },
+					{ label: "Bottom Left", value: 7 },
+					{ label: "Bottom Right", value: 8 }
+				],
+				default: 8
+			},
+
+			{
+				name: "widthPadding",
+				label: "Width Padding",
+				type: "space",
+				defaultAsFull: false,
+				visibleIf: {
+					name: "floatOn",
+					value: [3, 4, 5, 6, 7, 8],
+				}
+			},
+
+			{
+				name: "heightPadding",
+				label: "Height Padding",
+				type: "space",
+				defaultAsFull: false,
+				visibleIf: {
+					name: "floatOn",
+					value: [1, 2, 5, 6, 7, 8],
+				}
+			}
+		],
+
+		sizeDefault: (sz, isVertical) => {
+			const floatOn = sz.floatOn || 8
+
+			const isTop = [1, 5, 6].includes(floatOn)
+			const isBottom = [2, 7, 8].includes(floatOn)
+			const isLeft = [3, 5, 7].includes(floatOn)
+			const isRight = [4, 6, 8].includes(floatOn)
+
+			const widthPadding = flexEngineStyleVarible.space(sz.widthPadding)
+			const heightPadding = flexEngineStyleVarible.space(sz.heightPadding)
+
+			return {
+				"min-width": flexEngineStyleVarible.space(sz.minWidth),
+				"min-height": flexEngineStyleVarible.space(sz.minHeight),
+
+				"position": "fixed",
+
+				"top": isTop ? heightPadding : "auto",
+				"bottom": isBottom ? heightPadding : "auto",
+				"left": isLeft ? widthPadding : "auto",
+				"right": isRight ? widthPadding : "auto"
+			}
+		},
+
+		sizeMobile: (sz, isVertical) => {
+			return {}
+		},
+		
+		settings: {
+			systemClass: true,
+			allowedSortIn: false,
+			animation: 1,
+			hide: true
+		}
+	},
 
     CTA: {
+    	name: "Call to Action Section",
+    	className: "cta",
+    	alts: ["Call to Action", "CTA"],
+    	icon: `
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 -960 960 960"
+                        fill="currentColor"
+                        class="RaySiteUI-c-svg">
+                        <path d="M216-216v-144 16-4 132Zm-.3 72q-32.7 0-52.2-19.5T144-216v-144q0-33 19.5-52.5T216-432h528q33 0 52.5 19.5T816-360H216v144h396v72H215.7Zm.3-384q-33 0-52.5-19.5T144-600v-144q0-33 19.5-52.5T216-816h528q33 0 52.5 19.5T816-744v144q0 33-19.5 52.5T744-528H216Zm0-72h528v-144H216v144Zm0 0v-144 144ZM744-84v-60h-60v-72h60v-60h72v60h60v72h-60v60h-72Z"/>
+                    </svg>
+                `,
+    	contentQuery: [{
+    		name: "@global",
+    		label: "Elements",
+    		type: "interactiveElements"
+    	}],
+    	layoutQuery: [{
+    		name: "spaceAcross",
+    		label: "Align it to...",
+    		type: "selection",
+    		choice: [{
+    			label: "Left",
+    			value: 1
+    		}, {
+    			label: "Center",
+    			value: 2
+    		}, {
+    			label: "Right",
+    			value: 3
+    		}, {
+    			label: "Stretch it",
+    			value: 4
+    		}],
+    		default: 1
+    	}, {
+    		name: "spaceAlong",
+    		label: "in Height, perfer...",
+    		type: "selection",
+    		choice: [{
+    			label: "Top",
+    			value: 1
+    		}, {
+    			label: "Center",
+    			value: 2
+    		}, {
+    			label: "Buttom",
+    			value: 3
+    		}],
+    		default: 1
+    	}, {
+    		name: "overflow",
+    		label: "Height Overflow Behavior",
+    		type: "selection",
+    		choice: [{
+    			label: "Scroll",
+    			value: 1
+    		}, {
+    			label: "Hidden",
+    			value: 2
+    		}, {
+    			label: "No Action",
+    			value: 3
+    		}],
+    		default: 3
+    	}, {
+    		name: "gap",
+    		label: "Gaps Length",
+    		type: "space"
+    	}, {
+    		name: "mobileGap",
+    		label: "Gap on Mobile",
+    		type: "space"
+    	}, {
+    		name: "mobileReverseDirection",
+    		label: "Reverse Direction on Mobile?",
+    		type: "boolean/checkmark",
+    		default: false
+    	}, {
+    		name: "displayType",
+    		label: "Maximum Width",
+    		type: "selection",
+    		choice: [{
+    			label: "Standard",
+    			value: 0
+    		}, {
+    			label: "Wide",
+    			value: 1
+    		}, {
+    			label: "Full",
+    			value: 2
+    		}],
+    		default: 0
+    	}],
+    	initQuery: [],
+    	initFunction: function(dataArray, element) {
+    		debugger; // in future we will add some default views
+    	},
+    	contentFunction: function(dataArray, documentHTML, node, createAnotherNode) {
+    		const layout = dataArray.layout;
+    		let cssOutput = "";
+    		let cssMobileOutput = "";
+    		// spaceAcross
+    		if (layout.spaceAcross) {
+    			const map = {
+    				1: "flex-start",
+    				2: "center",
+    				3: "flex-end",
+    				4: "stretch"
+    			};
+    			cssOutput += `justify-content:${map[layout.spaceAcross]};`;
+    		}
+    		// spaceAlong
+    		if (layout.spaceAlong) {
+    			const map = {
+    				1: "flex-start",
+    				2: "center",
+    				3: "flex-end"
+    			};
+    			cssOutput += `align-items:${map[layout.spaceAlong]};`;
+    		}
+    		// overflow
+    		if (layout.overflow) {
+    			const map = {
+    				1: "scroll",
+    				2: "hidden",
+    				3: null
+    			};
+    			if (map[layout.overflow]) {
+    				cssOutput += `overflow:${map[layout.overflow]};`;
+    			}
+    		}
+    		// gap
+    		if (layout.gap !== undefined) {
+    			const gapValue = flexEngineStyleVariable.space[layout.gap];
+    			cssOutput += `gap:${gapValue};`;
+    		}
+    		// mobile reverse direction
+    		if (layout.mobileReverseDirection) {
+    			cssMobileOutput += `flex-direction:column-reverse;`;
+    		}
+    		// mobile gap
+    		if (layout.mobileGap !== undefined) {
+    			const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
+    			cssMobileOutput += `gap:${gapValue};`;
+    		}
+    		// apply attributes
+    		const prefix = BUILDER_CONFIG.classPrefix + "styles-node-atFirstChild";
+    		const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-atFirstChild";
+    		node.setAttribute(prefix, cssOutput);
+    		node.setAttribute(prefixMobile, cssMobileOutput);
+    		let innerNode = documentHTML.createElement("div");
+    		if (layout.displayType === 0) {
+    			innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-standard`);
+    		} else if (layout.displayType === 1) {
+    			innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-wide`);
+    		} else {
+    			innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-full`);
+    		}
+    		// children
+    		if (Array.isArray(dataArray.context)) {
+    			dataArray.context.forEach(ctx => {
+    				const childNode = createAnotherNode(ctx, documentHTML, true);
+    				if (childNode) {
+    					innerNode.appendChild(childNode);
+    				}
+    			});
+    		}
+    		node.appendChild(innerNode);
+    	},
+    	jsRuntime: {},
 
+    	cssStyles: [{
+    		object: "@context-full",
+    		info: [{
+    			key: "width",
+    			value: "100%"
+    		}, {
+    			key: "height",
+    			value: "100%"
+    		}]
+    	}, {
+    		object: "@context-wide",
+    		info: [{
+    			key: "width",
+    			value: "100%"
+    		}, {
+    			key: "height",
+    			value: "100%"
+    		}, {
+    			key: "max-width",
+    			value: "1600px"
+    		}]
+    	}, {
+    		object: "@context-standard",
+    		info: [{
+    			key: "width",
+    			value: "100%"
+    		}, {
+    			key: "height",
+    			value: "100%"
+    		}, {
+    			key: "max-width",
+    			value: "1200px"
+    		}]
+    	}],
+
+        sizeQuery: [
+            {
+                name: "height",
+                label: "Height",
+                type: "space",
+                defaultAsFull: true
+            },
+            {
+                name: "alongGrow",
+                label: "Allow section grow?",
+                type: "boolean/checkmark"
+            },
+            {
+                name: "alongShrink",
+                label: "Allow section shrink?",
+                type: "boolean/checkmark"
+            },
+            {
+                name: "mobileMinHeight",
+                label: "Mobile Minimum Height",
+                type: "space",
+                defaultAsFull: true
+            }
+        ],
+
+        sizeDefault: (sz, isVertical) => {
+            return {
+                "width": "100%",
+                "height": flexEngineStyleVarible.space(sz.height),
+                "flex-grow": sz.alongGrow === true ? 1 : 0,
+                "flex-shrink": sz.alongShrink === true ? 1 : 0,
+                "overflow-x": "visible",
+                "overflow-y": "visible",
+                "align-self": "center"
+            };
+        },
+
+        sizeMobile: (sz, isVertical) => {
+            return {
+                "min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
+            };
+        },
+        
+    	settings: {
+    		sortablePart: function(element) {
+    			return element.firstElementChild;
+    		},
+            systemClass: true,
+            allowedSortIn: true,
+            animation: 2,
+            hide: true,
+            noDelete: true,
+    	}
     },
 
     Footer: {
+    	name: "Footer",
+    	className: "footer",
+    	alts: [],
+    	icon: `
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 -960 960 960"
+                        fill="currentColor"
+                        class="RaySiteUI-c-svg">
+                        <path d="M144-144v-72h672v72H144Zm72-144q-33 0-52.5-19.5T144-360v-384q0-33 19.5-52.5T216-816h528q33 0 52.5 19.5T816-744v384q0 33-19.5 52.5T744-288H216Zm0-72h528v-384H216v384Zm0 0v-384 384Z"/>
+                    </svg>
+                `,
+    	contentQuery: [{
+    		name: "@global",
+    		label: "Elements",
+    		type: "interactiveElements"
+    	}],
+    	layoutQuery: [{
+    		name: "spaceAcross",
+    		label: "Align it to...",
+    		type: "selection",
+    		choice: [{
+    			label: "Left",
+    			value: 1
+    		}, {
+    			label: "Center",
+    			value: 2
+    		}, {
+    			label: "Right",
+    			value: 3
+    		}, {
+    			label: "Stretch it",
+    			value: 4
+    		}],
+    		default: 1
+    	}, {
+    		name: "spaceAlong",
+    		label: "in Height, perfer...",
+    		type: "selection",
+    		choice: [{
+    			label: "Top",
+    			value: 1
+    		}, {
+    			label: "Center",
+    			value: 2
+    		}, {
+    			label: "Buttom",
+    			value: 3
+    		}],
+    		default: 1
+    	}, {
+    		name: "overflow",
+    		label: "Height Overflow Behavior",
+    		type: "selection",
+    		choice: [{
+    			label: "Scroll",
+    			value: 1
+    		}, {
+    			label: "Hidden",
+    			value: 2
+    		}, {
+    			label: "No Action",
+    			value: 3
+    		}],
+    		default: 3
+    	}, {
+    		name: "gap",
+    		label: "Gaps Length",
+    		type: "space"
+    	}, {
+    		name: "mobileGap",
+    		label: "Gap on Mobile",
+    		type: "space"
+    	}, {
+    		name: "mobileReverseDirection",
+    		label: "Reverse Direction on Mobile?",
+    		type: "boolean/checkmark",
+    		default: false
+    	}, {
+    		name: "displayType",
+    		label: "Maximum Width",
+    		type: "selection",
+    		choice: [{
+    			label: "Standard",
+    			value: 0
+    		}, {
+    			label: "Wide",
+    			value: 1
+    		}, {
+    			label: "Full",
+    			value: 2
+    		}],
+    		default: 0
+    	}],
+    	initQuery: [],
+    	initFunction: function(dataArray, element) {
+    		debugger; // in future we will add some default views
+    	},
+    	contentFunction: function(dataArray, documentHTML, node, createAnotherNode) {
+    		const layout = dataArray.layout;
+    		let cssOutput = "";
+    		let cssMobileOutput = "";
+    		// spaceAcross
+    		if (layout.spaceAcross) {
+    			const map = {
+    				1: "flex-start",
+    				2: "center",
+    				3: "flex-end",
+    				4: "stretch"
+    			};
+    			cssOutput += `justify-content:${map[layout.spaceAcross]};`;
+    		}
+    		// spaceAlong
+    		if (layout.spaceAlong) {
+    			const map = {
+    				1: "flex-start",
+    				2: "center",
+    				3: "flex-end"
+    			};
+    			cssOutput += `align-items:${map[layout.spaceAlong]};`;
+    		}
+    		// overflow
+    		if (layout.overflow) {
+    			const map = {
+    				1: "scroll",
+    				2: "hidden",
+    				3: null
+    			};
+    			if (map[layout.overflow]) {
+    				cssOutput += `overflow:${map[layout.overflow]};`;
+    			}
+    		}
+    		// gap
+    		if (layout.gap !== undefined) {
+    			const gapValue = flexEngineStyleVariable.space[layout.gap];
+    			cssOutput += `gap:${gapValue};`;
+    		}
+    		// mobile reverse direction
+    		if (layout.mobileReverseDirection) {
+    			cssMobileOutput += `flex-direction:column-reverse;`;
+    		}
+    		// mobile gap
+    		if (layout.mobileGap !== undefined) {
+    			const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
+    			cssMobileOutput += `gap:${gapValue};`;
+    		}
+    		// apply attributes
+    		const prefix = BUILDER_CONFIG.classPrefix + "styles-node-atFirstChild";
+    		const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-atFirstChild";
+    		node.setAttribute(prefix, cssOutput);
+    		node.setAttribute(prefixMobile, cssMobileOutput);
+    		let innerNode = documentHTML.createElement("div");
+    		if (layout.displayType === 0) {
+    			innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-standard`);
+    		} else if (layout.displayType === 1) {
+    			innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-wide`);
+    		} else {
+    			innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-full`);
+    		}
+    		// children
+    		if (Array.isArray(dataArray.context)) {
+    			dataArray.context.forEach(ctx => {
+    				const childNode = createAnotherNode(ctx, documentHTML, true);
+    				if (childNode) {
+    					innerNode.appendChild(childNode);
+    				}
+    			});
+    		}
+    		node.appendChild(innerNode);
+    	},
+    	jsRuntime: {},
 
+    	cssStyles: [{
+    		object: "@context-full",
+    		info: [{
+    			key: "width",
+    			value: "100%"
+    		}, {
+    			key: "height",
+    			value: "100%"
+    		}]
+    	}, {
+    		object: "@context-wide",
+    		info: [{
+    			key: "width",
+    			value: "100%"
+    		}, {
+    			key: "height",
+    			value: "100%"
+    		}, {
+    			key: "max-width",
+    			value: "1600px"
+    		}]
+    	}, {
+    		object: "@context-standard",
+    		info: [{
+    			key: "width",
+    			value: "100%"
+    		}, {
+    			key: "height",
+    			value: "100%"
+    		}, {
+    			key: "max-width",
+    			value: "1200px"
+    		}]
+    	}],
+
+        sizeQuery: [
+            {
+                name: "height",
+                label: "Height",
+                type: "space",
+                defaultAsFull: true
+            },
+            {
+                name: "alongGrow",
+                label: "Allow section grow?",
+                type: "boolean/checkmark"
+            },
+            {
+                name: "alongShrink",
+                label: "Allow section shrink?",
+                type: "boolean/checkmark"
+            },
+            {
+                name: "mobileMinHeight",
+                label: "Mobile Minimum Height",
+                type: "space",
+                defaultAsFull: true
+            }
+        ],
+
+        sizeDefault: (sz, isVertical) => {
+            return {
+                "width": "100%",
+                "height": flexEngineStyleVarible.space(sz.height),
+                "flex-grow": sz.alongGrow === true ? 1 : 0,
+                "flex-shrink": sz.alongShrink === true ? 1 : 0,
+                "overflow-x": "visible",
+                "overflow-y": "visible",
+                "align-self": "center"
+            };
+        },
+
+        sizeMobile: (sz, isVertical) => {
+            return {
+                "min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
+            };
+        },
+        
+    	settings: {
+    		sortablePart: function(element) {
+    			return element.firstElementChild;
+    		},
+            systemClass: true,
+            allowedSortIn: true,
+            hide: true,
+            noDelete: true,
+            animation: 2,
+            elementType: "footer",
+    	}
     },
 
     Header: {
 
     },
 
-    Content: {
+    main: {
+        name: "Main",
+        className: "main",
+        alts: ["Content"],
+        icon: `
+            <svg xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 -960 960 960"
+                fill="currentColor"
+                class="RaySiteUI-c-svg">
+                <path d="M144-144v-72h672v72H144Zm72-144q-33 0-52.5-19.5T144-360v-384q0-33 19.5-52.5T216-816h528q33 0 52.5 19.5T816-744v384q0 33-19.5 52.5T744-288H216Zm0-72h528v-384H216v384Zm0 0v-384 384Z"/>
+            </svg>
+        `,
 
+        contentQuery: [{
+            name: "@global",
+            label: "Elements",
+            type: "interactiveElements"
+        }],
+
+        layoutQuery: [],
+
+        initQuery: [],
+
+        initFunction: function(dataArray, element) {
+            debugger; // in future we will add some default views
+        },
+
+        contentFunction: function(
+            dataArray,
+            documentHTML,
+            node,
+            createAnotherNode
+        ) {
+            // children
+            if (Array.isArray(dataArray.context)) {
+                dataArray.context.forEach(ctx => {
+                    const childNode = createAnotherNode(
+                        ctx,
+                        documentHTML,
+                        true
+                    );
+
+                    if (childNode) {
+                        node.appendChild(childNode);
+                    }
+                });
+            }
+        },
+
+        jsRuntime: {},
+
+        cssStyles: [{
+            object: "@main",
+            info: [{
+                key: "width",
+                value: "100%"
+            }, {
+                key: "height",
+                value: "auto"
+            }],
+            sizeQuery: []
+        }],
+
+        sizeDefault: (sz, isVertical) => {
+            return {};
+        },
+
+        sizeMobile: (sz, isVertical) => {
+            return {};
+        },
+
+        settings: {
+            sortablePart: function(element) {
+                return element.firstElementChild;
+            },
+
+            systemClass: true,
+            allowedSortIn: true,
+            hide: true,
+            noDelete: true,
+            animation: 2,
+            noStyles: true,
+            elementType: "main",
+        }
     }
 };
 
@@ -12481,3 +13894,61 @@ export const flexEngineRootElement = {
  */
 
 const flexEngineFileSystem = new FlexEngineFileSystem();
+
+
+/*
+            sortablePart: function(element) {
+                return element.firstElementChild;
+            },
+            systemClass: true,
+            allowedSortIn: true,
+            animation: 2,
+            hide: true,
+            noDelete: true,
+
+
+
+
+                    sizeQuery: [
+            {
+                name: "height",
+                label: "Height",
+                type: "space",
+                defaultAsFull: true
+            },
+            {
+                name: "alongGrow",
+                label: "Allow section grow?",
+                type: "boolean/checkmark"
+            },
+            {
+                name: "alongShrink",
+                label: "Allow section shrink?",
+                type: "boolean/checkmark"
+            },
+            {
+                name: "mobileMinHeight",
+                label: "Mobile Minimum Height",
+                type: "space",
+                defaultAsFull: true
+            }
+        ],
+
+        sizeDefault: (sz, isVertical) => {
+            return {
+                "width": "100%",
+                "height": flexEngineStyleVarible.space(sz.height),
+                "flex-grow": sz.alongGrow === true ? 1 : 0,
+                "flex-shrink": sz.alongShrink === true ? 1 : 0,
+                "overflow-x": "visible",
+                "overflow-y": "visible",
+                "align-self": "center"
+            };
+        },
+
+        sizeMobile: (sz, isVertical) => {
+            return {
+                "min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
+            };
+        },
+*/
