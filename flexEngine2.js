@@ -22,10 +22,9 @@ export const BUILDER_CONFIG = {
 
 
 /**
- * ------------------------------------------------------------------------------
- * Flie System for Website
- * 
+ * ------------------------------------------------------------------------------ 
  * LEGACY MODULE
+ * 
  * Do not add new features here.
  * It will be removed from flexEngine and flexEngine Modules
  * ------------------------------------------------------------------------------
@@ -8185,240 +8184,2354 @@ export const flexEngineDefaultVariables = {
     },
 
     list: {
-		classic: {
-			strutureSample: [],
+        // debugger; there /list did not appear for right now due to a small problem.
 
-			displayType: "popupMedium",
+        nested: {
+            strutureSample: [],
+            
+            displayType: "popupMedium",
+            
+            cssStyles: [{
+                object: ".advance-root",
+                info: [{
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "max-width",
+                    value: "100%"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                object: ".advance-add",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "gap",
+                    value: "8px"
+                }, {
+                    key: "margin-bottom",
+                    value: "12px"
+                }]
+            }, {
+                object: ".advance-add-input",
+                info: [{
+                    key: "flex",
+                    value: "1 1 auto"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "min-width",
+                    value: "0"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                object: ".advance-add-button",
+                info: [{
+                    key: "flex",
+                    value: "0 0 auto"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                object: ".advance-table",
+                info: [{
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "max-width",
+                    value: "100%"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                object: ".advance-header",
+                info: [{
+                    key: "display",
+                    value: "grid"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }]
+            }, {
+                object: ".advance-header-cell",
+                info: [{
+                    key: "min-width",
+                    value: "0"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "padding",
+                    value: "6px 8px"
+                }, {
+                    key: "font-size",
+                    value: "12px"
+                }, {
+                    key: "font-weight",
+                    value: "600"
+                }, {
+                    key: "overflow",
+                    value: "hidden"
+                }, {
+                    key: "text-overflow",
+                    value: "ellipsis"
+                }, {
+                    key: "white-space",
+                    value: "nowrap"
+                }]
+            }, {
+                object: ".advance-list",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "flex-direction",
+                    value: "column"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "max-width",
+                    value: "100%"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "gap",
+                    value: "5px"
+                }, {
+                    key: "min-height",
+                    value: "10px"
+                }]
+            }, {
+                object: ".advance-item",
+                info: [{
+                    key: "display",
+                    value: "block"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "max-width",
+                    value: "100%"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                object: ".advance-item-row",
+                info: [{
+                    key: "display",
+                    value: "grid"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "max-width",
+                    value: "100%"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }, {
+                    key: "min-height",
+                    value: "38px"
+                }]
+            }, {
+                object: ".advance-cell",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }, {
+                    key: "min-width",
+                    value: "0"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "padding",
+                    value: "4px 8px"
+                }]
+            }, {
+                object: ".advance-name-cell",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }, {
+                    key: "min-width",
+                    value: "0"
+                }, {
+                    key: "gap",
+                    value: "6px"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "padding",
+                    value: "4px 8px"
+                }]
+            }, {
+                object: ".advance-handle",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "flex",
+                    value: "0 0 24px"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }, {
+                    key: "justify-content",
+                    value: "center"
+                }, {
+                    key: "width",
+                    value: "24px"
+                }, {
+                    key: "height",
+                    value: "28px"
+                }, {
+                    key: "cursor",
+                    value: "grab"
+                }, {
+                    key: "user-select",
+                    value: "none"
+                }, {
+                    key: "touch-action",
+                    value: "none"
+                }]
+            }, {
+                object: ".advance-handle:active",
+                info: [{
+                    key: "cursor",
+                    value: "grabbing"
+                }]
+            }, {
+                object: ".advance-item-input",
+                info: [{
+                    key: "display",
+                    value: "block"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "min-width",
+                    value: "0"
+                }, {
+                    key: "height",
+                    value: "30px"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "padding",
+                    value: "3px 6px"
+                }, {
+                    key: "border",
+                    value: "1px solid transparent"
+                }, {
+                    key: "outline",
+                    value: "none"
+                }]
+            }, {
+                object: ".advance-field-input",
+                info: [{
+                    key: "display",
+                    value: "block"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "min-width",
+                    value: "0"
+                }, {
+                    key: "height",
+                    value: "30px"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "padding",
+                    value: "3px 6px"
+                }, {
+                    key: "border",
+                    value: "1px solid transparent"
+                }, {
+                    key: "outline",
+                    value: "none"
+                }]
+            }, {
+                object: ".advance-field-checkbox",
+                info: [{
+                    key: "display",
+                    value: "block"
+                }, {
+                    key: "width",
+                    value: "18px"
+                }, {
+                    key: "height",
+                    value: "18px"
+                }, {
+                    key: "margin",
+                    value: "0"
+                }]
+            }, {
+                object: ".advance-remove",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }, {
+                    key: "justify-content",
+                    value: "center"
+                }, {
+                    key: "width",
+                    value: "28px"
+                }, {
+                    key: "height",
+                    value: "28px"
+                }, {
+                    key: "padding",
+                    value: "0"
+                }, {
+                    key: "border",
+                    value: "0"
+                }, {
+                    key: "background",
+                    value: "transparent"
+                }, {
+                    key: "cursor",
+                    value: "pointer"
+                }]
+            }, {
+                object: ".advance-children",
+                info: [{
+                    key: "display",
+                    value: "block"
+                }, {
+                    key: "width",
+                    value: "calc(100% - 28px)"
+                }, {
+                    key: "max-width",
+                    value: "calc(100% - 28px)"
+                }, {
+                    key: "margin-left",
+                    value: "28px"
+                }, {
+                    key: "padding-left",
+                    value: "10px"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                object: ".advance-nest-space",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "min-height",
+                    value: "34px"
+                }, {
+                    key: "margin-top",
+                    value: "3px"
+                }, {
+                    key: "margin-bottom",
+                    value: "3px"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }, {
+                    key: "justify-content",
+                    value: "center"
+                }, {
+                    key: "padding",
+                    value: "6px"
+                }, {
+                    key: "border",
+                    value: "1px dashed currentColor"
+                }, {
+                    key: "font-size",
+                    value: "12px"
+                }, {
+                    key: "user-select",
+                    value: "none"
+                }]
+            }, {
+                object: ".advance-nest-space-text",
+                info: [{
+                    key: "display",
+                    value: "block"
+                }, {
+                    key: "pointer-events",
+                    value: "none"
+                }, {
+                    key: "text-align",
+                    value: "center"
+                }]
+            }, {
+                object: ".advance-ghost",
+                info: [{
+                    key: "opacity",
+                    value: "0.35"
+                }]
+            }, {
+                object: ".advance-chosen",
+                info: [{
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                object: ".advance-drag",
+                info: [{
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                object: ".advance-drop-invalid",
+                info: [{
+                    key: "opacity",
+                    value: "0.4"
+                }]
+            }, {
+                object: ".advance-preview-tree",
+                info: [{
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                object: ".advance-preview-item",
+                info: [{
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "padding-top",
+                    value: "2px"
+                }, {
+                    key: "padding-bottom",
+                    value: "2px"
+                }]
+            }],
+            
+            
+            component: class {
+                constructor(
+                    dataArray,
+                    entryElement,
+                    elementSetting
+                ) {
+                    // =================================================
+                    // ELEMENTS
+                    // =================================================
+                    
+                    this.previewElement =
+                        entryElement[0];
+                    
+                    this.popupElement =
+                        entryElement[1];
+                    
+                    this.elementSetting =
+                        elementSetting;
+                    
+                    // =================================================
+                    // ORIGINAL PROXY
+                    // =================================================
+                    
+                    this.originalDataArray =
+                        dataArray;
+                    
+                    // =================================================
+                    // NEST LIMIT
+                    // =================================================
+                    
+                    this.nestLimit = Math.max(
+                        1,
+                        Number(
+                            elementSetting.nestLimit
+                        ) || 1
+                    );
+                    
+                    // =================================================
+                    // EXTRA FIELD SCHEMA
+                    // =================================================
+                    
+                    this.extraFields =
+                        Array.isArray(
+                            elementSetting.extraFields
+                        ) ?
+                        elementSetting.extraFields :
+                        [];
+                    
+                    // =================================================
+                    // NORMALIZE FIELD SCHEMA
+                    // =================================================
+                    
+                    this.extraFields =
+                        this.extraFields.map(
+                            field => ({
+                                label: field.label ??
+                                    "",
+                                
+                                type: this.normalizeFieldType(
+                                    field.type
+                                ),
+                                
+                                default: field.default,
+                                
+                                optional: field.optional === true
+                            })
+                        );
+                    
+                    // =================================================
+                    // WORKING TREE
+                    // =================================================
+                    
+                    this.workingArray =
+                        this.cloneTree(
+                            Array.isArray(dataArray) ?
+                            dataArray :
+                            (
+                                Array.isArray(
+                                    elementSetting.default
+                                ) ?
+                                elementSetting.default :
+                                []
+                            )
+                        );
+                    
+                    this.ensureIds(
+                        this.workingArray
+                    );
+                    
+                    // =================================================
+                    // SORTABLE INSTANCES
+                    // =================================================
+                    
+                    this.sortables = [];
+                    
+                    this.draggedElement =
+                        null;
+                    
+                    // =================================================
+                    // PREVIEW
+                    // =================================================
+                    
+                    this.previewElement.innerHTML =
+                        "";
+                    
+                    this.previewTreeElement =
+                        document.createElement(
+                            "div"
+                        );
+                    
+                    this.previewTreeElement.className =
+                        "advance-preview-tree";
+                    
+                    this.previewElement.appendChild(
+                        this.previewTreeElement
+                    );
+                    
+                    this.updatePreview();
+                    
+                    // =================================================
+                    // POPUP
+                    // =================================================
+                    
+                    this.popupElement.innerHTML =
+                        "";
+                    
+                    this.rootElement =
+                        document.createElement(
+                            "div"
+                        );
+                    
+                    this.rootElement.className =
+                        "advance-root";
+                    
+                    this.popupElement.appendChild(
+                        this.rootElement
+                    );
+                    
+                    // =================================================
+                    // ADD AREA
+                    // =================================================
+                    
+                    const addArea =
+                        document.createElement(
+                            "div"
+                        );
+                    
+                    addArea.className =
+                        "advance-add";
+                    
+                    this.addInput =
+                        document.createElement(
+                            "input"
+                        );
+                    
+                    this.addInput.type =
+                        "text";
+                    
+                    this.addInput.className =
+                        "advance-add-input";
+                    
+                    this.addInput.placeholder =
+                        "Add list element...";
+                    
+                    const addButton =
+                        document.createElement(
+                            "button"
+                        );
+                    
+                    addButton.type =
+                        "button";
+                    
+                    addButton.className =
+                        "advance-add-button";
+                    
+                    addButton.textContent =
+                        "Add";
+                    
+                    addArea.appendChild(
+                        this.addInput
+                    );
+                    
+                    addArea.appendChild(
+                        addButton
+                    );
+                    
+                    this.rootElement.appendChild(
+                        addArea
+                    );
+                    
+                    // =================================================
+                    // TABLE CONTAINER
+                    // =================================================
+                    
+                    this.tableElement =
+                        document.createElement(
+                            "div"
+                        );
+                    
+                    this.tableElement.className =
+                        "advance-table";
+                    
+                    this.rootElement.appendChild(
+                        this.tableElement
+                    );
+                    
+                    // =================================================
+                    // HEADER
+                    // =================================================
+                    
+                    this.createHeader();
+                    
+                    // =================================================
+                    // ROOT LIST
+                    // =================================================
+                    
+                    this.rootList =
+                        document.createElement(
+                            "div"
+                        );
+                    
+                    this.rootList.className =
+                        "advance-list";
+                    
+                    this.rootList.dataset.depth =
+                        "1";
+                    
+                    this.tableElement.appendChild(
+                        this.rootList
+                    );
+                    
+                    // =================================================
+                    // ADD ROOT ITEM
+                    // =================================================
+                    
+                    const addRootItem =
+                        () => {
+                            const value =
+                                this.addInput.value.trim();
+                            
+                            if (!value) {
+                                return;
+                            }
+                            
+                            const newItem =
+                                this.createDefaultItem(
+                                    value
+                                );
+                            
+                            this.workingArray.push(
+                                newItem
+                            );
+                            
+                            this.addInput.value =
+                                "";
+                            
+                            this.renderTree();
+                            
+                            this.addInput.focus();
+                            
+                            this.updatePreview();
+                        };
+                    
+                    addButton.addEventListener(
+                        "click",
+                        addRootItem
+                    );
+                    
+                    this.addInput.addEventListener(
+                        "keydown",
+                        event => {
+                            if (
+                                event.key ===
+                                "Enter"
+                            ) {
+                                event.preventDefault();
+                                
+                                addRootItem();
+                            }
+                        }
+                    );
+                    
+                    // =================================================
+                    // INITIAL RENDER
+                    // =================================================
+                    
+                    this.renderTree();
+                }
+                
+                // =====================================================
+                // RESULT
+                // =====================================================
+                
+                initResult() {
+                    return {
+                        code: 0
+                    };
+                }
+                
+                // =====================================================
+                // FIELD TYPE
+                // =====================================================
+                
+                normalizeFieldType(type) {
+                    const value =
+                        String(
+                            type ?? "text"
+                        ).toLowerCase();
+                    
+                    if (
+                        value === "integer"
+                    ) {
+                        return "integer";
+                    }
+                    
+                    if (
+                        value === "checkmark" ||
+                        value === "checkbox" ||
+                        value === "check"
+                    ) {
+                        return "checkmark";
+                    }
+                    
+                    return "text";
+                }
+                
+                // =====================================================
+                // DEFAULT VALUE
+                // =====================================================
+                
+                getDefaultFieldValue(
+                    field
+                ) {
+                    if (
+                        field.default !==
+                        undefined
+                    ) {
+                        return this.normalizeFieldValue(
+                            field,
+                            field.default
+                        );
+                    }
+                    
+                    switch (
+                        field.type
+                    ) {
+                        case "integer":
+                            return 0;
+                            
+                        case "checkmark":
+                            return false;
+                            
+                        default:
+                            return "";
+                    }
+                }
+                
+                // =====================================================
+                // NORMALIZE FIELD VALUE
+                // =====================================================
+                
+                normalizeFieldValue(
+                    field,
+                    value
+                ) {
+                    switch (
+                        field.type
+                    ) {
+                        case "integer": {
+                            if (
+                                value === "" ||
+                                value === null ||
+                                value === undefined
+                            ) {
+                                return 0;
+                            }
+                            
+                            const number =
+                                Number(value);
+                            
+                            return Number.isFinite(
+                                    number
+                                ) ?
+                                Math.trunc(
+                                    number
+                                ) :
+                                0;
+                        }
+                        
+                        case "checkmark":
+                            return Boolean(
+                                value
+                            );
+                            
+                        case "text":
+                        default:
+                            return (
+                                value === null ||
+                                value === undefined ?
+                                "" :
+                                String(
+                                    value
+                                )
+                            );
+                    }
+                }
+                
+                // =====================================================
+                // CREATE DEFAULT ITEM
+                // =====================================================
+                
+                createDefaultItem(
+                    name
+                ) {
+                    const item = {
+                        name: String(name),
+                        children: []
+                    };
+                    
+                    this.extraFields.forEach(
+                        field => {
+                            item[field.label] =
+                                this.getDefaultFieldValue(
+                                    field
+                                );
+                        }
+                    );
+                    
+                    item.__advanceId =
+                        this.createId();
+                    
+                    return item;
+                }
+                
+                // =====================================================
+                // CLONE TREE
+                // =====================================================
+                
+                cloneTree(array) {
+                    if (!Array.isArray(array)) {
+                        return [];
+                    }
+                    
+                    return array.map(
+                        item => {
+                            if (
+                                item &&
+                                typeof item ===
+                                "object"
+                            ) {
+                                const result = {
+                                    ...item,
+                                    
+                                    name: item.name ??
+                                        item.label ??
+                                        "",
+                                    
+                                    children: this.cloneTree(
+                                        Array.isArray(
+                                            item.children
+                                        ) ?
+                                        item.children :
+                                        []
+                                    )
+                                };
+                                
+                                // ---------------------------------
+                                // Ensure extra fields exist.
+                                // ---------------------------------
+                                
+                                this.extraFields
+                                    .forEach(
+                                        field => {
+                                            if (
+                                                result[
+                                                    field.label
+                                                ] ===
+                                                undefined
+                                            ) {
+                                                result[
+                                                        field.label
+                                                    ] =
+                                                    this.getDefaultFieldValue(
+                                                        field
+                                                    );
+                                            } else {
+                                                result[
+                                                        field.label
+                                                    ] =
+                                                    this.normalizeFieldValue(
+                                                        field,
+                                                        result[
+                                                            field.label
+                                                        ]
+                                                    );
+                                            }
+                                        }
+                                    );
+                                
+                                return result;
+                            }
+                            
+                            return this.createDefaultItem(
+                                String(item)
+                            );
+                        }
+                    );
+                }
+                
+                // =====================================================
+                // IDS
+                // =====================================================
+                
+                ensureIds(array) {
+                    if (!Array.isArray(array)) {
+                        return;
+                    }
+                    
+                    array.forEach(
+                        item => {
+                            if (
+                                !item.__advanceId
+                            ) {
+                                item.__advanceId =
+                                    this.createId();
+                            }
+                            
+                            if (
+                                Array.isArray(
+                                    item.children
+                                )
+                            ) {
+                                this.ensureIds(
+                                    item.children
+                                );
+                            }
+                        }
+                    );
+                }
+                
+                createId() {
+                    return (
+                        "advance_" +
+                        Date.now().toString(36) +
+                        "_" +
+                        Math.random()
+                        .toString(36)
+                        .slice(2, 10)
+                    );
+                }
+                
+                // =====================================================
+                // HEADER
+                // =====================================================
+                
+                createHeader() {
+                    const message = document.createElement("div");
+                    message.classList.add("advance-nest-space-text");
+                    message.style.fontSize = "14px"
+                    message.textContent = "(Hint: you can drag the element to the bottom of the other element for nesting)"
+                    this.tableElement.appendChild(message)
+                    
+                    const header =
+                        document.createElement(
+                            "div"
+                        );
+                    
+                    header.className =
+                        "advance-header";
+                    
+                    const columns = [
+                        "Name",
+                        ...this.extraFields.map(
+                            field =>
+                            field.label
+                        ),
+                        ""
+                    ];
+                    
+                    header.style.gridTemplateColumns =
+                        this.getGridColumns();
+                    
+                    columns.forEach(
+                        label => {
+                            const cell =
+                                document.createElement(
+                                    "div"
+                                );
+                            
+                            cell.className =
+                                "advance-header-cell";
+                            
+                            cell.textContent =
+                                label;
+                            
+                            header.appendChild(
+                                cell
+                            );
+                        }
+                    );
+                    
+                    this.tableElement.appendChild(
+                        header
+                    );
+                }
+                
+                // =====================================================
+                // GRID
+                // =====================================================
+                
+                getGridColumns() {
+                    /*
+                    * Name gets the remaining
+                    * space.
+                    *
+                    * Extra fields use a reasonable
+                    * fixed minimum.
+                    *
+                    * Last column is remove button.
+                    */
+                    
+                    const fields =
+                        this.extraFields.length;
+                    
+                    if (fields === 0) {
+                        return "minmax(0, 1fr) 36px";
+                    }
+                    
+                    return (
+                        "minmax(180px, 1fr) " +
+                        Array(
+                            fields
+                        )
+                        .fill(
+                            "minmax(90px, 0.35fr)"
+                        )
+                        .join(" ") +
+                        " 36px"
+                    );
+                }
+                
+                // =====================================================
+                // PREVIEW
+                // =====================================================
+                
+                updatePreview() {
+                    this.previewTreeElement.innerHTML =
+                        "";
+                    
+                    this.renderPreviewLevel(
+                        this.workingArray,
+                        this.previewTreeElement,
+                        1
+                    );
+                }
+                
+                renderPreviewLevel(
+                    array,
+                    container,
+                    depth
+                ) {
+                    if (!Array.isArray(array)) {
+                        return;
+                    }
+                    
+                    array.forEach(
+                        item => {
+                            const row =
+                                document.createElement(
+                                    "div"
+                                );
+                            
+                            row.className =
+                                "advance-preview-item";
+                            
+                            row.style.paddingLeft =
+                                (
+                                    (depth - 1) *
+                                    20
+                                ) + "px";
+                            
+                            row.textContent =
+                                String(
+                                    item.name ?? ""
+                                );
+                            
+                            container.appendChild(
+                                row
+                            );
+                            
+                            if (
+                                Array.isArray(
+                                    item.children
+                                ) &&
+                                item.children.length
+                            ) {
+                                this.renderPreviewLevel(
+                                    item.children,
+                                    container,
+                                    depth + 1
+                                );
+                            }
+                        }
+                    );
+                }
+                
+                // =====================================================
+                // RENDER TREE
+                // =====================================================
+                
+                renderTree() {
+                    this.destroySortables();
+                    
+                    this.rootList.innerHTML =
+                        "";
+                    
+                    this.ensureIds(
+                        this.workingArray
+                    );
+                    
+                    this.renderLevel(
+                        this.workingArray,
+                        this.rootList,
+                        1
+                    );
+                    
+                    this.updatePreview();
+                }
+                
+                // =====================================================
+                // RENDER LEVEL
+                // =====================================================
+                
+                renderLevel(
+                    array,
+                    listElement,
+                    depth
+                ) {
+                    listElement.dataset.depth =
+                        String(depth);
+                    
+                    array.forEach(
+                        item => {
+                            const element =
+                                this.createItem(
+                                    item,
+                                    array,
+                                    depth
+                                );
+                            
+                            listElement.appendChild(
+                                element
+                            );
+                        }
+                    );
+                    
+                    this.createSortable(
+                        listElement
+                    );
+                }
+                
+                // =====================================================
+                // CREATE ITEM
+                // =====================================================
+                
+                createItem(
+                    item,
+                    parentArray,
+                    depth
+                ) {
+                    const wrapper =
+                        document.createElement(
+                            "div"
+                        );
+                    
+                    wrapper.className =
+                        "advance-item";
+                    
+                    wrapper.dataset.advanceId =
+                        item.__advanceId;
+                    
+                    wrapper.dataset.depth =
+                        String(depth);
+                    
+                    // =================================================
+                    // ROW
+                    // =================================================
+                    
+                    const row =
+                        document.createElement(
+                            "div"
+                        );
+                    
+                    row.className =
+                        "advance-item-row";
+                    
+                    row.style.gridTemplateColumns =
+                        this.getGridColumns();
+                    
+                    // =================================================
+                    // NAME
+                    // =================================================
+                    
+                    const nameCell =
+                        document.createElement(
+                            "div"
+                        );
+                    
+                    nameCell.className =
+                        "advance-name-cell";
+                    
+                    const handle =
+                        document.createElement(
+                            "span"
+                        );
+                    
+                    handle.className =
+                        "advance-handle";
+                    
+                    handle.textContent =
+                        "☷";
+                    
+                    const nameInput =
+                        document.createElement(
+                            "input"
+                        );
+                    
+                    nameInput.type =
+                        "text";
+                    
+                    nameInput.className =
+                        "advance-item-input";
+                    
+                    nameInput.value =
+                        item.name ?? "";
+                    
+                    nameInput.addEventListener(
+                        "input",
+                        () => {
+                            item.name =
+                                nameInput.value;
+                            
+                            this.updatePreview();
+                        }
+                    );
+                    
+                    nameCell.appendChild(
+                        handle
+                    );
+                    
+                    nameCell.appendChild(
+                        nameInput
+                    );
+                    
+                    row.appendChild(
+                        nameCell
+                    );
+                    
+                    // =================================================
+                    // EXTRA FIELDS
+                    // =================================================
+                    
+                    this.extraFields.forEach(
+                        field => {
+                            const cell =
+                                document.createElement(
+                                    "div"
+                                );
+                            
+                            cell.className =
+                                "advance-cell";
+                            
+                            const input =
+                                this.createFieldInput(
+                                    field,
+                                    item
+                                );
+                            
+                            cell.appendChild(
+                                input
+                            );
+                            
+                            row.appendChild(
+                                cell
+                            );
+                        }
+                    );
+                    
+                    // =================================================
+                    // REMOVE
+                    // =================================================
+                    
+                    const removeCell =
+                        document.createElement(
+                            "div"
+                        );
+                    
+                    removeCell.className =
+                        "advance-cell";
+                    
+                    const remove =
+                        document.createElement(
+                            "button"
+                        );
+                    
+                    remove.type =
+                        "button";
+                    
+                    remove.className =
+                        "advance-remove";
+                    
+                    remove.textContent =
+                        "×";
+                    
+                    remove.addEventListener(
+                        "click",
+                        event => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            
+                            const index =
+                                parentArray.indexOf(
+                                    item
+                                );
+                            
+                            if (
+                                index !== -1
+                            ) {
+                                parentArray.splice(
+                                    index,
+                                    1
+                                );
+                            }
+                            
+                            this.renderTree();
+                        }
+                    );
+                    
+                    removeCell.appendChild(
+                        remove
+                    );
+                    
+                    row.appendChild(
+                        removeCell
+                    );
+                    
+                    wrapper.appendChild(
+                        row
+                    );
+                    
+                    // =================================================
+                    // CHILDREN
+                    // =================================================
+                    
+                    if (
+                        depth <
+                        this.nestLimit
+                    ) {
+                        if (
+                            !Array.isArray(
+                                item.children
+                            )
+                        ) {
+                            item.children = [];
+                        }
+                        
+                        const childrenArea =
+                            document.createElement(
+                                "div"
+                            );
+                        
+                        childrenArea.className =
+                            "advance-children";
+                        
+                        // ---------------------------------------------
+                        // CHILD LIST
+                        // ---------------------------------------------
+                        
+                        const childList =
+                            document.createElement(
+                                "div"
+                            );
+                        
+                        childList.className =
+                            "advance-list";
+                        
+                        childList.dataset.depth =
+                            String(
+                                depth + 1
+                            );
+                        
+                        this.renderLevel(
+                            item.children,
+                            childList,
+                            depth + 1
+                        );
+                        
+                        childrenArea.appendChild(
+                            childList
+                        );
+                        
+                        // ---------------------------------------------
+                        // NEST SPACE
+                        // ---------------------------------------------
+                        /*
+                        const nestSpace =
+                            document.createElement(
+                                "div"
+                            );
 
-			cssStyles: {},
+                        nestSpace.className =
+                            "advance-nest-space";
 
-			component: class {
-				constructor(dataArray, entryElement, elementSetting) {
-					// entryElement = [previewElement, popupElement]
-					this.previewElement = entryElement[0];
-					this.popupElement = entryElement[1];
-					this.elementSetting = elementSetting;
+                        nestSpace.dataset.ownerId =
+                            item.__advanceId;
 
-					// Keep the original Proxy/reference untouched.
-					// Work on a temporary array until onSave().
-					this.dataArray = Array.isArray(dataArray) ?
-						dataArray :
-						(elementSetting.default || []);
 
-					this.originalDataArray = dataArray;
-					this.workingArray = Array.from(this.dataArray);
+                    
+                        const nestText =
+                            document.createElement(
+                                "span"
+                            );
 
-					this.sortable = null;
+                        nestText.className =
+                            "advance-nest-space-text";
 
-					// -----------------------------
-					// PREVIEW AREA
-					// -----------------------------
-					this.previewText = document.createElement('p');
-					this.updatePreview();
+                        nestText.textContent =
+                            "drag element here for nesting";
 
-					this.previewElement.innerHTML = "";
-					this.previewElement.appendChild(this.previewText);
+                        nestSpace.appendChild(
+                            nestText
+                        );
 
-					// -----------------------------
-					// POPUP AREA
-					// -----------------------------
-					this.popupElement.innerHTML = "";
-
-					// -----------------------------
-					// ADD ELEMENT AREA
-					// -----------------------------
-					const addArea = document.createElement('div');
-					addArea.className = "sort-list-add";
-
-					const input = document.createElement('input');
-					input.type = "text";
-					input.placeholder = "Add something, then hit 'enter'";
-					input.className = "sort-list-input";
-
-					const addButton = document.createElement('button');
-					addButton.type = "button";
-					addButton.textContent = "Add";
-					addButton.className = "sort-list-add-button";
-
-					addArea.appendChild(input);
-					addArea.appendChild(addButton);
-
-					this.popupElement.appendChild(addArea);
-
-					// -----------------------------
-					// LIST AREA
-					// -----------------------------
-					this.listElement = document.createElement('div');
-					this.listElement.className = "sort-list-container";
-
-					this.popupElement.appendChild(this.listElement);
-
-					// Render current working data
-					this.renderList();
-
-					// -----------------------------
-					// ADD BUTTON
-					// -----------------------------
-					const addItem = () => {
-						const value = input.value.trim();
-
-						if (!value) return;
-
-						this.workingArray.push(value);
-
-						input.value = "";
-
-						this.renderList();
-						input.focus();
-					};
-
-					addButton.addEventListener("click", addItem);
-
-					input.addEventListener("keydown", event => {
-						if (event.key === "Enter") {
-							event.preventDefault();
-							addItem();
-						}
-					});
-				}
-
-				initResult() {
-					return {
-						code: 0
-					};
-				}
-
-				updatePreview() {
-					this.previewText.textContent = this.workingArray.join(", ");
-				}
-
-				renderList() {
-					// Destroy the old Sortable instance before rebuilding
-					if (this.sortable) {
-						this.sortable.destroy();
-						this.sortable = null;
-					}
-
-					this.listElement.innerHTML = "";
-
-					this.workingArray.forEach((value, index) => {
-						const item = document.createElement('div');
-						item.className = "sort-list-item";
-						item.setAttribute("data-index", index);
-
-						// -----------------------------
-						// DRAG HANDLE
-						// -----------------------------
-						const handle = document.createElement('span');
-						handle.className = "sort-list-handle";
-						handle.textContent = "☷";
-
-						// -----------------------------
-						// EDITABLE INPUT
-						// -----------------------------
-						const input = document.createElement('input');
-						input.type = "text";
-						input.className = "sort-list-text";
-						input.value = value;
-
-						input.addEventListener("input", () => {
-							this.workingArray[index] = input.value;
-							this.updatePreview();
-						});
-
-						// -----------------------------
-						// REMOVE BUTTON
-						// -----------------------------
-						const removeButton = document.createElement('button');
-						removeButton.type = "button";
-						removeButton.className = "sort-list-remove";
-						removeButton.textContent = "×";
-
-						removeButton.addEventListener("click", event => {
-							event.preventDefault();
-							event.stopPropagation();
-
-							this.workingArray.splice(index, 1);
-
-							this.renderList();
-						});
-
-						item.appendChild(handle);
-						item.appendChild(input);
-						item.appendChild(removeButton);
-
-						this.listElement.appendChild(item);
-					});
-
-					// -----------------------------
-					// SORTABLE.JS
-					// -----------------------------
-					if (typeof Sortable !== "undefined") {
-						this.sortable = new Sortable(this.listElement, {
-							animation: 150,
-
-							handle: ".sort-list-handle",
-
-							ghostClass: "sort-list-ghost",
-
-							onEnd: event => {
-								if (
-									event.oldIndex === undefined ||
-									event.newIndex === undefined ||
-									event.oldIndex === event.newIndex
-								) {
-									return;
-								}
-
-								const movedItem = this.workingArray.splice(
-									event.oldIndex,
-									1
-								)[0];
-
-								this.workingArray.splice(
-									event.newIndex,
-									0,
-									movedItem
-								);
-
-								this.updatePreview();
-							}
-						});
-					}
-
-					this.updatePreview();
-				}
-
-				onPopupClose() {
-					this.updatePreview();
-				}
-
-				onSave() {
-					if (this.sortable) {
-						this.sortable.destroy();
-						this.sortable = null;
-					}
-
-					if (Array.isArray(this.originalDataArray)) {
-						this.originalDataArray.splice(
-							0,
-							this.originalDataArray.length,
-							...this.workingArray
-						);
-
-						return this.originalDataArray;
-					}
-
-					return this.workingArray;
-				}
-			},
-
-			render: function(dataArray) {
-				return Array.isArray(dataArray) ?
-					dataArray :
-					"";
-			}
-		}        
+                        childrenArea.appendChild(
+                            nestSpace
+                        );
+                        */
+                        
+                        wrapper.appendChild(
+                            childrenArea
+                        );
+                    }
+                    
+                    return wrapper;
+                }
+                
+                // =====================================================
+                // FIELD INPUT
+                // =====================================================
+                
+                createFieldInput(
+                    field,
+                    item
+                ) {
+                    let input;
+                    
+                    switch (
+                        field.type
+                    ) {
+                        case "integer":
+                            input =
+                                document.createElement(
+                                    "input"
+                                );
+                            
+                            input.type =
+                                "number";
+                            
+                            input.step =
+                                "1";
+                            
+                            input.className =
+                                "advance-field-input";
+                            
+                            input.value =
+                                item[
+                                    field.label
+                                ] ?? 0;
+                            
+                            input.addEventListener(
+                                "input",
+                                () => {
+                                    item[
+                                            field.label
+                                        ] =
+                                        this.normalizeFieldValue(
+                                            field,
+                                            input.value
+                                        );
+                                }
+                            );
+                            
+                            break;
+                            
+                        case "checkmark":
+                            input =
+                                document.createElement(
+                                    "input"
+                                );
+                            
+                            input.type =
+                                "checkbox";
+                            
+                            input.className =
+                                "advance-field-checkbox";
+                            
+                            input.checked =
+                                Boolean(
+                                    item[
+                                        field.label
+                                    ]
+                                );
+                            
+                            input.addEventListener(
+                                "change",
+                                () => {
+                                    item[
+                                            field.label
+                                        ] =
+                                        input.checked;
+                                }
+                            );
+                            
+                            break;
+                            
+                        case "text":
+                        default:
+                            input =
+                                document.createElement(
+                                    "input"
+                                );
+                            
+                            input.type =
+                                "text";
+                            
+                            input.className =
+                                "advance-field-input";
+                            
+                            input.value =
+                                item[
+                                    field.label
+                                ] ?? "";
+                            
+                            input.addEventListener(
+                                "input",
+                                () => {
+                                    item[
+                                            field.label
+                                        ] =
+                                        input.value;
+                                }
+                            );
+                            
+                            break;
+                    }
+                    
+                    // -------------------------------------------------
+                    // OPTIONAL
+                    // -------------------------------------------------
+                    //
+                    // For optional fields we allow an empty value.
+                    // For required fields we don't remove the field
+                    // from the object.
+                    //
+                    // The schema itself controls whether the field
+                    // must exist.
+                    // -------------------------------------------------
+                    
+                    if (
+                        field.optional === false
+                    ) {
+                        input.dataset.required =
+                            "true";
+                    }
+                    
+                    return input;
+                }
+                
+                // =====================================================
+                // SORTABLE
+                // =====================================================
+                
+                createSortable(
+                    listElement
+                ) {
+                    if (
+                        typeof Sortable ===
+                        "undefined"
+                    ) {
+                        return;
+                    }
+                    
+                    const sortable =
+                        new Sortable(
+                            listElement, {
+                                animation: 180,
+                                
+                                direction: "vertical",
+                                
+                                draggable: ".advance-item",
+                                
+                                handle: ".advance-handle",
+                                
+                                ghostClass: "advance-ghost",
+                                
+                                chosenClass: "advance-chosen",
+                                
+                                dragClass: "advance-drag",
+                                
+                                fallbackOnBody: true,
+                                
+                                swapThreshold: 0.65,
+                                
+                                emptyInsertThreshold: 20,
+                                
+                                group: {
+                                    name: "advance-tree",
+                                    
+                                    pull: true,
+                                    
+                                    put: true
+                                },
+                                
+                                // =====================================
+                                // START
+                                // =====================================
+                                
+                                onStart: event => {
+                                    this.draggedElement =
+                                        event.item;
+                                    
+                                    this.showValidNestSpaces(
+                                        event.item
+                                    );
+                                },
+                                
+                                // =====================================
+                                // MOVE
+                                // =====================================
+                                
+                                onMove: event => {
+                                    return this.handleMove(
+                                        event
+                                    );
+                                },
+                                
+                                // =====================================
+                                // END
+                                // =====================================
+                                
+                                onEnd: event => {
+                                    this.hideNestSpaces();
+                                    
+                                    this.draggedElement =
+                                        null;
+                                    
+                                    this.rebuildTreeFromDOM();
+                                    
+                                    this.updatePreview();
+                                }
+                            }
+                        );
+                    
+                    this.sortables.push(
+                        sortable
+                    );
+                }
+                
+                // =====================================================
+                // ON MOVE
+                // =====================================================
+                
+                handleMove(
+                    event
+                ) {
+                    const dragged =
+                        event.dragged;
+                    
+                    const destination =
+                        event.to;
+                    
+                    if (
+                        !dragged ||
+                        !destination
+                    ) {
+                        return false;
+                    }
+                    
+                    // -------------------------------------------------
+                    // Can't move into itself.
+                    // -------------------------------------------------
+                    
+                    if (
+                        dragged ===
+                        destination
+                    ) {
+                        return false;
+                    }
+                    
+                    // -------------------------------------------------
+                    // Can't move into own descendants.
+                    // -------------------------------------------------
+                    
+                    if (
+                        dragged.contains(
+                            destination
+                        )
+                    ) {
+                        return false;
+                    }
+                    
+                    // -------------------------------------------------
+                    // Destination depth.
+                    // -------------------------------------------------
+                    
+                    const destinationDepth =
+                        this.getListDepth(
+                            destination
+                        );
+                    
+                    // -------------------------------------------------
+                    // Height of entire dragged subtree.
+                    // -------------------------------------------------
+                    
+                    const subtreeDepth =
+                        this.getDOMSubtreeDepth(
+                            dragged
+                        );
+                    
+                    // -------------------------------------------------
+                    // Resulting deepest level.
+                    // -------------------------------------------------
+                    
+                    const deepestLevel =
+                        destinationDepth +
+                        subtreeDepth -
+                        1;
+                    
+                    // -------------------------------------------------
+                    // NEST LIMIT.
+                    // -------------------------------------------------
+                    
+                    if (
+                        deepestLevel >
+                        this.nestLimit
+                    ) {
+                        return false;
+                    }
+                    
+                    // -------------------------------------------------
+                    // Make sure destination isn't
+                    // actually inside dragged subtree.
+                    // -------------------------------------------------
+                    
+                    const owner =
+                        destination.closest(
+                            ".advance-item"
+                        );
+                    
+                    if (
+                        owner &&
+                        owner ===
+                        dragged
+                    ) {
+                        return false;
+                    }
+                    
+                    return true;
+                }
+                
+                // =====================================================
+                // LIST DEPTH
+                // =====================================================
+                
+                getListDepth(
+                    list
+                ) {
+                    const depth =
+                        Number(
+                            list.dataset.depth
+                        );
+                    
+                    return Number.isFinite(
+                            depth
+                        ) ?
+                        depth :
+                        1;
+                }
+                
+                // =====================================================
+                // DOM SUBTREE DEPTH
+                // =====================================================
+                
+                getDOMSubtreeDepth(
+                    element
+                ) {
+                    const rootDepth =
+                        Number(
+                            element.dataset.depth
+                        ) || 1;
+                    
+                    let maximum =
+                        rootDepth;
+                    
+                    const descendants =
+                        element.querySelectorAll(
+                            ".advance-item"
+                        );
+                    
+                    descendants.forEach(
+                        child => {
+                            const depth =
+                                Number(
+                                    child.dataset.depth
+                                );
+                            
+                            if (
+                                Number.isFinite(
+                                    depth
+                                )
+                            ) {
+                                maximum =
+                                    Math.max(
+                                        maximum,
+                                        depth
+                                    );
+                            }
+                        }
+                    );
+                    
+                    return (
+                        maximum -
+                        rootDepth +
+                        1
+                    );
+                }
+                
+                // =====================================================
+                // NEST SPACE VISIBILITY
+                // =====================================================
+                
+                showValidNestSpaces(
+                    dragged
+                ) {
+                    const spaces =
+                        this.popupElement.querySelectorAll(
+                            ".advance-nest-space"
+                        );
+                    
+                    const subtreeDepth =
+                        this.getDOMSubtreeDepth(
+                            dragged
+                        );
+                    
+                    spaces.forEach(
+                        space => {
+                            const ownerId =
+                                space.dataset
+                                .ownerId;
+                            
+                            // Never allow nesting into
+                            // the dragged item itself.
+                            
+                            if (
+                                ownerId ===
+                                dragged.dataset
+                                .advanceId
+                            ) {
+                                space.style.display =
+                                    "none";
+                                
+                                return;
+                            }
+                            
+                            const childList =
+                                space.previousElementSibling;
+                            
+                            if (
+                                !childList
+                            ) {
+                                return;
+                            }
+                            
+                            const destinationDepth =
+                                this.getListDepth(
+                                    childList
+                                );
+                            
+                            const resultingDepth =
+                                destinationDepth +
+                                subtreeDepth -
+                                1;
+                            
+                            if (
+                                resultingDepth <=
+                                this.nestLimit
+                            ) {
+                                space.style.display =
+                                    "flex";
+                            } else {
+                                space.style.display =
+                                    "none";
+                            }
+                        }
+                    );
+                }
+                
+                hideNestSpaces() {
+                    const spaces =
+                        this.popupElement.querySelectorAll(
+                            ".advance-nest-space"
+                        );
+                    
+                    spaces.forEach(
+                        space => {
+                            space.style.display =
+                                "flex";
+                        }
+                    );
+                }
+                
+                // =====================================================
+                // REBUILD TREE
+                // =====================================================
+                
+                rebuildTreeFromDOM() {
+                    const oldTree =
+                        this.workingArray;
+                    
+                    const readList =
+                        listElement => {
+                            const result = [];
+                            
+                            Array.from(
+                                listElement.children
+                            ).forEach(
+                                element => {
+                                    if (
+                                        !element.classList.contains(
+                                            "advance-item"
+                                        )
+                                    ) {
+                                        return;
+                                    }
+                                    
+                                    const id =
+                                        element.dataset
+                                        .advanceId;
+                                    
+                                    const oldItem =
+                                        this.findById(
+                                            oldTree,
+                                            id
+                                        );
+                                    
+                                    const item =
+                                        oldItem ?
+                                        {
+                                            ...oldItem
+                                        } :
+                                        this.createDefaultItem(
+                                            ""
+                                        );
+                                    
+                                    item.__advanceId =
+                                        id;
+                                    
+                                    // ---------------------------------
+                                    // NAME
+                                    // ---------------------------------
+                                    
+                                    const nameInput =
+                                        element.querySelector(
+                                            ":scope > .advance-item-row > .advance-name-cell > .advance-item-input"
+                                        );
+                                    
+                                    item.name =
+                                        nameInput ?
+                                        nameInput.value :
+                                        "";
+                                    
+                                    // ---------------------------------
+                                    // EXTRA FIELDS
+                                    // ---------------------------------
+                                    
+                                    const row =
+                                        element.querySelector(
+                                            ":scope > .advance-item-row"
+                                        );
+                                    
+                                    if (row) {
+                                        const cells =
+                                            Array.from(
+                                                row.children
+                                            );
+                                        
+                                        // Cell 0 = name.
+                                        // Last cell = remove.
+                                        //
+                                        // Extra fields are
+                                        // between them.
+                                        
+                                        this.extraFields.forEach(
+                                            (
+                                                field,
+                                                fieldIndex
+                                            ) => {
+                                                const cell =
+                                                    cells[
+                                                        fieldIndex +
+                                                        1
+                                                    ];
+                                                
+                                                if (
+                                                    !cell
+                                                ) {
+                                                    return;
+                                                }
+                                                
+                                                const input =
+                                                    cell.querySelector(
+                                                        "input"
+                                                    );
+                                                
+                                                if (
+                                                    !input
+                                                ) {
+                                                    return;
+                                                }
+                                                
+                                                if (
+                                                    field.type ===
+                                                    "checkmark"
+                                                ) {
+                                                    item[
+                                                            field.label
+                                                        ] =
+                                                        input.checked;
+                                                } else {
+                                                    item[
+                                                            field.label
+                                                        ] =
+                                                        this.normalizeFieldValue(
+                                                            field,
+                                                            input.value
+                                                        );
+                                                }
+                                            }
+                                        );
+                                    }
+                                    
+                                    // ---------------------------------
+                                    // CHILDREN
+                                    // ---------------------------------
+                                    
+                                    const childList =
+                                        element.querySelector(
+                                            ":scope > .advance-children > .advance-list"
+                                        );
+                                    
+                                    if (
+                                        childList
+                                    ) {
+                                        item.children =
+                                            readList(
+                                                childList
+                                            );
+                                    } else {
+                                        item.children = [];
+                                    }
+                                    
+                                    result.push(
+                                        item
+                                    );
+                                }
+                            );
+                            
+                            return result;
+                        };
+                    
+                    this.workingArray =
+                        readList(
+                            this.rootList
+                        );
+                }
+                
+                // =====================================================
+                // FIND BY ID
+                // =====================================================
+                
+                findById(
+                    array,
+                    id
+                ) {
+                    if (
+                        !Array.isArray(
+                            array
+                        )
+                    ) {
+                        return null;
+                    }
+                    
+                    for (
+                        const item of array
+                    ) {
+                        if (
+                            item &&
+                            item.__advanceId ===
+                            id
+                        ) {
+                            return item;
+                        }
+                        
+                        if (
+                            item &&
+                            Array.isArray(
+                                item.children
+                            )
+                        ) {
+                            const found =
+                                this.findById(
+                                    item.children,
+                                    id
+                                );
+                            
+                            if (found) {
+                                return found;
+                            }
+                        }
+                    }
+                    
+                    return null;
+                }
+                
+                // =====================================================
+                // DESTROY SORTABLE
+                // =====================================================
+                
+                destroySortables() {
+                    if (
+                        !Array.isArray(
+                            this.sortables
+                        )
+                    ) {
+                        this.sortables = [];
+                        
+                        return;
+                    }
+                    
+                    this.sortables.forEach(
+                        sortable => {
+                            if (
+                                sortable &&
+                                typeof sortable.destroy ===
+                                "function"
+                            ) {
+                                sortable.destroy();
+                            }
+                        }
+                    );
+                    
+                    this.sortables = [];
+                }
+                
+                // =====================================================
+                // CLEAN DATA
+                // =====================================================
+                
+                cleanTree(
+                    array
+                ) {
+                    if (
+                        !Array.isArray(
+                            array
+                        )
+                    ) {
+                        return [];
+                    }
+                    
+                    return array.map(
+                        item => {
+                            const result = {};
+                            
+                            Object.keys(
+                                item
+                            ).forEach(
+                                key => {
+                                    if (
+                                        key !==
+                                        "__advanceId"
+                                    ) {
+                                        result[key] =
+                                            item[key];
+                                    }
+                                }
+                            );
+                            
+                            result.children =
+                                this.cleanTree(
+                                    Array.isArray(
+                                        item.children
+                                    ) ?
+                                    item.children :
+                                    []
+                                );
+                            
+                            return result;
+                        }
+                    );
+                }
+                
+                // =====================================================
+                // POPUP CLOSE
+                // =====================================================
+                
+                onPopupClose() {
+                    this.hideNestSpaces();
+                    
+                    this.updatePreview();
+                }
+                
+                // =====================================================
+                // SAVE
+                // =====================================================
+                
+                onSave() {
+                    // -----------------------------------------------
+                    // Destroy ALL Sortable instances.
+                    // -----------------------------------------------
+                    
+                    this.destroySortables();
+                    
+                    this.draggedElement =
+                        null;
+                    
+                    // -----------------------------------------------
+                    // Clean internal IDs.
+                    // -----------------------------------------------
+                    
+                    const cleanData =
+                        this.cleanTree(
+                            this.workingArray
+                        );
+                    
+                    // -----------------------------------------------
+                    // Commit to existing Proxy.
+                    // -----------------------------------------------
+                    
+                    if (
+                        Array.isArray(
+                            this.originalDataArray
+                        )
+                    ) {
+                        this.originalDataArray.splice(
+                            0,
+                            this.originalDataArray.length,
+                            ...cleanData
+                        );
+                        
+                        return this.originalDataArray;
+                    }
+                    
+                    return cleanData;
+                }
+            },
+            
+            // =========================================================
+            // CANVAS RENDER
+            // =========================================================
+            
+            render: function(
+                dataArray
+            ) {
+                return dataArray;
+            }
+        }
     }
 };
 
@@ -13531,6 +15644,7 @@ export const flexEngineRootElement = {
             animation: 2,
             hide: true,
             noDelete: true,
+            globalElement: true
     	}
     },
 
@@ -13794,6 +15908,7 @@ export const flexEngineRootElement = {
             noDelete: true,
             animation: 2,
             elementType: "footer",
+            globalElement: true
     	}
     },
 
@@ -13897,15 +16012,6 @@ const flexEngineFileSystem = new FlexEngineFileSystem();
 
 
 /*
-            sortablePart: function(element) {
-                return element.firstElementChild;
-            },
-            systemClass: true,
-            allowedSortIn: true,
-            animation: 2,
-            hide: true,
-            noDelete: true,
-
 
 
 
