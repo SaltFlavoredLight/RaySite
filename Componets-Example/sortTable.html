@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Classic Component Demo</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
+
+        .preview {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .popup {
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 400px;
+        }
+
+        .sort-list-add {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .sort-list-input {
+            flex: 1;
+            padding: 8px;
+        }
+
+        .sort-list-add-button {
+            padding: 8px 15px;
+        }
+
+        .sort-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sort-list-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background: #fafafa;
+        }
+
+        .sort-list-handle {
+            cursor: grab;
+            font-size: 20px;
+        }
+
+        .sort-list-text {
+            flex: 1;
+        }
+
+        .sort-list-remove {
+            border: none;
+            background: transparent;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .sort-list-ghost {
+            opacity: 0.4;
+        }
+
+        .save {
+            margin-top: 20px;
+            padding: 10px 20px;
+        }
+
+        pre {
+            background: #f5f5f5;
+            padding: 15px;
+        }
+    </style>
+    <style id="demytric"></style>
+</head>
+
+<body>
+
+    <h2>Original Classic Component</h2>
+
+    <!--
+        These represent the two elements that your
+        component expects inside entryElement.
+    -->
+
+    <h3>Preview</h3>
+
+    <div id="preview" class="preview"></div>
+
+
+    <h3>Popup</h3>
+
+    <div id="popup" class="popup"></div>
+
+
+    <button id="save" class="save">
+        Save
+    </button>
+
+
+    <h3>Current Original Data</h3>
+
+    <pre id="output"></pre>
+
+
+<script>
+
+/* ============================================================
+   YOUR ORIGINAL COMPONENT
+   ============================================================ */
+
+const classic = {
+    strutureSample: [],
+
+    displayType: "popupMedium",
+
+cssStyles: [{
+    object: ".sort-list-header",
+    info: [{
+        key: "display",
+        value: "flex"
+    }, {
+        key: "flex-wrap",
+        value: "wrap"
+    }, {
+        key: "width",
+        value: "100%"
+    }, {
+        key: "align-items",
+        value: "center"
+    }, {
+        key: "box-sizing",
+        value: "border-box"
+    }]
+}, {
+    object: ".sort-list-row",
+    info: [{
+        key: "display",
+        value: "flex"
+    }, {
+        key: "flex-wrap",
+        value: "wrap"
+    }, {
+        key: "width",
+        value: "100%"
+    }, {
+        key: "align-items",
+        value: "center"
+    }, {
+        key: "box-sizing",
+        value: "border-box"
+    }]
+}, {
+    object: ".sort-list-drag",
+    info: [{
+        key: "flex",
+        value: "0 0 30px"
+    }, {
+        key: "width",
+        value: "30px"
+    }, {
+        key: "box-sizing",
+        value: "border-box"
+    }]
+}, {
+    object: ".sort-list-name",
+    info: [{
+        key: "flex",
+        value: "1 1 0"
+    }, {
+        key: "min-width",
+        value: "0"
+    }, {
+        key: "box-sizing",
+        value: "border-box"
+    }]
+}, {
+    object: ".sort-list-field-text",
+    info: [{
+        key: "flex",
+        value: "0 0 200px"
+    }, {
+        key: "width",
+        value: "200px"
+    }, {
+        key: "min-width",
+        value: "200px"
+    }, {
+        key: "max-width",
+        value: "200px"
+    }, {
+        key: "box-sizing",
+        value: "border-box"
+    }]
+}, {
+    object: ".sort-list-field-integer",
+    info: [{
+        key: "flex",
+        value: "0 0 60px"
+    }, {
+        key: "width",
+        value: "60px"
+    }, {
+        key: "min-width",
+        value: "60px"
+    }, {
+        key: "max-width",
+        value: "60px"
+    }, {
+        key: "box-sizing",
+        value: "border-box"
+    }]
+}, {
+    object: ".sort-list-field-checkmark",
+    info: [{
+        key: "flex",
+        value: "0 0 60px"
+    }, {
+        key: "width",
+        value: "60px"
+    }, {
+        key: "min-width",
+        value: "60px"
+    }, {
+        key: "max-width",
+        value: "60px"
+    }, {
+        key: "box-sizing",
+        value: "border-box"
+    }]
+}, {
+    object: ".sort-list-delete",
+    info: [{
+        key: "flex",
+        value: "0 0 40px"
+    }, {
+        key: "width",
+        value: "40px"
+    }, {
+        key: "min-width",
+        value: "40px"
+    }, {
+        key: "max-width",
+        value: "40px"
+    }, {
+        key: "box-sizing",
+        value: "border-box"
+    }]
+}],
+
+    component: class {
+        constructor(dataArray, entryElement, elementSetting) {
+            // entryElement = [previewElement, popupElement]
+            this.previewElement = entryElement[0];
+            this.popupElement = entryElement[1];
+            this.elementSetting = elementSetting;
+
+            // -----------------------------------------
+            // ORIGINAL DATA
+            // -----------------------------------------
+            this.originalDataArray = dataArray;
+
+            this.dataArray = Array.isArray(dataArray)
+                ? dataArray
+                : (elementSetting.default || []);
+
+            // -----------------------------------------
+            // EXTRA FIELDS
+            // -----------------------------------------
+            this.extraFields = Array.isArray(elementSetting.extraFields)
+                ? elementSetting.extraFields
+                : [];
+
+            // -----------------------------------------
+            // WORKING COPY
+            // -----------------------------------------
+            this.workingArray = this.dataArray.map(item => {
+                return this.normalizeItem(item);
+            });
+
+            this.sortable = null;
+
+            // -----------------------------------------
+            // PREVIEW
+            // -----------------------------------------
+            this.previewText = document.createElement("p");
+
+            this.updatePreview();
+
+            this.previewElement.innerHTML = "";
+            this.previewElement.appendChild(this.previewText);
+
+            // -----------------------------------------
+            // POPUP
+            // -----------------------------------------
+            this.popupElement.innerHTML = "";
+
+            // -----------------------------------------
+            // ADD BAR
+            // -----------------------------------------
+            const addArea = document.createElement("div");
+            addArea.className = "sort-list-add";
+
+            this.addInput = document.createElement("input");
+            this.addInput.type = "text";
+            this.addInput.placeholder = "Add list element...";
+            this.addInput.className = "sort-list-input";
+
+            const addButton = document.createElement("button");
+            addButton.type = "button";
+            addButton.textContent = "Add";
+            addButton.className = "sort-list-add-button";
+
+            addArea.appendChild(this.addInput);
+            addArea.appendChild(addButton);
+
+            this.popupElement.appendChild(addArea);
+
+            // -----------------------------------------
+            // TABLE WRAPPER
+            // -----------------------------------------
+            this.tableWrapper = document.createElement("div");
+            this.tableWrapper.className = "sort-list-table-wrapper";
+
+            this.table = document.createElement("table");
+            this.table.className = "sort-list-table";
+
+            this.tableWrapper.appendChild(this.table);
+            this.popupElement.appendChild(this.tableWrapper);
+
+            // -----------------------------------------
+            // INITIAL RENDER
+            // -----------------------------------------
+            this.renderList();
+
+            // -----------------------------------------
+            // ADD ITEM
+            // -----------------------------------------
+            const addItem = () => {
+                const name = this.addInput.value.trim();
+
+                if (!name) return;
+
+                const item = {
+                    name: name
+                };
+
+                this.extraFields.forEach(field => {
+                    item[field.label] = this.getDefaultValue(field);
+                });
+
+                this.workingArray.push(item);
+
+                this.addInput.value = "";
+
+                this.renderList();
+
+                this.addInput.focus();
+            };
+
+            addButton.addEventListener("click", addItem);
+
+            this.addInput.addEventListener("keydown", event => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    addItem();
+                }
+            });
+        }
+
+        // =================================================
+        // NORMALIZE ITEM
+        // =================================================
+        normalizeItem(item) {
+            if (
+                item &&
+                typeof item === "object" &&
+                !Array.isArray(item)
+            ) {
+                const normalized = {
+                    ...item
+                };
+
+                if (normalized.name === undefined) {
+                    normalized.name = "";
+                }
+
+                this.extraFields.forEach(field => {
+                    if (!(field.label in normalized)) {
+                        normalized[field.label] =
+                            this.getDefaultValue(field);
+                    }
+                });
+
+                return normalized;
+            }
+
+            const normalized = {
+                name: item == null ? "" : String(item)
+            };
+
+            this.extraFields.forEach(field => {
+                normalized[field.label] =
+                    this.getDefaultValue(field);
+            });
+
+            return normalized;
+        }
+
+        // =================================================
+        // DEFAULT VALUE
+        // =================================================
+        getDefaultValue(field) {
+            if (field.default !== undefined) {
+                return field.default;
+            }
+
+            switch (field.type) {
+                case "integer":
+                    return 0;
+
+                case "checkmark":
+                    return false;
+
+                case "text":
+                default:
+                    return "";
+            }
+        }
+
+        // =================================================
+        // PREVIEW
+        // =================================================
+        updatePreview() {
+            this.previewText.textContent = this.workingArray
+                .map(item => item.name)
+                .join(", ");
+        }
+
+        // =================================================
+        // FIELD INPUT
+        // =================================================
+        createFieldInput(item, field) {
+            let input;
+
+            switch (field.type) {
+                case "integer": {
+                    input = document.createElement("input");
+
+                    input.type = "number";
+                    input.step = "1";
+                    input.value = item[field.label] ?? "";
+
+                    input.addEventListener("input", () => {
+                        if (input.value === "") {
+                            item[field.label] = field.optional
+                                ? ""
+                                : this.getDefaultValue(field);
+                        } else {
+                            item[field.label] = parseInt(
+                                input.value,
+                                10
+                            );
+                        }
+                    });
+
+                    break;
+                }
+
+                case "checkmark": {
+                    input = document.createElement("input");
+
+                    input.type = "checkbox";
+                    input.checked = Boolean(item[field.label]);
+
+                    input.addEventListener("change", () => {
+                        item[field.label] = input.checked;
+                    });
+
+                    break;
+                }
+
+                case "text":
+                default: {
+                    input = document.createElement("input");
+
+                    input.type = "text";
+                    input.value = item[field.label] ?? "";
+
+                    input.addEventListener("input", () => {
+                        item[field.label] = input.value;
+                    });
+
+                    break;
+                }
+            }
+
+            input.className = "sort-list-field-input";
+
+            if (field.optional === false) {
+                input.required = true;
+            }
+
+            return input;
+        }
+
+        // =================================================
+        // RENDER LIST
+        // =================================================
+        renderList() {
+            if (this.sortable) {
+                this.sortable.destroy();
+                this.sortable = null;
+            }
+
+            this.table.innerHTML = "";
+
+            // -----------------------------------------
+            // HEADER
+            // -----------------------------------------
+            const thead = document.createElement("thead");
+
+            const headerRow = document.createElement("tr");
+
+            // Drag
+            const dragHeader = document.createElement("th");
+            dragHeader.className = "sort-list-drag-header";
+
+            headerRow.appendChild(dragHeader);
+
+            // Name
+            const nameHeader = document.createElement("th");
+            nameHeader.textContent = "Name";
+
+            headerRow.appendChild(nameHeader);
+
+            // Extra fields
+            this.extraFields.forEach(field => {
+                const th = document.createElement("th");
+
+                th.textContent = field.label;
+
+                if (field.optional) {
+                    const optional = document.createElement("small");
+                    optional.textContent = " (optional)";
+
+                    th.appendChild(optional);
+                }
+
+                headerRow.appendChild(th);
+            });
+
+            // Remove
+            const removeHeader = document.createElement("th");
+            removeHeader.className = "sort-list-remove-header";
+
+            headerRow.appendChild(removeHeader);
+
+            thead.appendChild(headerRow);
+            this.table.appendChild(thead);
+
+            // -----------------------------------------
+            // BODY
+            // -----------------------------------------
+            const tbody = document.createElement("tbody");
+
+            tbody.className = "sort-list-container";
+
+            this.workingArray.forEach((item, index) => {
+                const row = document.createElement("tr");
+
+                row.className = "sort-list-item";
+
+                // -------------------------------------
+                // DRAG
+                // -------------------------------------
+                const dragCell = document.createElement("td");
+
+                const handle = document.createElement("span");
+
+                handle.className = "sort-list-handle";
+                handle.textContent = "☷";
+
+                dragCell.appendChild(handle);
+                row.appendChild(dragCell);
+
+                // -------------------------------------
+                // NAME
+                // -------------------------------------
+                const nameCell = document.createElement("td");
+
+                const nameInput = document.createElement("input");
+
+                nameInput.type = "text";
+                nameInput.className = "sort-list-name-input";
+                nameInput.value = item.name ?? "";
+
+                nameInput.addEventListener("input", () => {
+                    item.name = nameInput.value;
+
+                    this.updatePreview();
+                });
+
+                nameCell.appendChild(nameInput);
+                row.appendChild(nameCell);
+
+                // -------------------------------------
+                // EXTRA FIELDS
+                // -------------------------------------
+                this.extraFields.forEach(field => {
+                    const cell = document.createElement("td");
+
+                    cell.appendChild(
+                        this.createFieldInput(item, field)
+                    );
+
+                    row.appendChild(cell);
+                });
+
+                // -------------------------------------
+                // REMOVE
+                // -------------------------------------
+                const removeCell = document.createElement("td");
+
+                const removeButton = document.createElement("button");
+
+                removeButton.type = "button";
+                removeButton.className = "sort-list-remove";
+                removeButton.textContent = "×";
+
+                removeButton.addEventListener("click", event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    this.workingArray.splice(index, 1);
+
+                    this.renderList();
+                });
+
+                removeCell.appendChild(removeButton);
+                row.appendChild(removeCell);
+
+                tbody.appendChild(row);
+            });
+
+            this.table.appendChild(tbody);
+
+            // -----------------------------------------
+            // SORTABLE
+            // -----------------------------------------
+            if (typeof Sortable !== "undefined") {
+                this.sortable = new Sortable(tbody, {
+                    animation: 150,
+
+                    handle: ".sort-list-handle",
+
+                    ghostClass: "sort-list-ghost",
+
+                    filter: "input, button",
+
+                    onEnd: event => {
+                        if (
+                            event.oldIndex === undefined ||
+                            event.newIndex === undefined ||
+                            event.oldIndex === event.newIndex
+                        ) {
+                            return;
+                        }
+
+                        const movedItem =
+                            this.workingArray.splice(
+                                event.oldIndex,
+                                1
+                            )[0];
+
+                        this.workingArray.splice(
+                            event.newIndex,
+                            0,
+                            movedItem
+                        );
+
+                        this.updatePreview();
+                    }
+                });
+            }
+
+            this.updatePreview();
+        }
+
+        // =================================================
+        // POPUP CLOSE
+        // =================================================
+        onPopupClose() {
+            // Do not commit here.
+            this.updatePreview();
+        }
+
+        // =================================================
+        // SAVE
+        // =================================================
+        onSave() {
+            // Always clean up Sortable
+            if (this.sortable) {
+                this.sortable.destroy();
+                this.sortable = null;
+            }
+
+            // Commit into the original Proxy
+            if (Array.isArray(this.originalDataArray)) {
+                this.originalDataArray.splice(
+                    0,
+                    this.originalDataArray.length,
+                    ...this.workingArray
+                );
+
+                return this.originalDataArray;
+            }
+
+            return this.workingArray;
+        }
+    },
+
+    // =================================================
+    // CANVAS PREVIEW
+    // =================================================
+    render: function(dataArray) {
+        if (!Array.isArray(dataArray)) {
+            return "";
+        }
+
+        return dataArray
+            .map(item => {
+                if (
+                    item &&
+                    typeof item === "object" &&
+                    !Array.isArray(item)
+                ) {
+                    return item.name ?? "";
+                }
+
+                return String(item);
+            })
+            .join(", ");
+    }
+}
+
+
+
+
+
+/* ============================================================
+   SAMPLE USAGE
+   ============================================================ */
+
+
+
+function applyCSSStyles(componentDefinition) {
+    const styleElement = document.getElementById("demytric");
+
+    if (!styleElement) {
+        throw new Error(
+            'Style element with id="demytric" was not found.'
+        );
+    }
+
+    const sheet = styleElement.sheet;
+
+    if (!sheet) {
+        throw new Error("The stylesheet is not available.");
+    }
+
+    // Clear existing rules
+    while (sheet.cssRules.length > 0) {
+        sheet.deleteRule(0);
+    }
+
+    const cssStyles = componentDefinition.cssStyles || [];
+
+    cssStyles.forEach((style) => {
+        const selector = style.object;
+        const declarations = (style.info || [])
+            .map(({ key, value }) => `${key}: ${value};`)
+            .join(" ");
+
+        if (!selector || !declarations) {
+            return;
+        }
+
+        const rule = `${selector} { ${declarations} }`;
+
+        sheet.insertRule(
+            rule,
+            sheet.cssRules.length
+        );
+    });
+}
+
+applyCSSStyles(classic);
+
+
+/*
+ * THIS IS THE ACTUAL DATA THAT YOUR COMPONENT RECEIVES.
+ */
+const dataArray = [
+    "Apple",
+    "Banana",
+    "Orange"
+];
+
+
+/*
+ * These are the elements that would normally be supplied
+ * by your larger component framework.
+ */
+const previewElement =
+    document.getElementById("preview");
+
+const popupElement =
+    document.getElementById("popup");
+
+
+/*
+ * This represents elementSetting from your framework.
+ */
+const elementSetting = {
+    default: [
+        "Default A",
+        "Default B"
+    ],
+    
+};
+
+
+/*
+ * This is the actual component instantiation.
+ *
+ * Notice that this is using your original constructor:
+ *
+ * constructor(dataArray, entryElement, elementSetting)
+ */
+const component = new classic.component(
+    dataArray,
+    [
+        previewElement,
+        popupElement
+    ],
+    {
+    	nestLimit: 2,
+        extraFields: [{
+            label: "start", type: "integer", default: 2, optional: false
+        }]
+    }
+);
+
+
+/* ============================================================
+   SAVE
+   ============================================================ */
+
+document.getElementById("save").addEventListener(
+    "click",
+    function() {
+
+        const result = component.onSave();
+
+        document.getElementById("output").textContent =
+            JSON.stringify(result, null, 4);
+
+        console.log(
+            "Original dataArray:",
+            dataArray
+        );
+
+    }
+);
+
+
+/* ============================================================
+   INITIAL OUTPUT
+   ============================================================ */
+
+document.getElementById("output").textContent =
+    JSON.stringify(dataArray, null, 4);
+
+</script>
+
+</body>
+</html>
