@@ -187,9 +187,6 @@ const flexEngineStyleVarible = {
 };
 
 
-
-
-
 /**
  * ------------------------------------------------------------------------------
  * Flie System for Website
@@ -200,6 +197,8 @@ const flexEngineStyleVarible = {
  * Last Update: 1.0.0
  * ------------------------------------------------------------------------------
  */
+
+
 class openDBFlieMaagement {
 
     constructor(dbName = 'ZipContainerDB', storeName = 'files') {
@@ -8184,7 +8183,2909 @@ export const flexEngineDefaultVariables = {
     },
 
     list: {
-        // debugger; there /list did not appear for right now due to a small problem.
+        list: {
+            strutureSample: [],
+
+            displayType: "popupMedium",
+
+            cssStyles: [{
+                // =================================================
+                // ROOT
+                // =================================================
+                object: ".sort-list-root",
+                info: [{
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "max-width",
+                    value: "100%"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                // =================================================
+                // ADD AREA
+                // =================================================
+                object: ".sort-list-add",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "flex-wrap",
+                    value: "wrap"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "gap",
+                    value: "8px"
+                }, {
+                    key: "margin-bottom",
+                    value: "12px"
+                }]
+            }, {
+                object: ".sort-list-input",
+                info: [{
+                    key: "flex",
+                    value: "1 1 auto"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "min-width",
+                    value: "0"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                object: ".sort-list-add-button",
+                info: [{
+                    key: "flex",
+                    value: "0 0 auto"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                // =================================================
+                // HEADER
+                // =================================================
+                object: ".sort-list-header",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "flex-wrap",
+                    value: "wrap"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }]
+            }, {
+                // =================================================
+                // LIST
+                // =================================================
+                object: ".sort-list-list",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "flex-direction",
+                    value: "column"
+                }, {
+                    key: "flex-wrap",
+                    value: "wrap"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "max-width",
+                    value: "100%"
+                }, {
+                    key: "min-width",
+                    value: "0"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                // =================================================
+                // ROW
+                // =================================================
+                object: ".sort-list-row",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "flex-wrap",
+                    value: "wrap"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "max-width",
+                    value: "100%"
+                }, {
+                    key: "min-width",
+                    value: "0"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }]
+            }, {
+                // =================================================
+                // DRAG COLUMN
+                // =================================================
+                object: ".sort-list-drag",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "flex",
+                    value: "0 0 30px"
+                }, {
+                    key: "width",
+                    value: "30px"
+                }, {
+                    key: "min-width",
+                    value: "30px"
+                }, {
+                    key: "max-width",
+                    value: "30px"
+                }, {
+                    key: "height",
+                    value: "30px"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }, {
+                    key: "justify-content",
+                    value: "center"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                object: ".sort-list-handle",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "height",
+                    value: "100%"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }, {
+                    key: "justify-content",
+                    value: "center"
+                }, {
+                    key: "cursor",
+                    value: "grab"
+                }, {
+                    key: "user-select",
+                    value: "none"
+                }, {
+                    key: "touch-action",
+                    value: "none"
+                }]
+            }, {
+                // =================================================
+                // NAME COLUMN
+                // =================================================
+                object: ".sort-list-name",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "flex",
+                    value: "1 1 0"
+                }, {
+                    key: "width",
+                    value: "auto"
+                }, {
+                    key: "min-width",
+                    value: "0"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                // =================================================
+                // NAME INPUT
+                // =================================================
+                object: ".sort-list-name-input",
+                info: [{
+                    key: "display",
+                    value: "block"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "min-width",
+                    value: "0"
+                }, {
+                    key: "height",
+                    value: "30px"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                // =================================================
+                // TEXT FIELD = 200px
+                // =================================================
+                object: ".sort-list-field-text",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "flex",
+                    value: "0 0 200px"
+                }, {
+                    key: "width",
+                    value: "200px"
+                }, {
+                    key: "min-width",
+                    value: "200px"
+                }, {
+                    key: "max-width",
+                    value: "200px"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                // =================================================
+                // INTEGER FIELD = 60px
+                // =================================================
+                object: ".sort-list-field-integer",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "flex",
+                    value: "0 0 60px"
+                }, {
+                    key: "width",
+                    value: "60px"
+                }, {
+                    key: "min-width",
+                    value: "60px"
+                }, {
+                    key: "max-width",
+                    value: "60px"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                // =================================================
+                // CHECKMARK FIELD = 60px
+                // =================================================
+                object: ".sort-list-field-checkmark",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "flex",
+                    value: "0 0 60px"
+                }, {
+                    key: "width",
+                    value: "60px"
+                }, {
+                    key: "min-width",
+                    value: "60px"
+                }, {
+                    key: "max-width",
+                    value: "60px"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }, {
+                    key: "justify-content",
+                    value: "center"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                // =================================================
+                // FIELD INPUT
+                // =================================================
+                object: ".sort-list-field-input",
+                info: [{
+                    key: "display",
+                    value: "block"
+                }, {
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "min-width",
+                    value: "0"
+                }, {
+                    key: "height",
+                    value: "30px"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                // =================================================
+                // CHECKBOX
+                // =================================================
+                object: ".sort-list-field-checkbox",
+                info: [{
+                    key: "width",
+                    value: "18px"
+                }, {
+                    key: "height",
+                    value: "18px"
+                }, {
+                    key: "margin",
+                    value: "0"
+                }]
+            }, {
+                // =================================================
+                // DELETE COLUMN = 40px
+                // =================================================
+                object: ".sort-list-delete",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "flex",
+                    value: "0 0 40px"
+                }, {
+                    key: "width",
+                    value: "40px"
+                }, {
+                    key: "min-width",
+                    value: "40px"
+                }, {
+                    key: "max-width",
+                    value: "40px"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }, {
+                    key: "justify-content",
+                    value: "center"
+                }, {
+                    key: "box-sizing",
+                    value: "border-box"
+                }]
+            }, {
+                // =================================================
+                // DELETE BUTTON
+                // =================================================
+                object: ".sort-list-remove",
+                info: [{
+                    key: "display",
+                    value: "flex"
+                }, {
+                    key: "align-items",
+                    value: "center"
+                }, {
+                    key: "justify-content",
+                    value: "center"
+                }, {
+                    key: "width",
+                    value: "28px"
+                }, {
+                    key: "height",
+                    value: "28px"
+                }, {
+                    key: "padding",
+                    value: "0"
+                }, {
+                    key: "border",
+                    value: "0"
+                }, {
+                    key: "background",
+                    value: "transparent"
+                }, {
+                    key: "cursor",
+                    value: "pointer"
+                }]
+            }, {
+                // =================================================
+                // GHOST
+                // =================================================
+                object: ".sort-list-ghost",
+                info: [{
+                    key: "opacity",
+                    value: "0.35"
+                }]
+            }],
+
+            component: class {
+
+                constructor(
+                    dataArray,
+                    entryElement,
+                    elementSetting
+                ) {
+
+                    // =================================================
+                    // BASIC REFERENCES
+                    // =================================================
+
+                    this.previewElement = entryElement[0];
+                    this.popupElement = entryElement[1];
+                    this.elementSetting = elementSetting;
+
+
+                    // =================================================
+                    // ORIGINAL DATA
+                    // =================================================
+
+                    /*
+                    * This can be your Proxy.
+                    *
+                    * NEVER edit this directly while the popup
+                    * is being edited.
+                    */
+
+                    this.originalDataArray = dataArray;
+
+
+                    // =================================================
+                    // EXTRA FIELDS
+                    // =================================================
+
+                    this.extraFields =
+                        Array.isArray(
+                            elementSetting.extraFields
+                        )
+                            ? elementSetting.extraFields.map(
+                                field => ({
+                                    label: field.label ?? "",
+                                    type: this.normalizeFieldType(
+                                        field.type
+                                    ),
+                                    default: field.default,
+                                    optional:
+                                        field.optional === true
+                                })
+                            )
+                            : [];
+
+
+                    // =================================================
+                    // WORKING ARRAY
+                    // =================================================
+
+                    const sourceArray =
+                        Array.isArray(dataArray)
+                            ? dataArray
+                            : (
+                                Array.isArray(
+                                    elementSetting.default
+                                )
+                                    ? elementSetting.default
+                                    : []
+                            );
+
+
+                    /*
+                    * Create separate objects.
+                    *
+                    * The popup works ONLY with this array.
+                    */
+
+                    this.workingArray =
+                        sourceArray.map(
+                            item => this.cloneItem(item)
+                        );
+
+
+                    // =================================================
+                    // SORTABLE
+                    // =================================================
+
+                    this.sortable = null;
+
+
+                    // =================================================
+                    // PREVIEW
+                    // =================================================
+
+                    this.previewElement.innerHTML = "";
+
+                    this.previewText =
+                        document.createElement("p");
+
+                    this.previewElement.appendChild(
+                        this.previewText
+                    );
+
+
+                    // =================================================
+                    // POPUP ROOT
+                    // =================================================
+
+                    this.popupElement.innerHTML = "";
+
+                    this.rootElement =
+                        document.createElement("div");
+
+                    this.rootElement.className =
+                        "sort-list-root";
+
+                    this.popupElement.appendChild(
+                        this.rootElement
+                    );
+
+
+                    // =================================================
+                    // ADD AREA
+                    // =================================================
+
+                    const addArea =
+                        document.createElement("div");
+
+                    addArea.className =
+                        "sort-list-add";
+
+
+                    this.addInput =
+                        document.createElement("input");
+
+                    this.addInput.type =
+                        "text";
+
+                    this.addInput.className =
+                        "sort-list-input";
+
+                    this.addInput.placeholder =
+                        "Add list element...";
+
+
+                    const addButton =
+                        document.createElement("button");
+
+                    addButton.type =
+                        "button";
+
+                    addButton.className =
+                        "sort-list-add-button";
+
+                    addButton.textContent =
+                        "Add";
+
+
+                    addArea.appendChild(
+                        this.addInput
+                    );
+
+                    addArea.appendChild(
+                        addButton
+                    );
+
+                    this.rootElement.appendChild(
+                        addArea
+                    );
+
+
+                    // =================================================
+                    // HEADER
+                    // =================================================
+
+                    this.headerElement =
+                        document.createElement("div");
+
+                    this.headerElement.className =
+                        "sort-list-header";
+
+
+                    // Drag header
+
+                    this.headerElement.appendChild(
+                        this.createHeaderCell(
+                            "",
+                            "sort-list-drag"
+                        )
+                    );
+
+
+                    // Name header
+
+                    this.headerElement.appendChild(
+                        this.createHeaderCell(
+                            "Name",
+                            "sort-list-name"
+                        )
+                    );
+
+
+                    // Extra headers
+
+                    this.extraFields.forEach(
+                        field => {
+
+                            let label =
+                                field.label;
+
+                            if (field.optional) {
+                                label += " (optional)";
+                            }
+
+                            this.headerElement.appendChild(
+                                this.createHeaderCell(
+                                    label,
+                                    this.getFieldClass(
+                                        field
+                                    )
+                                )
+                            );
+                        }
+                    );
+
+
+                    // Delete header
+
+                    this.headerElement.appendChild(
+                        this.createHeaderCell(
+                            "Delete",
+                            "sort-list-delete"
+                        )
+                    );
+
+
+                    this.rootElement.appendChild(
+                        this.headerElement
+                    );
+
+
+                    // =================================================
+                    // LIST
+                    // =================================================
+
+                    this.listElement =
+                        document.createElement("div");
+
+                    this.listElement.className =
+                        "sort-list-list";
+
+                    this.rootElement.appendChild(
+                        this.listElement
+                    );
+
+
+                    // =================================================
+                    // ADD HANDLERS
+                    // =================================================
+
+                    const addItem = () => {
+
+                        const value =
+                            this.addInput.value.trim();
+
+                        if (!value) {
+                            return;
+                        }
+
+
+                        const item =
+                            this.createDefaultItem(
+                                value
+                            );
+
+
+                        /*
+                        * Add to working data.
+                        */
+
+                        this.workingArray.push(
+                            item
+                        );
+
+
+                        /*
+                        * IMPORTANT:
+                        *
+                        * Do NOT render the whole list.
+                        *
+                        * Just create one new row.
+                        */
+
+                        const row =
+                            this.createRow(
+                                item
+                            );
+
+                        this.listElement.appendChild(
+                            row
+                        );
+
+
+                        this.addInput.value = "";
+
+                        this.addInput.focus();
+
+
+                        this.updatePreview();
+                    };
+
+
+                    addButton.addEventListener(
+                        "click",
+                        addItem
+                    );
+
+
+                    this.addInput.addEventListener(
+                        "keydown",
+                        event => {
+
+                            if (
+                                event.key ===
+                                "Enter"
+                            ) {
+
+                                event.preventDefault();
+
+                                addItem();
+                            }
+                        }
+                    );
+
+
+                    // =================================================
+                    // INITIAL BUILD
+                    // =================================================
+
+                    /*
+                    * This is the ONLY full construction.
+                    */
+
+                    this.renderListOnce();
+
+
+                    // =================================================
+                    // PREVIEW
+                    // =================================================
+
+                    this.updatePreview();
+                }
+
+
+                // =================================================
+                // FIELD TYPE
+                // =================================================
+
+                normalizeFieldType(type) {
+
+                    const value =
+                        String(
+                            type ?? "text"
+                        ).toLowerCase();
+
+
+                    if (
+                        value === "integer"
+                    ) {
+                        return "integer";
+                    }
+
+
+                    if (
+                        value === "checkmark" ||
+                        value === "checkbox" ||
+                        value === "check"
+                    ) {
+                        return "checkmark";
+                    }
+
+
+                    return "text";
+                }
+
+
+                // =================================================
+                // DEFAULT FIELD VALUE
+                // =================================================
+
+                getDefaultFieldValue(field) {
+
+                    if (
+                        field.default !==
+                        undefined
+                    ) {
+
+                        return this.normalizeFieldValue(
+                            field,
+                            field.default
+                        );
+                    }
+
+
+                    switch (field.type) {
+
+                        case "integer":
+                            return 0;
+
+                        case "checkmark":
+                            return false;
+
+                        case "text":
+                        default:
+                            return "";
+                    }
+                }
+
+
+                // =================================================
+                // NORMALIZE FIELD VALUE
+                // =================================================
+
+                normalizeFieldValue(
+                    field,
+                    value
+                ) {
+
+                    switch (field.type) {
+
+                        case "integer": {
+
+                            if (
+                                value === "" ||
+                                value === null ||
+                                value === undefined
+                            ) {
+
+                                return 0;
+                            }
+
+
+                            const number =
+                                Number(value);
+
+
+                            return Number.isFinite(
+                                number
+                            )
+                                ? Math.trunc(number)
+                                : 0;
+                        }
+
+
+                        case "checkmark":
+
+                            return Boolean(
+                                value
+                            );
+
+
+                        case "text":
+                        default:
+
+                            return (
+                                value === null ||
+                                value === undefined
+                            )
+                                ? ""
+                                : String(value);
+                    }
+                }
+
+
+                // =================================================
+                // CLONE ITEM
+                // =================================================
+
+                cloneItem(item) {
+
+                    /*
+                    * Existing object
+                    */
+
+                    if (
+                        item &&
+                        typeof item === "object" &&
+                        !Array.isArray(item)
+                    ) {
+
+                        const result = {
+                            ...item
+                        };
+
+
+                        result.name =
+                            result.name ??
+                            "";
+
+
+                        this.extraFields.forEach(
+                            field => {
+
+                                if (
+                                    result[field.label] ===
+                                    undefined
+                                ) {
+
+                                    result[field.label] =
+                                        this.getDefaultFieldValue(
+                                            field
+                                        );
+
+                                } else {
+
+                                    result[field.label] =
+                                        this.normalizeFieldValue(
+                                            field,
+                                            result[field.label]
+                                        );
+                                }
+                            }
+                        );
+
+
+                        return result;
+                    }
+
+
+                    /*
+                    * Primitive item
+                    */
+
+                    const result = {
+                        name:
+                            item === null ||
+                            item === undefined
+                                ? ""
+                                : String(item)
+                    };
+
+
+                    this.extraFields.forEach(
+                        field => {
+
+                            result[field.label] =
+                                this.getDefaultFieldValue(
+                                    field
+                                );
+                        }
+                    );
+
+
+                    return result;
+                }
+
+
+                // =================================================
+                // CREATE DEFAULT ITEM
+                // =================================================
+
+                createDefaultItem(
+                    name
+                ) {
+
+                    const item = {
+                        name: String(name)
+                    };
+
+
+                    this.extraFields.forEach(
+                        field => {
+
+                            item[field.label] =
+                                this.getDefaultFieldValue(
+                                    field
+                                );
+                        }
+                    );
+
+
+                    return item;
+                }
+
+
+                // =================================================
+                // FIELD CLASS
+                // =================================================
+
+                getFieldClass(field) {
+
+                    switch (field.type) {
+
+                        case "text":
+                            return "sort-list-field-text";
+
+                        case "integer":
+                            return "sort-list-field-integer";
+
+                        case "checkmark":
+                            return "sort-list-field-checkmark";
+
+                        default:
+                            return "sort-list-field-text";
+                    }
+                }
+
+
+                // =================================================
+                // HEADER CELL
+                // =================================================
+
+                createHeaderCell(
+                    text,
+                    className
+                ) {
+
+                    const element =
+                        document.createElement("div");
+
+                    element.className =
+                        className;
+
+                    element.textContent =
+                        text;
+
+                    return element;
+                }
+
+
+                // =================================================
+                // CREATE FIELD INPUT
+                // =================================================
+
+                createFieldInput(
+                    field,
+                    item
+                ) {
+
+                    let input;
+
+
+                    switch (field.type) {
+
+                        // -----------------------------------------
+                        // INTEGER
+                        // -----------------------------------------
+
+                        case "integer": {
+
+                            input =
+                                document.createElement(
+                                    "input"
+                                );
+
+                            input.type =
+                                "number";
+
+                            input.step =
+                                "1";
+
+                            input.className =
+                                "sort-list-field-input";
+
+
+                            input.value =
+                                item[field.label] ?? "";
+
+
+                            /*
+                            * IMPORTANT:
+                            *
+                            * Only modify the item.
+                            *
+                            * Do NOT rebuild anything.
+                            */
+
+                            input.addEventListener(
+                                "input",
+                                () => {
+
+                                    if (
+                                        input.value ===
+                                        ""
+                                    ) {
+
+                                        if (
+                                            field.optional
+                                        ) {
+
+                                            item[field.label] =
+                                                "";
+
+                                        } else {
+
+                                            item[field.label] =
+                                                this.getDefaultFieldValue(
+                                                    field
+                                                );
+                                        }
+
+                                        return;
+                                    }
+
+
+                                    item[field.label] =
+                                        this.normalizeFieldValue(
+                                            field,
+                                            input.value
+                                        );
+                                }
+                            );
+
+
+                            break;
+                        }
+
+
+                        // -----------------------------------------
+                        // CHECKMARK
+                        // -----------------------------------------
+
+                        case "checkmark": {
+
+                            input =
+                                document.createElement(
+                                    "input"
+                                );
+
+                            input.type =
+                                "checkbox";
+
+                            input.className =
+                                "sort-list-field-checkbox";
+
+                            input.checked =
+                                Boolean(
+                                    item[field.label]
+                                );
+
+
+                            input.addEventListener(
+                                "change",
+                                () => {
+
+                                    item[field.label] =
+                                        input.checked;
+                                }
+                            );
+
+
+                            return input;
+                        }
+
+
+                        // -----------------------------------------
+                        // TEXT
+                        // -----------------------------------------
+
+                        case "text":
+
+                        default: {
+
+                            input =
+                                document.createElement(
+                                    "input"
+                                );
+
+                            input.type =
+                                "text";
+
+                            input.className =
+                                "sort-list-field-input";
+
+
+                            input.value =
+                                item[field.label] ?? "";
+
+
+                            input.addEventListener(
+                                "input",
+                                () => {
+
+                                    item[field.label] =
+                                        input.value;
+                                }
+                            );
+
+
+                            break;
+                        }
+                    }
+
+
+                    if (
+                        field.optional ===
+                        false
+                    ) {
+
+                        input.dataset.required =
+                            "true";
+                    }
+
+
+                    return input;
+                }
+
+
+                // =================================================
+                // CREATE ONE ROW
+                // =================================================
+
+                createRow(item) {
+
+                    const row =
+                        document.createElement("div");
+
+                    row.className =
+                        "sort-list-row";
+
+
+                    /*
+                    * Keep direct reference to the
+                    * corresponding working item.
+                    */
+
+                    row._sortListItem =
+                        item;
+
+
+                    // =================================================
+                    // DRAG COLUMN
+                    // =================================================
+
+                    const dragCell =
+                        document.createElement("div");
+
+                    dragCell.className =
+                        "sort-list-drag";
+
+
+                    const handle =
+                        document.createElement("span");
+
+                    handle.className =
+                        "sort-list-handle";
+
+                    handle.textContent =
+                        "☷";
+
+
+                    dragCell.appendChild(
+                        handle
+                    );
+
+                    row.appendChild(
+                        dragCell
+                    );
+
+
+                    // =================================================
+                    // NAME COLUMN
+                    // =================================================
+
+                    const nameCell =
+                        document.createElement("div");
+
+                    nameCell.className =
+                        "sort-list-name";
+
+
+                    const nameInput =
+                        document.createElement("input");
+
+                    nameInput.type =
+                        "text";
+
+                    nameInput.className =
+                        "sort-list-name-input";
+
+                    nameInput.value =
+                        item.name ?? "";
+
+
+                    /*
+                    * EXACTLY like your successful sample:
+                    *
+                    * change the object,
+                    * do not rebuild the row.
+                    */
+
+                    nameInput.addEventListener(
+                        "input",
+                        () => {
+
+                            item.name =
+                                nameInput.value;
+
+                            this.updatePreview();
+                        }
+                    );
+
+
+                    nameCell.appendChild(
+                        nameInput
+                    );
+
+                    row.appendChild(
+                        nameCell
+                    );
+
+
+                    // =================================================
+                    // EXTRA FIELDS
+                    // =================================================
+
+                    this.extraFields.forEach(
+                        field => {
+
+                            const cell =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            /*
+                            * Same width class as the
+                            * header column.
+                            */
+
+                            cell.className =
+                                this.getFieldClass(
+                                    field
+                                );
+
+
+                            const input =
+                                this.createFieldInput(
+                                    field,
+                                    item
+                                );
+
+
+                            cell.appendChild(
+                                input
+                            );
+
+                            row.appendChild(
+                                cell
+                            );
+                        }
+                    );
+
+
+                    // =================================================
+                    // DELETE COLUMN
+                    // =================================================
+
+                    const deleteCell =
+                        document.createElement("div");
+
+                    deleteCell.className =
+                        "sort-list-delete";
+
+
+                    const deleteButton =
+                        document.createElement("button");
+
+                    deleteButton.type =
+                        "button";
+
+                    deleteButton.className =
+                        "sort-list-remove";
+
+                    deleteButton.textContent =
+                        "×";
+
+
+                    deleteButton.addEventListener(
+                        "click",
+                        event => {
+
+                            event.preventDefault();
+
+                            event.stopPropagation();
+
+
+                            /*
+                            * Find item by reference.
+                            *
+                            * This remains correct even
+                            * after the list has been sorted.
+                            */
+
+                            const index =
+                                this.workingArray.indexOf(
+                                    item
+                                );
+
+
+                            if (
+                                index === -1
+                            ) {
+                                return;
+                            }
+
+
+                            /*
+                            * Remove ONE object
+                            * from the working data.
+                            */
+
+                            this.workingArray.splice(
+                                index,
+                                1
+                            );
+
+
+                            /*
+                            * Remove ONE DOM row.
+                            *
+                            * No re-render.
+                            */
+
+                            row.remove();
+
+
+                            this.updatePreview();
+                        }
+                    );
+
+
+                    deleteCell.appendChild(
+                        deleteButton
+                    );
+
+                    row.appendChild(
+                        deleteCell
+                    );
+
+
+                    return row;
+                }
+
+
+                // =================================================
+                // INITIAL LIST BUILD
+                // =================================================
+
+                renderListOnce() {
+
+                    /*
+                    * Full DOM construction occurs
+                    * only here.
+                    */
+
+                    this.listElement.innerHTML = "";
+
+
+                    this.workingArray.forEach(
+                        item => {
+
+                            this.listElement.appendChild(
+                                this.createRow(item)
+                            );
+                        }
+                    );
+
+
+                    this.createSortable();
+                }
+
+
+                // =================================================
+                // CREATE SORTABLE
+                // =================================================
+
+                createSortable() {
+
+                    if (
+                        typeof Sortable ===
+                        "undefined"
+                    ) {
+
+                        return;
+                    }
+
+
+                    /*
+                    * IMPORTANT:
+                    *
+                    * There is NO filter here.
+                    *
+                    * Sorting is activated ONLY from
+                    * .sort-list-handle.
+                    *
+                    * Therefore the input remains a
+                    * completely normal editable input.
+                    */
+
+                    this.sortable =
+                        new Sortable(
+                            this.listElement,
+                            {
+
+                                animation:
+                                    150,
+
+                                direction:
+                                    "vertical",
+
+                                draggable:
+                                    ".sort-list-row",
+
+                                handle:
+                                    ".sort-list-handle",
+
+                                ghostClass:
+                                    "sort-list-ghost",
+
+                                /*
+                                * Do not use filter:
+                                * "input, button"
+                                */
+
+                                onEnd:
+                                    event => {
+
+                                        const oldIndex =
+                                            event.oldIndex;
+
+                                        const newIndex =
+                                            event.newIndex;
+
+
+                                        if (
+                                            oldIndex ===
+                                            undefined ||
+                                            newIndex ===
+                                            undefined ||
+                                            oldIndex ===
+                                            newIndex
+                                        ) {
+
+                                            return;
+                                        }
+
+
+                                        /*
+                                        * Sortable has already
+                                        * moved the DOM node.
+                                        *
+                                        * We only move the
+                                        * working data.
+                                        */
+
+                                        const movedItem =
+                                            this.workingArray.splice(
+                                                oldIndex,
+                                                1
+                                            )[0];
+
+
+                                        this.workingArray.splice(
+                                            newIndex,
+                                            0,
+                                            movedItem
+                                        );
+
+
+                                        /*
+                                        * Absolutely NO
+                                        * renderListOnce().
+                                        */
+
+                                        this.updatePreview();
+                                    }
+                            }
+                        );
+                }
+
+
+                // =================================================
+                // PREVIEW
+                // =================================================
+
+                updatePreview() {
+
+                    /*
+                    * Only update the preview element.
+                    *
+                    * Nothing in the popup is recreated.
+                    */
+
+                    this.previewText.textContent =
+                        this.workingArray
+                            .map(
+                                item =>
+                                    item.name
+                            )
+                            .join(", ");
+                }
+
+
+                // =================================================
+                // POPUP CLOSE
+                // =================================================
+
+                onPopupClose() {
+
+                    /*
+                    * Do not commit.
+                    *
+                    * Do not rebuild.
+                    *
+                    * Do not destroy the inputs.
+                    */
+
+                    this.updatePreview();
+                }
+
+
+                // =================================================
+                // SAVE
+                // =================================================
+
+                onSave() {
+
+                    // ---------------------------------------------
+                    // Destroy Sortable.
+                    // ---------------------------------------------
+
+                    if (
+                        this.sortable
+                    ) {
+
+                        this.sortable.destroy();
+
+                        this.sortable = null;
+                    }
+
+
+                    // ---------------------------------------------
+                    // Commit only now.
+                    // ---------------------------------------------
+
+                    if (
+                        Array.isArray(
+                            this.originalDataArray
+                        )
+                    ) {
+
+                        this.originalDataArray.splice(
+                            0,
+                            this.originalDataArray.length,
+                            ...this.workingArray
+                        );
+
+
+                        return this.originalDataArray;
+                    }
+
+
+                    return this.workingArray;
+                }
+
+
+                // =================================================
+                // RESULT
+                // =================================================
+
+                initResult() {
+
+                    return {
+                        code: 0
+                    };
+                }
+            },
+
+
+            // =================================================
+            // CANVAS PREVIEW
+            // =================================================
+
+            render: function(dataArray) {
+                return dataArray;
+            }
+        },
+
+		category: {
+			strutureSample: [],
+			displayType: "popupMedium",
+			cssStyles: [
+				// ============================================================
+				// ROOT
+				// ============================================================
+				{
+					object: ".sort-list-root",
+					info: [{
+						key: "width",
+						value: "100%"
+					}, {
+						key: "max-width",
+						value: "100%"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				},
+				// ============================================================
+				// ADD
+				// ============================================================
+				{
+					object: ".sort-list-add",
+					info: [{
+						key: "display",
+						value: "flex"
+					}, {
+						key: "flex-wrap",
+						value: "wrap"
+					}, {
+						key: "width",
+						value: "100%"
+					}, {
+						key: "gap",
+						value: "8px"
+					}, {
+						key: "margin-bottom",
+						value: "15px"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				}, {
+					object: ".sort-list-input",
+					info: [{
+						key: "flex",
+						value: "1 1 0"
+					}, {
+						key: "min-width",
+						value: "0"
+					}, {
+						key: "width",
+						value: "100%"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				}, {
+					object: ".sort-list-add-category",
+					info: [{
+						key: "flex",
+						value: "0 0 140px"
+					}, {
+						key: "width",
+						value: "140px"
+					}, {
+						key: "min-width",
+						value: "140px"
+					}, {
+						key: "max-width",
+						value: "140px"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				}, {
+					object: ".sort-list-add-button",
+					info: [{
+						key: "flex",
+						value: "0 0 auto"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				},
+				// ============================================================
+				// SINGLE HEADER
+				// ============================================================
+				{
+					object: ".sort-list-header",
+					info: [{
+						key: "display",
+						value: "flex"
+					}, {
+						key: "flex-wrap",
+						value: "wrap"
+					}, {
+						key: "width",
+						value: "100%"
+					}, {
+						key: "align-items",
+						value: "center"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				},
+				// ============================================================
+				// LIST
+				// ============================================================
+				{
+					object: ".sort-list-list",
+					info: [{
+						key: "display",
+						value: "flex"
+					}, {
+						key: "flex-direction",
+						value: "column"
+					}, {
+						key: "width",
+						value: "100%"
+					}, {
+						key: "max-width",
+						value: "100%"
+					}, {
+						key: "min-width",
+						value: "0"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				},
+				// ============================================================
+				// CATEGORY
+				//
+				// THE ENTIRE TITLE IS THE HANDLE.
+				// ============================================================
+				{
+					object: ".sort-list-category-title",
+					info: [{
+						key: "display",
+						value: "flex"
+					}, {
+						key: "width",
+						value: "100%"
+					}, {
+						key: "min-height",
+						value: "36px"
+					}, {
+						key: "align-items",
+						value: "center"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}, {
+						key: "margin",
+						value: "18px 0 8px 0"
+					}, {
+						key: "padding",
+						value: "6px 10px"
+					}, {
+						key: "font-size",
+						value: "18px"
+					}, {
+						key: "font-weight",
+						value: "bold"
+					}, {
+						key: "cursor",
+						value: "grab"
+					}, {
+						key: "user-select",
+						value: "none"
+					}, {
+						key: "touch-action",
+						value: "none"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				},
+				// ============================================================
+				// CATEGORY GHOST
+				// ============================================================
+				{
+					object: ".sort-list-category-ghost",
+					info: [{
+						key: "opacity",
+						value: "0.35"
+					}]
+				},
+				// ============================================================
+				// ROW
+				// ============================================================
+				{
+					object: ".sort-list-row",
+					info: [{
+						key: "display",
+						value: "flex"
+					}, {
+						key: "flex-wrap",
+						value: "wrap"
+					}, {
+						key: "width",
+						value: "100%"
+					}, {
+						key: "max-width",
+						value: "100%"
+					}, {
+						key: "min-width",
+						value: "0"
+					}, {
+						key: "align-items",
+						value: "center"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				},
+				// ============================================================
+				// ROW DRAG
+				// ============================================================
+				{
+					object: ".sort-list-drag",
+					info: [{
+						key: "display",
+						value: "flex"
+					}, {
+						key: "flex",
+						value: "0 0 30px"
+					}, {
+						key: "width",
+						value: "30px"
+					}, {
+						key: "min-width",
+						value: "30px"
+					}, {
+						key: "max-width",
+						value: "30px"
+					}, {
+						key: "height",
+						value: "30px"
+					}, {
+						key: "align-items",
+						value: "center"
+					}, {
+						key: "justify-content",
+						value: "center"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				}, {
+					object: ".sort-list-handle",
+					info: [{
+						key: "display",
+						value: "flex"
+					}, {
+						key: "width",
+						value: "100%"
+					}, {
+						key: "height",
+						value: "100%"
+					}, {
+						key: "align-items",
+						value: "center"
+					}, {
+						key: "justify-content",
+						value: "center"
+					}, {
+						key: "cursor",
+						value: "grab"
+					}, {
+						key: "user-select",
+						value: "none"
+					}, {
+						key: "touch-action",
+						value: "none"
+					}]
+				},
+				// ============================================================
+				// NAME
+				// ============================================================
+				{
+					object: ".sort-list-name",
+					info: [{
+						key: "display",
+						value: "flex"
+					}, {
+						key: "flex",
+						value: "1 1 0"
+					}, {
+						key: "min-width",
+						value: "0"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				}, {
+					object: ".sort-list-name-input",
+					info: [{
+						key: "display",
+						value: "block"
+					}, {
+						key: "width",
+						value: "100%"
+					}, {
+						key: "min-width",
+						value: "0"
+					}, {
+						key: "height",
+						value: "30px"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				},
+				// ============================================================
+				// TEXT
+				// ============================================================
+				{
+					object: ".sort-list-field-text",
+					info: [{
+						key: "display",
+						value: "flex"
+					}, {
+						key: "flex",
+						value: "0 0 200px"
+					}, {
+						key: "width",
+						value: "200px"
+					}, {
+						key: "min-width",
+						value: "200px"
+					}, {
+						key: "max-width",
+						value: "200px"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				},
+				// ============================================================
+				// INTEGER
+				// ============================================================
+				{
+					object: ".sort-list-field-integer",
+					info: [{
+						key: "display",
+						value: "flex"
+					}, {
+						key: "flex",
+						value: "0 0 60px"
+					}, {
+						key: "width",
+						value: "60px"
+					}, {
+						key: "min-width",
+						value: "60px"
+					}, {
+						key: "max-width",
+						value: "60px"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				},
+				// ============================================================
+				// CHECKMARK
+				// ============================================================
+				{
+					object: ".sort-list-field-checkmark",
+					info: [{
+						key: "display",
+						value: "flex"
+					}, {
+						key: "flex",
+						value: "0 0 60px"
+					}, {
+						key: "width",
+						value: "60px"
+					}, {
+						key: "min-width",
+						value: "60px"
+					}, {
+						key: "max-width",
+						value: "60px"
+					}, {
+						key: "align-items",
+						value: "center"
+					}, {
+						key: "justify-content",
+						value: "center"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				},
+				// ============================================================
+				// INPUT
+				// ============================================================
+				{
+					object: ".sort-list-field-input",
+					info: [{
+						key: "display",
+						value: "block"
+					}, {
+						key: "width",
+						value: "100%"
+					}, {
+						key: "min-width",
+						value: "0"
+					}, {
+						key: "height",
+						value: "30px"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				},
+				// ============================================================
+				// CHECKBOX
+				// ============================================================
+				{
+					object: ".sort-list-field-checkbox",
+					info: [{
+						key: "width",
+						value: "18px"
+					}, {
+						key: "height",
+						value: "18px"
+					}, {
+						key: "margin",
+						value: "0"
+					}]
+				},
+				// ============================================================
+				// DELETE
+				// ============================================================
+				{
+					object: ".sort-list-delete",
+					info: [{
+						key: "display",
+						value: "flex"
+					}, {
+						key: "flex",
+						value: "0 0 40px"
+					}, {
+						key: "width",
+						value: "40px"
+					}, {
+						key: "min-width",
+						value: "40px"
+					}, {
+						key: "max-width",
+						value: "40px"
+					}, {
+						key: "align-items",
+						value: "center"
+					}, {
+						key: "justify-content",
+						value: "center"
+					}, {
+						key: "box-sizing",
+						value: "border-box"
+					}]
+				}, {
+					object: ".sort-list-remove",
+					info: [{
+						key: "display",
+						value: "flex"
+					}, {
+						key: "align-items",
+						value: "center"
+					}, {
+						key: "justify-content",
+						value: "center"
+					}, {
+						key: "width",
+						value: "28px"
+					}, {
+						key: "height",
+						value: "28px"
+					}, {
+						key: "padding",
+						value: "0"
+					}, {
+						key: "border",
+						value: "0"
+					}, {
+						key: "background",
+						value: "transparent"
+					}, {
+						key: "cursor",
+						value: "pointer"
+					}]
+				},
+				// ============================================================
+				// GHOST
+				// ============================================================
+				{
+					object: ".sort-list-ghost",
+					info: [{
+						key: "opacity",
+						value: "0.35"
+					}]
+				}
+			],
+			component: class {
+				constructor(dataArray, entryElement, elementSetting) {
+					this.previewElement = entryElement[0];
+					this.popupElement = entryElement[1];
+					this.elementSetting = elementSetting;
+					// ========================================================
+					// ORIGINAL DATA
+					// ========================================================
+					this.originalDataArray = dataArray;
+					// ========================================================
+					// OPTIONS
+					// ========================================================
+					this.allowNewItem = elementSetting.allowNewItem !== false;
+					// ========================================================
+					// CATEGORIES
+					// ========================================================
+					this.categories = Array.isArray(elementSetting.category) ? elementSetting.category.map(category => ({
+						label: String(category.label ?? "")
+					})).filter(category => category.label) : [];
+					// ========================================================
+					// EXTRA FIELDS
+					// ========================================================
+					this.extraFields = Array.isArray(elementSetting.extraFields) ? elementSetting.extraFields.map(field => ({
+						label: String(field.label ?? ""),
+						type: this.normalizeFieldType(field.type),
+						default: field.default,
+						optional: field.optional === true
+					})) : [];
+					// ========================================================
+					// WORKING COPY
+					// ========================================================
+					this.workingArray = (Array.isArray(dataArray) ? dataArray : []).map(item => this.cloneItem(item));
+					// ========================================================
+					// SORTABLE
+					// ========================================================
+					this.sortable = null;
+					// ========================================================
+					// PREVIEW
+					// ========================================================
+					this.previewElement.innerHTML = "";
+					this.previewText = document.createElement("p");
+					this.previewElement.appendChild(this.previewText);
+					// ========================================================
+					// POPUP
+					// ========================================================
+					this.popupElement.innerHTML = "";
+					this.rootElement = document.createElement("div");
+					this.rootElement.className = "sort-list-root";
+					this.popupElement.appendChild(this.rootElement);
+					// ========================================================
+					// ADD
+					// ========================================================
+					if (this.allowNewItem) {
+						this.createAddArea();
+					}
+					// ========================================================
+					// SINGLE HEADER
+					// ========================================================
+					this.rootElement.appendChild(this.createHeader());
+					// ========================================================
+					// SINGLE FLAT LIST
+					// ========================================================
+					this.listElement = document.createElement("div");
+					this.listElement.className = "sort-list-list";
+					this.rootElement.appendChild(this.listElement);
+					// ========================================================
+					// INITIAL BUILD
+					// ========================================================
+					this.renderList();
+					this.updatePreview();
+				}
+				// ============================================================
+				// FIELD TYPE
+				// ============================================================
+				normalizeFieldType(type) {
+					const value = String(type ?? "text").toLowerCase();
+					if (value === "integer") {
+						return "integer";
+					}
+					if (value === "checkmark" || value === "checkbox" || value === "check") {
+						return "checkmark";
+					}
+					return "text";
+				}
+				// ============================================================
+				// CATEGORY HELPERS
+				// ============================================================
+				getCategoryNames() {
+					return this.categories.map(category => category.label);
+				}
+				getFirstCategory() {
+					return (this.categories[0]?.label ?? "");
+				}
+				getValidCategory(category) {
+					const names = this.getCategoryNames();
+					if (names.includes(category)) {
+						return category;
+					}
+					return this.getFirstCategory();
+				}
+				// ============================================================
+				// FIELD DEFAULT
+				// ============================================================
+				getDefaultFieldValue(field) {
+					if (field.default !== undefined) {
+						return this.normalizeFieldValue(field, field.default);
+					}
+					switch (field.type) {
+						case "integer":
+							return 0;
+						case "checkmark":
+							return false;
+						default:
+							return "";
+					}
+				}
+				// ============================================================
+				// FIELD NORMALIZE
+				// ============================================================
+				normalizeFieldValue(field, value) {
+					switch (field.type) {
+						case "integer": {
+							const number = Number(value);
+							if (!Number.isFinite(number)) {
+								return 0;
+							}
+							return Math.trunc(number);
+						}
+						case "checkmark":
+							return Boolean(value);
+						default:
+							return (value === null || value === undefined) ? "" : String(value);
+					}
+				}
+				// ============================================================
+				// CLONE ITEM
+				// ============================================================
+				cloneItem(item) {
+					const result = {};
+					if (item && typeof item === "object" && !Array.isArray(item)) {
+						Object.assign(result, item);
+					}
+					result.name = result.name ?? "";
+					result.category = this.getValidCategory(result.category);
+					this.extraFields.forEach(field => {
+						if (result[field.label] === undefined) {
+							result[field.label] = this.getDefaultFieldValue(field);
+						} else {
+							result[field.label] = this.normalizeFieldValue(field, result[field.label]);
+						}
+					});
+					return result;
+				}
+				// ============================================================
+				// CREATE ITEM
+				// ============================================================
+				createDefaultItem(name, category) {
+					const item = {
+						name: String(name),
+						category: this.getValidCategory(category)
+					};
+					this.extraFields.forEach(field => {
+						item[field.label] = this.getDefaultFieldValue(field);
+					});
+					return item;
+				}
+				// ============================================================
+				// ADD AREA
+				// ============================================================
+				createAddArea() {
+					const addArea = document.createElement("div");
+					addArea.className = "sort-list-add";
+					this.addInput = document.createElement("input");
+					this.addInput.type = "text";
+					this.addInput.className = "sort-list-input";
+					this.addInput.placeholder = "Add list element...";
+					this.addCategory = document.createElement("select");
+					this.addCategory.className = "sort-list-add-category";
+					this.categories.forEach(category => {
+						const option = document.createElement("option");
+						option.value = category.label;
+						option.textContent = category.label;
+						this.addCategory.appendChild(option);
+					});
+					const addButton = document.createElement("button");
+					addButton.type = "button";
+					addButton.className = "sort-list-add-button";
+					addButton.textContent = "Add";
+					addArea.appendChild(this.addInput);
+					addArea.appendChild(this.addCategory);
+					addArea.appendChild(addButton);
+					this.rootElement.appendChild(addArea);
+					const addItem = () => {
+						const name = this.addInput.value.trim();
+						if (!name) {
+							return;
+						}
+						this.workingArray.push(this.createDefaultItem(name, this.addCategory.value));
+						this.renderList();
+						this.updatePreview();
+						this.addInput.value = "";
+						this.addInput.focus();
+					};
+					addButton.addEventListener("click", addItem);
+					this.addInput.addEventListener("keydown", event => {
+						if (event.key === "Enter") {
+							event.preventDefault();
+							addItem();
+						}
+					});
+				}
+				// ============================================================
+				// FIELD CLASS
+				// ============================================================
+				getFieldClass(field) {
+					switch (field.type) {
+						case "integer":
+							return "sort-list-field-integer";
+						case "checkmark":
+							return "sort-list-field-checkmark";
+						default:
+							return "sort-list-field-text";
+					}
+				}
+				// ============================================================
+				// HEADER
+				// ============================================================
+				createHeader() {
+					const header = document.createElement("div");
+					header.className = "sort-list-header";
+					header.appendChild(this.createHeaderCell("", "sort-list-drag"));
+					header.appendChild(this.createHeaderCell("Name", "sort-list-name"));
+					this.extraFields.forEach(field => {
+						let label = field.label;
+						if (field.optional) {
+							label += " (optional)";
+						}
+						header.appendChild(this.createHeaderCell(label, this.getFieldClass(field)));
+					});
+					header.appendChild(this.createHeaderCell("Delete", "sort-list-delete"));
+					return header;
+				}
+				// ============================================================
+				// HEADER CELL
+				// ============================================================
+				createHeaderCell(text, className) {
+					const element = document.createElement("div");
+					element.className = className;
+					element.textContent = text;
+					return element;
+				}
+				// ============================================================
+				// FIELD INPUT
+				// ============================================================
+				createFieldInput(field, item) {
+					let input;
+					switch (field.type) {
+						case "integer": {
+							input = document.createElement("input");
+							input.type = "number";
+							input.step = "1";
+							input.className = "sort-list-field-input";
+							input.value = item[field.label] ?? "";
+							input.addEventListener("input",
+								() => {
+									item[field.label] = input.value === "" ? "" : this.normalizeFieldValue(field, input.value);
+								});
+							break;
+						}
+						case "checkmark": {
+							input = document.createElement("input");
+							input.type = "checkbox";
+							input.className = "sort-list-field-checkbox";
+							input.checked = Boolean(item[field.label]);
+							input.addEventListener("change",
+								() => {
+									item[field.label] = input.checked;
+								});
+							return input;
+						}
+						default: {
+							input = document.createElement("input");
+							input.type = "text";
+							input.className = "sort-list-field-input";
+							input.value = item[field.label] ?? "";
+							input.addEventListener("input",
+								() => {
+									item[field.label] = input.value;
+								});
+							break;
+						}
+					}
+					return input;
+				}
+				// ============================================================
+				// CATEGORY TITLE
+				// ============================================================
+				createCategoryTitle(category) {
+					const title = document.createElement("div");
+					/*
+					 * IMPORTANT:
+					 *
+					 * Category title is itself
+					 * the Sortable handle.
+					 */
+					title.className = "sort-list-category-title";
+					title.dataset.type = "category";
+					title.dataset.category = category.label;
+					title.textContent = category.label;
+					title._sortListCategory = category.label;
+					return title;
+				}
+				// ============================================================
+				// ROW
+				// ============================================================
+				createRow(item) {
+					const row = document.createElement("div");
+					row.className = "sort-list-row";
+					row.dataset.type = "item";
+					row._sortListItem = item;
+					// --------------------------------------------------------
+					// DRAG HANDLE
+					// --------------------------------------------------------
+					const dragCell = document.createElement("div");
+					dragCell.className = "sort-list-drag";
+					const handle = document.createElement("span");
+					handle.className = "sort-list-handle";
+					handle.textContent = "☷";
+					dragCell.appendChild(handle);
+					row.appendChild(dragCell);
+					// --------------------------------------------------------
+					// NAME
+					// --------------------------------------------------------
+					const nameCell = document.createElement("div");
+					nameCell.className = "sort-list-name";
+					const nameInput = document.createElement("input");
+					nameInput.type = "text";
+					nameInput.className = "sort-list-name-input";
+					nameInput.value = item.name ?? "";
+					nameInput.addEventListener("input",
+						() => {
+							item.name = nameInput.value;
+							this.updatePreview();
+						});
+					nameCell.appendChild(nameInput);
+					row.appendChild(nameCell);
+					// --------------------------------------------------------
+					// EXTRA FIELDS
+					// --------------------------------------------------------
+					this.extraFields.forEach(field => {
+						const cell = document.createElement("div");
+						cell.className = this.getFieldClass(field);
+						cell.appendChild(this.createFieldInput(field, item));
+						row.appendChild(cell);
+					});
+					// --------------------------------------------------------
+					// DELETE
+					// --------------------------------------------------------
+					const deleteCell = document.createElement("div");
+					deleteCell.className = "sort-list-delete";
+					const deleteButton = document.createElement("button");
+					deleteButton.type = "button";
+					deleteButton.className = "sort-list-remove";
+					deleteButton.textContent = "×";
+					deleteButton.addEventListener("click", event => {
+						event.preventDefault();
+						event.stopPropagation();
+						const index = this.workingArray.indexOf(item);
+						if (index === -1) {
+							return;
+						}
+						this.workingArray.splice(index, 1);
+						this.renderList();
+						this.updatePreview();
+					});
+					deleteCell.appendChild(deleteButton);
+					row.appendChild(deleteCell);
+					return row;
+				}
+				// ============================================================
+				// RENDER LIST
+				// ============================================================
+				renderList() {
+					this.destroySortable();
+					this.listElement.innerHTML = "";
+					/*
+					 * IMPORTANT:
+					 *
+					 * The DOM has TWO kinds of sortable things:
+					 *
+					 * 1. category titles
+					 * 2. normal rows
+					 *
+					 * Everything is inside ONE flat list.
+					 */
+					this.categories.forEach(category => {
+						this.listElement.appendChild(this.createCategoryTitle(category));
+						this.workingArray.filter(item => item.category === category.label).forEach(item => {
+							this.listElement.appendChild(this.createRow(item));
+						});
+					});
+					this.createSortable();
+				}
+				// ============================================================
+				// READ FLAT DOM
+				// ============================================================
+				syncFromDOM() {
+					const result = [];
+					let currentCategory = null;
+					/*
+					 * The DOM is the source of truth.
+					 *
+					 * Category title:
+					 *     changes currentCategory
+					 *
+					 * Item row:
+					 *     receives currentCategory
+					 */
+					Array.from(this.listElement.children).forEach(element => {
+						// ------------------------------------------------
+						// CATEGORY
+						// ------------------------------------------------
+						if (element.dataset.type === "category") {
+							currentCategory = this.getValidCategory(element.dataset.category);
+							return;
+						}
+						// ------------------------------------------------
+						// ITEM
+						// ------------------------------------------------
+						if (element.dataset.type === "item") {
+							const item = element._sortListItem;
+							if (!item) {
+								return;
+							}
+							/*
+							 * The item now belongs to
+							 * the most recent category title.
+							 */
+							item.category = currentCategory;
+							result.push(item);
+						}
+					});
+					this.workingArray = result;
+					/*
+					 * Also calculate category order from
+					 * the DOM.
+					 */
+					const newCategoryOrder = [];
+					Array.from(this.listElement.children).forEach(element => {
+						if (element.dataset.type !== "category") {
+							return;
+						}
+						const category = element.dataset.category;
+						if (!newCategoryOrder.includes(category)) {
+							newCategoryOrder.push(category);
+						}
+					});
+					/*
+					 * Keep elementSetting.category as
+					 * configuration, but use the DOM order
+					 * for display/order.
+					 */
+					this.currentCategoryOrder = newCategoryOrder;
+				}
+				// ============================================================
+				// SORTABLE
+				// ============================================================
+				createSortable() {
+					if (typeof Sortable === "undefined") {
+						return;
+					}
+					this.sortable = new Sortable(this.listElement, {
+						animation: 150,
+						direction: "vertical",
+						draggable: ".sort-list-category-title, .sort-list-row",
+						/*
+						 * Only the FIRST category title is locked.
+						 *
+						 * The other category titles are still
+						 * completely draggable.
+						 */
+						filter: ".sort-list-category-title:first-child",
+						ghostClass: "sort-list-ghost",
+						onStart: event => {
+							const firstCategory = this.listElement.querySelector(".sort-list-category-title:first-child");
+							/*
+							 * Extra safety:
+							 *
+							 * The first category can never
+							 * become the dragged element.
+							 */
+							if (event.item === firstCategory) {
+								event.preventDefault();
+								return;
+							}
+							if (event.item.dataset.type === "category") {
+								this.draggingType = "category";
+							} else {
+								this.draggingType = "item";
+							}
+						},
+						onMove: event => {
+							const firstCategory = this.listElement.querySelector(".sort-list-category-title:first-child");
+							const dragged = event.dragged;
+							const related = event.related;
+							// ============================================================
+							// FIRST CATEGORY IS ALWAYS LOCKED
+							// ============================================================
+							if (dragged === firstCategory) {
+								return false;
+							}
+							// ============================================================
+							// NEVER INSERT ANYTHING BEFORE FIRST CATEGORY
+							// ============================================================
+							if (related === firstCategory && event.willInsertAfter === false) {
+								return false;
+							}
+							// ============================================================
+							// CATEGORY HEADER RESTRICTION
+							// A CATEGORY CANNOT MOVE OVER ANOTHER CATEGORY
+							// ============================================================
+							const draggedIsCategory = dragged && dragged.dataset.type === "category";
+							const relatedIsCategory = related && related.dataset.type === "category";
+							if (draggedIsCategory && relatedIsCategory) {
+								return false;
+							}
+							// ============================================================
+							// ALREADY-SAFE DROP
+							// ============================================================
+							return true;
+						},
+						onEnd: () => {
+							this.syncFromDOM();
+							this.rebuildFromDOM();
+							this.updatePreview();
+							this.draggingType = null;
+						}
+					});
+				}
+				// ============================================================
+				// REBUILD FROM DOM
+				// ============================================================
+				rebuildFromDOM() {
+					/*
+					 * For now the DOM itself is already the
+					 * ordering source.
+					 *
+					 * We only recreate the row/category DOM
+					 * when something else needs a rebuild.
+					 */
+					const elements = Array.from(this.listElement.children);
+					const state = [];
+					elements.forEach(element => {
+						if (element.dataset.type === "category") {
+							state.push({
+								type: "category",
+								category: element.dataset.category
+							});
+							return;
+						}
+						if (element.dataset.type === "item") {
+							state.push({
+								type: "item",
+								item: element._sortListItem
+							});
+						}
+					});
+					/*
+					 * We intentionally DON'T rebuild the
+					 * DOM here.
+					 *
+					 * The DOM is already what Sortable made.
+					 */
+				}
+				// ============================================================
+				// DESTROY
+				// ============================================================
+				destroySortable() {
+					if (this.sortable) {
+						this.sortable.destroy();
+						this.sortable = null;
+					}
+				}
+				// ============================================================
+				// PREVIEW
+				// ============================================================
+				updatePreview() {
+					const parts = [];
+					let currentCategory = null;
+					/*
+					 * Use workingArray for the actual
+					 * preview grouping.
+					 */
+					this.getCategoryNamesInWorkingOrder().forEach(category => {
+						const names = this.workingArray.filter(item => item.category === category).map(item => item.name);
+						parts.push(`${category}: ${names.join(", ")}`);
+					});
+					this.previewText.textContent = parts.join(" | ");
+				}
+				// ============================================================
+				// CATEGORY ORDER
+				// ============================================================
+				getCategoryNamesInWorkingOrder() {
+					const result = [];
+					/*
+					 * First use the current DOM category order.
+					 */
+					Array.from(this.listElement.children).forEach(element => {
+						if (element.dataset.type !== "category") {
+							return;
+						}
+						const category = element.dataset.category;
+						if (!result.includes(category)) {
+							result.push(category);
+						}
+					});
+					/*
+					 * Make sure no category disappears
+					 * from the preview.
+					 */
+					this.getCategoryNames().forEach(category => {
+						if (!result.includes(category)) {
+							result.push(category);
+						}
+					});
+					return result;
+				}
+				// ============================================================
+				// POPUP CLOSE
+				// ============================================================
+				onPopupClose() {
+					/*
+					 * Commit working data here.
+					 */
+					this.syncFromDOM();
+					if (Array.isArray(this.originalDataArray)) {
+						this.originalDataArray.splice(0, this.originalDataArray.length, ...this.workingArray);
+					}
+					this.updatePreview();
+					return this.originalDataArray;
+				}
+				// ============================================================
+				// DESTROY
+				// ============================================================
+				onSave() {
+					/*
+					 * onSave ONLY destroys Sortable.
+					 */
+					this.destroySortable();
+					return this.originalDataArray;
+				}
+				// ============================================================
+				// RESULT
+				// ============================================================
+				initResult() {
+					return {
+						code: 0
+					};
+				}
+			},
+			// ================================================================
+			// CANVAS RENDER
+			// ================================================================
+			render: function(dataArray) {
+				if (!Array.isArray(dataArray)) {
+					return "";
+				}
+				return dataArray.map(item => {
+					if (item && typeof item === "object" && !Array.isArray(item)) {
+						return (item.name ?? "");
+					}
+					return String(item);
+				}).join(", ");
+			}
+		},
 
         nested: {
             strutureSample: [],
@@ -16015,7 +18916,7 @@ const flexEngineFileSystem = new FlexEngineFileSystem();
 
 
 
-                    sizeQuery: [
+        sizeQuery: [
             {
                 name: "height",
                 label: "Height",

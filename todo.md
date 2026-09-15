@@ -14,6 +14,50 @@
 ### est. Oct
 [ ] lastly review it by teacher! 
 
+## Ask AI:
+(changes add only):
+
+replace that content query part so that can be struture like this sample (from an old snap, but same struture)
+
+
+
+        sizeQuery: [
+            {
+                name: "height",
+                label: "Height",
+                type: "space",
+              
+            },
+            {
+                name: "alongGrow",
+                label: "Allow section grow?",
+                type: "boolean/checkmark"
+            },
+            {
+                name: "alongShrink",
+                label: "Allow section shrink?",
+                type: "boolean/checkmark"
+            },
+            {
+                name: "mobileMinHeight",
+                label: "Mobile Minimum Height",
+                type: "space",
+               
+            }
+        ],
+
+
+
+but I need you to do those.
+
+setup basic header content query that is those (try guess it, I will tell you what need to be fixed):
+
+a media/img query "logo" label "Logo IMG"
+
+a list/nested query "nav" label "Navigation"
+
+a 
+
 ## Reminders:
 
 Part A — Options reference
