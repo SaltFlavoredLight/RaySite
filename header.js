@@ -19,40 +19,6 @@ const header = {
         },
 
         contentFunction: function(dataArray, documentHTML, node, createAnotherNode) {
-            const mainContent = documentHTML.createElement("div");
-            mainContent.className = "rs-content-header-maincontent";
-
-            const left = documentHTML.createElement("div");
-            left.className = "rs-content-header-left";
-
-            const center = documentHTML.createElement("div");
-            center.className = "rs-content-header-center";
-
-            const right = documentHTML.createElement("div");
-            right.className = "rs-content-header-right";
-
-            mainContent.appendChild(left);
-            mainContent.appendChild(center);
-            mainContent.appendChild(right);
-
-            const mobileContent = documentHTML.createElement("div");
-            mobileContent.className = "rs-content-header-mobliecontent";
-
-            const mobileLeft = documentHTML.createElement("div");
-            mobileLeft.className = "rs-content-header-mleft";
-
-            const mobileCenter = documentHTML.createElement("div");
-            mobileCenter.className = "rs-content-header-mcenter";
-
-            const mobileRight = documentHTML.createElement("div");
-            mobileRight.className = "rs-content-header-mright";
-
-            mobileContent.appendChild(mobileLeft);
-            mobileContent.appendChild(mobileCenter);
-            mobileContent.appendChild(mobileRight);
-
-            node.appendChild(mainContent);
-            node.appendChild(mobileContent);
         },
 
         jsRuntime: {},
