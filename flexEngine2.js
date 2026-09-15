@@ -21,6 +21,42 @@ export const BUILDER_CONFIG = {
 };
 
 
+
+/**
+ * ------------------------------------------------------------------------------
+ * Web Tools (Helper Functions)
+ * 
+ * there are many simple tools that everyone reliy on them, 
+ * this is a collaction to thing that useful.
+ * ------------------------------------------------------------------------------
+ */
+
+const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+const num = v => {
+	const n = Number(v);
+	return Number.isFinite(n) ? n : 0;
+};
+
+const flexEngineCheckContext = function(contextSetting, label) {
+
+	// Normalize into array
+	let list = [];
+
+	if (Array.isArray(contextSetting)) {
+		list = contextSetting.map(s => String(s).trim());
+	}
+	else if (typeof contextSetting === "string") {
+		list = contextSetting
+			.replace(/,/g, " ")
+			.split(/\s+/)
+			.map(s => s.trim())
+			.filter(s => s.length > 0);
+	}
+
+	return list.includes(label);
+};
+
+
 /**
  * ------------------------------------------------------------------------------ 
  * LEGACY MODULE
@@ -18906,11 +18942,14 @@ export const flexEngineRootElement = {
 
 
 /**
- * Main Function
+ * Main Function (RUN THIS!)
  */
+export const main = function(){
+    const flexEngineFileSystem = new FlexEngineFileSystem();
+};
 
-const flexEngineFileSystem = new FlexEngineFileSystem();
-
+// Go RaySite!
+main();
 
 /*
 
