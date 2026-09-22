@@ -182,7 +182,7 @@ here is explanation:
 
 ### System:
 system show what looks like.
-**breakPoint:** that is show where to change to moblie.
+**breakPoint:** that is show where to change to Mobile.
 **contextMax:** the max context of it.
 
 ### Colors:
@@ -401,7 +401,7 @@ the content that you put, which is multiple element other than Section.
 **spaceAcross:** 1 is on start, 2 means on center, 3 means on end, 4 is Stretch it out
 **spaceAlong:** when you have more than enough spaces, 1 is on start, 2 means on center, 3 means on end
 **overflow:** 1 is scroll, 2 is hidden it, 3 is just do not take any action 
-**gap / Moblie gap:** those 2 are Gaps between objects.
+**gap / Mobile gap:** those 2 are Gaps between objects.
 **mobileReverseDirection:** if you are using Mobile, True means let those are reverse.
 
 #### Style
@@ -1801,7 +1801,7 @@ when you use Standard, you can create any labels and do the action, kinda funny 
 	"transition": [],
 	"JSID": STRING
 
-	"moblieSetting": {
+	"MobileSetting": {
 		"logo": 1-3,
 		"menu": 1-3,
 		"others": 1-3,
@@ -1858,7 +1858,7 @@ and last one stringed can be half! (checlk that setting)
 	"toggleOpen": {......},
 	"JSID": STRING
 	"setting": {
-		"showInMoblie": true/false,
+		"showInMobile": true/false,
 		"asLogo": true/false,
 	}
 }
@@ -1882,7 +1882,7 @@ NOTE: there only 1 can be logo.
 	"toggleOpen": {......},
 	"JSID": STRING
 	"setting": {
-		"showInMoblie": true/false,
+		"showInMobile": true/false,
 	}
 }
 ```
@@ -1946,7 +1946,7 @@ that's basicly inside is a div.
 		"maxHeight": SPACE,
 		"cutOverflow": true/false,
 
-		"minMoblieHeight": SPACE,
+		"minMobileHeight": SPACE,
 	},
 }
 ```

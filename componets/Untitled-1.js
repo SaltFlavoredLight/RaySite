@@ -55,9 +55,9 @@
  * @property {string} [name]
  * @property {string} [key]
  * @property {FlexEngineStyleProcessor} [styleDefault]
- * @property {FlexEngineStyleProcessor} [styleMoblie]
+ * @property {FlexEngineStyleProcessor} [styleMobile]
  * @property {FlexEngineSizeProcessor} [sizeDefault]
- * @property {FlexEngineSizeProcessor} [sizeMoblie]
+ * @property {FlexEngineSizeProcessor} [sizeMobile]
  */
 
 
@@ -66,9 +66,9 @@
  *
  * @typedef {Object} FlexEngineRegistry
  * @property {FlexEngineStyleProcessor} [styleDefault]
- * @property {FlexEngineStyleProcessor} [styleMoblie]
+ * @property {FlexEngineStyleProcessor} [styleMobile]
  * @property {FlexEngineSizeProcessor} [sizeDefault]
- * @property {FlexEngineSizeProcessor} [sizeMoblie]
+ * @property {FlexEngineSizeProcessor} [sizeMobile]
  * @property {any} [extras]
  */
 
@@ -83,7 +83,6 @@
  * Input:
  * {
  *     color: "red",
- *     width: undefined,
  *     height: "100px"
  * }
  *
@@ -327,11 +326,11 @@ const flexEngineStylesCreateBaseRegistry = (
 		// Mobile style processor.
 		//
 		// NOTE:
-		// "Moblie" is kept because that is the existing API name.
-		styleMoblie: flexEngineStylesGetProcessor(
+		// "Mobile" is kept because that is the existing API name.
+		styleMobile: flexEngineStylesGetProcessor(
 			elementRegistry,
 			categoryRegistry,
-			"styleMoblie",
+			"styleMobile",
 
 			// Universal fallback.
 			() => ({})
@@ -348,10 +347,10 @@ const flexEngineStylesCreateBaseRegistry = (
 		),
 
 		// Mobile size processor.
-		sizeMoblie: flexEngineStylesGetProcessor(
+		sizeMobile: flexEngineStylesGetProcessor(
 			elementRegistry,
 			categoryRegistry,
-			"sizeMoblie",
+			"sizeMobile",
 
 			// Universal fallback.
 			() => ({})
@@ -520,9 +519,9 @@ const flexEngineStylesNormalizeExtras = (extras) => {
 			extras.position ||
 			extras.target ||
 			extras.styleDefault ||
-			extras.styleMoblie ||
+			extras.styleMobile ||
 			extras.sizeDefault ||
-			extras.sizeMoblie
+			extras.sizeMobile
 		)
 	) {
 
@@ -602,9 +601,9 @@ const flexEngineStylesNormalizeExtras = (extras) => {
  *
  * but:
  *
- *     styleMoblie -> baseRegistry.styleMoblie
+ *     styleMobile -> baseRegistry.styleMobile
  *     sizeDefault -> baseRegistry.sizeDefault
- *     sizeMoblie -> baseRegistry.sizeMoblie
+ *     sizeMobile -> baseRegistry.sizeMobile
  *
  * @param {FlexEngineExtraConfig|null} extraConfig
  * @param {FlexEngineRegistry} baseRegistry
@@ -627,10 +626,10 @@ const flexEngineStylesGetExtraProcessors = (
 				: baseRegistry.styleDefault,
 
 		// Extra override OR base processor.
-		styleMoblie:
-			typeof extra.styleMoblie === "function"
-				? extra.styleMoblie
-				: baseRegistry.styleMoblie,
+		styleMobile:
+			typeof extra.styleMobile === "function"
+				? extra.styleMobile
+				: baseRegistry.styleMobile,
 
 		// Extra override OR base processor.
 		sizeDefault:
@@ -639,10 +638,10 @@ const flexEngineStylesGetExtraProcessors = (
 				: baseRegistry.sizeDefault,
 
 		// Extra override OR base processor.
-		sizeMoblie:
-			typeof extra.sizeMoblie === "function"
-				? extra.sizeMoblie
-				: baseRegistry.sizeMoblie
+		sizeMobile:
+			typeof extra.sizeMobile === "function"
+				? extra.sizeMobile
+				: baseRegistry.sizeMobile
 	};
 };
 
@@ -659,10 +658,10 @@ const flexEngineStylesGetExtraProcessors = (
  *         -> styleDefault / sizeDefault
  *
  *     onMobile
- *         -> styleMoblie / sizeMoblie
+ *         -> styleMobile / sizeMobile
  *
  *     onMobileHover
- *         -> styleMoblie / sizeMoblie
+ *         -> styleMobile / sizeMobile
  *
  * Notice that "hover" does NOT have a separate hover processor.
  * It reuses the default desktop processors.
@@ -684,8 +683,8 @@ const flexEngineStylesGetStateProcessors = (
 		// Mobile states use mobile processors.
 		case "onMobile":
 			return {
-				style: processorRegistry.styleMoblie,
-				size: processorRegistry.sizeMoblie
+				style: processorRegistry.styleMobile,
+				size: processorRegistry.sizeMobile
 			};
 
 		// Desktop hover uses default processors.
@@ -698,8 +697,8 @@ const flexEngineStylesGetStateProcessors = (
 		// Mobile + hover uses mobile processors.
 		case "onMobileHover":
 			return {
-				style: processorRegistry.styleMoblie,
-				size: processorRegistry.sizeMoblie
+				style: processorRegistry.styleMobile,
+				size: processorRegistry.sizeMobile
 			};
 
 		// Normal/default behavior.
@@ -1531,7 +1530,7 @@ const flexEngineStylingSystem = function(
 // -----------------------------------------------
 debugger;
 
-elementMode = "content/card";
+const elementMode = "content/card";
 
 
 
@@ -1547,7 +1546,7 @@ const flexEngineDefaultElements = {
 			color: style.color
 		}),
 
-		styleMoblie: (style) => ({
+		styleMobile: (style) => ({
 			color: style.color
 		}),
 
@@ -1559,7 +1558,7 @@ const flexEngineDefaultElements = {
 			height: size.height
 		}),
 
-		sizeMoblie: (size) => ({
+		sizeMobile: (size) => ({
 			width: "100%",
 			height: size.height
 		}),
@@ -1575,7 +1574,7 @@ const flexEngineDefaultElements = {
 			}),
 
 			// Element-specific mobile style processor.
-			styleMoblie: (style) => ({
+			styleMobile: (style) => ({
 				color: style.color,
 				"background-color": style.background,
 				padding: style.padding,
@@ -1748,7 +1747,7 @@ flexEngineStylingSystem(
 	data,
 	node,
 	false,
-	"content/card"
+	elementMode,
 );
 
 /*

@@ -1,3 +1,6 @@
+// this is the old version, please do not use this snap
+
+
 const flexEngineStylesToCss = (cssObject) => {
 	if (!cssObject || typeof cssObject !== "object") {
 		return "";
@@ -87,10 +90,10 @@ const flexEngineStylesCreateBaseRegistry = (
 			() => ({})
 		),
 
-		styleMoblie: flexEngineStylesGetProcessor(
+		styleMobile: flexEngineStylesGetProcessor(
 			elementRegistry,
 			categoryRegistry,
-			"styleMoblie",
+			"styleMobile",
 			() => ({})
 		),
 
@@ -101,10 +104,10 @@ const flexEngineStylesCreateBaseRegistry = (
 			() => ({})
 		),
 
-		sizeMoblie: flexEngineStylesGetProcessor(
+		sizeMobile: flexEngineStylesGetProcessor(
 			elementRegistry,
 			categoryRegistry,
-			"sizeMoblie",
+			"sizeMobile",
 			() => ({})
 		),
 
@@ -178,9 +181,9 @@ const flexEngineStylesNormalizeExtras = (extras) => {
 			extras.position ||
 			extras.target ||
 			extras.styleDefault ||
-			extras.styleMoblie ||
+			extras.styleMobile ||
 			extras.sizeDefault ||
-			extras.sizeMoblie
+			extras.sizeMobile
 		)
 	) {
 		const position =
@@ -233,20 +236,20 @@ const flexEngineStylesGetExtraProcessors = (
 				? extra.styleDefault
 				: baseRegistry.styleDefault,
 
-		styleMoblie:
-			typeof extra.styleMoblie === "function"
-				? extra.styleMoblie
-				: baseRegistry.styleMoblie,
+		styleMobile:
+			typeof extra.styleMobile === "function"
+				? extra.styleMobile
+				: baseRegistry.styleMobile,
 
 		sizeDefault:
 			typeof extra.sizeDefault === "function"
 				? extra.sizeDefault
 				: baseRegistry.sizeDefault,
 
-		sizeMoblie:
-			typeof extra.sizeMoblie === "function"
-				? extra.sizeMoblie
-				: baseRegistry.sizeMoblie
+		sizeMobile:
+			typeof extra.sizeMobile === "function"
+				? extra.sizeMobile
+				: baseRegistry.sizeMobile
 	};
 };
 
@@ -258,8 +261,8 @@ const flexEngineStylesGetStateProcessors = (
 	switch (stateName) {
 		case "onMobile":
 			return {
-				style: processorRegistry.styleMoblie,
-				size: processorRegistry.sizeMoblie
+				style: processorRegistry.styleMobile,
+				size: processorRegistry.sizeMobile
 			};
 
 		case "hover":
@@ -270,8 +273,8 @@ const flexEngineStylesGetStateProcessors = (
 
 		case "onMobileHover":
 			return {
-				style: processorRegistry.styleMoblie,
-				size: processorRegistry.sizeMoblie
+				style: processorRegistry.styleMobile,
+				size: processorRegistry.sizeMobile
 			};
 
 		case "default":
