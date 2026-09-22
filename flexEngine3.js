@@ -487,7 +487,7 @@ const flexEngineCreateHeader = function(dataArray, documentHTML) {
 	// Assume this is Standard: we create a inner context
 	flexEngineCreateHeaderContext(dataArray, documentHTML, 'standard');
 
-	// I did not create Moblie, that's you help!
+	// I did not create Mobile, that's you help!
 	debugger;
 
 	//then animation and eerything!

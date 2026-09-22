@@ -9,61 +9,17 @@
 [text](https://www.catholic.com/audio/tjap/what-does-god-really-want)
 
 ### est. Sept.
-#### est. 14-15
+#### est. 21-23
 [ ] complete header. 
 [ ] We got a problem in SortTable: everytime when update it cause a forced render, which cause you cannot focus on `<input>` unless using tab
 [ ] we need to start sortableFinal (use final to put to `<main>`) to get it
 
-#### est. 16-20
+#### est. 24-oct6
 [ ] ready App API
 [ ] ready UI part, this time UI using the normal UI, AKA AppAPI
 
 ### est. Oct
 [ ] lastly review it by teacher! 
-
-## Ask AI:
-(changes add only):
-
-replace that content query part so that can be struture like this sample (from an old snap, but same struture)
-
-
-
-        sizeQuery: [
-            {
-                name: "height",
-                label: "Height",
-                type: "space",
-              
-            },
-            {
-                name: "alongGrow",
-                label: "Allow section grow?",
-                type: "boolean/checkmark"
-            },
-            {
-                name: "alongShrink",
-                label: "Allow section shrink?",
-                type: "boolean/checkmark"
-            },
-            {
-                name: "mobileMinHeight",
-                label: "Mobile Minimum Height",
-                type: "space",
-               
-            }
-        ],
-
-
-
-but I need you to do those.
-
-setup basic header content query that is those (try guess it, I will tell you what need to be fixed):
-
-a media/img query "logo" label "Logo IMG"
-
-a list/nested query "nav" label "Navigation"
-
-a 
 
 ## Reminders:
 
