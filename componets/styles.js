@@ -1,3 +1,5 @@
+// there will have Style, Size, and Extra.
+
 const flexEngineAppearance = {
     styleQuery: [
 		{
@@ -194,24 +196,58 @@ const CSSOverridesHelper = (data) => {
 const flexEngineElementSettings = (elementMode) => {
 	const [category, element] = String(elementMode || "").split("/");
 
-	const categorySettings = flexEngineDefaultElements?.[category];
+	const categorySettings =
+		category === "@root"
+			? flexEngineRootElement
+			: flexEngineDefaultElements?.[category];
 
 	return (
 		categorySettings?.[element] ??
 		categorySettings ??
 		{
-			default: (sz, isVertical) => {
+			sizeDefault: (sz, isVertical) => {
 				return {};
 			},
 
-			mobile: (sz, isVertical) => {
+			sizeMobile: (sz, isVertical) => {
 				return {};
 			}
 		}
 	);
 };
 
-// Styling everything.
+const flexEngineExtrasSetting = (elementMode) => {
+	const [category, element] = String(elementMode || "").split("/");
+
+	const categorySettings =
+		category === "@root"
+			? flexEngineRootElement
+			: flexEngineDefaultElements?.[category];
+
+	const settings =
+		categorySettings?.[element] ??
+		categorySettings ??
+		{};
+
+	return {
+		extraQuery: settings.extraQuery ?? null,
+
+		extraDefault:
+			typeof settings.extraDefault === "function"
+				? settings.extraDefault
+				: (extras, isVertical) => {
+					return {};
+				},
+
+		extraMobile:
+			typeof settings.extraMobile === "function"
+				? settings.extraMobile
+				: (extras, isVertical) => {
+					return {};
+				}
+	};
+};
+
 const flexEngineStylingClass = function(
 	dataArray,
 	isVertical,
@@ -221,34 +257,99 @@ const flexEngineStylingClass = function(
 	const engine = flexEngineStyleVarible;
 
 	const elementSettings = flexEngineElementSettings(elementMode);
+	const extraSettings = flexEngineExtrasSetting(elementMode);
+
+
+	// Extra styling helpers
+	const extraDefault = (data) => {
+		if (
+			!data ||
+			data.extras == null ||
+			typeof extraSettings.extraDefault !== "function"
+		) {
+			return {};
+		}
+
+		return (
+			extraSettings.extraDefault(
+				data.extras,
+				isVertical
+			) || {}
+		);
+	};
+
+
+	const extraMobile = (data) => {
+		if (
+			!data ||
+			data.extras == null ||
+			typeof extraSettings.extraMobile !== "function"
+		) {
+			return {};
+		}
+
+		return (
+			extraSettings.extraMobile(
+				data.extras,
+				isVertical
+			) || {}
+		);
+	};
 
 
 	if (flexEngineCheckContext(contextSetting, "header") === true) {
 		// That's Header
 		const JSONarray = {
+
+			// =========================================
+			// DEFAULT
+			// =========================================
 			default: ((data) => {
 				const s = data.style || {};
 				const sz = data.size || {};
 
 				return {
 					...flexEngineAppearance.styleDefault(s),
-					...elementSettings.default(sz, isVertical),
+
+					// Size
+					...elementSettings.sizeDefault(
+						sz,
+						isVertical
+					),
+
+					// Extras
+					...extraDefault(data),
+
 					...CSSOverridesHelper(data)
 				};
 			})(dataArray),
 
 
+			// =========================================
+			// MOBILE
+			// =========================================
 			onMobile: ((data) => {
 				const s = data.style || {};
 				const sz = data.size || {};
 
 				return {
 					...flexEngineAppearance.styleMobile(s),
-					...elementSettings.mobile(sz, isVertical),
+
+					// Size
+					...elementSettings.sizeMobile(
+						sz,
+						isVertical
+					),
+
+					// Extras
+					...extraMobile(data)
 				};
 			})(dataArray),
 
 
+			// =========================================
+			// HOVER
+			// =========================================
 			onHover: ((data) => {
 				if (!data) return {};
 
@@ -257,12 +358,24 @@ const flexEngineStylingClass = function(
 
 				return {
 					...flexEngineAppearance.styleDefault(s),
-					...elementSettings.default(sz, isVertical),
+
+					// Size
+					...elementSettings.sizeDefault(
+						sz,
+						isVertical
+					),
+
+					// Extras
+					...extraDefault(data),
+
 					...CSSOverridesHelper(data)
 				};
 			})(dataArray.hover),
 
 
+			// =========================================
+			// HOVER + MOBILE
+			// =========================================
 			onHoverMobile: ((data) => {
 				if (!data) return {};
 
@@ -271,35 +384,68 @@ const flexEngineStylingClass = function(
 
 				return {
 					...flexEngineAppearance.styleMobile(s),
-					...elementSettings.mobile(sz, isVertical),
+
+					// Size
+					...elementSettings.sizeMobile(
+						sz,
+						isVertical
+					),
+
+					// Extras
+					...extraMobile(data)
 				};
 			})(dataArray.hover),
 
 
-			// Header's onTop.
+			// =========================================
+			// ON TOP
+			// =========================================
 			onTop: ((data) => {
 				const s = data.style || {};
 				const sz = data.size || {};
 
 				return {
 					...flexEngineAppearance.styleDefault(s),
-					...elementSettings.default(sz, isVertical),
+
+					// Size
+					...elementSettings.sizeDefault(
+						sz,
+						isVertical
+					),
+
+					// Extras
+					...extraDefault(data),
+
 					...CSSOverridesHelper(data)
 				};
 			})(dataArray.onTop),
 
 
+			// =========================================
+			// ON TOP MOBILE
+			// =========================================
 			onTopMobile: ((data) => {
 				const s = data.style || {};
 				const sz = data.size || {};
 
 				return {
 					...flexEngineAppearance.styleMobile(s),
-					...elementSettings.mobile(sz, isVertical),
+
+					// Size
+					...elementSettings.sizeMobile(
+						sz,
+						isVertical
+					),
+
+					// Extras
+					...extraMobile(data)
 				};
 			})(dataArray.onTop),
 
 
+			// =========================================
+			// ON TOP HOVER
+			// =========================================
 			onTopHover: ((data) => {
 				if (!data) return {};
 
@@ -308,12 +454,24 @@ const flexEngineStylingClass = function(
 
 				return {
 					...flexEngineAppearance.styleDefault(s),
-					...elementSettings.default(sz, isVertical),
+
+					// Size
+					...elementSettings.sizeDefault(
+						sz,
+						isVertical
+					),
+
+					// Extras
+					...extraDefault(data),
+
 					...CSSOverridesHelper(data)
 				};
 			})(dataArray.onTop.hover),
 
 
+			// =========================================
+			// ON TOP HOVER + MOBILE
+			// =========================================
 			onTopMobileHover: ((data) => {
 				if (!data) return {};
 
@@ -322,7 +480,15 @@ const flexEngineStylingClass = function(
 
 				return {
 					...flexEngineAppearance.styleMobile(s),
-					...elementSettings.mobile(sz, isVertical),
+
+					// Size
+					...elementSettings.sizeMobile(
+						sz,
+						isVertical
+					),
+
+					// Extras
+					...extraMobile(data)
 				};
 			})(dataArray.onTop.hover)
 		};
@@ -331,31 +497,61 @@ const flexEngineStylingClass = function(
 	}
 
 
+	// =============================================
 	// Normal
+	// =============================================
+
 	const JSONarray = {
+
+		// =========================================
+		// DEFAULT
+		// =========================================
 		default: ((data) => {
 			const s = data.style || {};
 			const sz = data.size || {};
 
 			return {
 				...flexEngineAppearance.styleDefault(s),
-				...elementSettings.default(sz, isVertical),
+
+				// Size
+				...elementSettings.sizeDefault(
+					sz,
+					isVertical
+				),
+
+				// Extras
+				...extraDefault(data),
+
 				...CSSOverridesHelper(data)
 			};
 		})(dataArray),
 
 
+		// =========================================
+		// MOBILE
+		// =========================================
 		onMobile: ((data) => {
 			const s = data.style || {};
 			const sz = data.size || {};
 
 			return {
 				...flexEngineAppearance.styleMobile(s),
-				...elementSettings.mobile(sz, isVertical),
+
+				// Size
+				...elementSettings.sizeMobile(
+					sz,
+					isVertical
+				),
+
+				// Extras
+				...extraMobile(data)
 			};
 		})(dataArray),
 
 
+		// =========================================
+		// HOVER
+		// =========================================
 		onHover: ((data) => {
 			if (!data) return {};
 
@@ -364,12 +560,24 @@ const flexEngineStylingClass = function(
 
 			return {
 				...flexEngineAppearance.styleDefault(s),
-				...elementSettings.default(sz, isVertical),
+
+				// Size
+				...elementSettings.sizeDefault(
+					sz,
+					isVertical
+				),
+
+				// Extras
+				...extraDefault(data),
+
 				...CSSOverridesHelper(data)
 			};
 		})(dataArray.hover),
 
 
+		// =========================================
+		// HOVER + MOBILE
+		// =========================================
 		onHoverMobile: ((data) => {
 			if (!data) return {};
 
@@ -378,13 +586,22 @@ const flexEngineStylingClass = function(
 
 			return {
 				...flexEngineAppearance.styleMobile(s),
-				...elementSettings.mobile(sz, isVertical),
+
+				// Size
+				...elementSettings.sizeMobile(
+					sz,
+					isVertical
+				),
+
+				// Extras
+				...extraMobile(data)
 			};
 		})(dataArray.hoverMobile)
 	};
 
 	return JSONarray;
 };
+
 
 // Styling system
 const flexEngineStylingSystem = function(

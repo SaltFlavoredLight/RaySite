@@ -1,6 +1,13 @@
 ## Todo:
 [x] complete everything beside header
 
+
+[https://www.catholic.com/magazine/online-edition/when-its-time-to-stop-evangelizing
+](https://www.catholic.com/magazine/online-edition/when-its-time-to-stop-evangelizing)
+[text](https://www.catholic.com/video/does-jonah-disprove-free-will)
+[text](https://www.catholic.com/qa/was-mary-forced-to-be-the-mother-of-god)
+[text](https://www.catholic.com/audio/tjap/what-does-god-really-want)
+
 ### est. Sept.
 #### est. 14-15
 [ ] complete header. 
