@@ -17827,8 +17827,8 @@ export const flexEngineDefaultElements = {
                     }
 
                     // apply attributes
-                    const prefix = BUILDER_CONFIG.classPrefix + "styles-node-atFirstChild";
-                    const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-atFirstChild";
+                    const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at1";
+                    const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at1";
 
                     node.setAttribute(prefix, cssOutput);
                     node.setAttribute(prefixMobile, cssMobileOutput);
@@ -18044,8 +18044,8 @@ export const flexEngineRootElement = {
 				cssMobileOutput += `gap:${gapValue};`;
 			}
 			// apply attributes
-			const prefix = BUILDER_CONFIG.classPrefix + "styles-node-atFirstChild";
-			const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-atFirstChild";
+			const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at1";
+			const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at1";
 			node.setAttribute(prefix, cssOutput);
 			node.setAttribute(prefixMobile, cssMobileOutput);
 			let innerNode = documentHTML.createElement("div");
@@ -18469,8 +18469,8 @@ export const flexEngineRootElement = {
     			cssMobileOutput += `gap:${gapValue};`;
     		}
     		// apply attributes
-    		const prefix = BUILDER_CONFIG.classPrefix + "styles-node-atFirstChild";
-    		const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-atFirstChild";
+    		const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at1";
+    		const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at1";
     		node.setAttribute(prefix, cssOutput);
     		node.setAttribute(prefixMobile, cssMobileOutput);
     		let innerNode = documentHTML.createElement("div");
@@ -18732,8 +18732,8 @@ export const flexEngineRootElement = {
     			cssMobileOutput += `gap:${gapValue};`;
     		}
     		// apply attributes
-    		const prefix = BUILDER_CONFIG.classPrefix + "styles-node-atFirstChild";
-    		const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-atFirstChild";
+    		const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at1";
+    		const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at1";
     		node.setAttribute(prefix, cssOutput);
     		node.setAttribute(prefixMobile, cssMobileOutput);
     		let innerNode = documentHTML.createElement("div");
@@ -18950,51 +18950,3 @@ export const main = function(){
 
 // Go RaySite!
 main();
-
-/*
-
-
-
-        sizeQuery: [
-            {
-                name: "height",
-                label: "Height",
-                type: "space",
-                defaultAsFull: true
-            },
-            {
-                name: "alongGrow",
-                label: "Allow section grow?",
-                type: "boolean/checkmark"
-            },
-            {
-                name: "alongShrink",
-                label: "Allow section shrink?",
-                type: "boolean/checkmark"
-            },
-            {
-                name: "mobileMinHeight",
-                label: "Mobile Minimum Height",
-                type: "space",
-                defaultAsFull: true
-            }
-        ],
-
-        sizeDefault: (sz, isVertical) => {
-            return {
-                "width": "100%",
-                "height": flexEngineStyleVarible.space(sz.height),
-                "flex-grow": sz.alongGrow === true ? 1 : 0,
-                "flex-shrink": sz.alongShrink === true ? 1 : 0,
-                "overflow-x": "visible",
-                "overflow-y": "visible",
-                "align-self": "center"
-            };
-        },
-
-        sizeMobile: (sz, isVertical) => {
-            return {
-                "min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
-            };
-        },
-*/
