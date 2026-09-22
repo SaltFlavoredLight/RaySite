@@ -615,12 +615,12 @@ const flexEngineStylingSystem = function(dataArray, node, isVertical, sizeSettin
 				node.setAttribute(`${attributeBase}-onTopHover`, toCss(bundle.onTopHover));
 			}
 
-			// ON TOP & MOBLIE
+			// ON TOP & Mobile
 			if (bundle.onTopMobile) {
 				node.setAttribute(`${attributeBase}-onTopMobile`, toCss(bundle.onTopMobile));
 			}
 
-			// ON TOP & Hover & MOBLIE
+			// ON TOP & Hover & Mobile
 			if (bundle.onTopMobileHover) {
 				node.setAttribute(`${attributeBase}-onTopMobileHover`, toCss(bundle.onTopMobileHover));
 			}
@@ -2171,7 +2171,7 @@ const flexEngineCreateHeader = function(dataArray, documentHTML) {
 	// Assume this is Standard: we create a inner context
 	flexEngineCreateHeaderContext(dataArray, documentHTML, 'standard');
 
-	// I did not create Moblie, that's you help!
+	// I did not create Mobile, that's you help!
 	debugger;
 
 	//then animation and eerything!

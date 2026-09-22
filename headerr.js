@@ -36,7 +36,7 @@ const header = {
             mainContent.appendChild(right);
 
             const mobileContent = documentHTML.createElement("div");
-            mobileContent.className = "rs-content-header-mobliecontent";
+            mobileContent.className = "rs-content-header-Mobilecontent";
 
             const mobileLeft = documentHTML.createElement("div");
             mobileLeft.className = "rs-content-header-mleft";

@@ -253,7 +253,7 @@ const header = {
             },
 
             {
-                name: "moblieFullScreenMenu",
+                name: "MobileFullScreenMenu",
                 label: "Full Screen Menu",
                 type: "boolean/checkmark"
             },
