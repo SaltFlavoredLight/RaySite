@@ -1,3 +1,6 @@
+// READY! Merge on the flexEngine.js directly on next commit!
+
+
 const flexEngineDefaultAppearance = {
 	styleQuery: [{
 		name: "paddingTop",
@@ -193,10 +196,7 @@ const flexEngineStylesResolveRegistry = (elementMode) => {
 	};
 };
 
-const flexEngineStylesCreateBaseRegistry = (
-	elementRegistry,
-	categoryRegistry
-) => {
+const flexEngineStylesCreateBaseRegistry = (elementRegistry, categoryRegistry) => {
 	const getProcessor = (name) =>
 		typeof elementRegistry?.[name] === "function"
 			? elementRegistry[name]
@@ -276,12 +276,7 @@ const flexEngineStylesNormalizeExtras = (extras) => {
 	return normalized;
 };
 
-const flexEngineStylesProcessState = (
-	stateData,
-	stateName,
-	processorRegistry,
-	isVertical
-) => {
+const flexEngineStylesProcessState = (tateData, stateName, processorRegistry, isVertical) => {
 	if (!stateData || typeof stateData !== "object") {
 		return null;
 	}
@@ -316,12 +311,7 @@ const flexEngineStylesProcessState = (
 	};
 };
 
-const flexEngineStylesBuildClassName = (
-	prefix,
-	appearanceName,
-	position,
-	stateName
-) => {
+const flexEngineStylesBuildClassName = (prefix, appearanceName, position, stateName) => {
 	const cleanAppearance = String(appearanceName || "").replace(/^\./, "");
 
 	const stateSuffix = {
@@ -342,12 +332,7 @@ const flexEngineStylesBuildClassName = (
 	return `${prefix}-styles-${cleanAppearance}${stateSuffix}${targetSuffix}`;
 };
 
-const flexEngineStylingSystem = function (
-	dataArray,
-	node,
-	isVertical,
-	elementMode
-) {
+const flexEngineStylingSystem = function (dataArray, node, isVertical, elementMode) {
 	if (!node || !dataArray || typeof dataArray !== "object") {
 		return;
 	}
@@ -481,6 +466,7 @@ const flexEngineStylingSystem = function (
 // Sample here!
 debugger;
 const elementMode = "content/card";
+
 const BUILDER_CONFIG = {
 	classPrefix: "fx"
 };
@@ -630,4 +616,292 @@ const data = {
 		}
 	}
 };
-flexEngineStylingSystem(data, node, false, elementMode, );
+
+
+const dataSample2 = {
+    appearance: {
+
+        // The normal generated class
+        default: {
+
+            // The element itself
+            base: {
+
+                // Desktop/default
+                default: {
+                    style: {},
+                    size: {}
+                },
+
+                // Mobile
+                onMobile: {
+                    style: {},
+                    size: {}
+                },
+
+                // Hover
+                hover: {
+                    style: {},
+                    size: {}
+                },
+
+                // Hover + mobile
+                onMobileHover: {
+                    style: {},
+                    size: {}
+                }
+            },
+
+            // for his first chlid/
+            "1": {
+                // Desktop/default
+                default: {
+                    style: {},
+                    size: {}
+                },
+
+                // Mobile
+                onMobile: {
+                    style: {},
+                    size: {}
+                },
+
+                // Hover
+                hover: {
+                    style: {},
+                    size: {}
+                },
+
+                // Hover + mobile
+                onMobileHover: {
+                    style: {},
+                    size: {}
+                }
+            }
+        },
+
+        // onTop is simply another class
+        onTop: {
+
+            base: {
+                default: {
+                    style: {},
+                    size: {}
+                },
+
+                onMobile: {
+                    style: {},
+                    size: {}
+                },
+
+                hover: {
+                    style: {},
+                    size: {}
+                },
+
+                onMobileHover: {
+                    style: {},
+                    size: {}
+                }
+            },
+
+
+            // for his first chlid/
+            "1": {
+                // Desktop/default
+                default: {
+                    style: {},
+                    size: {}
+                },
+
+                // Mobile
+                onMobile: {
+                    style: {},
+                    size: {}
+                },
+
+                // Hover
+                hover: {
+                    style: {},
+                    size: {}
+                },
+
+                // Hover + mobile
+                onMobileHover: {
+                    style: {},
+                    size: {}
+                }
+            }            
+        }        
+    }
+};
+
+
+flexEngineStylingSystem(data, node, false, elementMode);
+// result is a HTML with classes atribute as {prefix}-styles-{class : default}-{none/onHover/onMobile/onMobileHover}-at{what?}
+
+/*
+## What is already correct
+
+The main processor priority is correct:
+
+```text
+element processor
+        ↓
+category processor
+        ↓
+empty fallback
+```
+
+So for:
+
+```js
+content.card.styleDefault
+```
+
+the card processor wins over:
+
+```js
+content.styleDefault
+```
+
+Your extra-target fallback is also correct:
+
+```text
+extra processor
+      ↓
+base processor
+```
+
+So:
+
+```js
+{
+	position: "2_1",
+	styleDefault: customStyle
+}
+```
+
+uses:
+
+```text
+customStyle
+```
+
+for `styleDefault`, while still inheriting:
+
+```text
+baseRegistry.styleMoblie
+baseRegistry.sizeDefault
+baseRegistry.sizeMoblie
+```
+
+That's a good design.
+
+Your state mapping is also internally consistent:
+
+```text
+default        -> default processors
+hover          -> default processors
+onMobile       -> mobile processors
+onMobileHover  -> mobile processors
+```
+
+And this merge:
+
+```js
+return {
+	...styleResult,
+	...sizeResult
+};
+```
+
+correctly gives size properties precedence when both processors return the same CSS property.
+
+---
+
+## One important structural point
+
+Your expected input needs to have this shape:
+
+```text
+appearance
+  └─ appearanceName
+      └─ targetPosition
+          └─ state
+              ├─ style
+              └─ size
+```
+
+For example:
+
+```js
+const data = {
+	appearance: {
+		default: {
+			base: {
+				default: {
+					style: {...},
+					size: {...}
+				},
+				hover: {
+					style: {...},
+					size: {...}
+				},
+				onMobile: {
+					style: {...},
+					size: {...}
+				}
+			},
+
+			"2_1": {
+				default: {
+					style: {...},
+					size: {...}
+				}
+			}
+		},
+
+		".featured": {
+			base: {
+				default: {
+					style: {...},
+					size: {...}
+				}
+			}
+		}
+	}
+};
+```
+
+With your current engine, that structure is compatible with the processing logic.
+
+### Bottom line
+
+**The core engine is correct**, but I would definitely fix the **default appearance naming**, remove the undeclared `elementMode` assignment, and correct the misleading `height: undefined` example.
+
+The most important change is this:
+
+```js
+const appearanceSuffix =
+	cleanAppearance === "default"
+		? ""
+		: `-${cleanAppearance}`;
+```
+
+That gives you a clean base attribute:
+
+```text
+fx-styles
+```
+
+while named appearances remain:
+
+```text
+fx-styles-featured
+fx-styles-primary
+fx-styles-card
+```
+
+and states/targets continue to append normally.
+*/
