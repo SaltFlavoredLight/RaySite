@@ -194,11 +194,11 @@ const header = {
                         value: 2
                     },
                     {
-                        name: "Left Menu Cover",
+                        name: "Left Menu Expend",
                         value: 3
                     },
                     {
-                        name: "Right Menu Cover",
+                        name: "Right Menu Expend",
                         value: 4
                     },
                     {
@@ -206,7 +206,7 @@ const header = {
                         value: 5
                     },
                     {
-                        name: "Center Cover",
+                        name: "Center Slide",
                         value: 6
                     }
                 ]
