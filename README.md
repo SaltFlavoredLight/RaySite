@@ -1,3 +1,5 @@
 # Hi!
 
 this is offical repo of RaySite.
+
+>  Love the Lord your God with all your heart and with all your soul and with all your mind.
