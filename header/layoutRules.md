@@ -34,7 +34,8 @@ everything inherit, BUT treat Moblie as mode 1-6 version of the setting (therefo
 
 
 ### Layout:
-(Both-seperate) Header it's self - have max inner width, and main gap, and seperate border space.
+(Desktop Only) Header it's self - have max inner width, and main gap, and seperate border space.
+for moblie, there only have main gap apply.
 
 (None) Logo and CTA don't apply anything, becuase again, things don't apply. 
 
