@@ -1,0 +1,654 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AlphaEscape Converter</title>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Cardo', serif;
+            margin: auto;
+        }
+
+        button {
+            font-size: large;
+            padding: 5px;
+            width: 350px;
+        }
+
+        table, th, td {
+            border: 1px solid #212121;
+            border-collapse: collapse;
+        }
+
+        .stackThinking {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            border: 1px solid #212121;
+            width: 600px;
+        }
+
+        .stackThinking div {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            border-right: 1px solid #212121;
+            height: 50px;
+            min-width: 50px;
+            justify-content: center;
+            font-size: 25px;
+        }
+
+        button {
+            padding: 6px 30px;
+            min-width: 40px;
+            font-size: large;
+        }
+
+        hr {
+            width: calc(100% - 30px);
+            margin: 30px;
+        }
+
+        textarea {
+            width: 600px;
+            max-width: calc(100% - 30px);
+            height: 150px;
+            font-family: monospace;
+            font-size: 18px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px;
+        }
+
+        .buttons button {
+            width: auto;
+        }
+
+        #result {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .examples,
+        .mappingTable {
+            margin-top: 20px;
+            width: 700px;
+            max-width: calc(100% - 30px);
+        }
+
+        .examples th,
+        .examples td,
+        .mappingTable th,
+        .mappingTable td {
+            padding: 8px 15px;
+            text-align: center;
+        }
+
+        .mapping-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        code {
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>AlphaEscape Converter</h1>
+
+    <p>String ↔ AlphaEscape</p>
+
+    <textarea
+        id="input"
+        placeholder="Enter your string or AlphaEscape text here..."
+    ></textarea>
+
+    <div class="buttons">
+        <button onclick="convertToAlphaEscape()">
+            To AlphaEscape
+        </button>
+
+        <button onclick="convertFromAlphaEscape()">
+            From AlphaEscape
+        </button>
+    </div>
+
+    <hr>
+
+    <h2>Result</h2>
+
+    <textarea id="result" readonly></textarea>
+
+
+    <!-- =====================================================
+         EXAMPLES
+         ===================================================== -->
+
+    <h2>Examples</h2>
+
+    <table class="examples">
+
+        <tr>
+            <th>Original</th>
+            <th>AlphaEscape</th>
+        </tr>
+
+        <tr>
+            <td>god</td>
+            <td>god</td>
+        </tr>
+
+        <tr>
+            <td>creation</td>
+            <td>creation</td>
+        </tr>
+
+        <tr>
+            <td>under_score</td>
+            <td>under_u_score</td>
+        </tr>
+
+        <tr>
+            <td>dash-</td>
+            <td>dash_h_</td>
+        </tr>
+
+        <tr>
+            <td>..</td>
+            <td>_d__d_</td>
+        </tr>
+
+        <tr>
+            <td>@ray</td>
+            <td>_a_ray</td>
+        </tr>
+
+        <tr>
+            <td>Good Job!</td>
+            <td>Good_s_Job_e_</td>
+        </tr>
+
+        <tr>
+            <td>a+b/c</td>
+            <td>a_plus_b_slash_c</td>
+        </tr>
+
+        <tr>
+            <td>`hello~`</td>
+            <td>_bt_hello_tilde_</td>
+        </tr>
+
+        <tr>
+            <td>Hello<br>World</td>
+            <td>Hello_nl_World</td>
+        </tr>
+
+        <tr>
+            <td>Line 1&nbsp;&nbsp;&nbsp;Line 2</td>
+            <td>Line_tab_1</td>
+        </tr>
+
+    </table>
+
+
+    <hr>
+
+
+    <!-- =====================================================
+         MAPPING INFO
+         ===================================================== -->
+
+    <section class="mapping-section">
+
+        <h2>Mapping Info</h2>
+
+        <p>
+            Only <code>A-Z</code>, <code>a-z</code>, and
+            <code>0-9</code> stay unchanged.
+            Every other mapped character is represented as
+            <code>_code_</code>.
+        </p>
+
+        <p>
+            Unicode characters that do not have a special mapping
+            use <code>_x######_</code>.
+        </p>
+
+        <table class="mappingTable">
+
+            <thead>
+                <tr>
+                    <th>Character</th>
+                    <th>Code</th>
+                    <th>AlphaEscape</th>
+                </tr>
+            </thead>
+
+            <tbody id="mappingBody"></tbody>
+
+        </table>
+
+    </section>
+
+
+<script>
+
+/*
+ * ============================================================
+ * ALPHAESCAPE CHARACTER MAPPING
+ * ============================================================
+ *
+ * Safe characters:
+ *
+ *     A-Z
+ *     a-z
+ *     0-9
+ *
+ * stay unchanged.
+ *
+ * Everything else gets a special code.
+ */
+
+const specialCharacters = {
+
+    "!": "e",
+    "@": "a",
+    "#": "n",
+    "$": "m",
+    "%": "p",
+    "^": "c",
+    "&": "and",
+    "*": "star",
+
+    "(": "lp",
+    ")": "rp",
+
+    "_": "u",
+    "+": "plus",
+
+    "{": "lb",
+    "}": "rb",
+
+    "|": "pipe",
+
+    "\"": "dq",
+    ":": "colon",
+    "?": "q",
+    ">": "gt",
+    "<": "lt",
+
+    "-": "h",
+    "=": "eq",
+
+    "\\": "bs",
+
+    "]": "rsb",
+    "[": "lsb",
+
+    "'": "sq",
+    ";": "semi",
+    "/": "slash",
+    ".": "d",
+    ",": "comma",
+
+    "`": "bt",
+    "~": "tilde",
+
+    " ": "s",
+
+    /*
+     * Whitespace controls
+     */
+    "\n": "nl",
+    "\r": "cr",
+    "\t": "tab"
+};
+
+
+/*
+ * ============================================================
+ * REVERSE MAPPING
+ * ============================================================
+ */
+
+const reverseCharacters = Object.fromEntries(
+    Object.entries(specialCharacters).map(
+        ([character, code]) => [code, character]
+    )
+);
+
+
+/*
+ * ============================================================
+ * SAFE CHARACTER CHECK
+ * ============================================================
+ */
+
+function isSafeCharacter(character) {
+    return /^[A-Za-z0-9]$/.test(character);
+}
+
+
+/*
+ * ============================================================
+ * UNICODE ENCODER
+ * ============================================================
+ *
+ * Every Unicode fallback uses exactly 6 hex digits.
+ *
+ * Examples:
+ *
+ *     é  -> _x0000E9_
+ *     ♥  -> _x002665_
+ *     中 -> _x004E2D_
+ *
+ * This prevents something like "_xa_" from being mistaken
+ * for a Unicode escape.
+ */
+
+function encodeUnicode(character) {
+
+    const codePoint =
+        character.codePointAt(0);
+
+    const hex =
+        codePoint
+            .toString(16)
+            .toUpperCase()
+            .padStart(6, "0");
+
+    return "_x" + hex + "_";
+}
+
+
+/*
+ * ============================================================
+ * UNICODE DECODER
+ * ============================================================
+ *
+ * Only exactly 6 hexadecimal digits are accepted.
+ *
+ * Therefore:
+ *
+ *     _x00000A_ -> newline
+ *
+ * but:
+ *
+ *     _xa_
+ *
+ * is NOT treated as Unicode.
+ */
+
+function decodeUnicode(code) {
+
+    if (!/^x[0-9A-Fa-f]{6}$/.test(code)) {
+        return null;
+    }
+
+    const hex = code.slice(1);
+
+    const codePoint =
+        parseInt(hex, 16);
+
+    /*
+     * Unicode currently ends at U+10FFFF.
+     */
+    if (codePoint > 0x10FFFF) {
+        return null;
+    }
+
+    try {
+        return String.fromCodePoint(codePoint);
+    }
+    catch {
+        return null;
+    }
+}
+
+
+/*
+ * ============================================================
+ * FUNCTION 1
+ * STRING -> ALPHAESCAPE
+ * ============================================================
+ */
+
+function toAlphaEscape(string) {
+
+    let result = "";
+
+    for (const character of string) {
+
+        /*
+         * A-Z / a-z / 0-9
+         */
+        if (isSafeCharacter(character)) {
+
+            result += character;
+
+            continue;
+        }
+
+
+        /*
+         * Known special character.
+         */
+        if (
+            Object.prototype.hasOwnProperty.call(
+                specialCharacters,
+                character
+            )
+        ) {
+
+            result += "_"
+                + specialCharacters[character]
+                + "_";
+
+            continue;
+        }
+
+
+        /*
+         * Any other Unicode character.
+         */
+        result += encodeUnicode(character);
+    }
+
+    return result;
+}
+
+
+/*
+ * ============================================================
+ * FUNCTION 2
+ * ALPHAESCAPE -> STRING
+ * ============================================================
+ */
+
+function fromAlphaEscape(string) {
+
+    return string.replace(
+        /_([^_]+)_/g,
+        (match, code) => {
+
+            /*
+             * Normal mapped character.
+             */
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    reverseCharacters,
+                    code
+                )
+            ) {
+
+                return reverseCharacters[code];
+            }
+
+
+            /*
+             * Unicode fallback.
+             */
+            const unicode =
+                decodeUnicode(code);
+
+            if (unicode !== null) {
+                return unicode;
+            }
+
+
+            /*
+             * Unknown AlphaEscape sequence.
+             *
+             * Example:
+             *
+             *     _xa_
+             *
+             * stays exactly as:
+             *
+             *     _xa_
+             */
+            return match;
+        }
+    );
+}
+
+
+/*
+ * ============================================================
+ * CONVERTER BUTTONS
+ * ============================================================
+ */
+
+function convertToAlphaEscape() {
+
+    const input =
+        document.getElementById("input").value;
+
+    document.getElementById("result").value =
+        toAlphaEscape(input);
+}
+
+
+function convertFromAlphaEscape() {
+
+    const input =
+        document.getElementById("input").value;
+
+    document.getElementById("result").value =
+        fromAlphaEscape(input);
+}
+
+
+/*
+ * ============================================================
+ * GENERATE MAPPING TABLE
+ * ============================================================
+ */
+
+function createMappingTable() {
+
+    const body =
+        document.getElementById("mappingBody");
+
+    body.innerHTML = "";
+
+
+    for (
+        const [character, code]
+        of Object.entries(specialCharacters)
+    ) {
+
+        const row =
+            document.createElement("tr");
+
+
+        const characterCell =
+            document.createElement("td");
+
+        const codeCell =
+            document.createElement("td");
+
+        const formCell =
+            document.createElement("td");
+
+
+        /*
+         * Make invisible/control characters readable.
+         */
+        switch (character) {
+
+            case " ":
+                characterCell.textContent =
+                    "[space]";
+                break;
+
+            case "\n":
+                characterCell.textContent =
+                    "[newline]";
+                break;
+
+            case "\r":
+                characterCell.textContent =
+                    "[carriage return]";
+                break;
+
+            case "\t":
+                characterCell.textContent =
+                    "[tab]";
+                break;
+
+            default:
+                characterCell.textContent =
+                    character;
+        }
+
+
+        codeCell.textContent =
+            code;
+
+        formCell.textContent =
+            "_" + code + "_";
+
+
+        row.appendChild(characterCell);
+        row.appendChild(codeCell);
+        row.appendChild(formCell);
+
+        body.appendChild(row);
+    }
+}
+
+
+/*
+ * ============================================================
+ * START
+ * ============================================================
+ */
+
+createMappingTable();
+
+</script>
+
+</body>
+</html>
+```
