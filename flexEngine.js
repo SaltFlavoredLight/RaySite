@@ -56,7 +56,6 @@ const flexEngineCheckContext = function(contextSetting, label) {
 	return list.includes(label);
 };
 
-
 /**
  * ------------------------------------------------------------------------------ 
  * LEGACY MODULE
@@ -225,440 +224,216 @@ const flexEngineStyleVarible = {
 
 /**
  * ------------------------------------------------------------------------------
- * Flie System for Website
+ * AlphaEscape System
  * 
- * a 2 part program where 1 provide a vitual File System
- * and another program edit Theme, Assets and Many More.
- * Important Module since it's foundation of Module 
+ * the system that convert the system like "@content-sample" to "_a_content_h_sample" 
+ * to prevent HTML problems.
+ *  
  * Last Update: 1.0.0
  * ------------------------------------------------------------------------------
  */
 
 
-class openDBFlieMaagement {
+// default mapping
+const specialCharacters = {
 
-    constructor(dbName = 'ZipContainerDB', storeName = 'files') {
-        this.dbName = dbName;
-        this.storeName = storeName;
-        this.db = null;
-    }
+    "!": "e",
+    "@": "a",
+    "#": "n",
+    "$": "m",
+    "%": "p",
+    "^": "c",
+    "&": "and",
+    "*": "star",
 
-    _normalizePath(path) {
-        return path.startsWith('/') ? path : '/' + path;
-    }
+    "(": "lp",
+    ")": "rp",
 
-    async _checkPersistence() {
-        if (navigator.storage && navigator.storage.persisted) {
-            let isPersisted = await navigator.storage.persisted();
-            if (!isPersisted && navigator.storage.persist) {
+    "_": "u",
+    "+": "plus",
 
-                isPersisted = await navigator.storage.persist();
-            }
-            return isPersisted;
-        }
-        return false;
-    }
+    "{": "lb",
+    "}": "rb",
 
-    async _execute(actionFunc) {
-        try {
-            const data = await actionFunc();
-            const isPersistent = await this._checkPersistence();
-            return {
-                code: isPersistent ? 0 : 2,
-                data: data
-            };
-        } catch (error) {
-            console.error("[ZipContainer Error]:", error);
-            return {
-                code: 1,
-                error: error.message || "Unknown error occurred"
-            };
-        }
-    }
+    "|": "pipe",
 
-    async register() {
-        return this._execute(async () => {
-            this.db = await openDB(this.dbName, 1, {
-                upgrade: (db) => {
-                    if (!db.objectStoreNames.contains(this.storeName)) {
-                        db.createObjectStore(this.storeName);
-                    }
-                },
-            });
-            return { message: "Database registered and connected successfully." };
-        });
-    }
+    "\"": "dq",
+    ":": "colon",
+    "?": "q",
+    ">": "gt",
+    "<": "lt",
 
-    async read(path) {
-        return this._execute(async () => {
-            const normPath = this._normalizePath(path);
-            const data = await this.db.get(this.storeName, normPath);
-            return data;
-        });
-    }
+    "-": "h",
+    "=": "eq",
 
-    async add(path, fileData) {
-        return this._execute(async () => {
-            const normPath = this._normalizePath(path);
-            await this.db.put(this.storeName, fileData, normPath);
-            return { path: normPath, status: "Added/Replaced" };
-        });
-    }
+    "\\": "bs",
 
-    async edit(path, fileData) {
-        return this.add(path, fileData);
-    }
+    "]": "rsb",
+    "[": "lsb",
 
-    async change(path, fileData) {
-        return this.add(path, fileData);
-    }
+    "'": "sq",
+    ";": "semi",
+    "/": "slash",
+    ".": "d",
+    ",": "comma",
 
-    async bulkAdd(files) {
-        return this._execute(async () => {
-            const tx = this.db.transaction(this.storeName, 'readwrite');
-            const store = tx.objectStore(this.storeName);
+    "`": "bt",
+    "~": "tilde",
 
-            const promises = files.map(file => {
-                const normPath = this._normalizePath(file.path);
-                return store.put(file.data, normPath);
-            });
+    " ": "s",
 
-            await Promise.all([...promises, tx.done]);
-            return { addedCount: files.length };
-        });
-    }
-
-    async delete(path) {
-        return this._execute(async () => {
-            const normPath = this._normalizePath(path);
-            await this.db.delete(this.storeName, normPath);
-            return { path: normPath, status: "Deleted" };
-        });
-    }
-
-    async clear() {
-        return this._execute(async () => {
-            await this.db.clear(this.storeName);
-            return { status: "Database cleared completely." };
-        });
-    }
-
-    async list() {
-        return this._execute(async () => {
-            const keys = await this.db.getAllKeys(this.storeName);
-            return keys;
-        });
-    }
-
-    async importZip(zipBlob) {
-        return this._execute(async () => {
-            const zip = new JSZip();
-            const loadedZip = await zip.loadAsync(zipBlob);
-            const filesToAdd = [];
-            const readPromises = [];
-
-            loadedZip.forEach((relativePath, zipEntry) => {
-                if (!zipEntry.dir) {
-                    readPromises.push(
-                        zipEntry.async('blob').then(blob => {
-                            filesToAdd.push({
-                                path: '/' + relativePath, 
-                                data: blob
-                            });
-                        })
-                    );
-                }
-            });
-
-            await Promise.all(readPromises);
-
-            const tx = this.db.transaction(this.storeName, 'readwrite');
-            const store = tx.objectStore(this.storeName);
-            filesToAdd.forEach(file => {
-                store.put(file.data, file.path);
-            });
-            await tx.done;
-
-            return { importedCount: filesToAdd.length };
-        });
-    }
-
-    async exportZip() {
-        return this._execute(async () => {
-            const zip = new JSZip();
-            const tx = this.db.transaction(this.storeName, 'readonly');
-            const store = tx.objectStore(this.storeName);
-
-            let cursor = await store.openCursor();
-            let fileCount = 0;
-
-            while (cursor) {
-                const path = cursor.key;
-                const data = cursor.value;
-
-                const zipPath = path.startsWith('/') ? path.slice(1) : path;
-                zip.file(zipPath, data);
-
-                fileCount++;
-                cursor = await cursor.continue();
-            }
-
-            const blob = await zip.generateAsync({ type: 'blob' });
-            return { 
-                blob: blob,
-                exportedCount: fileCount,
-                filename: `export_${new Date().getTime()}.zip`
-            };
-        });
-    }
+    "\n": "nl",
+    "\r": "cr",
+    "\t": "tab"
 };
 
-export class FlexEngineFileSystem {
-    constructor(dbName = 'ZipContainerDB', storeName = 'files') {
-        this.zipManager = new openDBFlieMaagement(dbName, storeName);
-    }
+// reverse mapping
+const reverseCharacters = Object.fromEntries(
+    Object.entries(specialCharacters).map(
+        ([character, code]) => [code, character]
+    )
+);
 
-    async init() {
-        return await this.zipManager.register();
-    }
+// use a function check.
+function isSafeCharacter(character) {
+    return /^[A-Za-z0-9]$/.test(character);
+}
 
+// unicode encoder
+function encodeUnicode(character) {
 
-    _routeToPagePath(route) {
-        let cleanRoute = route.trim();
-        if (cleanRoute === '404' || cleanRoute === '/404') {
-            return '/pages/404.json';
-        }
-        if (cleanRoute.startsWith('/')) {
-            cleanRoute = cleanRoute.substring(1);
-        }
-        if (cleanRoute === '') {
-            return '/pages/_.json';
-        }
-        const filename = '_' + cleanRoute.replace(/\//g, '_') + '.json';
-        return `/pages/${filename}`;
-    }
+    const codePoint =
+        character.codePointAt(0);
 
-    _pagePathToRoute(filePath) {
-        const parts = filePath.split('/');
-        const filename = parts[parts.length - 1];
+    const hex =
+        codePoint
+            .toString(16)
+            .toUpperCase()
+            .padStart(6, "0");
 
-        if (filename === '404.json') {
-            return '404';
-        }
+    return "_x" + hex + "_";
+}
 
-        if (filename === '_.json') {
-            return '/';
-        }
+// Unicode decoder
+function decodeUnicode(code) {
 
-        if (filename.startsWith('_') && filename.endsWith('.json')) {
-            const rawName = filename.slice(1, -5);
-            return '/' + rawName.replace(/_/g, '/');
-        }
-
+    if (!/^x[0-9A-Fa-f]{6}$/.test(code)) {
         return null;
     }
 
-    async _readJson(path) {
-        const res = await this.zipManager.read(path);
-        if (res.code === 1) return res;
-        if (!res.data) {
-            return { code: 1, error: `File not found at path: ${path}` };
+    const hex = code.slice(1);
+
+    const codePoint =
+        parseInt(hex, 16);
+
+    /*
+     * Unicode currently ends at U+10FFFF.
+     */
+    if (codePoint > 0x10FFFF) {
+        return null;
+    }
+
+    try {
+        return String.fromCodePoint(codePoint);
+    }
+    catch {
+        return null;
+    }
+}
+
+// Core function: encode
+export function toAlphaEscape(string) {
+
+    let result = "";
+
+    for (const character of string) {
+
+        /*
+         * A-Z / a-z / 0-9
+         */
+        if (isSafeCharacter(character)) {
+
+            result += character;
+
+            continue;
         }
 
-        try {
-            let jsonText = '';
-            if (typeof res.data === 'string') {
-                jsonText = res.data;
-            } else if (res.data instanceof Blob) {
-                jsonText = await res.data.text();
-            } else {
-                return { code: res.code, data: res.data };
+
+        /*
+         * Known special character.
+         */
+        if (
+            Object.prototype.hasOwnProperty.call(
+                specialCharacters,
+                character
+            )
+        ) {
+
+            result += "_"
+                + specialCharacters[character]
+                + "_";
+
+            continue;
+        }
+
+
+        /*
+         * Any other Unicode character.
+         */
+        result += encodeUnicode(character);
+    }
+
+    return result;
+}
+
+// decode the system
+export function fromAlphaEscape(string) {
+
+    return string.replace(
+        /_([^_]+)_/g,
+        (match, code) => {
+
+            /*
+             * Normal mapped character.
+             */
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    reverseCharacters,
+                    code
+                )
+            ) {
+
+                return reverseCharacters[code];
             }
-            const parsed = JSON.parse(jsonText);
-            return { code: res.code, data: parsed };
-        } catch (e) {
-            return { code: 1, error: `Failed to parse JSON at path: ${path}. ${e.message}` };
+
+
+            /*
+             * Unicode fallback.
+             */
+            const unicode =
+                decodeUnicode(code);
+
+            if (unicode !== null) {
+                return unicode;
+            }
+
+
+            /*
+             * Unknown AlphaEscape sequence.
+             *
+             * Example:
+             *
+             *     _xa_
+             *
+             * stays exactly as:
+             *
+             *     _xa_
+             */
+            return match;
         }
-    }
+    );
+}
 
-    async _writeJson(path, jsonData) {
-        let textData = '';
-        if (typeof jsonData === 'string') {
-            textData = jsonData;
-        } else {
-            textData = JSON.stringify(jsonData, null, 2);
-        }
-        const blob = new Blob([textData], { type: 'application/json' });
-        return await this.zipManager.add(path, blob);
-    }
-
-
-
-    async listPages() {
-        const res = await this.zipManager.list();
-        if (res.code === 1) return res;
-
-        const allPaths = res.data || [];
-        const routes = allPaths
-            .filter(p => p.startsWith('/pages/') && p.endsWith('.json'))
-            .map(p => this._pagePathToRoute(p))
-            .filter(Boolean);
-
-        return { code: res.code, data: routes };
-    }
-
-    async readPage(route) {
-        const filePath = this._routeToPagePath(route);
-        return await this._readJson(filePath);
-    }
-
-    async updatePage(route, pageData) {
-        const filePath = this._routeToPagePath(route);
-        return await this._writeJson(filePath, pageData);
-    }
-
-    async deletePage(route) {
-        const filePath = this._routeToPagePath(route);
-        return await this.zipManager.delete(filePath);
-    }
-
-
-
-    async listAssets(folderPath = '') {
-        const res = await this.zipManager.list();
-        if (res.code === 1) return res;
-
-        let cleanFolder = folderPath.trim();
-        if (!cleanFolder.startsWith('/')) cleanFolder = '/' + cleanFolder;
-        if (!cleanFolder.startsWith('/assets')) cleanFolder = '/assets' + cleanFolder;
-        if (!cleanFolder.endsWith('/')) cleanFolder += '/';
-
-        const allPaths = res.data || [];
-        const assets = allPaths.filter(p => p.startsWith(cleanFolder));
-
-        const formattedAssets = assets.map(p => p.replace(/^\/assets/, ''));
-
-        return { code: res.code, data: formattedAssets };
-    }
-
-    async updateAsset(assetPath, assetData) {
-        const cleanPath = assetPath.startsWith('/') ? assetPath : '/' + assetPath;
-        const fullPath = `/assets${cleanPath}`;
-        return await this.zipManager.add(fullPath, assetData);
-    }
-
-    async deleteAsset(assetPath) {
-        const cleanPath = assetPath.startsWith('/') ? assetPath : '/' + assetPath;
-        const fullPath = `/assets${cleanPath}`;
-        return await this.zipManager.delete(fullPath);
-    }
-
-    async readAsset(assetPath) {
-        const cleanPath = assetPath.startsWith('/') ? assetPath : '/' + assetPath;
-        const fullPath = `/assets${cleanPath}`;
-        return await this.zipManager.read(fullPath);
-    }
-
-
-
-    async listThemes() {
-        const res = await this.zipManager.list();
-        if (res.code === 1) return res;
-
-        const allPaths = res.data || [];
-        const themes = allPaths
-            .filter(p => p.startsWith('/themes/') && p.endsWith('.json'))
-            .map(p => p.replace('/themes/', '').replace('.json', ''));
-
-        return { code: res.code, data: themes };
-    }
-
-    async readTheme(themeName) {
-        const cleanName = themeName.replace('.json', '');
-        const filePath = `/themes/${cleanName}.json`;
-        return await this._readJson(filePath);
-    }
-
-    async updateTheme(themeName, themeData) {
-        const cleanName = themeName.replace('.json', '');
-        const filePath = `/themes/${cleanName}.json`;
-        return await this._writeJson(filePath, themeData);
-    }
-
-    async deleteTheme(themeName) {
-        const cleanName = themeName.replace('.json', '');
-        const filePath = `/themes/${cleanName}.json`;
-        return await this.zipManager.delete(filePath);
-    }
-
-
-
-    async listComponents() {
-        const res = await this.zipManager.list();
-        if (res.code === 1) return res;
-
-        const allPaths = res.data || [];
-        const components = allPaths
-            .filter(p => p.startsWith('/componets/') && p.endsWith('.json'))
-            .map(p => p.replace('/componets/', '').replace('.json', ''));
-
-        return { code: res.code, data: components };
-    }
-
-    async readComponent(componentName) {
-        const cleanName = componentName.replace('.json', '');
-        const filePath = `/componets/${cleanName}.json`;
-        return await this._readJson(filePath);
-    }
-
-    async updateComponent(componentName, componentData) {
-        const cleanName = componentName.replace('.json', '');
-        const filePath = `/componets/${cleanName}.json`;
-        return await this._writeJson(filePath, componentData);
-    }
-
-    async deleteComponent(componentName) {
-        const cleanName = componentName.replace('.json', '');
-        const filePath = `/componets/${cleanName}.json`;
-        return await this.zipManager.delete(filePath);
-    }
-
-
-
-    async readMain() {
-        return await this._readJson('/main.json');
-    }
-
-    async updateMain(mainData) {
-        return await this._writeJson('/main.json', mainData);
-    }
-
-
-
-    async exportFile() {
-        return await this.zipManager.exportZip();
-    }
-
-    async deleteWholeFile() {
-        return await this.zipManager.clear();
-    }
-
-    async importZipFile(zipBlob) {
-        const listRes = await this.zipManager.list();
-        if (listRes.code === 1) {
-            return listRes;
-        }
-
-        if (listRes.data && listRes.data.length > 0) {
-            return {
-                code: 1,
-                error: "Cannot import zip: Storage is not empty. Delete whole file first."
-            };
-        }
-
-        return await this.zipManager.importZip(zipBlob);
-    }
-};
 
 
 
@@ -1159,6 +934,447 @@ export class CubicBezierEditor {
         this._redraw();
     }
 }
+
+
+
+
+/**
+ * ------------------------------------------------------------------------------
+ * Flie System for Website
+ * 
+ * a 2 part program where 1 provide a vitual File System
+ * and another program edit Theme, Assets and Many More.
+ * Important Module since it's foundation of Module 
+ * Last Update: 1.0.0
+ * ------------------------------------------------------------------------------
+ */
+
+
+class openDBFlieMaagement {
+
+    constructor(dbName = 'ZipContainerDB', storeName = 'files') {
+        this.dbName = dbName;
+        this.storeName = storeName;
+        this.db = null;
+    }
+
+    _normalizePath(path) {
+        return path.startsWith('/') ? path : '/' + path;
+    }
+
+    async _checkPersistence() {
+        if (navigator.storage && navigator.storage.persisted) {
+            let isPersisted = await navigator.storage.persisted();
+            if (!isPersisted && navigator.storage.persist) {
+
+                isPersisted = await navigator.storage.persist();
+            }
+            return isPersisted;
+        }
+        return false;
+    }
+
+    async _execute(actionFunc) {
+        try {
+            const data = await actionFunc();
+            const isPersistent = await this._checkPersistence();
+            return {
+                code: isPersistent ? 0 : 2,
+                data: data
+            };
+        } catch (error) {
+            console.error("[ZipContainer Error]:", error);
+            return {
+                code: 1,
+                error: error.message || "Unknown error occurred"
+            };
+        }
+    }
+
+    async register() {
+        return this._execute(async () => {
+            this.db = await openDB(this.dbName, 1, {
+                upgrade: (db) => {
+                    if (!db.objectStoreNames.contains(this.storeName)) {
+                        db.createObjectStore(this.storeName);
+                    }
+                },
+            });
+            return { message: "Database registered and connected successfully." };
+        });
+    }
+
+    async read(path) {
+        return this._execute(async () => {
+            const normPath = this._normalizePath(path);
+            const data = await this.db.get(this.storeName, normPath);
+            return data;
+        });
+    }
+
+    async add(path, fileData) {
+        return this._execute(async () => {
+            const normPath = this._normalizePath(path);
+            await this.db.put(this.storeName, fileData, normPath);
+            return { path: normPath, status: "Added/Replaced" };
+        });
+    }
+
+    async edit(path, fileData) {
+        return this.add(path, fileData);
+    }
+
+    async change(path, fileData) {
+        return this.add(path, fileData);
+    }
+
+    async bulkAdd(files) {
+        return this._execute(async () => {
+            const tx = this.db.transaction(this.storeName, 'readwrite');
+            const store = tx.objectStore(this.storeName);
+
+            const promises = files.map(file => {
+                const normPath = this._normalizePath(file.path);
+                return store.put(file.data, normPath);
+            });
+
+            await Promise.all([...promises, tx.done]);
+            return { addedCount: files.length };
+        });
+    }
+
+    async delete(path) {
+        return this._execute(async () => {
+            const normPath = this._normalizePath(path);
+            await this.db.delete(this.storeName, normPath);
+            return { path: normPath, status: "Deleted" };
+        });
+    }
+
+    async clear() {
+        return this._execute(async () => {
+            await this.db.clear(this.storeName);
+            return { status: "Database cleared completely." };
+        });
+    }
+
+    async list() {
+        return this._execute(async () => {
+            const keys = await this.db.getAllKeys(this.storeName);
+            return keys;
+        });
+    }
+
+    async importZip(zipBlob) {
+        return this._execute(async () => {
+            const zip = new JSZip();
+            const loadedZip = await zip.loadAsync(zipBlob);
+            const filesToAdd = [];
+            const readPromises = [];
+
+            loadedZip.forEach((relativePath, zipEntry) => {
+                if (!zipEntry.dir) {
+                    readPromises.push(
+                        zipEntry.async('blob').then(blob => {
+                            filesToAdd.push({
+                                path: '/' + relativePath, 
+                                data: blob
+                            });
+                        })
+                    );
+                }
+            });
+
+            await Promise.all(readPromises);
+
+            const tx = this.db.transaction(this.storeName, 'readwrite');
+            const store = tx.objectStore(this.storeName);
+            filesToAdd.forEach(file => {
+                store.put(file.data, file.path);
+            });
+            await tx.done;
+
+            return { importedCount: filesToAdd.length };
+        });
+    }
+
+    async exportZip() {
+        return this._execute(async () => {
+            const zip = new JSZip();
+            const tx = this.db.transaction(this.storeName, 'readonly');
+            const store = tx.objectStore(this.storeName);
+
+            let cursor = await store.openCursor();
+            let fileCount = 0;
+
+            while (cursor) {
+                const path = cursor.key;
+                const data = cursor.value;
+
+                const zipPath = path.startsWith('/') ? path.slice(1) : path;
+                zip.file(zipPath, data);
+
+                fileCount++;
+                cursor = await cursor.continue();
+            }
+
+            const blob = await zip.generateAsync({ type: 'blob' });
+            return { 
+                blob: blob,
+                exportedCount: fileCount,
+                filename: `export_${new Date().getTime()}.zip`
+            };
+        });
+    }
+};
+
+export class FlexEngineFileSystem {
+    constructor(dbName = 'ZipContainerDB', storeName = 'files') {
+        this.zipManager = new openDBFlieMaagement(dbName, storeName);
+    }
+
+    async init() {
+        return await this.zipManager.register();
+    }
+
+
+    _routeToPagePath(route) {
+        let cleanRoute = route.trim();
+        if (cleanRoute === '404' || cleanRoute === '/404') {
+            return '/pages/404.json';
+        }
+        if (cleanRoute.startsWith('/')) {
+            cleanRoute = cleanRoute.substring(1);
+        }
+        if (cleanRoute === '') {
+            return '/pages/_.json';
+        }
+        const filename = '_' + cleanRoute.replace(/\//g, '_') + '.json';
+        return `/pages/${filename}`;
+    }
+
+    _pagePathToRoute(filePath) {
+        const parts = filePath.split('/');
+        const filename = parts[parts.length - 1];
+
+        if (filename === '404.json') {
+            return '404';
+        }
+
+        if (filename === '_.json') {
+            return '/';
+        }
+
+        if (filename.startsWith('_') && filename.endsWith('.json')) {
+            const rawName = filename.slice(1, -5);
+            return '/' + rawName.replace(/_/g, '/');
+        }
+
+        return null;
+    }
+
+    async _readJson(path) {
+        const res = await this.zipManager.read(path);
+        if (res.code === 1) return res;
+        if (!res.data) {
+            return { code: 1, error: `File not found at path: ${path}` };
+        }
+
+        try {
+            let jsonText = '';
+            if (typeof res.data === 'string') {
+                jsonText = res.data;
+            } else if (res.data instanceof Blob) {
+                jsonText = await res.data.text();
+            } else {
+                return { code: res.code, data: res.data };
+            }
+            const parsed = JSON.parse(jsonText);
+            return { code: res.code, data: parsed };
+        } catch (e) {
+            return { code: 1, error: `Failed to parse JSON at path: ${path}. ${e.message}` };
+        }
+    }
+
+    async _writeJson(path, jsonData) {
+        let textData = '';
+        if (typeof jsonData === 'string') {
+            textData = jsonData;
+        } else {
+            textData = JSON.stringify(jsonData, null, 2);
+        }
+        const blob = new Blob([textData], { type: 'application/json' });
+        return await this.zipManager.add(path, blob);
+    }
+
+
+
+    async listPages() {
+        const res = await this.zipManager.list();
+        if (res.code === 1) return res;
+
+        const allPaths = res.data || [];
+        const routes = allPaths
+            .filter(p => p.startsWith('/pages/') && p.endsWith('.json'))
+            .map(p => this._pagePathToRoute(p))
+            .filter(Boolean);
+
+        return { code: res.code, data: routes };
+    }
+
+    async readPage(route) {
+        const filePath = this._routeToPagePath(route);
+        return await this._readJson(filePath);
+    }
+
+    async updatePage(route, pageData) {
+        const filePath = this._routeToPagePath(route);
+        return await this._writeJson(filePath, pageData);
+    }
+
+    async deletePage(route) {
+        const filePath = this._routeToPagePath(route);
+        return await this.zipManager.delete(filePath);
+    }
+
+
+
+    async listAssets(folderPath = '') {
+        const res = await this.zipManager.list();
+        if (res.code === 1) return res;
+
+        let cleanFolder = folderPath.trim();
+        if (!cleanFolder.startsWith('/')) cleanFolder = '/' + cleanFolder;
+        if (!cleanFolder.startsWith('/assets')) cleanFolder = '/assets' + cleanFolder;
+        if (!cleanFolder.endsWith('/')) cleanFolder += '/';
+
+        const allPaths = res.data || [];
+        const assets = allPaths.filter(p => p.startsWith(cleanFolder));
+
+        const formattedAssets = assets.map(p => p.replace(/^\/assets/, ''));
+
+        return { code: res.code, data: formattedAssets };
+    }
+
+    async updateAsset(assetPath, assetData) {
+        const cleanPath = assetPath.startsWith('/') ? assetPath : '/' + assetPath;
+        const fullPath = `/assets${cleanPath}`;
+        return await this.zipManager.add(fullPath, assetData);
+    }
+
+    async deleteAsset(assetPath) {
+        const cleanPath = assetPath.startsWith('/') ? assetPath : '/' + assetPath;
+        const fullPath = `/assets${cleanPath}`;
+        return await this.zipManager.delete(fullPath);
+    }
+
+    async readAsset(assetPath) {
+        const cleanPath = assetPath.startsWith('/') ? assetPath : '/' + assetPath;
+        const fullPath = `/assets${cleanPath}`;
+        return await this.zipManager.read(fullPath);
+    }
+
+
+
+    async listThemes() {
+        const res = await this.zipManager.list();
+        if (res.code === 1) return res;
+
+        const allPaths = res.data || [];
+        const themes = allPaths
+            .filter(p => p.startsWith('/themes/') && p.endsWith('.json'))
+            .map(p => p.replace('/themes/', '').replace('.json', ''));
+
+        return { code: res.code, data: themes };
+    }
+
+    async readTheme(themeName) {
+        const cleanName = themeName.replace('.json', '');
+        const filePath = `/themes/${cleanName}.json`;
+        return await this._readJson(filePath);
+    }
+
+    async updateTheme(themeName, themeData) {
+        const cleanName = themeName.replace('.json', '');
+        const filePath = `/themes/${cleanName}.json`;
+        return await this._writeJson(filePath, themeData);
+    }
+
+    async deleteTheme(themeName) {
+        const cleanName = themeName.replace('.json', '');
+        const filePath = `/themes/${cleanName}.json`;
+        return await this.zipManager.delete(filePath);
+    }
+
+
+
+    async listComponents() {
+        const res = await this.zipManager.list();
+        if (res.code === 1) return res;
+
+        const allPaths = res.data || [];
+        const components = allPaths
+            .filter(p => p.startsWith('/componets/') && p.endsWith('.json'))
+            .map(p => p.replace('/componets/', '').replace('.json', ''));
+
+        return { code: res.code, data: components };
+    }
+
+    async readComponent(componentName) {
+        const cleanName = componentName.replace('.json', '');
+        const filePath = `/componets/${cleanName}.json`;
+        return await this._readJson(filePath);
+    }
+
+    async updateComponent(componentName, componentData) {
+        const cleanName = componentName.replace('.json', '');
+        const filePath = `/componets/${cleanName}.json`;
+        return await this._writeJson(filePath, componentData);
+    }
+
+    async deleteComponent(componentName) {
+        const cleanName = componentName.replace('.json', '');
+        const filePath = `/componets/${cleanName}.json`;
+        return await this.zipManager.delete(filePath);
+    }
+
+
+
+    async readMain() {
+        return await this._readJson('/main.json');
+    }
+
+    async updateMain(mainData) {
+        return await this._writeJson('/main.json', mainData);
+    }
+
+
+
+    async exportFile() {
+        return await this.zipManager.exportZip();
+    }
+
+    async deleteWholeFile() {
+        return await this.zipManager.clear();
+    }
+
+    async importZipFile(zipBlob) {
+        const listRes = await this.zipManager.list();
+        if (listRes.code === 1) {
+            return listRes;
+        }
+
+        if (listRes.data && listRes.data.length > 0) {
+            return {
+                code: 1,
+                error: "Cannot import zip: Storage is not empty. Delete whole file first."
+            };
+        }
+
+        return await this.zipManager.importZip(zipBlob);
+    }
+};
+
 
 
 
@@ -15913,12 +16129,12 @@ const flexEngineStylesBuildClassName = (prefix, appearanceName, position, stateN
 		position === "" ||
 		position === "base"
 			? ""
-			: `-at${position}`;
+            : `-at${toAlphaEscape(String(position))}`;
 
 	return `${prefix}-styles-${cleanAppearance}${stateSuffix}${targetSuffix}`;
 };
 
-const flexEngineStylingSystem = function (dataArray, node, isVertical, elementMode) {
+export const flexEngineStylingSystem = function (dataArray, node, isVertical, elementMode) {
 	if (!node || !dataArray || typeof dataArray !== "object") {
 		return;
 	}
@@ -18324,8 +18540,8 @@ export const flexEngineDefaultElements = {
                     }
 
                     // apply attributes
-                    const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at1";
-                    const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at1";
+                    const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at_gt__s_div";
+                    const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at_gt__s_div";
 
                     node.setAttribute(prefix, cssOutput);
                     node.setAttribute(prefixMobile, cssMobileOutput);
@@ -18541,8 +18757,8 @@ export const flexEngineRootElement = {
 				cssMobileOutput += `gap:${gapValue};`;
 			}
 			// apply attributes
-			const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at1";
-			const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at1";
+			const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at_gt__s_div";
+			const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at_gt__s_div";
 			node.setAttribute(prefix, cssOutput);
 			node.setAttribute(prefixMobile, cssMobileOutput);
 			let innerNode = documentHTML.createElement("div");
@@ -18966,8 +19182,8 @@ export const flexEngineRootElement = {
     			cssMobileOutput += `gap:${gapValue};`;
     		}
     		// apply attributes
-    		const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at1";
-    		const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at1";
+    		const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at_gt__s_div";
+    		const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at_gt__s_div";
     		node.setAttribute(prefix, cssOutput);
     		node.setAttribute(prefixMobile, cssMobileOutput);
     		let innerNode = documentHTML.createElement("div");
@@ -19229,8 +19445,8 @@ export const flexEngineRootElement = {
     			cssMobileOutput += `gap:${gapValue};`;
     		}
     		// apply attributes
-    		const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at1";
-    		const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at1";
+    		const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at_gt__s_div";
+    		const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at_gt__s_div";
     		node.setAttribute(prefix, cssOutput);
     		node.setAttribute(prefixMobile, cssMobileOutput);
     		let innerNode = documentHTML.createElement("div");
