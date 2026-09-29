@@ -6226,7 +6226,7 @@ export const flexEngineDefaultVariables = {
                             const themeName = typeof this.thisPageObject !== "undefined" ? this.thisPageObject.theme : "defaultTheme";
                             const themeData = await flexEngineFlieSystem.readTheme(themeName);
                             const parsedTheme = typeof themeData === "string" ? JSON.parse(themeData) : themeData;
-                            this.themeColors = parsedTheme.colors || {};
+                            this.themeColors = parsedTheme.color || {};
                             this.renderUI();
                         } catch (error) {
                             console.error("Theme variables failed to load:", error);
@@ -8348,7 +8348,7 @@ export const flexEngineDefaultVariables = {
                             const themeName = typeof this.thisPageObject !== "undefined" ? this.thisPageObject.theme : "defaultTheme";
                             const themeData = await flexEngineFlieSystem.readTheme(themeName);
                             const parsedTheme = typeof themeData === "string" ? JSON.parse(themeData) : themeData;
-                            this.themeColors = parsedTheme.colors || {};
+                            this.themeColors = parsedTheme.color || {};
                             this.renderUI();
                         } catch (error) {
                             console.error("Theme variables failed to load:", error);

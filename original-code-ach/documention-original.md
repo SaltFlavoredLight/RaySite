@@ -54,10 +54,9 @@ theme are under `designplete.json`, here is example:
 ```json
 {
 	"systems": {
-		"breakPoint": "TYPE SIZE",
 		"contextMax": "TYPE SIZE",
-	}.
-	"colors": {
+	},
+	"color": {
 		"primaryColor": "TYPE COLOR",
 		"secondaryColor": "TYPE COLOR",
 		"accentColor": "TYPE COLOR",
