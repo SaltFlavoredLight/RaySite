@@ -97,7 +97,7 @@ Keep in mind that inherit = theme.
 /* Center group */
 .center {
     flex: 1 1 auto; /* take remaining space */
-    text-align: center; /* center text inside */
+    align-items: center; /* center text inside */
 }
 
 /* Right group */
@@ -126,9 +126,3 @@ Keep in mind that inherit = theme.
 </body>
 </html>
 ```
-
-## Rules
-
-1, Logo-Nav -- -- CTAs
-2, logo -- Nav -- CTAs
-3, 
