@@ -17917,19 +17917,19 @@ export const flexEngineDefaultElements = {
 
                     forEach: function(BUILDER_CONFIG) {
                         return `
-                            const channelId = el.getAttribute(\`data-\${BUILDER_CONFIG.classPrefix}ytchannelid\`);
+                            const channelId = element.getAttribute(\`data-${BUILDER_CONFIG.classPrefix}ytchannelid\`);
 
-                            el.innerHTML = "";
+                            element.innerHTML = "";
                             const overlay = document.createElement("div");
-                            overlay.className = \`\${BUILDER_CONFIG.classPrefix}context-ytLive-preparing\`;
+                            overlay.className = \`${BUILDER_CONFIG.classPrefix}context-ytLive-preparing\`;
                             overlay.textContent = "Preparing, Please Wait.....";
-                            el.appendChild(overlay);
+                            element.appendChild(overlay);
 
                             const iframe = document.createElement("iframe");
                             iframe.src = \`https://www.youtube.com/embed/live_stream?channel=\${channelId}&autoplay=1&mute=1&enablejsapi=1\`;
                             iframe.allow = "autoplay; encrypted-media";
                             iframe.allowFullscreen = true;
-                            el.appendChild(iframe);
+                            element.appendChild(iframe);
 
                             const poll = setInterval(() => {
                             if (window.YT && window.YT.Player) {
@@ -17952,8 +17952,8 @@ export const flexEngineDefaultElements = {
                                         playlistIframe.className = \`\${BUILDER_CONFIG.classPrefix}offline\`;
 
                                         thisPlayer.destroy();
-                                        el.innerHTML = "";
-                                        el.appendChild(playlistIframe);
+                                        element.innerHTML = "";
+                                        element.appendChild(playlistIframe);
                                     }
                                     }
                                 }

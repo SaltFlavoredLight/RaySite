@@ -15,6 +15,9 @@
             padding: 20px;
             background: #f3f3f3;
             border-bottom: 1px solid #ccc;
+            position: absolute;
+            bottom: 0;
+            right: 0;
         }
 
         .demo-controls button {
@@ -22,9 +25,61 @@
             cursor: pointer;
         }
 
-        #preview {
-            min-height: 300px;
-        }
+
+
+/* UI CSS System reset */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	vertical-align: baseline;
+}
+
+html, body, div, span, applet, object, iframe, p, blockquote, pre,
+a, abbr, acronym, address, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+strike, sub, sup, tt, var, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	font-size: 100%;
+    font: inherit;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+
+
+
 
 
 
@@ -38,40 +93,240 @@
     display: flex;
     align-items: center;
     flex-grow: 1;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.site-content-header-onhidden {
+	display: hidden;   
+}
+
+/* Order Property is different.
+1x - left, 2x - center, 3x - right*/
+
+/* start with position for left, center and right. */
+.site-content-header-onleft {
+    flex: 0 0 auto;
+    text-align: start;
+    align-items: flex-start;
+    margin-right: 0;
+    margin-left: 0;   
+    order: 10; 
 }
 
 
-.site-content-header-onleft {
-    flex: 0 0 auto;
+.site-content-header-hamberger.site-content-header-onleft {
+	order: 11;
+}
+
+.site-content-header-logo.site-content-header-onleft {
+	order: 12;
+}
+
+.site-content-header-buttons.site-content-header-onleft {
+	order: 13;
+}
+
+.site-content-header-menu.site-content-header-onleft {
+	order: 14;
 }
 
 .site-content-header-oncenter {
-    flex: 1 1 auto;
+    flex: 8 8 auto;
+    align-items: center;
     text-align: center;
+    order: 25;
 }
+
 
 .site-content-header-onright {
     flex: 0 0 auto;
+    text-align: end;
+    align-items: flex-end;
+    margin-left: 0;
+    margin-left: 0;  
+    order: 30 
 }
 
+.site-content-header-hamberger.site-content-header-onright {
+	order: 39;
+}
 
+.site-content-header-logo.site-content-header-onright {
+	order: 38;
+}
+
+.site-content-header-buttons.site-content-header-onright {
+	order: 37;
+}
+
+.site-content-header-menu.site-content-header-onright {
+	order: 36;
+}
+
+/* end of position */
+
+/* start of basics */
+.site-content-header-wrap a {
+    text-decoration: none;
+    color: inherit;
+}
+/* end of basics */
+
+/* start of the Menu Mode for desktop. */
+
+.site-content-header-mbuttons {
+    display: none;
+}
+
+/* mode 0 */
 .site-content-header-menumode0 .site-content-header-hamberger {
     display: none;
 }
 
+.site-content-header-menumode0 .site-content-header-menu .site-content-header-closebutton  {
+    display: none;
+}
+
+.site-content-header-menumode0 .site-content-header-menu > ul  {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage  {
+    position: relative;
+}
+
+.site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage > a {
+    margin-bottom: 3px; /* Snap: use the varible for desktopHeaderSeparateBorderSpace */
+}
+
+.site-content-header-menumode0 .site-content-header-menu .site-content-header-submenu {
+    position: absolute;
+    clip-path: inset(0 0 100% 0);
+    text-align: start;
+    left: 0;
+    top: 100%; 
+}
+
+.site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage:hover .site-content-header-submenu {
+    clip-path: inset(0 0 0 0);
+}
+
+/* TODO! FIx that position of menu, add space, and everything.*/
 .site-content-header-menumode1 .site-content-header-menu,
 .site-content-header-menumode2 .site-content-header-menu,
 .site-content-header-menumode3 .site-content-header-menu,
 .site-content-header-menumode4 .site-content-header-menu,
 .site-content-header-menumode5 .site-content-header-menu,
 .site-content-header-menumode6 .site-content-header-menu {
-    display: none;
+    position: fixed;
 }
 
-.site-content-header-mbuttons {
-    display: none;
+.site-content-header-menumode1 .site-content-header-menu,
+.site-content-header-menumode2 .site-content-header-menu {
+    top: 0;
+    height: 100vh;
+    left: 0;
+    transform: translateX(-100%);
+    text-align: left;
+    display: flex; flex-direction: column; align-items: flex-start;
 }
 
+.site-content-header-menumode1.ismenuopen .site-content-header-menu,
+.site-content-header-menumode2.ismenuopen .site-content-header-menu {
+    transform: translateX(0);
+}
+
+.site-content-header-menumode3 .site-content-header-menu,
+.site-content-header-menumode4 .site-content-header-menu {
+    top: 0;
+    height: 100vh;
+    right: 0;
+    text-align: right;
+    display: flex; flex-direction: column; align-items: flex-end;
+}
+
+.site-content-header-menumode5 .site-content-header-menu,
+.site-content-header-menumode6 .site-content-header-menu {
+    top: 0;
+    right: 0;
+    text-align: center;
+}
+
+
+/* end of the Menu Mode for desktop. (covermobile)*/
+
+
+/* Start for hambergers */
+.site-content-header-hamberger,
+.site-content-header-closebutton {
+  width: 30px;
+  height: 30px;
+
+  padding: 0;
+  border: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+
+  background: transparent;
+  color: #fff;
+
+  cursor: pointer;
+}
+
+.site-content-header-hamberger span {
+  display: block;
+
+  width: 30px;
+  height: 30px;
+
+  background: currentColor;
+  border-radius: 999px;
+}
+
+
+.site-content-header-closebutton span {
+  position: absolute;
+
+  width: 30px;
+  height: 3px;
+
+  background: currentColor;
+  border-radius: 20px;
+}
+
+.site-content-header-closebutton span:nth-child(1) {
+  rotate: 135deg;
+}
+
+.site-content-header-closebutton span:nth-child(2) {
+  rotate: 135deg;
+}
+
+.site-content-header-closebutton span:nth-child(3) {
+  rotate: -135deg;
+}
+
+/* End for hambergers */
+
+.site-content-header-logo {
+	background-color: #dddddd;
+}
+
+.site-content-header-menu {
+	background-color: #aaaaaa;
+}
+
+.site-content-header-buttons {
+	background-color: #ffffff;
+}
 
 
     </style>
@@ -79,13 +334,15 @@
 
 <body>
 
+
+
+    <header id="preview"></header>
+
     <div class="demo-controls">
         <button id="generateButton">
             Generate Header
         </button>
     </div>
-
-    <header id="preview"></header>
 
 
     <script>
@@ -186,14 +443,14 @@ const sampleData = {
     },
 
     layout: {
-        desktopPosition: 3,
+        desktopPosition: 1, // done
         mobileMenuPlace: "left",
+        mobileLogoPosition: "left",
         desktopHeaderMaxInnerWidth: "1200px",
         desktopHeaderMainGap: "24px",
         mobileHeaderMainGap: "16px",
         desktopHeaderSeparateBorderSpace: "1px",
-        desktopMenuMode: 0,
-        mobileCoverHeaderOnMenu: false,
+        desktopMenuMode: 1,
         spaceBetween: "12px",
         navMajorGap: "24px",
         navMinorGap: "8px",
@@ -202,7 +459,7 @@ const sampleData = {
         transitionCurve: "ease",
         mobileMenuMode: 1,
         mobileCtaType: 0,
-        mobileLogoPosition: "left"
+        hamAnimation: 1
     }
 };
 
@@ -435,6 +692,14 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
     contentWrap.appendChild(buttons);
 
 
+
+    // Logo
+    const spaceWrap = documentHTML.createElement(`div`);
+    spaceWrap.classList.add(`${prefix}content-header-space`);
+
+    contentWrap.appendChild(spaceWrap);
+    
+
     // Now! Start with layout!
     contentWrap.classList.add(
         `${prefix}content-header-menumode${layout.desktopMenuMode}`
@@ -444,37 +709,44 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         1: {
             logo: "onleft",
             nav: "oncenter",
-            cta: "onright"
+            cta: "onright",
+            space: "onhidden"
         },
         2: {
             logo: "onleft",
             nav: "onleft",
-            cta: "oncenter"
+            cta: "oncenter",
+            space: "onright"
         },
         3: {
             logo: "onleft",
             nav: "onleft",
-            cta: "onright"
+            cta: "onright",
+            space: "oncenter"
         },
         4: {
             logo: "oncenter",
             nav: "onleft",
-            cta: "onright"
+            cta: "onright",
+            space: "onhidden"
         },
         5: {
             logo: "onleft",
             nav: "onright",
-            cta: "oncenter"
+            cta: "oncenter",
+            space: "onhidden"
         },
         6: {
             logo: "onleft",
             nav: "onright",
-            cta: "onright"
+            cta: "onright",
+            space: "oncenter"
         },
         7: {
             logo: "oncenter",
             nav: "onright",
-            cta: "onright"
+            cta: "onright",
+            space: "onleft"
         }
     };
 
@@ -492,7 +764,12 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         buttons.classList.add(
             `${prefix}content-header-${position.cta}`
         );
+        
+        spaceWrap.classList.add(
+        	`${prefix}content-header-${position.space}`
+        );
     }
+
 
     return header;
 }
@@ -500,7 +777,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
 
 
 
-document.getElementById(`generateButton`).addEventListener(`click`, () => {
+document.getElementById(`generateButton`).addEventListener("click", () => {
     const preview = document.getElementById(`preview`);
 
         createHeader(
@@ -509,8 +786,25 @@ document.getElementById(`generateButton`).addEventListener(`click`, () => {
             preview,
             null
         )
+
+        startRuntime(preview)
 });
+
+document.getElementById(`generateButton`).click();
+
+
+
+
+// Now is JS runtime.
+function startRuntime(element) {
+    const menuOpen = false;
+
+}
     </script>
 
 </body>
 </html>
+
+
+
+
