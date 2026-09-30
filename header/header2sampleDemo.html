@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Generator Demo</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .demo-controls {
+            padding: 20px;
+            background: #f3f3f3;
+            border-bottom: 1px solid #ccc;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        .demo-controls button {
+            padding: 10px 16px;
+            cursor: pointer;
+        }
+
+    </style>
+    <!-- Enviroment code -->
+    <style>
+
+        /* UI CSS System reset */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html, body, div, span, applet, object, iframe,
+        h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+        a, abbr, acronym, address, big, cite, code,
+        del, dfn, em, img, ins, kbd, q, s, samp,
+        small, strike, strong, sub, sup, tt, var,
+        b, u, i, center,
+        dl, dt, dd, ol, ul, li,
+        fieldset, form, label, legend,
+        table, caption, tbody, tfoot, thead, tr, th, td,
+        article, aside, canvas, details, embed, 
+        figure, figcaption, footer, header, hgroup, 
+        menu, nav, output, ruby, section, summary,
+        time, mark, audio, video {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            vertical-align: baseline;
+        }
+
+        html, body, div, span, applet, object, iframe, p, blockquote, pre,
+        a, abbr, acronym, address, cite, code,
+        del, dfn, em, img, ins, kbd, q, s, samp,
+        strike, sub, sup, tt, var, center,
+        dl, dt, dd, ol, ul, li,
+        fieldset, form, label, legend,
+        table, caption, tbody, tfoot, thead, tr, th, td,
+        article, aside, canvas, details, embed, 
+        figure, figcaption, footer, header, hgroup, 
+        menu, nav, output, ruby, section, summary,
+        time, mark, audio, video {
+            font-size: 100%;
+            font: inherit;
+        }
+
+        /* HTML5 display-role reset for older browsers */
+        article, aside, details, figcaption, figure, 
+        footer, header, hgroup, menu, nav, section {
+            display: block;
+        }
+        body {
+            line-height: 1;
+        }
+        ol, ul {
+            list-style: none;
+        }   
+    </style>
+    <!-- Payload -->
+    <style>
+       :root {
+            --site-header-layout-desktopHeaderMaxInnerWidth: 1200px;
+            --site-header-layout-desktopHeaderMainGap: 24px;
+            --site-header-layout-mobileHeaderMainGap: 16px;
+            --site-header-layout-desktopHeaderSeparateBorderSpace: 1px;
+            --site-header-layout-spaceBetween: 12px;
+            --site-header-layout-navMajorGap: 24px;
+            --site-header-layout-navMinorGap: 8px;
+            --site-header-layout-transitionTime: 300ms;
+            --site-header-layout-transitionCurve: ease;
+       }
+
+       /*
+       DesktopPosition:
+       will be assigned for each element with correct source, like:
+       .site-content-header-onleft
+
+       MobileMenuPlace:
+       it is either left or right, it will add:
+       .site-content-header-mobile-onleft or onright
+
+       mobileLogoPosition:
+       Almost same, but is left or center.
+
+       desktopMenuMode:
+        as .site-content-header-menumode{number} on wrap
+
+       nestingSupport:
+       as .site-content-header-nested{mode} on menu
+
+       mobileMenuMode: with added DOM change
+       as .site-content-header-mobileMenuAnimamtion{mode} on menu
+
+       mobileCtaType:
+       as .site-content-header-mbutton{mode} on mbotton
+
+       hamAnimation:
+       as .site-content-header-hamAnim{mode} on hamberger desktop.
+       */
+    </style>
+    <!-- real Header CSS based on prefix: site- -->
+    <style>
+
+    </style>
+
+</head>
+<body>
+
+    <header class="site-header" id="preview"></header>
+
+    <div class="demo-controls">
+        <button id="generateButton">
+            Generate Header
+        </button>
+    </div>
+
+    <!-- Payload -->
+    <script>
+        function createFlexEngineStyleVaribles() {
+            return {
+                space: (value) => value,
+                curve: (value) => value,
+                integer: (value) => value,
+                boolean: (value) => value,
+                string: (value) => value,
+                media: (value) => value
+            };
+        }
+
+        const flexEngineStyleVarible = createFlexEngineStyleVaribles();
+
+
+
+        const sampleData = {
+            content: {
+                "logo.type": "text",
+                "logo.text": "RaySite",
+
+                nav: [
+                    {
+                        name: "Home",
+                        children: [],
+                        url: "/"
+                    },
+                    {
+                        name: "All Product",
+                        children: [
+                            {
+                                name: "Website",
+                                children: [],
+                                url: "/products/website"
+                            },
+                            {
+                                name: "CMS",
+                                children: [],
+                                url: "/products/cms"
+                            },
+                            {
+                                name: "Notebook",
+                                children: [],
+                                url: "/products/notebook"
+                            },
+                            {
+                                name: "Member Management",
+                                children: [],
+                                url: "/products/member-management"
+                            }
+                        ],
+                        url: "/products"
+                    },
+                    {
+                        name: "Solution",
+                        children: [],
+                        url: "/solution"
+                    },
+                    {
+                        name: "About Us",
+                        children: [
+                            {
+                                name: "About Us",
+                                children: [],
+                                url: "/about-us"
+                            },
+                            {
+                                name: "History",
+                                children: [],
+                                url: "/about-us/history"
+                            },
+                            {
+                                name: "Blog",
+                                children: [],
+                                url: "/blog"
+                            },
+                            {
+                                name: "Devaloper's Docs",
+                                children: [],
+                                url: "/docs"
+                            }
+                        ],
+                        url: "/about-us"
+                    }
+                ],
+
+                "primaryButton.enable": true,
+                "primaryButton.text": "Get Started",
+                "primaryButton.url": "/get-started",
+                "primaryButton.newPage": false,
+
+                "secondaryButton.enable": true,
+                "secondaryButton.text": "Log in",
+                "secondaryButton.url": "/login",
+                "secondaryButton.newPage": false
+            },
+
+            layout: {
+                desktopPosition: 1, // done
+                mobileMenuPlace: "left",
+                mobileLogoPosition: "left",
+                desktopHeaderMaxInnerWidth: "1200px",
+                desktopHeaderMainGap: "24px",
+                mobileHeaderMainGap: "16px",
+                desktopHeaderSeparateBorderSpace: "1px",
+                desktopMenuMode: 1,
+                spaceBetween: "12px",
+                navMajorGap: "24px",
+                navMinorGap: "8px",
+                nestingSupport: 1,
+                transitionTime: 300,
+                transitionCurve: "ease",
+                mobileMenuMode: 1,
+                mobileCtaType: 0,
+                hamAnimation: 1
+            }
+        };
+
+        const BUILDER_CONFIG = {
+            classPrefix: "site-"
+        }   
+    </script>
+
+    <!-- Runtime script -->
+     <script>
+        // Now is JS runtime.
+        function startRuntime(element) {
+            
+
+        }
+    </script>
+
+    <!-- Creating HTML -->
+    <script>
+
+    </script>
+
+    <!-- -->
+</body>
