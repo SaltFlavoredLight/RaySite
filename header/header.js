@@ -266,12 +266,13 @@
                 }
             },
 
+            /* RESERVERD FOR FUTURE USE
             {
                 name: "mobileCoverHeaderOnMenu",
                 label: "Mobile Cover Header On Menu",
                 description: "Controls whether the mobile menu covers the mobile header when the menu opens. Menu modes 1-6 cause the menu to cover the header.",
                 type: "boolean/checkmark"
-            },
+            }, */
 
             {
                 name: "spaceBetween",
@@ -406,6 +407,27 @@
                     {
                         name: "Center",
                         value: "center"
+                    }
+                ]
+            },
+
+            {
+                name: "hamAnimation",
+                label: "Menu Hamberger Animation",
+                description: "this will determine what your animation to grow",
+                type: "selection",
+                choice: [
+                    {
+                        name: "Animation 1",
+                        value: 1
+                    },
+                    {
+                        name: "Animation 2",
+                        value: 2
+                    },
+                    {
+                        name: "Animation 3",
+                        value: 3
                     }
                 ]
             }
