@@ -401,4 +401,6 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
     )
 
     // End Layout Creation
+
+    // Return it back.
 }
