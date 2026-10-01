@@ -83,9 +83,9 @@
     <!-- Payload -->
     <style>
        :root {
-            --site-header-layout-desktopHeaderMaxInnerWidth: 1200px;
-            --site-header-layout-desktopHeaderMainGap: 24px;
-            --site-header-layout-mobileHeaderMainGap: 16px;
+            --site-header-layout-desktopHeaderMaxInnerWidth: 1200px; /*Done*/
+            --site-header-layout-desktopHeaderMainGap: 24px; /*done*/
+            --site-header-layout-mobileHeaderMainGap: 16px; /* done */
             --site-header-layout-desktopHeaderSeparateBorderSpace: 1px;
             --site-header-layout-spaceBetween: 12px;
             --site-header-layout-navMajorGap: 24px;
@@ -95,15 +95,15 @@
        }
 
        /*
-       DesktopPosition:
+       DesktopPosition: (Done!)
        will be assigned for each element with correct source, like:
        .site-content-header-onleft
 
-       MobileMenuPlace:
+       MobileMenuPlace: (Done!)
        it is either left or right, it will add:
        .site-content-header-mobile-onleft or onright
 
-       mobileLogoPosition:
+       mobileLogoPosition: (Done!)
        Almost same, but is left or center.
 
        desktopMenuMode:
@@ -112,7 +112,7 @@
        nestingSupport:
        as .site-content-header-nested{mode} on menu
 
-       mobileMenuMode: with added DOM change
+       mobileMenuMode: with added DOM change (Incomplete)
        as .site-content-header-mobileMenuAnimamtion{mode} on menu
 
        mobileCtaType:
@@ -125,6 +125,217 @@
     <!-- real Header CSS based on prefix: site- -->
     <style>
 
+        /* Start with header */
+        .site-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Style + Size */
+        }
+
+        .site-header a {
+            text-decoration: none;
+            color: unset;
+        }
+
+        /* Inner wrap */
+        .site-content-header-wrap {
+            width: 100%;
+            max-width: var(--site-header-layout-desktopHeaderMaxInnerWidth);
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between; /* Unsure about remove it or not*/
+            gap: var(--site-header-layout-desktopHeaderMainGap);
+        }
+
+        @media (max-width: 768px) {
+            .site-content-header-wrap {
+                gap: var(--site-header-layout-mobileHeaderMainGap);
+            }
+        }
+
+        /* Talk about everyone's position */
+        /* start with position for left, center and right. */
+        .site-content-header-onhidden {
+            display: none;
+        }
+
+        .site-content-header-onleft {
+            flex: 0 0 auto;
+            text-align: start;
+            align-items: flex-start;
+            margin-right: 0;
+            margin-left: 0;   
+            order: 10; 
+        }
+
+        .site-content-header-oncenter {
+            flex: 8 8 auto;
+            align-items: center;
+            text-align: center;
+            order: 25;
+        }
+
+        .site-content-header-onright {
+            flex: 0 0 auto;
+            text-align: end;
+            align-items: flex-end;
+            margin-left: 0;  
+            order: 39 
+        }
+
+        @media (max-width: 768px) {
+            .site-content-header-onhidden,
+            .site-content-header-onleft,
+            .site-content-header-oncenter,
+            .site-content-header-onright {
+                flex: unset;
+                text-align: unset;
+                align-items: unset;
+                margin: unset;  
+            }
+
+            .site-content-header-mobile-onhidden {
+                display: none;
+            }
+
+            .site-content-header-mobile-onleft {
+                flex: 0 0 auto;
+                text-align: start;
+                align-items: flex-start;
+                margin-right: 0;
+                margin-left: 0;   
+                order: 10; 
+            }
+
+            .site-content-header-mobile-oncenter {
+                flex: 8 8 auto;
+                align-items: center;
+                text-align: center;
+                order: 25;
+            }
+
+            .site-content-header-mobile-onright {
+                flex: 0 0 auto;
+                text-align: end;
+                align-items: flex-end;
+                margin-left: 0;
+                margin-left: 0;  
+                order: 39 
+            }   
+
+
+
+            .site-content-header-hamberger.site-content-header-mobile-onleft {
+                order: 11;
+            }
+
+            .site-content-header-logo.site-content-header-mobile-onleft {
+                order: 12;
+            }
+
+            .site-content-header-buttons.site-content-header-mobile-onleft {
+                order: 13;
+            }
+
+            .site-content-header-menu.site-content-header-mobile-onleft {
+                order: 14;
+            }
+
+            .site-content-header-hamberger.site-content-header-mobile-onright {
+                order: 39;
+            }
+
+            .site-content-header-logo.site-content-header-mobile-onright {
+                order: 38;
+            }
+
+            .site-content-header-buttons.site-content-header-mobile-onright {
+                order: 37;
+            }
+
+            .site-content-header-menu.site-content-header-mobile-onright {
+                order: 36;
+            }            
+        }
+
+
+        .site-content-header-hamberger.site-content-header-onleft{
+            order: 11;
+        }
+
+        .site-content-header-logo.site-content-header-onleft {
+            order: 12;
+        }
+
+        .site-content-header-buttons.site-content-header-onleft {
+            order: 13;
+        }
+
+        .site-content-header-menu.site-content-header-onleft {
+            order: 14;
+        }
+
+        .site-content-header-hamberger.site-content-header-onright {
+            order: 39;
+        }
+
+        .site-content-header-logo.site-content-header-onright {
+            order: 38;
+        }
+
+        .site-content-header-buttons.site-content-header-onright {
+            order: 37;
+        }
+
+        .site-content-header-menu.site-content-header-onright {
+            order: 36;
+        }
+
+        /* Logo */
+        .site-content-header-logo > a.logo {
+            text-decoration: none;
+            width: 100%;
+            height: 100%;
+            max-width: 200px;
+            color: inherit;
+            font-size: 100%;
+        }
+
+        .site-content-header-logo img {
+            text-decoration: none;
+            width: 100%;
+            height: 100%;
+            max-width: 200px;
+            color: inherit;
+            font-size: 100%;
+        }   
+
+        /* Hamberger + Nav Showup or not */
+        /*debugger;*/
+        
+        @media (max-width: 768px) {}
+
+        /* CTA buttons */
+        .site-content-header-buttons {
+            display: flex;
+            gap: var(--site-header-layout-mobileHeaderMainGap);
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            /* Just keep only the first chlid*/
+            .site-content-header-buttons .site-content-header-secondaryCTA {
+                display: none !important;
+            }
+
+            .site-content-header-wrap.menuopened > .site-content-header-buttons > .site-content-header-primaryCTA {
+                opacity: 0;
+            }
+        }
+        /* End of everything! */
     </style>
 
 </head>
@@ -137,6 +348,8 @@
             Generate Header
         </button>
     </div>
+
+    <p id="pre"></p>
 
     <!-- Payload -->
     <script>
@@ -248,7 +461,7 @@
                 spaceBetween: "12px",
                 navMajorGap: "24px",
                 navMinorGap: "8px",
-                nestingSupport: 1,
+                nestingSupport: 0, // Nesting Support will be soon added.
                 transitionTime: 300,
                 transitionCurve: "ease",
                 mobileMenuMode: 1,
@@ -270,6 +483,7 @@
 
         }
     </script>
+
 
     <!-- Creating HTML! -->
     <script>
@@ -589,6 +803,10 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
             `${prefix}content-header-${position.logo}`
         );
 
+        hamburger.classList.add(
+            `${prefix}content-header-${position.nav}`
+        );
+
         nav.classList.add(
             `${prefix}content-header-${position.nav}`
         );
@@ -610,6 +828,8 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
 
        mobileLogoPosition:
        Almost same, but is left or center.
+
+       REMEMBER: ORDER MATTERS!!!!!!!!!
     */
     hamburger.classList.add(
         `${prefix}content-header-mobile-${(layout.MobileMenuPlace === "left") ? "onleft" : "onright"}`
@@ -628,7 +848,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         (layout.mobileLogoPosition === "left") ? "oncenter" : "onleft";
 
     spaceWrap.classList.add(
-        `${prefix}content-header-mobile-${resultForSpace}`
+        `${prefix}content-header-mobile-${resultForSpace ?? "onhidden"}`
     )
        
     /*
@@ -636,7 +856,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         as .site-content-header-menumode{number} on wrap
     */
     contentWrap.classList.add(
-        `${prefix}content-header-menumode${layout.desktopMenuMode}`
+        `${prefix}content-header-menumode${layout.desktopMenuMode ?? 0}`
     );
 
     /*
@@ -647,7 +867,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
     // we still need to add a close button when in 2 or 3
 
     nav.classList.add(
-        `${prefix}content-header-nested${layout.nestingSupport}`
+        `${prefix}content-header-nested${layout.nestingSupport ?? 0}`
     );
 
     /*
@@ -655,7 +875,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
        as .site-content-header-mobileMenuAnimamtion{mode} on menu
     */
     nav.classList.add(
-        `${prefix}content-header-mobileMenuAnimamtion${layout.mobileMenuMode}`
+        `${prefix}content-header-mobileMenuAnimamtion${layout.mobileMenuMode ?? 6}`
     );
     
     /*
@@ -663,7 +883,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
        as .site-content-header-mbutton{mode} on mbotton
     */
     mobileButtons.classList.add(
-        `${prefix}content-header-mbutton${layout.mobileCtaType}`
+        `${prefix}content-header-mbutton${layout.mobileCtaType ?? 1}`
     );
 
     /*
@@ -671,7 +891,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
        as .site-content-header-hamAnim{mode} on hamberger desktop.
     */
     hamburger.classList.add(
-        `${prefix}content-header-hamAnim${layout.hamAnimation}`
+        `${prefix}content-header-hamAnim${layout.hamAnimation ?? 2}`
     )
 
     // End Layout Creation
@@ -682,6 +902,12 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
 
     <!-- Run! -->
     <script>
+function updateHTML() {
+    const preview = document.getElementById(`preview`);
+    const pre = document.getElementById(`pre`);
+    pre.innerText = preview.innerHTML;
+}
+
 
 document.getElementById(`generateButton`).addEventListener("click", () => {
     const preview = document.getElementById(`preview`);
@@ -693,14 +919,9 @@ document.getElementById(`generateButton`).addEventListener("click", () => {
             null
         );
 
+        updateHTML();
+
         startRuntime(preview);
-
-        /*
-        const config = { attributes: true, childList: true, subtree: true };
-
-        const callback = (mutationList, observer) => {
-            updateHTML();
-        }*/
 });
 
 document.getElementById(`generateButton`).click();
