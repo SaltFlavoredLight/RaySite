@@ -266,13 +266,12 @@
                 }
             },
 
-            /* RESERVERD FOR FUTURE USE
             {
                 name: "mobileCoverHeaderOnMenu",
                 label: "Mobile Cover Header On Menu",
                 description: "Controls whether the mobile menu covers the mobile header when the menu opens. Menu modes 1-6 cause the menu to cover the header.",
                 type: "boolean/checkmark"
-            }, */
+            }, 
 
             {
                 name: "spaceBetween",
@@ -316,11 +315,11 @@
                     {
                         name: "Clickable Menu",
                         value: 2
-                    },
+                    },/*
                     {
                         name: "Non-Clickable Menu",
                         value: 3
-                    }
+                    }*/
                 ],
                 comment: "even desktop do not apply, moblie does."
             },

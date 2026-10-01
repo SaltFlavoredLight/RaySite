@@ -515,17 +515,16 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
     // End Content Creation.
 
     // Start Varibles Layout Creation (Replace it with AI after)
-    debugger;
     const cssVaribles = `
-            --${prefix}header-layout-desktopHeaderMaxInnerWidth: 1200px;
-            --${prefix}header-layout-desktopHeaderMainGap: 24px;
-            --${prefix}header-layout-mobileHeaderMainGap: 16px;
-            --${prefix}header-layout-desktopHeaderSeparateBorderSpace: 1px;
-            --${prefix}header-layout-spaceBetween: 12px;
-            --${prefix}header-layout-navMajorGap: 24px;
-            --${prefix}header-layout-navMinorGap: 8px;
-            --${prefix}header-layout-transitionTime: 300ms;
-            --${prefix}header-layout-transitionCurve: ease;
+        --${prefix}header-layout-desktopHeaderMaxInnerWidth: ${flexEngineStyleVarible.space(layout.desktopHeaderMaxInnerWidth)};
+        --${prefix}header-layout-desktopHeaderMainGap: ${flexEngineStyleVarible.space(layout.desktopHeaderMainGap)};
+        --${prefix}header-layout-mobileHeaderMainGap: ${flexEngineStyleVarible.space(layout.mobileHeaderMainGap)};
+        --${prefix}header-layout-desktopHeaderSeparateBorderSpace: ${flexEngineStyleVarible.space(layout.desktopHeaderSeparateBorderSpace)};
+        --${prefix}header-layout-spaceBetween: ${flexEngineStyleVarible.space(layout.spaceBetween)};
+        --${prefix}header-layout-navMajorGap: ${flexEngineStyleVarible.space(layout.navMajorGap)};
+        --${prefix}header-layout-navMinorGap: ${flexEngineStyleVarible.space(layout.navMinorGap)};
+        --${prefix}header-layout-transitionTime: ${layout.transitionTime};
+        --${prefix}header-layout-transitionCurve: ${flexEngineStyleVarible.curve(layout.transitionCurve)};
     `;
 
     header.setAttribute(`${prefix}styles-node`, cssVaribles);
@@ -613,13 +612,13 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
        Almost same, but is left or center.
     */
     hamburger.classList.add(
-        `${prefix}-content-header-mobile-${(layout.MobileMenuPlace === "left") ? "onleft" : "onright"}`
+        `${prefix}content-header-mobile-${(layout.MobileMenuPlace === "left") ? "onleft" : "onright"}`
     );
     logoWrap.classList.add(
-        `${prefix}-content-header-mobile-${(layout.mobileLogoPosition === "left") ? "onleft" : "oncenter"}`
+        `${prefix}content-header-mobile-${(layout.mobileLogoPosition === "left") ? "onleft" : "oncenter"}`
     );
     buttons.classList.add(
-        `${prefix}-content-header-mobile-onright`
+        `${prefix}content-header-mobile-onright`
     );
 
     const resultForSpace = (layout.MobileMenuPlace === "left") 
@@ -629,7 +628,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         (layout.mobileLogoPosition === "left") ? "oncenter" : "onleft";
 
     spaceWrap.classList.add(
-        `${prefix}-content-header-mobile-${resultForSpace}`
+        `${prefix}content-header-mobile-${resultForSpace}`
     )
        
     /*
