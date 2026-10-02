@@ -294,7 +294,9 @@
         }
 
         /* Logo */
-        .site-content-header-logo > a.logo {
+        .site-content-header-logo > a.logo,
+        .site-content-header-logo > h2
+        .site-content-header-logo img {
             text-decoration: none;
             width: 100%;
             height: 100%;
@@ -303,19 +305,97 @@
             font-size: 100%;
         }
 
-        .site-content-header-logo img {
-            text-decoration: none;
-            width: 100%;
-            height: 100%;
-            max-width: 200px;
-            color: inherit;
-            font-size: 100%;
-        }   
-
         /* Hamberger + Nav Showup or not */
+        /* rule is simple: 0 hide ham, 1-6 put nav in different position
+          moblie always do number 1-6.*/
+
+
+    
+
+        /* mode 0 */
+        .site-content-header-menumode0 .site-content-header-hamberger {
+            display: none;
+        }
+
+        .site-content-header-menumode0 .site-content-header-menu .site-content-header-closebutton  {
+            display: none;
+        }
+
+        .site-content-header-menumode0 .site-content-header-menu > ul  {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage  {
+            position: relative;
+        }
+
+        .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage > a {
+            margin-bottom: 3px; /* Snap: use the varible for desktopHeaderSeparateBorderSpace */
+        }
+
+        .site-content-header-menumode0 .site-content-header-menu .site-content-header-submenu {
+            position: absolute;
+            clip-path: inset(0 0 100% 0);
+            text-align: start;
+            left: 0;
+            top: 100%; 
+        }
+
+        .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage:hover .site-content-header-submenu {
+            clip-path: inset(0 0 0 0);
+        }
+
+
+        /* mode 1-6 */
+        .site-content-header-menumode1 .site-content-header-menu,
+        .site-content-header-menumode2 .site-content-header-menu,
+        .site-content-header-menumode3 .site-content-header-menu,
+        .site-content-header-menumode4 .site-content-header-menu,
+        .site-content-header-menumode5 .site-content-header-menu,
+        .site-content-header-menumode6 .site-content-header-menu {
+            position: fixed;
+        }
         /*debugger;*/
+
+        
+
+
         
         @media (max-width: 768px) {}
+
+        /* Hamberger for 3 animation */
+        /*debugger;*/
+
+        @media (max-width: 768px) {}
+
+        /* Nav Menu layout and padding */
+        /*debugger;*/
+
+        @media (max-width: 768px) {}
+
+
+        /* Nav Submenu layout and padding */
+        /*debugger;*/
+        @media (max-width: 768px) {}
+
+
+        /* Hamberger Buttons Showup or not + styling */
+        .site-content-header-mbuttons {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .site-content-header-mbuttons {
+                display: flex;
+                width: 100%;
+                gap: var(--site-header-layout-mobileHeaderMainGap);
+            }
+
+            /*debugger;*/
+        }
 
         /* CTA buttons */
         .site-content-header-buttons {
@@ -329,12 +409,14 @@
             /* Just keep only the first chlid*/
             .site-content-header-buttons .site-content-header-secondaryCTA {
                 display: none !important;
+                opacity: 1;
             }
 
-            .site-content-header-wrap.menuopened > .site-content-header-buttons > .site-content-header-primaryCTA {
+            .site-content-header-wrap.ismenuopen > .site-content-header-buttons > .site-content-header-primaryCTA {
                 opacity: 0;
             }
         }
+
         /* End of everything! */
     </style>
 
@@ -528,7 +610,14 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
     logoLink.href = `/`;
 
     if (content[`logo.type`] === `text`) {
-        logoLink.textContent = content[`logo.text`] ?? ``;
+        const logoText = documentHTML.createElement(`h2`);
+
+        if (content[`logo.text`] != null) {
+            logoText.innerText = content[`logo.text`] ?? "";
+        }
+
+        logoLink.appendChild(logoText);
+ 
     }
 
     if (content[`logo.type`] === `image`) {
