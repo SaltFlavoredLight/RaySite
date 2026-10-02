@@ -126,3 +126,36 @@ Keep in mind that inherit = theme.
 </body>
 </html>
 ```
+
+a crazy tricks!
+```html
+<div class="container">
+  <div class="item a">Item 1</div>
+  <div class="item b">Item 2</div>
+  <div class="item c">Item 3</div>
+</div>
+
+<style>
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* optional spacing */
+}
+
+.item {
+  background: #ddd;
+  padding: 20px;
+  border: 1px solid #aaa;
+}
+
+/* First two items share the row */
+.a {
+  flex: 1 1 auto; /* grow and shrink normally */
+}
+
+/* Third item takes full width */
+.c {
+  flex: 0 0 100%;
+}
+</style>
+```

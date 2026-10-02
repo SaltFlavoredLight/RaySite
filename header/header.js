@@ -494,7 +494,7 @@
             },   
             
             {
-                position: "@context-menu",
+                position: "@context-menustyleapply",
                 sizeQuery: [{
                     name: "widthMode",
                     label: "Width",
