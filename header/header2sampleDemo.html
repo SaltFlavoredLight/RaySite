@@ -113,7 +113,7 @@
        nestingSupport:
        as .site-content-header-nested{mode} on menu
 
-       mobileMenuMode: with added DOM change (Incomplete)
+       mobileMenuMode: 
        as .site-content-header-mobileMenuAnimamtion{mode} on menu
 
        mobileCtaType:
@@ -151,6 +151,7 @@
             align-items: stretch;
             justify-content: space-between; /* Unsure about remove it or not*/
             gap: var(--site-header-layout-desktopHeaderMainGap);
+            position: relative;
         }
 
         .site-content-header-wrap * {
@@ -399,14 +400,22 @@
             clip-path: inset(0 0 0 0);
         }
 
-
-
-
-        /*debugger;*/
-
-
         
-        @media (max-width: 768px) {}
+        @media (max-width: 768px) {
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu {
+                position: absolute;
+                top: 100%;
+                width: calc(100vh - 100%);
+            }
+
+        }
 
 
 
