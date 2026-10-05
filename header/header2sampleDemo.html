@@ -92,6 +92,7 @@
             --site-header-layout-navMinorGap: 8px;
             --site-header-layout-transitionTime: 300ms;
             --site-header-layout-transitionCurve: ease;
+            --site-header-layout-mobileButonRound: 5px;
        }
 
        /*
@@ -118,8 +119,11 @@
        mobileCtaType:
        as .site-content-header-mbutton{mode} on mbotton
 
-       hamAnimation:
-       as .site-content-header-hamAnim{mode} on hamberger desktop.
+       hamAnimation: (Done!)
+       as .site-content-header-hamAnim{mode} on hamberger desktop. 
+
+       hamAnimationOnDesktop: (Done!)
+       as .site-content-header-enableAnimation on hamberber desktop.
        */
     </style>
     <!-- real Header CSS based on prefix: site- -->
@@ -149,12 +153,18 @@
             gap: var(--site-header-layout-desktopHeaderMainGap);
         }
 
+        .site-content-header-wrap * {
+            transition: all var(--site-header-layout-transitionTime) var(--site-header-layout-transitionCurve);
+        }
+
         @media (max-width: 768px) {
             .site-content-header-wrap {
                 gap: var(--site-header-layout-mobileHeaderMainGap);
             }
         }
 
+
+        
         /* Talk about everyone's position */
         /* start with position for left, center and right. */
         .site-content-header-onhidden {
@@ -185,6 +195,38 @@
             order: 39 
         }
 
+        .site-content-header-hamberger.site-content-header-onleft{
+            order: 11;
+        }
+
+        .site-content-header-logo.site-content-header-onleft {
+            order: 12;
+        }
+
+        .site-content-header-buttons.site-content-header-onleft {
+            order: 13;
+        }
+
+        .site-content-header-menu.site-content-header-onleft {
+            order: 14;
+        }
+
+        .site-content-header-hamberger.site-content-header-onright {
+            order: 39;
+        }
+
+        .site-content-header-logo.site-content-header-onright {
+            order: 38;
+        }
+
+        .site-content-header-buttons.site-content-header-onright {
+            order: 37;
+        }
+
+        .site-content-header-menu.site-content-header-onright {
+            order: 36;
+        }
+
         @media (max-width: 768px) {
             .site-content-header-onhidden,
             .site-content-header-onleft,
@@ -210,7 +252,7 @@
             }
 
             .site-content-header-mobile-oncenter {
-                flex: 8 8 auto;
+                flex: 1 1 auto;
                 align-items: center;
                 text-align: center;
                 order: 25;
@@ -261,115 +303,340 @@
         }
 
 
-        .site-content-header-hamberger.site-content-header-onleft{
-            order: 11;
-        }
-
-        .site-content-header-logo.site-content-header-onleft {
-            order: 12;
-        }
-
-        .site-content-header-buttons.site-content-header-onleft {
-            order: 13;
-        }
-
-        .site-content-header-menu.site-content-header-onleft {
-            order: 14;
-        }
-
-        .site-content-header-hamberger.site-content-header-onright {
-            order: 39;
-        }
-
-        .site-content-header-logo.site-content-header-onright {
-            order: 38;
-        }
-
-        .site-content-header-buttons.site-content-header-onright {
-            order: 37;
-        }
-
-        .site-content-header-menu.site-content-header-onright {
-            order: 36;
-        }
 
         /* Logo */
         .site-content-header-logo > a.logo,
         .site-content-header-logo > h2
         .site-content-header-logo img {
             text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             width: 100%;
             height: 100%;
-            max-width: 200px;
             color: inherit;
             font-size: 100%;
         }
 
-        /* Hamberger + Nav Showup or not */
-        /* rule is simple: 0 hide ham, 1-6 put nav in different position
-          moblie always do number 1-6.*/
 
-
-    
+        /* Nav layout */
 
         /* mode 0 */
-        .site-content-header-menumode0 .site-content-header-hamberger {
-            display: none;
-        }
-
-        .site-content-header-menumode0 .site-content-header-menu .site-content-header-closebutton  {
-            display: none;
-        }
-
-        .site-content-header-menumode0 .site-content-header-menu > ul  {
-            position: relative;
+        .site-content-header-menumode0 .site-content-header-menu {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
         }
 
-        .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage  {
-            position: relative;
+        /* mode 1-6 */
+        .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu,
+        .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu,
+        .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu,
+        .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu,
+        .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu,
+        .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu {
+            position: fixed;
         }
 
-        .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage > a {
-            margin-bottom: 3px; /* Snap: use the varible for desktopHeaderSeparateBorderSpace */
-        }
-
-        .site-content-header-menumode0 .site-content-header-menu .site-content-header-submenu {
-            position: absolute;
-            clip-path: inset(0 0 100% 0);
-            text-align: start;
+        .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu {
             left: 0;
-            top: 100%; 
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
         }
 
-        .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage:hover .site-content-header-submenu {
+        .site-content-header-wrap.site-content-header-menumode1.ismenuopen .site-content-header-menu {
+            transform: translateX(0);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu {
+            left: 0;
+            clip-path: inset(0 100% 0 0);
+            transition: clip-path 0.3s ease;
+        }
+
+        .site-content-header-wrap.site-content-header-menumode2.ismenuopen .site-content-header-menu {
+            clip-path: inset(0 0 0 0);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu {
+            right: 0;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .site-content-header-wrap.site-content-header-menumode3.ismenuopen .site-content-header-menu {
+            transform: translateX(0);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu {
+            right: 0;
+            clip-path: inset(0 0 0 100%);
+            transition: clip-path 0.3s ease;
+        }
+
+        .site-content-header-wrap.site-content-header-menumode4.ismenuopen .site-content-header-menu {
+            clip-path: inset(0 0 0 0);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu {
+            top: 0;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .site-content-header-wrap.site-content-header-menumode5.ismenuopen .site-content-header-menu {
+            transform: translateY(0);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu {
+            top: 0;
+            clip-path: inset(100% 0 0 0);
+            transition: clip-path 0.3s ease;
+        }
+
+        .site-content-header-wrap.site-content-header-menumode6.ismenuopen .site-content-header-menu {
             clip-path: inset(0 0 0 0);
         }
 
 
-        /* mode 1-6 */
-        .site-content-header-menumode1 .site-content-header-menu,
-        .site-content-header-menumode2 .site-content-header-menu,
-        .site-content-header-menumode3 .site-content-header-menu,
-        .site-content-header-menumode4 .site-content-header-menu,
-        .site-content-header-menumode5 .site-content-header-menu,
-        .site-content-header-menumode6 .site-content-header-menu {
-            position: fixed;
+
+
+        /*debugger;*/
+
+
+        
+        @media (max-width: 768px) {}
+
+
+
+        /* Hamberger Layout and Close Button */
+        .site-content-header-hamberger,
+        .site-content-header-closebutton {
+        width: 30px;
+        height: 30px;
+
+        padding: 0;
+        border: 0;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 7px;
+
+        background: transparent;
+
+        cursor: pointer;
         }
-        /*debugger;*/
 
+        .site-content-header-hamberger span,
+        .site-content-header-closebutton span {
+            display: block;
+
+            width: 30px;
+            height: 3px;
+
+            background: currentColor;
+            border-radius: 999px;
+        }
+
+        .site-content-header-closebutton span:nth-child(1) {
+            transform:
+            translateY(10px)
+            rotate(45deg);
+        }
+
+        .site-content-header-closebutton span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .site-content-header-closebutton span:nth-child(3) {
+            transform:
+            translateY(-10px)
+            rotate(-45deg);
+        }
+
+        /* this will only enable on Moblie, or class is enabled.*/
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim1 > span:nth-child(1) {
+            transform:
+            translateY(10px)
+            rotate(45deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim1 > span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim1 > span:nth-child(3) {
+            transform:
+            translateY(-10px)
+            rotate(-45deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim2 > span:nth-child(1) {
+            transform:
+                translateY(10px)
+                rotate(135deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim2 > span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim2 > span:nth-child(3) {
+            transform:
+                translateY(-10px)
+                rotate(-135deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3 {
+            transform: rotate(90deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3 > span:nth-child(1) {
+            transform:
+                translateY(10px)
+                rotate(45deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3 > span:nth-child(2) {
+            opacity: 0;
+            transform:
+                scaleX(0)
+                rotate(180deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3 > span:nth-child(3) {
+            transform:
+                translateY(-10px)
+                rotate(-45deg);
+        }
+
+
+        @media (max-width: 768px) {
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim1 > span:nth-child(1) {
+                transform:
+                translateY(10px)
+                rotate(45deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim1 > span:nth-child(2) {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim1 > span:nth-child(3) {
+                transform:
+                translateY(-10px)
+                rotate(-45deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim2 > span:nth-child(1) {
+                transform:
+                    translateY(10px)
+                    rotate(135deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim2 > span:nth-child(2) {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim2 > span:nth-child(3) {
+                transform:
+                    translateY(-10px)
+                    rotate(-135deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim3 {
+                transform: rotate(90deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim3 > span:nth-child(1) {
+                transform:
+                    translateY(10px)
+                    rotate(45deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim3 > span:nth-child(2) {
+                opacity: 0;
+                transform:
+                    scaleX(0)
+                    rotate(180deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim3 > span:nth-child(3) {
+                transform:
+                    translateY(-10px)
+                    rotate(-45deg);
+            }
+
+        }
+
+        /* in mode 0 we disable them. */
+        .site-content-header-menumode0 .site-content-header-hamberger {
+            display: none;
+        }
+
+        .site-content-header-menumode0 .site-content-header-closebutton  {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .site-content-header-menumode0 .site-content-header-hamberger,
+            .site-content-header-menumode0 .site-content-header-closebutton {
+                display: flex;
+            }
+        }
+
+        /* in mode 1-6, that's different */
+
+        .site-content-header-menumode1 .site-content-header-hamberger,
+        .site-content-header-menumode2 .site-content-header-hamberger,
+        .site-content-header-menumode3 .site-content-header-hamberger,
+        .site-content-header-menumode4 .site-content-header-hamberger,
+        .site-content-header-menumode5 .site-content-header-hamberger,
+        .site-content-header-menumode6 .site-content-header-hamberger {
+            display: flex;
+        }
+
+        .site-content-header-menumode1 .site-content-header-closebutton,
+        .site-content-header-menumode2 .site-content-header-closebutton,
+        .site-content-header-menumode3 .site-content-header-closebutton,
+        .site-content-header-menumode4 .site-content-header-closebutton,
+        .site-content-header-menumode5 .site-content-header-closebutton,
+        .site-content-header-menumode6 .site-content-header-closebutton  {
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            .site-content-header-menumode1 .site-content-header-hamberger,
+            .site-content-header-menumode2 .site-content-header-hamberger,
+            .site-content-header-menumode3 .site-content-header-hamberger,
+            .site-content-header-menumode4 .site-content-header-hamberger,
+            .site-content-header-menumode5 .site-content-header-hamberger,
+            .site-content-header-menumode6 .site-content-header-hamberger {
+                display: flex;
+            }
+
+            .site-content-header-menumode1 .site-content-header-closebutton,
+            .site-content-header-menumode2 .site-content-header-closebutton,
+            .site-content-header-menumode3 .site-content-header-closebutton,
+            .site-content-header-menumode4 .site-content-header-closebutton,
+            .site-content-header-menumode5 .site-content-header-closebutton,
+            .site-content-header-menumode6 .site-content-header-closebutton  {
+                display: none;
+            }
+        }
+
+        /* end of hamberger */
         
-
-
-        
-        @media (max-width: 768px) {}
-
-        /* Hamberger for 3 animation */
-        /*debugger;*/
-
-        @media (max-width: 768px) {}
 
         /* Nav Menu layout and padding */
         /*debugger;*/
@@ -392,13 +659,45 @@
                 display: flex;
                 width: 100%;
                 gap: var(--site-header-layout-mobileHeaderMainGap);
+                position: sticky;
+                bottom: 0;
             }
 
-            /*debugger;*/
+            .site-content-header-mbutton1 {
+                height: atuo;
+                justify-content: space-between;
+                align-items: stretch;
+            }
+
+            .site-content-header-mbutton1.site-content-header-mbuttons a,
+            .site-content-header-mbutton1.site-content-header-buttons button {
+                flex: 1 1 0;
+                min-width: none !important;
+                border-radius: var(--site-header-layout-mobileButonRound);
+            }
+
+
+            .site-content-header-mbutton2 {
+                height: atuo;
+                justify-content: space-between;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+
+            .site-content-header-mbutton2.site-content-header-mbuttons a,
+            .site-content-header-mbutton2.site-content-header-buttons button {
+                flex: 1 1 0;
+                min-height: none !important;
+                border-radius: var(--site-header-layout-mobileButonRound);
+                width: 100% !important;
+            }
         }
 
         /* CTA buttons */
         .site-content-header-buttons {
+            width: 100%;
+            max-width: 200px;
             display: flex;
             gap: var(--site-header-layout-mobileHeaderMainGap);
             justify-content: center;
@@ -415,6 +714,11 @@
             .site-content-header-wrap.ismenuopen > .site-content-header-buttons > .site-content-header-primaryCTA {
                 opacity: 0;
             }
+        }s
+
+        /* Space */
+        .site-content-header-space {
+            flex: 6 6 auto;
         }
 
         /* End of everything! */
@@ -493,7 +797,7 @@
                         url: "/solution"
                     },
                     {
-                        name: "About Us",
+                        name: "Help?",
                         children: [
                             {
                                 name: "About Us",
@@ -516,6 +820,10 @@
                                 url: "/docs"
                             }
                         ],
+                        url: ""
+                    },
+                    {
+                        name: "About Us",
                         url: "/about-us"
                     }
                 ],
@@ -533,8 +841,8 @@
 
             layout: {
                 desktopPosition: 1, // done
-                mobileMenuPlace: "left",
-                mobileLogoPosition: "left",
+                mobileMenuPlace: "left", // done
+                mobileLogoPosition: "left", // done
                 desktopHeaderMaxInnerWidth: "1200px",
                 desktopHeaderMainGap: "24px",
                 mobileHeaderMainGap: "16px",
@@ -543,12 +851,14 @@
                 spaceBetween: "12px",
                 navMajorGap: "24px",
                 navMinorGap: "8px",
-                nestingSupport: 0, // Nesting Support will be soon added.
+                nestingSupport: 3, // DOM done, wait the Class
                 transitionTime: 300,
                 transitionCurve: "ease",
                 mobileMenuMode: 1,
-                mobileCtaType: 0,
-                hamAnimation: 1
+                mobileCtaType: 0, // Done
+                hamAnimation: 1, // Done
+                hamAnimationOnDesktop: true, // Done
+                mobileButonRound: "5px" // Done!
             }
         };
 
@@ -562,6 +872,206 @@
         // Now is JS runtime.
         function startRuntime(element) {
             
+
+if (element) {
+  const hamburger = element.querySelector(".site-content-header-hamberger");
+  const closeButton = element.querySelector(".site-content-header-closebutton");
+  const menuWrap = element.querySelector(".site-content-header-wrap");
+
+  /*
+   * --------------------------------------------------
+   * 1. OPEN / CLOSE MAIN MENU
+   * --------------------------------------------------
+   */
+
+  const clearSubmenus = () => {
+    element
+      .querySelectorAll(".site-content-header-navpage.issubmenuopen")
+      .forEach((navPage) => {
+        navPage.classList.remove("issubmenuopen");
+      });
+  };
+
+  const closeMenu = () => {
+    // For nested level 2/3, clear submenu state BEFORE closing.
+    const nested = element.querySelector(
+      '[class*="site-content-header-nested"]'
+    );
+
+    const nestedLevel = getNestedLevel(nested);
+
+    if (nestedLevel === 2 || nestedLevel === 3) {
+      clearSubmenus();
+    }
+
+    menuWrap?.classList.remove("ismenuopen");
+  };
+
+  hamburger?.addEventListener("click", () => {
+    menuWrap?.classList.toggle("ismenuopen");
+  });
+
+  closeButton?.addEventListener("click", () => {
+    closeMenu();
+  });
+
+
+  /*
+   * --------------------------------------------------
+   * 2. NESTED MENU BEHAVIOR
+   * --------------------------------------------------
+   *
+   * Supported:
+   *
+   * .site-content-header-nested1
+   * .site-content-header-nested2
+   * .site-content-header-nested3
+   */
+
+  function getNestedLevel(nested) {
+    if (!nested) return 0;
+
+    // Finds the number at the end of:
+    // site-content-header-nested1
+    // site-content-header-nested2
+    // site-content-header-nested3
+    for (const className of nested.classList) {
+      const match = className.match(
+        /^site-content-header-nested(\d+)$/
+      );
+
+      if (match) {
+        return Number(match[1]);
+      }
+    }
+
+    return 0;
+  }
+
+  function setupNestedMenu(nested) {
+    const level = getNestedLevel(nested);
+
+    // 0 = do nothing
+    if (level === 0) return;
+
+    const navPages = nested.querySelectorAll(
+      ".site-content-header-navpage"
+    );
+
+    /*
+     * LEVEL 1
+     *
+     * Every navpage that has a submenu icon
+     * starts with .issubmenuopen.
+     */
+    if (level === 1) {
+      navPages.forEach((navPage) => {
+        const submenuIcon = navPage.querySelector(
+          ".site-content-header-menusubicon"
+        );
+
+        if (submenuIcon) {
+          navPage.classList.add("issubmenuopen");
+        }
+      });
+
+      return;
+    }
+
+    /*
+     * LEVEL 2 / 3
+     *
+     * Only one submenu can be open at a time.
+     */
+
+    navPages.forEach((navPage) => {
+      const submenuIcon = navPage.querySelector(
+        ".site-content-header-menusubicon"
+      );
+
+      if (!submenuIcon) return;
+
+      /*
+       * LEVEL 2:
+       * Clicking the submenu icon opens this navpage.
+       *
+       * LEVEL 3:
+       * Same behavior, but the clickable element must
+       * be a button inside the navpage's direct <a>.
+       */
+      let trigger = submenuIcon;
+
+      if (level === 3) {
+        trigger = navPage.querySelector(":scope > a button");
+
+        if (!trigger) return;
+      }
+
+      trigger.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        // Close every currently-open submenu first.
+        navPages.forEach((page) => {
+          page.classList.remove("issubmenuopen");
+        });
+
+        // Then open the clicked one.
+        navPage.classList.add("issubmenuopen");
+      });
+    });
+  }
+
+  /*
+   * Find every nested element and configure it.
+   *
+   * Elements without a numeric suffix are ignored.
+   */
+  element
+    .querySelectorAll('[class*="site-content-header-nested"]')
+    .forEach(setupNestedMenu);
+
+
+  /*
+   * --------------------------------------------------
+   * 3. .onTop
+   * --------------------------------------------------
+   *
+   * When the menu is open:
+   *   .onTop is ALWAYS removed.
+   *
+   * When the menu is closed:
+   *   .onTop depends on whether the header is
+   *   at the top of the webpage.
+   */
+
+  const updateOnTop = () => {
+    if (!menuWrap) return;
+
+    const menuIsOpen = menuWrap.classList.contains("ismenuopen");
+
+    // Menu open = never onTop.
+    if (menuIsOpen) {
+      element.classList.remove("onTop");
+      return;
+    }
+
+    // Menu closed = onTop depends on scroll position.
+    const isAtTop = window.scrollY <= 0;
+
+    element.classList.toggle("onTop", isAtTop);
+  };
+
+  window.addEventListener("scroll", updateOnTop, { passive: true });
+
+  /*
+   * Recalculate immediately and whenever the menu
+   * is opened/closed.
+   */
+  hamburger?.addEventListener("click", updateOnTop);
+  closeButton?.addEventListener("click", updateOnTop);
+
+  updateOnTop();
+}
 
         }
     </script>
@@ -664,10 +1174,13 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         const navItem = documentHTML.createElement(`li`);
         navItem.classList.add(`${prefix}content-header-navpage`);
 
-        const navLink = documentHTML.createElement(`a`);
+        const navLink = documentHTML.createElement(
+            navData.url ? `a` : `span`
+        );
+
         navLink.textContent = navData.name ?? ``;
 
-        if (navData.url != null) {
+        if (navData.url) {
             navLink.href = navData.url;
         }
 
@@ -688,10 +1201,13 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
             navData.children.forEach(childData => {
                 const submenuItem = documentHTML.createElement(`li`);
 
-                const submenuLink = documentHTML.createElement(`a`);
+                const submenuLink = documentHTML.createElement(
+                    childData.url ? `a` : `span`
+                );
+
                 submenuLink.textContent = childData.name ?? ``;
 
-                if (childData.url != null) {
+                if (childData.url) {
                     submenuLink.href = childData.url;
                 }
 
@@ -828,6 +1344,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         --${prefix}header-layout-navMinorGap: ${flexEngineStyleVarible.space(layout.navMinorGap)};
         --${prefix}header-layout-transitionTime: ${layout.transitionTime};
         --${prefix}header-layout-transitionCurve: ${flexEngineStyleVarible.curve(layout.transitionCurve)};
+        --${prefix}header-layout-mobileButonRound: ${flexEngineStyleVarible.space(layout.mobileButonRound)};
     `;
 
     header.setAttribute(`${prefix}styles-node`, cssVaribles);
@@ -952,12 +1469,87 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
        nestingSupport:
        as .site-content-header-nested{mode} on menu
     */
-    debugger; // remember, it is not enough - 
-    // we still need to add a close button when in 2 or 3
-
     nav.classList.add(
-        `${prefix}content-header-nested${layout.nestingSupport ?? 0}`
+        `${prefix}content-header-nested${layout.nestingSupport}`
     );
+
+    const nestingSupport = layout.nestingSupport;
+
+    if (nestingSupport >= 1 && nestingSupport <= 4) {
+        nav.querySelectorAll(
+            `.${prefix}content-header-navpage`
+        ).forEach((navpage) => {
+            const submenu = navpage.querySelector(
+                `:scope > .${prefix}content-header-submenu`
+            );
+
+            // No submenu = nothing to process.
+            if (!submenu) {
+                return;
+            }
+
+            /*
+            * nestingSupport 1, 2, 3:
+            * Add the submenu icon before the submenu.
+            *
+            * nestingSupport 4:
+            * No submenu icon.
+            */
+            if (nestingSupport <= 3) {
+                const subIcon = document.createElement('span');
+
+                subIcon.className =
+                    `${prefix}content-header-menusubicon`;
+
+                // Plain Unicode character, not an emoji.
+                subIcon.textContent = '▶';
+
+                submenu.before(subIcon);
+            }
+
+
+
+            /*
+            * nestingSupport 3, 4:
+            * Clone the original navpage link and place
+            * the duplicate immediately after the submenu.
+            */
+            if (nestingSupport >= 3) {
+                const link = navpage.querySelector(
+                    `:scope > a`
+                );
+
+                if (link) {
+                    const clonedLink = link.cloneNode(true);
+
+                    const li = document.createElement('li');
+                    li.appendChild(clonedLink);
+
+                    submenu.prepend(li);
+                }
+            }
+
+            /*
+            * nestingSupport 2, 3, 4:
+            * Add the close button as the first element
+            * inside the submenu.
+            */
+            if (nestingSupport >= 2) {
+                const closeButton = document.createElement('button');
+
+                closeButton.className =
+                    `${prefix}content-header-closebutton`;
+
+                closeButton.innerHTML = `
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                `;
+
+                submenu.prepend(closeButton);
+            }
+        });
+    }
 
     /*
        mobileMenuMode:
@@ -981,6 +1573,14 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
     */
     hamburger.classList.add(
         `${prefix}content-header-hamAnim${layout.hamAnimation ?? 2}`
+    )
+
+    /* 
+        hamAnimationOnDesktop:
+        as .site-content-header-enableAnimation on hamberber desktop.
+    */
+    hamburger.classList.add(
+        `${prefix}content-header-enableAnimation`
     )
 
     // End Layout Creation
@@ -1008,7 +1608,7 @@ document.getElementById(`generateButton`).addEventListener("click", () => {
             null
         );
 
-        updateHTML();
+        //updateHTML();
 
         startRuntime(preview);
 });

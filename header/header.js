@@ -429,6 +429,27 @@
                         value: 3
                     }
                 ]
+            },
+
+            {
+                name: "hamAnimationOnDesktop",
+                label: "Also enable Animation on desktop",
+                description: "Check if you wish desktop animation is also can be enabled.",
+                type: "boolean/checkmark",
+                visibleIf: {
+                    name: "desktopMenuMode",
+                    value: (input) => input !== 0
+                }
+            }, 
+
+            {
+                name: "mobileButonRound",
+                label: "Brder of Moblie Button",
+                type: "space/space",
+                visibleIf: {
+                    name: "mobileCtaType",
+                    value: (input) => input !== 0
+                }
             }
         ],
 
@@ -635,6 +656,7 @@
 
         settings: {
             elementType: "header",
+            extraSystemState: "onTop",
             noDelete: true,
             hide: true,
             animation: 2,

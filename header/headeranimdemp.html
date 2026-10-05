@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Hamburger Animation Showcase</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+
+      display: grid;
+      place-items: center;
+
+      background: #111;
+      color: white;
+
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    .showcase {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 80px;
+
+      padding: 60px 30px;
+    }
+
+    .demo {
+      width: 140px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      gap: 20px;
+    }
+
+    .demo h2 {
+      margin: 0;
+
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .demo p {
+      margin: 0;
+
+      min-height: 45px;
+
+      color: #888;
+
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+
+    /* =========================================================
+       BASE BUTTON
+       ========================================================= */
+
+    .hamburger {
+      width: 70px;
+      height: 70px;
+
+      padding: 0;
+      border: 0;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      gap: 7px;
+
+      background: transparent;
+      color: white;
+
+      cursor: pointer;
+
+      position: relative;
+
+      transition:
+        all 400ms cubic-bezier(
+          0.65,
+          0,
+          0.35,
+          1
+        )
+    }
+
+    .hamburger span {
+      display: block;
+
+      width: 38px;
+      height: 3px;
+
+      background: currentColor;
+
+      border-radius: 999px;
+
+      transform-origin: center;
+
+      transition:
+        all 400ms cubic-bezier(
+          0.65,
+          0,
+          0.35,
+          1
+        )
+    }
+
+
+    /* =========================================================
+       ANIMATION 1
+       
+       Classic:
+       
+          ─────
+          ─────
+          ─────
+           
+             ↓
+           
+          ╲   ╱
+           ╲ ╱
+           ╱ ╲
+          ╱   ╲
+       ========================================================= */
+
+
+
+    .hamburger--1.is-open span:nth-child(1) {
+      transform:
+        translateY(10px)
+        rotate(45deg);
+    }
+
+    .hamburger--1.is-open span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+
+    .hamburger--1.is-open span:nth-child(3) {
+      transform:
+        translateY(-10px)
+        rotate(-45deg);
+    }
+
+
+    /* =========================================================
+       ANIMATION 1
+       
+       Classic:
+       
+          ─────
+          ─────
+          ─────
+           
+             ↓
+           
+          ╲   ╱
+           ╲ ╱
+           ╱ ╲
+          ╱   ╲
+       ========================================================= */
+
+
+    .hamburger--2.is-open span:nth-child(1) {
+      transform:
+        translateY(10px)
+        rotate(135deg);
+    }
+
+    .hamburger--2.is-open span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+
+    .hamburger--2.is-open span:nth-child(3) {
+      transform:
+        translateY(-10px)
+        rotate(-135deg);
+    }
+
+
+    /* =========================================================
+       ANIMATION 3
+
+       "ORBIT"
+
+       The whole icon has a subtle rotation while the
+       bars cross into the X.
+
+       This gives it a more energetic feel.
+       ========================================================= */
+
+    .hamburger--3.is-open {
+      transform: rotate(90deg);
+    }
+
+    .hamburger--3.is-open span:nth-child(1) {
+      transform:
+        translateY(10px)
+        rotate(45deg);
+    }
+
+    .hamburger--3.is-open span:nth-child(2) {
+      opacity: 0;
+      transform:
+        scaleX(0)
+        rotate(180deg);
+    }
+
+    .hamburger--3.is-open span:nth-child(3) {
+      transform:
+        translateY(-10px)
+        rotate(-45deg);
+    }
+
+    /* =========================================================
+       FOCUS
+       ========================================================= */
+
+    .hamburger:focus-visible {
+      outline: 2px solid white;
+      outline-offset: 8px;
+      border-radius: 8px;
+    }
+
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @media (max-width: 700px) {
+      .showcase {
+        flex-direction: column;
+        align-items: center;
+        gap: 50px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="showcase">
+
+    <!-- =========================================
+         ANIMATION 1
+         ========================================= -->
+
+    <section class="demo">
+
+      <h2>Animation 1</h2>
+
+      <button
+        class="hamburger hamburger--1"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <p>
+        Classic hamburger<br>
+        → X
+      </p>
+
+    </section>
+
+
+    <!-- =========================================
+         ANIMATION 2
+         ========================================= -->
+
+    <section class="demo">
+
+      <h2>Animation 2</h2>
+
+      <button
+        class="hamburger hamburger--2"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <p>
+        Collapse to one bar<br>
+        → X
+      </p>
+
+    </section>
+
+
+    <!-- =========================================
+         ANIMATION 3
+         ========================================= -->
+
+    <section class="demo">
+
+      <h2>Animation 3</h2>
+
+      <button
+        class="hamburger hamburger--3"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <p>
+        Spin + morph<br>
+        → X
+      </p>
+
+    </section>
+
+  </main>
+
+
+  <script>
+    /*
+     * Every hamburger works independently.
+     */
+    document
+      .querySelectorAll('.hamburger')
+      .forEach(button => {
+
+        button.addEventListener('click', () => {
+
+          const isOpen =
+            button.classList.toggle('is-open');
+
+          button.setAttribute(
+            'aria-expanded',
+            isOpen
+          );
+
+          button.setAttribute(
+            'aria-label',
+            isOpen
+              ? 'Close menu'
+              : 'Open menu'
+          );
+
+        });
+
+      });
+  </script>
+
+</body>
+</html>
