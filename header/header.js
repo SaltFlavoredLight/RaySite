@@ -11,6 +11,7 @@
                     </svg>
                 `,
 
+
         contentQuery: [
             {
                 name: "logo.type",
@@ -49,12 +50,14 @@
                 }
             },
 
+
             {
                 name: "nav",
                 label: "Navigation",
                 description: "Sets the navigation menu items.",
                 type: "list/nested"
             },
+
 
             {
                 name: "primaryButton.enable",
@@ -92,7 +95,7 @@
                     value: true
                 }
             },
-            
+           
             {
                 name: "secondaryButton.enable",
                 label: "Secondary Clickable",
@@ -135,6 +138,7 @@
             }
         ],                
 
+
         layoutQuery: [
             {
                 name: "desktopPosition",
@@ -173,6 +177,7 @@
                 ]
             },
 
+
             {
                 name: "mobileMenuPlace",
                 label: "Menu Place",
@@ -190,12 +195,14 @@
                 ]
             },
 
+
             {
                 name: "desktopHeaderMaxInnerWidth",
                 label: "Max Inner Width",
                 description: "Sets the maximum inner width of the header on the desktop version.",
                 type: "space"
             },
+
 
             {
                 name: "desktopHeaderMainGap",
@@ -210,12 +217,15 @@
                 type: "space"
             },
 
+
             {
                 name: "desktopHeaderSeparateBorderSpace",
                 label: "Separate Border Space",
                 description: "Sets the separate border spacing of the desktop header.",
                 type: "space"
             },
+
+
 
 
             {
@@ -255,6 +265,7 @@
                 ]
             },
 
+
             {
                 name: "desktopCoverHeaderOnMenu",
                 label: "Desktop Cover Header On Menu",
@@ -266,12 +277,14 @@
                 }
             },
 
+
             {
                 name: "mobileCoverHeaderOnMenu",
                 label: "Mobile Cover Header On Menu",
                 description: "Controls whether the mobile menu covers the mobile header when the menu opens. Menu modes 1-6 cause the menu to cover the header.",
                 type: "boolean/checkmark"
-            }, 
+            },
+
 
             {
                 name: "spaceBetween",
@@ -284,6 +297,7 @@
                 }
             },
 
+
             {
                 name: "navMajorGap",
                 label: "Nav Major Gap",
@@ -291,12 +305,14 @@
                 type: "space"
             },
 
+
             {
                 name: "navMinorGap",
                 label: "Nav Minor Gap",
                 description: "Sets the minor navigation gap. In mode 0, it is the gap for the list. In modes 1-4, it is the gap between list items. Modes 5-6 use the same behavior and can additionally represent horizontal spacing.",
                 type: "space"
             },
+
 
             {
                 name: "nestingSupport",
@@ -324,6 +340,7 @@
                 comment: "even desktop do not apply, moblie does."
             },
 
+
             {
                 name: "transitionTime",
                 label: "Transition Time",
@@ -331,12 +348,14 @@
                 type: "integer"
             },
 
+
             {
                 name: "transitionCurve",
                 label: "Transition Curve",
                 description: "Sets the transition curve used by the menu on both desktop and mobile. Inherit uses the theme's transition curve.",
                 type: "curve",
             },
+
 
             {
                 name: "mobileMenuMode",
@@ -371,6 +390,7 @@
                 ]
             },
 
+
             {
                 name: "mobileCtaType",
                 label: "Mobile CTA Type",
@@ -392,6 +412,7 @@
                 ]
             },
 
+
             // position!
             {
                 name: "mobileLogoPosition",
@@ -409,6 +430,7 @@
                     }
                 ]
             },
+
 
             {
                 name: "hamAnimation",
@@ -431,6 +453,7 @@
                 ]
             },
 
+
             {
                 name: "hamAnimationOnDesktop",
                 label: "Also enable Animation on desktop",
@@ -440,7 +463,8 @@
                     name: "desktopMenuMode",
                     value: (input) => input !== 0
                 }
-            }, 
+            },
+
 
             {
                 name: "mobileButonRound",
@@ -450,8 +474,42 @@
                     name: "mobileCtaType",
                     value: (input) => input !== 0
                 }
-            }
+            },
+
+
+
+
+            {
+                name: "textAlignInMenu",
+                label: "Text Align",
+                type: "selection",
+                choice: [
+                    {
+                        name: "Left",
+                        value: "left"
+                    },
+                    {
+                        name: "Center",
+                        value: "center"
+                    },
+                    {
+                        name: "Right",
+                        value: "right"
+                    }
+                ]
+
+
+            },
+
+
+            {
+                name: "stickyToBottom",
+                label: "Menu Sticky to bottom",
+                type: "boolean/checkmark"
+            },
+           
         ],
+
 
         initQuery: [],
         initFunction: function(dataArray, element) {
@@ -459,12 +517,18 @@
         },
 
 
+
+
         contentFunction: function(dataArray, documentHTML, node, createAnotherNode) {
         },
 
+
         jsRuntime: {},
 
+
         cssStyles: [],
+
+
 
 
         extras: [
@@ -491,6 +555,7 @@
                 sizeMobile: (sz, isVertical) => {return {}}
             },
 
+
             {
                 position: "@context-secondaryCTA",
                 sizeQuery: [{
@@ -512,8 +577,8 @@
                     };
                 },
                 sizeMobile: (sz, isVertical) => {return {}}
-            },   
-            
+            },  
+           
             {
                 position: "@context-menustyleapply",
                 sizeQuery: [{
@@ -555,6 +620,7 @@
                         };
                     }
 
+
                     if (sz.widthMode === "minimum") {
                         return {
                             "width": "auto",
@@ -562,6 +628,7 @@
                             "overflow": "scroll"
                         };
                     }
+
 
                     return {
                         "width": "auto",
@@ -572,6 +639,8 @@
                 sizeMobile: (sz, isVertical) => {return {}}
             }            
         ],
+
+
 
 
         sizeQuery: [
@@ -631,6 +700,7 @@
             }
         ],
 
+
         sizeDefault: (sz, isVertical) => {
             return {
                 "width": `calc(100% - ${flexEngineStyleVarible.space(sz.marginLeft)} - ${flexEngineStyleVarible.space(sz.marginRight)})`,
@@ -642,6 +712,7 @@
             };
         },
 
+
         sizeMobile: (sz, isVertical) => {
             return {
                 "width": `calc(100% - ${flexEngineStyleVarible.space(sz.mobileMarginLeft)} - ${flexEngineStyleVarible.space(sz.mobileMarginRight)})`,
@@ -651,6 +722,9 @@
                 "height": flexEngineStyleVarible.space(sz.mobileHeight)
             };
         },
+
+
+
 
 
 
@@ -665,3 +739,4 @@
             disableAction: true
         }
     }
+

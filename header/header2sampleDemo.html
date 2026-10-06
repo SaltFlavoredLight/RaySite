@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Header Generator Demo</title>
 
+
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
         }
+
 
         .demo-controls {
             padding: 20px;
@@ -20,19 +22,23 @@
             right: 0;
         }
 
+
         .demo-controls button {
             padding: 10px 16px;
             cursor: pointer;
         }
 
+
     </style>
     <!-- Enviroment code -->
     <style>
+
 
         /* UI CSS System reset */
         *, *::before, *::after {
             box-sizing: border-box;
         }
+
 
         html, body, div, span, applet, object, iframe,
         h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -43,8 +49,8 @@
         dl, dt, dd, ol, ul, li,
         fieldset, form, label, legend,
         table, caption, tbody, tfoot, thead, tr, th, td,
-        article, aside, canvas, details, embed, 
-        figure, figcaption, footer, header, hgroup, 
+        article, aside, canvas, details, embed,
+        figure, figcaption, footer, header, hgroup,
         menu, nav, output, ruby, section, summary,
         time, mark, audio, video {
             margin: 0;
@@ -53,6 +59,7 @@
             vertical-align: baseline;
         }
 
+
         html, body, div, span, applet, object, iframe, p, blockquote, pre,
         a, abbr, acronym, address, cite, code,
         del, dfn, em, img, ins, kbd, q, s, samp,
@@ -60,16 +67,17 @@
         dl, dt, dd, ol, ul, li,
         fieldset, form, label, legend,
         table, caption, tbody, tfoot, thead, tr, th, td,
-        article, aside, canvas, details, embed, 
-        figure, figcaption, footer, header, hgroup, 
+        article, aside, canvas, details, embed,
+        figure, figcaption, footer, header, hgroup,
         menu, nav, output, ruby, section, summary,
         time, mark, audio, video {
             font-size: 100%;
             font: inherit;
         }
 
+
         /* HTML5 display-role reset for older browsers */
-        article, aside, details, figcaption, figure, 
+        article, aside, details, figcaption, figure,
         footer, header, hgroup, menu, nav, section {
             display: block;
         }
@@ -78,7 +86,7 @@
         }
         ol, ul {
             list-style: none;
-        }   
+        }  
     </style>
     <!-- Payload -->
     <style>
@@ -95,53 +103,72 @@
             --site-header-layout-mobileButonRound: 5px;
        }
 
+
        /*
        DesktopPosition: (Done!)
        will be assigned for each element with correct source, like:
        .site-content-header-onleft
 
+
        MobileMenuPlace: (Done!)
        it is either left or right, it will add:
        .site-content-header-mobile-onleft or onright
 
+
        mobileLogoPosition: (Done!)
        Almost same, but is left or center.
+
 
        desktopMenuMode:
         as .site-content-header-menumode{number} on wrap
 
+
        nestingSupport:
        as .site-content-header-nested{mode} on menu
 
-       mobileMenuMode: 
+
+       mobileMenuMode:
        as .site-content-header-mobileMenuAnimamtion{mode} on menu
+
 
        mobileCtaType:
        as .site-content-header-mbutton{mode} on mbotton
 
+
        hamAnimation: (Done!)
-       as .site-content-header-hamAnim{mode} on hamberger desktop. 
+       as .site-content-header-hamAnim{mode} on hamberger desktop.
+
 
        hamAnimationOnDesktop: (Done!)
        as .site-content-header-enableAnimation on hamberber desktop.
+
+
+       textAlignInMenu:
+       as .site-content-header-on{side} on menu
+
+
+       stickyToBottom:
+       as .site-content-header-stickyToBottom if true on mbuttons
        */
     </style>
     <!-- real Header CSS based on prefix: site- -->
-    <style>
-
+    <style main-header>
         /* Start with header */
         .site-header {
-            width: 100%;
+            width: 100vw;
+            max-width: 100vw;
             display: flex;
             align-items: center;
             justify-content: center;
             /* Style + Size */
         }
 
+
         .site-header a {
             text-decoration: none;
             color: unset;
         }
+
 
         /* Inner wrap */
         .site-content-header-wrap {
@@ -154,79 +181,95 @@
             position: relative;
         }
 
+
         .site-content-header-wrap * {
             transition: all var(--site-header-layout-transitionTime) var(--site-header-layout-transitionCurve);
         }
+
 
         @media (max-width: 768px) {
             .site-content-header-wrap {
                 gap: var(--site-header-layout-mobileHeaderMainGap);
             }
         }
-
-
-        
+    </style>
+    <style desktop-position>
         /* Talk about everyone's position */
         /* start with position for left, center and right. */
         .site-content-header-onhidden {
             display: none;
         }
 
+
         .site-content-header-onleft {
             flex: 0 0 auto;
             text-align: start;
             align-items: flex-start;
+            justify-content: flex-end;
             margin-right: 0;
-            margin-left: 0;   
-            order: 10; 
+            margin-left: 0;  
+            order: 10;
         }
+
 
         .site-content-header-oncenter {
             flex: 8 8 auto;
             align-items: center;
+            justify-content: center;
             text-align: center;
             order: 25;
         }
+
 
         .site-content-header-onright {
             flex: 0 0 auto;
             text-align: end;
             align-items: flex-end;
+            justify-content: flex-end;
             margin-left: 0;  
-            order: 39 
+            order: 39
         }
+
 
         .site-content-header-hamberger.site-content-header-onleft{
             order: 11;
         }
 
+
         .site-content-header-logo.site-content-header-onleft {
             order: 12;
         }
+
 
         .site-content-header-buttons.site-content-header-onleft {
             order: 13;
         }
 
+
         .site-content-header-menu.site-content-header-onleft {
             order: 14;
         }
+
 
         .site-content-header-hamberger.site-content-header-onright {
             order: 39;
         }
 
+
         .site-content-header-logo.site-content-header-onright {
             order: 38;
         }
+
 
         .site-content-header-buttons.site-content-header-onright {
             order: 37;
         }
 
+
         .site-content-header-menu.site-content-header-onright {
             order: 36;
         }
+
 
         @media (max-width: 768px) {
             .site-content-header-onhidden,
@@ -239,34 +282,44 @@
                 margin: unset;  
             }
 
+
             .site-content-header-mobile-onhidden {
                 display: none;
             }
+
 
             .site-content-header-mobile-onleft {
                 flex: 0 0 auto;
                 text-align: start;
                 align-items: flex-start;
+                justify-content: flex-start;
                 margin-right: 0;
-                margin-left: 0;   
-                order: 10; 
+                margin-left: 0;  
+                order: 10;
             }
+
 
             .site-content-header-mobile-oncenter {
                 flex: 1 1 auto;
                 align-items: center;
+                justify-content: center;
                 text-align: center;
                 order: 25;
             }
+
 
             .site-content-header-mobile-onright {
                 flex: 0 0 auto;
                 text-align: end;
                 align-items: flex-end;
+                justify-content: flex-end;
                 margin-left: 0;
                 margin-left: 0;  
-                order: 39 
-            }   
+                order: 39
+            }  
+
+
+
 
 
 
@@ -274,29 +327,36 @@
                 order: 11;
             }
 
+
             .site-content-header-logo.site-content-header-mobile-onleft {
                 order: 12;
             }
+
 
             .site-content-header-buttons.site-content-header-mobile-onleft {
                 order: 13;
             }
 
+
             .site-content-header-menu.site-content-header-mobile-onleft {
                 order: 14;
             }
+
 
             .site-content-header-hamberger.site-content-header-mobile-onright {
                 order: 39;
             }
 
+
             .site-content-header-logo.site-content-header-mobile-onright {
                 order: 38;
             }
 
+
             .site-content-header-buttons.site-content-header-mobile-onright {
                 order: 37;
             }
+
 
             .site-content-header-menu.site-content-header-mobile-onright {
                 order: 36;
@@ -304,7 +364,8 @@
         }
 
 
-
+    </style>
+    <style logo>
         /* Logo */
         .site-content-header-logo > a.logo,
         .site-content-header-logo > h2
@@ -318,17 +379,22 @@
             color: inherit;
             font-size: 100%;
         }
+    </style>
+    <style menu-display-and-animation>
 
 
         /* Nav layout */
 
+
         /* mode 0 */
         .site-content-header-menumode0 .site-content-header-menu {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
+
 
         /* mode 1-6 */
         .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu,
@@ -340,15 +406,18 @@
             position: fixed;
         }
 
+
         .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu {
             left: 0;
             transform: translateX(-100%);
             transition: transform 0.3s ease;
         }
 
+
         .site-content-header-wrap.site-content-header-menumode1.ismenuopen .site-content-header-menu {
             transform: translateX(0);
         }
+
 
         .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu {
             left: 0;
@@ -356,9 +425,11 @@
             transition: clip-path 0.3s ease;
         }
 
+
         .site-content-header-wrap.site-content-header-menumode2.ismenuopen .site-content-header-menu {
             clip-path: inset(0 0 0 0);
         }
+
 
         .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu {
             right: 0;
@@ -366,9 +437,11 @@
             transition: transform 0.3s ease;
         }
 
+
         .site-content-header-wrap.site-content-header-menumode3.ismenuopen .site-content-header-menu {
             transform: translateX(0);
         }
+
 
         .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu {
             right: 0;
@@ -376,9 +449,11 @@
             transition: clip-path 0.3s ease;
         }
 
+
         .site-content-header-wrap.site-content-header-menumode4.ismenuopen .site-content-header-menu {
             clip-path: inset(0 0 0 0);
         }
+
 
         .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu {
             top: 0;
@@ -386,9 +461,11 @@
             transition: transform 0.3s ease;
         }
 
+
         .site-content-header-wrap.site-content-header-menumode5.ismenuopen .site-content-header-menu {
             transform: translateY(0);
         }
+
 
         .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu {
             top: 0;
@@ -396,12 +473,16 @@
             transition: clip-path 0.3s ease;
         }
 
+
         .site-content-header-wrap.site-content-header-menumode6.ismenuopen .site-content-header-menu {
             clip-path: inset(0 0 0 0);
         }
 
-        
+
+
+
         @media (max-width: 768px) {
+
 
             .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu,
             .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu,
@@ -412,43 +493,164 @@
             .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu {
                 position: absolute;
                 top: 100%;
-                width: calc(100vh - 100%);
+                left: 0;
+                right: 0;
+                height: calc(100vh - 100% - 1px);
+                width: 100%;
+                transform: none;
+                clip-path: none;
+
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
             }
+
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1 {
+                transform: translateX(-100%);
+            }
+
+
+            .site-content-header-wrap.ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion1 {
+                transform: translateX(0);
+            }
+
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2 {
+                clip-path: inset(0 100% 0 0);
+            }
+
+
+            .site-content-header-wrap.ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion2 {
+                clip-path: inset(0);
+            }
+
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3 {
+                transform: translateX(100%);
+            }
+
+
+            .site-content-header-wrap.ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion3 {
+                transform: translateX(0);
+            }
+
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4 {
+                clip-path: inset(0 0 0 100%);
+            }
+
+
+            .site-content-header-wrap.ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion4 {
+                clip-path: inset(0);
+            }
+
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5 {
+                transform: translateY(-100%);
+            }
+
+
+            .site-content-header-wrap.ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion5 {
+                transform: translateY(0);
+            }
+
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6 {
+                clip-path: inset(0 0 100% 0);
+            }
+
+
+            .site-content-header-wrap.ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion6 {
+                clip-path: inset(0);
+            }
+
 
         }
 
+
+
+
+    </style>
+    <style ham-animation close-buttons>
 
 
         /* Hamberger Layout and Close Button */
         .site-content-header-hamberger,
         .site-content-header-closebutton {
-        width: 30px;
-        height: 30px;
+            width: 30px;
+            height: 30px;
 
-        padding: 0;
-        border: 0;
 
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 7px;
+            padding: 0;
+            border: 0;
 
-        background: transparent;
 
-        cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 7px;
+
+
+            background: transparent;
+
+
+            cursor: pointer;
         }
+
 
         .site-content-header-hamberger span,
         .site-content-header-closebutton span {
             display: block;
 
+
             width: 30px;
             height: 3px;
+
 
             background: currentColor;
             border-radius: 999px;
         }
+
 
         .site-content-header-closebutton span:nth-child(1) {
             transform:
@@ -456,10 +658,12 @@
             rotate(45deg);
         }
 
+
         .site-content-header-closebutton span:nth-child(2) {
             opacity: 0;
             transform: scaleX(0);
         }
+
 
         .site-content-header-closebutton span:nth-child(3) {
             transform:
@@ -467,7 +671,9 @@
             rotate(-45deg);
         }
 
+
         /* this will only enable on Moblie, or class is enabled.*/
+
 
         .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim1 > span:nth-child(1) {
             transform:
@@ -475,10 +681,12 @@
             rotate(45deg);
         }
 
+
         .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim1 > span:nth-child(2) {
             opacity: 0;
             transform: scaleX(0);
         }
+
 
         .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim1 > span:nth-child(3) {
             transform:
@@ -486,16 +694,19 @@
             rotate(-45deg);
         }
 
+
         .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim2 > span:nth-child(1) {
             transform:
                 translateY(10px)
                 rotate(135deg);
         }
 
+
         .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim2 > span:nth-child(2) {
             opacity: 0;
             transform: scaleX(0);
         }
+
 
         .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim2 > span:nth-child(3) {
             transform:
@@ -503,15 +714,18 @@
                 rotate(-135deg);
         }
 
+
         .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3 {
             transform: rotate(90deg);
         }
+
 
         .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3 > span:nth-child(1) {
             transform:
                 translateY(10px)
                 rotate(45deg);
         }
+
 
         .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3 > span:nth-child(2) {
             opacity: 0;
@@ -520,6 +734,7 @@
                 rotate(180deg);
         }
 
+
         .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3 > span:nth-child(3) {
             transform:
                 translateY(-10px)
@@ -527,7 +742,10 @@
         }
 
 
+
+
         @media (max-width: 768px) {
+
 
             .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim1 > span:nth-child(1) {
                 transform:
@@ -535,10 +753,12 @@
                 rotate(45deg);
             }
 
+
             .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim1 > span:nth-child(2) {
                 opacity: 0;
                 transform: scaleX(0);
             }
+
 
             .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim1 > span:nth-child(3) {
                 transform:
@@ -546,16 +766,19 @@
                 rotate(-45deg);
             }
 
+
             .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim2 > span:nth-child(1) {
                 transform:
                     translateY(10px)
                     rotate(135deg);
             }
 
+
             .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim2 > span:nth-child(2) {
                 opacity: 0;
                 transform: scaleX(0);
             }
+
 
             .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim2 > span:nth-child(3) {
                 transform:
@@ -563,15 +786,18 @@
                     rotate(-135deg);
             }
 
+
             .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim3 {
                 transform: rotate(90deg);
             }
+
 
             .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim3 > span:nth-child(1) {
                 transform:
                     translateY(10px)
                     rotate(45deg);
             }
+
 
             .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim3 > span:nth-child(2) {
                 opacity: 0;
@@ -580,31 +806,34 @@
                     rotate(180deg);
             }
 
+
             .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim3 > span:nth-child(3) {
                 transform:
                     translateY(-10px)
                     rotate(-45deg);
             }
 
+
         }
+
+
+    </style>
+    <style ham-decide-appear-or-not>
+
 
         /* in mode 0 we disable them. */
         .site-content-header-menumode0 .site-content-header-hamberger {
             display: none;
         }
 
+
         .site-content-header-menumode0 .site-content-header-closebutton  {
             display: none;
         }
 
-        @media (max-width: 768px) {
-            .site-content-header-menumode0 .site-content-header-hamberger,
-            .site-content-header-menumode0 .site-content-header-closebutton {
-                display: flex;
-            }
-        }
 
         /* in mode 1-6, that's different */
+
 
         .site-content-header-menumode1 .site-content-header-hamberger,
         .site-content-header-menumode2 .site-content-header-hamberger,
@@ -615,6 +844,7 @@
             display: flex;
         }
 
+
         .site-content-header-menumode1 .site-content-header-closebutton,
         .site-content-header-menumode2 .site-content-header-closebutton,
         .site-content-header-menumode3 .site-content-header-closebutton,
@@ -624,7 +854,9 @@
             display: flex;
         }
 
+
         @media (max-width: 768px) {
+            .site-content-header-menumode0 .site-content-header-hamberger,
             .site-content-header-menumode1 .site-content-header-hamberger,
             .site-content-header-menumode2 .site-content-header-hamberger,
             .site-content-header-menumode3 .site-content-header-hamberger,
@@ -634,6 +866,8 @@
                 display: flex;
             }
 
+
+            .site-content-header-menumode0 .site-content-header-closebutton,
             .site-content-header-menumode1 .site-content-header-closebutton,
             .site-content-header-menumode2 .site-content-header-closebutton,
             .site-content-header-menumode3 .site-content-header-closebutton,
@@ -644,13 +878,25 @@
             }
         }
 
-        /* end of hamberger */
-        
+
+    </style>
+    <style nav-ul>
+        .site-content-header-menu > ul {
+
+
+        }
+    </style>
+    <style>
+       
+
 
         /* Nav Menu layout and padding */
         /*debugger;*/
 
+
         @media (max-width: 768px) {}
+
+
 
 
         /* Nav Submenu layout and padding */
@@ -658,25 +904,39 @@
         @media (max-width: 768px) {}
 
 
+    </style>
+    <style mbuttons>
+
+
         /* Hamberger Buttons Showup or not + styling */
         .site-content-header-mbuttons {
             display: none;
         }
 
+
         @media (max-width: 768px) {
             .site-content-header-mbuttons {
                 display: flex;
+                justify-content: center;
+                align-items: center;
                 width: 100%;
                 gap: var(--site-header-layout-mobileHeaderMainGap);
                 position: sticky;
                 bottom: 0;
             }
 
+
+            .site-content-header-mbuttons.site-content-header-stickyToBottom {
+                margin-top: auto;
+            }
+
+
             .site-content-header-mbutton1 {
                 height: atuo;
                 justify-content: space-between;
                 align-items: stretch;
             }
+
 
             .site-content-header-mbutton1.site-content-header-mbuttons a,
             .site-content-header-mbutton1.site-content-header-buttons button {
@@ -686,12 +946,16 @@
             }
 
 
+
+
             .site-content-header-mbutton2 {
                 height: atuo;
                 justify-content: space-between;
                 flex-direction: column;
                 align-items: stretch;
             }
+
+
 
 
             .site-content-header-mbutton2.site-content-header-mbuttons a,
@@ -703,15 +967,24 @@
             }
         }
 
+
+    </style>
+    <style cta-buttons>
+
+
         /* CTA buttons */
         .site-content-header-buttons {
-            width: 100%;
-            max-width: 200px;
             display: flex;
             gap: var(--site-header-layout-mobileHeaderMainGap);
-            justify-content: center;
             align-items: center;
         }
+
+
+        .site-content-header-button button,
+        .site-content-header-button a {
+            min-width: fit-content;
+        }
+
 
         @media (max-width: 768px) {
             /* Just keep only the first chlid*/
@@ -720,31 +993,41 @@
                 opacity: 1;
             }
 
+
             .site-content-header-wrap.ismenuopen > .site-content-header-buttons > .site-content-header-primaryCTA {
                 opacity: 0;
             }
-        }s
-
-        /* Space */
-        .site-content-header-space {
-            flex: 6 6 auto;
         }
 
-        /* End of everything! */
+
     </style>
+    <style space>
+        /* Space */
+        .site-content-header-space {
+            flex: 5 5 100%;
+        }
+    </style>
+
 
 </head>
 <body>
 
+
     <header class="site-header" id="preview"></header>
 
-    <div class="demo-controls">
+
+    <div class="demo-controls" hidden>
         <button id="generateButton">
             Generate Header
         </button>
     </div>
 
+
     <p id="pre"></p>
+
+
+    <div></div>
+
 
     <!-- Payload -->
     <script>
@@ -759,7 +1042,11 @@
             };
         }
 
+
         const flexEngineStyleVarible = createFlexEngineStyleVaribles();
+
+
+
 
 
 
@@ -767,6 +1054,7 @@
             content: {
                 "logo.type": "text",
                 "logo.text": "RaySite",
+
 
                 nav: [
                     {
@@ -837,10 +1125,12 @@
                     }
                 ],
 
+
                 "primaryButton.enable": true,
                 "primaryButton.text": "Get Started",
                 "primaryButton.url": "/get-started",
                 "primaryButton.newPage": false,
+
 
                 "secondaryButton.enable": true,
                 "secondaryButton.text": "Log in",
@@ -848,15 +1138,16 @@
                 "secondaryButton.newPage": false
             },
 
+
             layout: {
-                desktopPosition: 1, // done
+                desktopPosition: 2, // done
                 mobileMenuPlace: "left", // done
-                mobileLogoPosition: "left", // done
+                mobileLogoPosition: "center", // done
                 desktopHeaderMaxInnerWidth: "1200px",
                 desktopHeaderMainGap: "24px",
                 mobileHeaderMainGap: "16px",
                 desktopHeaderSeparateBorderSpace: "1px",
-                desktopMenuMode: 1,
+                desktopMenuMode: 0,
                 spaceBetween: "12px",
                 navMajorGap: "24px",
                 navMinorGap: "8px",
@@ -867,31 +1158,38 @@
                 mobileCtaType: 0, // Done
                 hamAnimation: 1, // Done
                 hamAnimationOnDesktop: true, // Done
-                mobileButonRound: "5px" // Done!
+                mobileButonRound: "5px", // Done!
+                textAlignInMenu: "left",
+                stickyToBottom: false //done
             }
         };
 
+
         const BUILDER_CONFIG = {
             classPrefix: "site-"
-        }   
+        }  
     </script>
+
 
     <!-- Runtime script -->
      <script>
         // Now is JS runtime.
         function startRuntime(element) {
-            
+           
+
 
 if (element) {
   const hamburger = element.querySelector(".site-content-header-hamberger");
   const closeButton = element.querySelector(".site-content-header-closebutton");
   const menuWrap = element.querySelector(".site-content-header-wrap");
 
+
   /*
    * --------------------------------------------------
    * 1. OPEN / CLOSE MAIN MENU
    * --------------------------------------------------
    */
+
 
   const clearSubmenus = () => {
     element
@@ -901,28 +1199,36 @@ if (element) {
       });
   };
 
+
   const closeMenu = () => {
     // For nested level 2/3, clear submenu state BEFORE closing.
     const nested = element.querySelector(
       '[class*="site-content-header-nested"]'
     );
 
+
     const nestedLevel = getNestedLevel(nested);
+
 
     if (nestedLevel === 2 || nestedLevel === 3) {
       clearSubmenus();
     }
 
+
     menuWrap?.classList.remove("ismenuopen");
   };
+
 
   hamburger?.addEventListener("click", () => {
     menuWrap?.classList.toggle("ismenuopen");
   });
 
+
   closeButton?.addEventListener("click", () => {
     closeMenu();
   });
+
+
 
 
   /*
@@ -937,8 +1243,10 @@ if (element) {
    * .site-content-header-nested3
    */
 
+
   function getNestedLevel(nested) {
     if (!nested) return 0;
+
 
     // Finds the number at the end of:
     // site-content-header-nested1
@@ -949,23 +1257,29 @@ if (element) {
         /^site-content-header-nested(\d+)$/
       );
 
+
       if (match) {
         return Number(match[1]);
       }
     }
 
+
     return 0;
   }
+
 
   function setupNestedMenu(nested) {
     const level = getNestedLevel(nested);
 
+
     // 0 = do nothing
     if (level === 0) return;
+
 
     const navPages = nested.querySelectorAll(
       ".site-content-header-navpage"
     );
+
 
     /*
      * LEVEL 1
@@ -979,13 +1293,16 @@ if (element) {
           ".site-content-header-menusubicon"
         );
 
+
         if (submenuIcon) {
           navPage.classList.add("issubmenuopen");
         }
       });
 
+
       return;
     }
+
 
     /*
      * LEVEL 2 / 3
@@ -993,12 +1310,15 @@ if (element) {
      * Only one submenu can be open at a time.
      */
 
+
     navPages.forEach((navPage) => {
       const submenuIcon = navPage.querySelector(
         ".site-content-header-menusubicon"
       );
 
+
       if (!submenuIcon) return;
+
 
       /*
        * LEVEL 2:
@@ -1010,25 +1330,31 @@ if (element) {
        */
       let trigger = submenuIcon;
 
+
       if (level === 3) {
         trigger = navPage.querySelector(":scope > a button");
+
 
         if (!trigger) return;
       }
 
+
       trigger.addEventListener("click", (event) => {
         event.preventDefault();
+
 
         // Close every currently-open submenu first.
         navPages.forEach((page) => {
           page.classList.remove("issubmenuopen");
         });
 
+
         // Then open the clicked one.
         navPage.classList.add("issubmenuopen");
       });
     });
   }
+
 
   /*
    * Find every nested element and configure it.
@@ -1038,6 +1364,8 @@ if (element) {
   element
     .querySelectorAll('[class*="site-content-header-nested"]')
     .forEach(setupNestedMenu);
+
+
 
 
   /*
@@ -1053,10 +1381,13 @@ if (element) {
    *   at the top of the webpage.
    */
 
+
   const updateOnTop = () => {
     if (!menuWrap) return;
 
+
     const menuIsOpen = menuWrap.classList.contains("ismenuopen");
+
 
     // Menu open = never onTop.
     if (menuIsOpen) {
@@ -1064,13 +1395,17 @@ if (element) {
       return;
     }
 
+
     // Menu closed = onTop depends on scroll position.
     const isAtTop = window.scrollY <= 0;
+
 
     element.classList.toggle("onTop", isAtTop);
   };
 
+
   window.addEventListener("scroll", updateOnTop, { passive: true });
+
 
   /*
    * Recalculate immediately and whenever the menu
@@ -1079,32 +1414,42 @@ if (element) {
   hamburger?.addEventListener("click", updateOnTop);
   closeButton?.addEventListener("click", updateOnTop);
 
+
   updateOnTop();
 }
 
+
         }
     </script>
+
+
 
 
     <!-- Creating HTML! -->
     <script>
 function createHeader(dataArray, documentHTML, node, createAnotherNode) {
 
+
     // Do a setup
     const content = dataArray.content || {};
     const layout = dataArray.layout || {};
     const prefix = BUILDER_CONFIG.classPrefix;
 
+
     const header = node;
     // End Setup
 
 
+
+
     // Start Content Creation
+
 
     // Wrap
     const contentWrap = documentHTML.createElement(`div`);
     contentWrap.classList.add(`${prefix}content-header-wrap`);
     header.appendChild(contentWrap);
+
 
     // Hamburger
     const hamburger = documentHTML.createElement(`button`);
@@ -1112,50 +1457,63 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
     hamburger.setAttribute(`aria-label`, `Open navigation menu`);
     hamburger.type = `button`;
 
+
     for (let i = 0; i < 3; i++) {
         const span = documentHTML.createElement(`span`);
         span.setAttribute(`aria-hidden`, `true`);
         hamburger.appendChild(span);
     }
 
+
     contentWrap.appendChild(hamburger);
+
 
     // Logo
     const logoWrap = documentHTML.createElement(`div`);
     logoWrap.classList.add(`${prefix}content-header-logo`);
 
+
     const logoLink = documentHTML.createElement(`a`);
     logoLink.classList.add(`logo`);
     logoLink.href = `/`;
 
+
     if (content[`logo.type`] === `text`) {
         const logoText = documentHTML.createElement(`h2`);
+
 
         if (content[`logo.text`] != null) {
             logoText.innerText = content[`logo.text`] ?? "";
         }
 
+
         logoLink.appendChild(logoText);
  
     }
 
+
     if (content[`logo.type`] === `image`) {
         const logoImage = documentHTML.createElement(`img`);
+
 
         if (content[`logo.image`] != null) {
             logoImage.src = content[`logo.image`];
         }
 
+
         logoLink.appendChild(logoImage);
     }
 
+
     logoWrap.appendChild(logoLink);
     contentWrap.appendChild(logoWrap);
+
 
     // Navigation
     const nav = documentHTML.createElement(`nav`);
     nav.classList.add(`${prefix}content-header-menu`);
     nav.setAttribute(`aria-label`, `Primary navigation`);
+
 
     // Close button
     const closeButton = documentHTML.createElement(`button`);
@@ -1163,41 +1521,53 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
     closeButton.setAttribute(`aria-label`, `Close navigation menu`);
     closeButton.type = `button`;
 
+
     for (let i = 0; i < 3; i++) {
         const span = documentHTML.createElement(`span`);
         span.setAttribute(`aria-hidden`, `true`);
         closeButton.appendChild(span);
     }
 
+
     nav.appendChild(closeButton);
+
+
 
 
     // Navigation list
     const navList = documentHTML.createElement(`ul`);
 
+
     const navItems = Array.isArray(content.nav)
         ? content.nav
         : [];
+
 
     navItems.forEach(navData => {
         const navItem = documentHTML.createElement(`li`);
         navItem.classList.add(`${prefix}content-header-navpage`);
 
+
         const navLink = documentHTML.createElement(
             navData.url ? `a` : `span`
         );
 
+
         navLink.textContent = navData.name ?? ``;
+
 
         if (navData.url) {
             navLink.href = navData.url;
         }
 
+
         navItem.appendChild(navLink);
 
-        debugger; // I am unsure about should I enter a 
-        // close button in submenu or not? 
+
+        debugger; // I am unsure about should I enter a
+        // close button in submenu or not?
         // well, we will use layout for help
+
 
         // Submenu
         if (
@@ -1207,35 +1577,45 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
             const submenu = documentHTML.createElement(`ul`);
             submenu.classList.add(`${prefix}content-header-submenu`);
 
+
             navData.children.forEach(childData => {
                 const submenuItem = documentHTML.createElement(`li`);
+
 
                 const submenuLink = documentHTML.createElement(
                     childData.url ? `a` : `span`
                 );
 
+
                 submenuLink.textContent = childData.name ?? ``;
+
 
                 if (childData.url) {
                     submenuLink.href = childData.url;
                 }
 
+
                 submenuItem.appendChild(submenuLink);
                 submenu.appendChild(submenuItem);
             });
 
+
             navItem.appendChild(submenu);
         }
+
 
         navList.appendChild(navItem);
     });
 
+
     nav.appendChild(navList);
-  
+ 
+
 
     // Mobile buttons
     const mobileButtons = documentHTML.createElement(`div`);
     mobileButtons.classList.add(`${prefix}content-header-mbuttons`);
+
 
     if (content[`secondaryButton.enable`]) {
         const mobileSecondary = documentHTML.createElement(`a`);
@@ -1245,18 +1625,22 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         mobileSecondary.textContent =
             content[`secondaryButton.text`] ?? ``;
 
+
         if (content[`secondaryButton.url`] != null) {
             mobileSecondary.href =
                 content[`secondaryButton.url`];
         }
+
 
         if (content[`secondaryButton.newPage`]) {
             mobileSecondary.target = `_blank`;
             mobileSecondary.rel = `noopener noreferrer`;
         }
 
+
         mobileButtons.appendChild(mobileSecondary);
     }
+
 
     if (content[`primaryButton.enable`]) {
         const mobilePrimary = documentHTML.createElement(`a`);
@@ -1266,27 +1650,35 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         mobilePrimary.textContent =
             content[`primaryButton.text`] ?? ``;
 
+
         if (content[`primaryButton.url`] != null) {
             mobilePrimary.href =
                 content[`primaryButton.url`];
         }
+
 
         if (content[`primaryButton.newPage`]) {
             mobilePrimary.target = `_blank`;
             mobilePrimary.rel = `noopener noreferrer`;
         }
 
+
         mobileButtons.appendChild(mobilePrimary);
     }
+
 
     nav.appendChild(mobileButtons);
     contentWrap.appendChild(nav);
 
 
 
+
+
+
     // Desktop buttons
     const buttons = documentHTML.createElement(`div`);
     buttons.classList.add(`${prefix}content-header-buttons`);
+
 
     if (content[`secondaryButton.enable`]) {
         const secondary = documentHTML.createElement(`a`);
@@ -1296,18 +1688,22 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         secondary.textContent =
             content[`secondaryButton.text`] ?? ``;
 
+
         if (content[`secondaryButton.url`] != null) {
             secondary.href =
                 content[`secondaryButton.url`];
         }
+
 
         if (content[`secondaryButton.newPage`]) {
             secondary.target = `_blank`;
             secondary.rel = `noopener noreferrer`;
         }
 
+
         buttons.appendChild(secondary);
     }
+
 
     if (content[`primaryButton.enable`]) {
         const primary = documentHTML.createElement(`a`);
@@ -1317,30 +1713,40 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         primary.textContent =
             content[`primaryButton.text`] ?? ``;
 
+
         if (content[`primaryButton.url`] != null) {
             primary.href =
                 content[`primaryButton.url`];
         }
+
 
         if (content[`primaryButton.newPage`]) {
             primary.target = `_blank`;
             primary.rel = `noopener noreferrer`;
         }
 
+
         buttons.appendChild(primary);
     }
 
+
     contentWrap.appendChild(buttons);
+
+
 
 
     // Space
     const spaceWrap = documentHTML.createElement(`div`);
     spaceWrap.classList.add(`${prefix}content-header-space`);
 
+
     contentWrap.appendChild(spaceWrap);
 
 
+
+
     // End Content Creation.
+
 
     // Start Varibles Layout Creation (Replace it with AI after)
     const cssVaribles = `
@@ -1356,10 +1762,13 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         --${prefix}header-layout-mobileButonRound: ${flexEngineStyleVarible.space(layout.mobileButonRound)};
     `;
 
+
     header.setAttribute(`${prefix}styles-node`, cssVaribles);
     // End Layout Creation
 
+
     // Start Class Layout Creation
+
 
     /*
        DesktopPosition:
@@ -1411,29 +1820,36 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         }
     };
 
+
     const position = positionMap[layout.desktopPosition];
+
 
     if (position) {
         logoWrap.classList.add(
             `${prefix}content-header-${position.logo}`
         );
 
+
         hamburger.classList.add(
             `${prefix}content-header-${position.nav}`
         );
+
 
         nav.classList.add(
             `${prefix}content-header-${position.nav}`
         );
 
+
         buttons.classList.add(
             `${prefix}content-header-${position.cta}`
         );
-        
+       
         spaceWrap.classList.add(
-        	`${prefix}content-header-${position.space}`
+            `${prefix}content-header-${position.space}`
         );
     }
+
+
 
 
     /*
@@ -1441,13 +1857,15 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
        it is either left or right, it will add:
        .site-content-header-mobile-onleft or onright
 
+
        mobileLogoPosition:
        Almost same, but is left or center.
+
 
        REMEMBER: ORDER MATTERS!!!!!!!!!
     */
     hamburger.classList.add(
-        `${prefix}content-header-mobile-${(layout.MobileMenuPlace === "left") ? "onleft" : "onright"}`
+        `${prefix}content-header-mobile-${(layout.mobileMenuPlace === "left") ? "onleft" : "onright"}`
     );
     logoWrap.classList.add(
         `${prefix}content-header-mobile-${(layout.mobileLogoPosition === "left") ? "onleft" : "oncenter"}`
@@ -1456,11 +1874,13 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         `${prefix}content-header-mobile-onright`
     );
 
-    const resultForSpace = (layout.MobileMenuPlace === "left") 
-        ? 
-        (layout.mobileLogoPosition === "left") ? "oncenter" : "onhidden" 
-        : 
+
+    const resultForSpace = (layout.mobileMenuPlace === "left")
+        ?
+        (layout.mobileLogoPosition === "left") ? "oncenter" : "onhidden"
+        :
         (layout.mobileLogoPosition === "left") ? "oncenter" : "onleft";
+
 
     spaceWrap.classList.add(
         `${prefix}content-header-mobile-${resultForSpace ?? "onhidden"}`
@@ -1474,6 +1894,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         `${prefix}content-header-menumode${layout.desktopMenuMode ?? 0}`
     );
 
+
     /*
        nestingSupport:
        as .site-content-header-nested{mode} on menu
@@ -1482,7 +1903,9 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         `${prefix}content-header-nested${layout.nestingSupport}`
     );
 
+
     const nestingSupport = layout.nestingSupport;
+
 
     if (nestingSupport >= 1 && nestingSupport <= 4) {
         nav.querySelectorAll(
@@ -1492,10 +1915,12 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
                 `:scope > .${prefix}content-header-submenu`
             );
 
+
             // No submenu = nothing to process.
             if (!submenu) {
                 return;
             }
+
 
             /*
             * nestingSupport 1, 2, 3:
@@ -1507,14 +1932,20 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
             if (nestingSupport <= 3) {
                 const subIcon = document.createElement('span');
 
+
                 subIcon.className =
                     `${prefix}content-header-menusubicon`;
+
 
                 // Plain Unicode character, not an emoji.
                 subIcon.textContent = '▶';
 
+
                 submenu.before(subIcon);
             }
+
+
+
 
 
 
@@ -1528,15 +1959,19 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
                     `:scope > a`
                 );
 
+
                 if (link) {
                     const clonedLink = link.cloneNode(true);
+
 
                     const li = document.createElement('li');
                     li.appendChild(clonedLink);
 
+
                     submenu.prepend(li);
                 }
             }
+
 
             /*
             * nestingSupport 2, 3, 4:
@@ -1546,8 +1981,10 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
             if (nestingSupport >= 2) {
                 const closeButton = document.createElement('button');
 
+
                 closeButton.className =
                     `${prefix}content-header-closebutton`;
+
 
                 closeButton.innerHTML = `
                     <span></span>
@@ -1555,10 +1992,12 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
                     <span></span>
                 `;
 
+
                 submenu.prepend(closeButton);
             }
         });
     }
+
 
     /*
        mobileMenuMode:
@@ -1567,7 +2006,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
     nav.classList.add(
         `${prefix}content-header-mobileMenuAnimamtion${layout.mobileMenuMode ?? 6}`
     );
-    
+   
     /*
        mobileCtaType:
        as .site-content-header-mbutton{mode} on mbotton
@@ -1575,6 +2014,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
     mobileButtons.classList.add(
         `${prefix}content-header-mbutton${layout.mobileCtaType ?? 1}`
     );
+
 
     /*
        hamAnimation:
@@ -1584,7 +2024,8 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         `${prefix}content-header-hamAnim${layout.hamAnimation ?? 2}`
     )
 
-    /* 
+
+    /*
         hamAnimationOnDesktop:
         as .site-content-header-enableAnimation on hamberber desktop.
     */
@@ -1592,11 +2033,26 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
         `${prefix}content-header-enableAnimation`
     )
 
+
+    nav.classList.add(
+        `${prefix}content-header-on${layout.textAlignInMenu ?? "left"}`
+    );
+
+
+    if (layout.stickyToBottom) {
+        mobileButtons.classList.add(
+            `${prefix}content-header-stickyToBottom`
+        );
+    }
+
+
     // End Layout Creation
+
 
     // Return it back.
 }
     </script>
+
 
     <!-- Run! -->
     <script>
@@ -1607,8 +2063,11 @@ function updateHTML() {
 }
 
 
+
+
 document.getElementById(`generateButton`).addEventListener("click", () => {
     const preview = document.getElementById(`preview`);
+
 
         createHeader(
             sampleData,
@@ -1617,13 +2076,18 @@ document.getElementById(`generateButton`).addEventListener("click", () => {
             null
         );
 
+
         //updateHTML();
+
 
         startRuntime(preview);
 });
 
+
 document.getElementById(`generateButton`).click();
+
 
      </script>
 </body>
 </html>
+
