@@ -1,20 +1,5 @@
 /* all prefix that should using ${BUILDER_CONFIG.classPrefix} is "cw-" */
 
-/* in Quill Documents class */
+/* in Quill Documents class - ONLY PART!!!! */
 
-
-.cw-header-navitem {
-  overflow: visible;
-  height: 100%;
-  box-sizing: content-box; 
-  margin-bottom: 4px;
-}
-
-.cw-header-submenulist,
-.ce-header-subsection {
-  left: 0;
-	right: 0;
-	margin-left: auto;
-	margin-right: auto;
-  position: absolute;
-}
+/* and Some Body Stuff */
