@@ -727,10 +727,13 @@
         .site-content-header-menumode1 .site-content-header-closebutton,
         .site-content-header-menumode2 .site-content-header-closebutton,
         .site-content-header-menumode3 .site-content-header-closebutton,
-        .site-content-header-menumode4 .site-content-header-closebutton,
+        .site-content-header-menumode4 .site-content-header-closebutton {
+            display: flex;
+        }
+
         .site-content-header-menumode5 .site-content-header-closebutton,
         .site-content-header-menumode6 .site-content-header-closebutton  {
-            display: flex;
+            display: none;
         }
 
         @media (max-width: 768px) {
@@ -759,7 +762,6 @@
     <style mane-styles>
         .site-content-header-menu {
         }
-
     </style>
     <style nav-ul>
 
@@ -821,8 +823,18 @@
             width: 100%;
             height: 100%;
             display: flex;
+            justify-content: flex-start;
             align-items: left;
             text-align: left;
+            flex-direction: column;
+        }
+
+        .site-content-header-menumode5 .site-content-header-menu > ul, 
+        .site-content-header-menumode6 .site-content-header-menu > ul {
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            text-align: center;
         }
 
         .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage,  
@@ -1117,7 +1129,7 @@
                 desktopHeaderMainGap: "24px", // done
                 mobileHeaderMainGap: "16px",
                 desktopHeaderSeparateBorderSpace: "1px",
-                desktopMenuMode: 1, // done 
+                desktopMenuMode: 6, // wait for ui
                 spaceBetween: "12px",
                 navMajorGap: "24px",
                 navMinorGap: "8px",
