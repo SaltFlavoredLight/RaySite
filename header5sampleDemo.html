@@ -1,0 +1,2274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Generator Demo</title>
+
+    <style test="complete">
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .demo-controls {
+            padding: 20px;
+            background: #f3f3f3;
+            border-bottom: 1px solid #ccc;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        .demo-controls button {
+            padding: 10px 16px;
+            cursor: pointer;
+        }
+        
+    </style>
+    <style enviroment="complete">
+
+        /* UI CSS System reset */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html, body, div, span, applet, object, iframe,
+        h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+        a, abbr, acronym, address, big, cite, code,
+        del, dfn, em, img, ins, kbd, q, s, samp,
+        small, strike, strong, sub, sup, tt, var,
+        b, u, i, center,
+        dl, dt, dd, ol, ul, li, button,
+        fieldset, form, label, legend,
+        table, caption, tbody, tfoot, thead, tr, th, td,
+        article, aside, canvas, details, embed, 
+        figure, figcaption, footer, header, hgroup, 
+        menu, nav, output, ruby, section, summary,
+        time, mark, audio, video {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            vertical-align: baseline;
+            background: inherit;
+        }
+
+        html, body, div, span, applet, object, iframe, p, blockquote, pre,
+        a, abbr, acronym, address, cite, code,
+        del, dfn, em, img, ins, kbd, q, s, samp,
+        strike, sub, sup, tt, var, center,
+        dl, dt, dd, ol, ul, li, button,
+        fieldset, form, label, legend,
+        table, caption, tbody, tfoot, thead, tr, th, td,
+        article, aside, canvas, details, embed, 
+        figure, figcaption, footer, header, hgroup, 
+        menu, nav, output, ruby, section, summary,
+        time, mark, audio, video {
+            font-size: 100%;
+            font: inherit;
+        }
+
+        /* HTML5 display-role reset for older browsers */
+        article, aside, details, figcaption, figure, 
+        footer, header, hgroup, menu, nav, section {
+            display: block;
+        }
+        body {
+            line-height: 1;
+        }
+        ol, ul {
+            list-style: none;
+        }   
+    </style>
+    <style payload="complete">
+       :root {
+            --site-header-layout-desktopHeaderMaxInnerWidth: 1200px; /*Done*/
+            --site-header-layout-desktopHeaderMainGap: 24px; /*done*/
+            --site-header-layout-mobileHeaderMainGap: 16px; /* done */
+            --site-header-layout-desktopHeaderSeparateBorderSpace: 1px;
+            --site-header-layout-spaceBetween: 12px;
+            --site-header-layout-navMajorGap: 24px;
+            --site-header-layout-navMinorGap: 8px;
+            --site-header-layout-transitionTime: 300ms;
+            --site-header-layout-transitionCurve: ease;
+            --site-header-layout-mobileButonRound: 5px;
+       }
+
+       /*
+       DesktopPosition: (Done!)
+       will be assigned for each element with correct source, like:
+       .site-content-header-onleft
+
+       MobileMenuPlace: (Done!)
+       it is either left or right, it will add:
+       .site-content-header-mobile-onleft or onright
+
+       mobileLogoPosition: (Done!)
+       Almost same, but is left or center.
+
+       desktopMenuMode:
+        as .site-content-header-menumode{number} on wrap
+
+       nestingSupport:
+       as .site-content-header-nested{mode} on menu
+
+       mobileMenuMode: 
+       as .site-content-header-mobileMenuAnimamtion{mode} on menu
+
+       mobileCtaType:
+       as .site-content-header-mbutton{mode} on mbotton
+
+       hamAnimation: (Done!)
+       as .site-content-header-hamAnim{mode} on hamberger desktop. 
+
+       hamAnimationOnDesktop: (Done!)
+       as .site-content-header-enableAnimation on hamberber desktop.
+
+       textAlignInMenu:
+       as .site-content-header-align-on{side} on menu
+
+       stickyToBottom:
+       as .site-content-header-stickyToBottom if true on mbuttons
+       */
+    </style>
+
+    <!-- real Header CSS based on prefix: site- -->
+
+    <style main-header="complete">
+        /* Start with header */
+        .site-header {
+            width: 100%;
+            max-width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Style + Size */
+        }
+
+        @media (max-width: 768px) {
+            .site-header {
+                position: sticky;
+                top: 0;
+            }
+        } 
+
+        .site-header a {
+            text-decoration: none;
+            color: unset;
+        }
+
+        /* Inner wrap */
+        .site-content-header-wrap {
+            width: 100%;
+            max-width: var(--site-header-layout-desktopHeaderMaxInnerWidth);
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between; /* Unsure about remove it or not*/
+            gap: var(--site-header-layout-desktopHeaderMainGap);
+            position: relative;
+        }
+
+        .site-content-header-wrap * {
+            transition: all var(--site-header-layout-transitionTime) var(--site-header-layout-transitionCurve);
+        }
+
+        @media (max-width: 768px) {
+            .site-content-header-wrap {
+                gap: var(--site-header-layout-mobileHeaderMainGap);
+            }
+        }
+    </style>
+    <style desktop-position="complete">
+        /* Talk about everyone's position */
+        /* start with position for left, center and right. */
+        .site-content-header-onhidden {
+            display: none;
+        }
+
+        .site-content-header-onleft {
+            flex: 0 0 auto;
+            text-align: start;
+            align-items: flex-start;
+            justify-content: flex-end;
+            margin-right: 0;
+            margin-left: 0;   
+            order: 10; 
+        }
+
+        .site-content-header-oncenter {
+            flex: 8 8 auto;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            order: 25;
+        }
+
+        .site-content-header-onright {
+            flex: 0 0 auto;
+            text-align: end;
+            align-items: flex-end;
+            justify-content: flex-end;
+            margin-left: 0;  
+            order: 39 
+        }
+
+        .site-content-header-hamberger.site-content-header-onleft{
+            order: 11;
+        }
+
+        .site-content-header-logo.site-content-header-onleft {
+            order: 12;
+        }
+
+        .site-content-header-buttons.site-content-header-onleft {
+            order: 13;
+        }
+
+        .site-content-header-menu.site-content-header-onleft {
+            order: 14;
+        }
+
+        .site-content-header-hamberger.site-content-header-onright {
+            order: 39;
+        }
+
+        .site-content-header-logo.site-content-header-onright {
+            order: 38;
+        }
+
+        .site-content-header-buttons.site-content-header-onright {
+            order: 37;
+        }
+
+        .site-content-header-menu.site-content-header-onright {
+            order: 36;
+        }
+
+        @media (max-width: 768px) {
+            .site-content-header-onhidden,
+            .site-content-header-onleft,
+            .site-content-header-oncenter,
+            .site-content-header-onright {
+                flex: unset;
+                text-align: unset;
+                align-items: unset;
+                margin: unset;  
+            }
+
+            .site-content-header-mobile-onhidden {
+                display: none;
+            }
+
+            .site-content-header-mobile-onleft {
+                flex: 0 0 auto;
+                text-align: start;
+                align-items: flex-start;
+                justify-content: flex-start;
+                margin-right: 0;
+                margin-left: 0;   
+                order: 10; 
+            }
+
+            .site-content-header-mobile-oncenter {
+                flex: 1 1 auto;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                order: 25;
+            }
+
+            .site-content-header-mobile-onright {
+                flex: 0 0 auto;
+                text-align: end;
+                align-items: flex-end;
+                justify-content: flex-end;
+                margin-left: 0;
+                margin-left: 0;  
+                order: 39 
+            }   
+
+
+
+            .site-content-header-hamberger.site-content-header-mobile-onleft {
+                order: 11;
+            }
+
+            .site-content-header-logo.site-content-header-mobile-onleft {
+                order: 12;
+            }
+
+            .site-content-header-buttons.site-content-header-mobile-onleft {
+                order: 13;
+            }
+
+            .site-content-header-menu.site-content-header-mobile-onleft {
+                order: 14;
+            }
+
+            .site-content-header-hamberger.site-content-header-mobile-onright {
+                order: 39;
+            }
+
+            .site-content-header-logo.site-content-header-mobile-onright {
+                order: 38;
+            }
+
+            .site-content-header-buttons.site-content-header-mobile-onright {
+                order: 37;
+            }
+
+            .site-content-header-menu.site-content-header-mobile-onright {
+                order: 36;
+            }            
+        }
+
+    </style>
+    <style logo="complete">
+        /* Logo */
+        .site-content-header-logo > a.logo,
+        .site-content-header-logo > h2
+        .site-content-header-logo img {
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            color: inherit;
+            font-size: 100%;
+        }
+    </style>
+    <style menu-display-and-animation="complete">
+
+        /* Nav layout */
+
+        /* mode 0 */
+        .site-content-header-menumode0 .site-content-header-menu {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* mode 1-6 */
+        .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu,
+        .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu,
+        .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu,
+        .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu,
+        .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu,
+        .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu {
+            position: fixed;
+           
+        }
+
+        .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu {
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: translateX(-100%);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode1.ismenuopen .site-content-header-menu {
+            transform: translateX(0);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu {
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip-path: inset(0 100% 0 0);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode2.ismenuopen .site-content-header-menu {
+            clip-path: inset(0 0 0 0);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu {
+            right: 0;
+            width: 100%;
+            height: 100%;
+            transform: translateX(100%);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode3.ismenuopen .site-content-header-menu {
+            transform: translateX(0);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu {
+            right: 0;
+            width: 100%;
+            height: 100%;
+            clip-path: inset(0 0 0 100%);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode4.ismenuopen .site-content-header-menu {
+            clip-path: inset(0 0 0 0);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 100%;
+            margin: auto;
+            
+            
+            transform: translateY(-100%);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode5.ismenuopen .site-content-header-menu {
+            transform: translateY(0);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 100%;
+            margin: auto;
+            
+            
+            clip-path: inset(0 0 100% 0);
+        }
+
+        .site-content-header-wrap.site-content-header-menumode6.ismenuopen .site-content-header-menu {
+            clip-path: inset(0 0 0 0);
+        }
+
+
+        @media (max-width: 768px) {
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                height: calc(100vh - 100% - 1px);
+                width: 100%;
+                transform: translateX(0);
+                clip-path: inset(0 0 0 0);
+
+
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+            }
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1 {
+                transform: translateX(-100%);
+            }
+
+            .site-content-header-wrap.ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion1 {
+                transform: translateX(0);
+            }
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2 {
+                clip-path: inset(0 100% 0 0);
+            }
+
+            .site-content-header-wrap.ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion2 {
+                clip-path: inset(0 0 0 0);
+            }
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3 {
+                transform: translateX(100%);
+            }
+
+            .site-content-header-wrap.ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion3 {
+                transform: translateX(0);
+            }
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4 {
+                clip-path: inset(0 0 0 100%);
+            }
+
+            .site-content-header-wrap.ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion4 {
+                clip-path: inset(0 0 0 0);
+            }
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5 {
+                transform: translateY(-100vh);
+            }
+
+            .site-content-header-wrap.ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion5 {
+                transform: translateY(0);
+            }
+
+            .site-content-header-wrap.site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+            .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+            .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+            .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+            .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+            .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+            .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6 {
+                clip-path: inset(0 0 100% 0);
+            }
+
+            .site-content-header-wrap.ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion6 {
+                clip-path: inset(0 0 0 0);
+            }
+
+        }
+
+
+    </style>
+    <style ham-animation="complete" close-buttons="complete">
+
+        /* Hamberger Layout and Close Button */
+        .site-content-header-hamberger,
+        .site-content-header-closebutton {
+            width: 30px;
+            height: 30px;
+
+            padding: 0;
+            border: 0;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 7px;
+
+            background: transparent;
+
+            cursor: pointer;
+        }
+
+        .site-content-header-hamberger span,
+        .site-content-header-closebutton span {
+            display: block;
+
+            width: 30px;
+            height: 3px;
+
+            background: currentColor;
+            border-radius: 999px;
+        }
+
+        .site-content-header-closebutton span:nth-child(1) {
+            transform:
+            translateY(10px)
+            rotate(45deg);
+        }
+
+        .site-content-header-closebutton span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .site-content-header-closebutton span:nth-child(3) {
+            transform:
+            translateY(-10px)
+            rotate(-45deg);
+        }
+
+        /* this will only enable on Moblie, or class is enabled.*/
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim1 > span:nth-child(1) {
+            transform:
+            translateY(10px)
+            rotate(45deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim1 > span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim1 > span:nth-child(3) {
+            transform:
+            translateY(-10px)
+            rotate(-45deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim2 > span:nth-child(1) {
+            transform:
+                translateY(10px)
+                rotate(135deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim2 > span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim2 > span:nth-child(3) {
+            transform:
+                translateY(-10px)
+                rotate(-135deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3 {
+            transform: rotate(90deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3 > span:nth-child(1) {
+            transform:
+                translateY(10px)
+                rotate(45deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3 > span:nth-child(2) {
+            opacity: 0;
+            transform:
+                scaleX(0)
+                rotate(180deg);
+        }
+
+        .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3 > span:nth-child(3) {
+            transform:
+                translateY(-10px)
+                rotate(-45deg);
+        }
+
+
+        @media (max-width: 768px) {
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim1 > span:nth-child(1) {
+                transform:
+                translateY(10px)
+                rotate(45deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim1 > span:nth-child(2) {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim1 > span:nth-child(3) {
+                transform:
+                translateY(-10px)
+                rotate(-45deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim2 > span:nth-child(1) {
+                transform:
+                    translateY(10px)
+                    rotate(135deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim2 > span:nth-child(2) {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim2 > span:nth-child(3) {
+                transform:
+                    translateY(-10px)
+                    rotate(-135deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim3 {
+                transform: rotate(90deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim3 > span:nth-child(1) {
+                transform:
+                    translateY(10px)
+                    rotate(45deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim3 > span:nth-child(2) {
+                opacity: 0;
+                transform:
+                    scaleX(0)
+                    rotate(180deg);
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-hamberger.site-content-header-hamAnim3 > span:nth-child(3) {
+                transform:
+                    translateY(-10px)
+                    rotate(-45deg);
+            }
+
+        }
+
+    </style>
+    <style ham-decide-appear-or-not="complete">
+
+        /* in mode 0 we disable them. */
+        .site-content-header-menumode0 .site-content-header-hamberger {
+            display: none;
+        }
+
+        .site-content-header-menumode0 .site-content-header-closebutton  {
+            display: none;
+        }
+
+        /* in mode 1-6, that's different */
+
+        .site-content-header-menumode1 .site-content-header-hamberger,
+        .site-content-header-menumode2 .site-content-header-hamberger,
+        .site-content-header-menumode3 .site-content-header-hamberger,
+        .site-content-header-menumode4 .site-content-header-hamberger,
+        .site-content-header-menumode5 .site-content-header-hamberger,
+        .site-content-header-menumode6 .site-content-header-hamberger {
+            display: flex;
+        }
+
+        .site-content-header-menumode1 .site-content-header-closebutton,
+        .site-content-header-menumode2 .site-content-header-closebutton,
+        .site-content-header-menumode3 .site-content-header-closebutton,
+        .site-content-header-menumode4 .site-content-header-closebutton {
+            display: flex;
+        }
+
+        .site-content-header-menumode5 .site-content-header-closebutton,
+        .site-content-header-menumode6 .site-content-header-closebutton  {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .site-content-header-menumode0 .site-content-header-hamberger,
+            .site-content-header-menumode1 .site-content-header-hamberger,
+            .site-content-header-menumode2 .site-content-header-hamberger,
+            .site-content-header-menumode3 .site-content-header-hamberger,
+            .site-content-header-menumode4 .site-content-header-hamberger,
+            .site-content-header-menumode5 .site-content-header-hamberger,
+            .site-content-header-menumode6 .site-content-header-hamberger {
+                display: flex;
+            }
+
+            .site-content-header-menumode0 .site-content-header-closebutton,
+            .site-content-header-menumode1 .site-content-header-closebutton,
+            .site-content-header-menumode2 .site-content-header-closebutton,
+            .site-content-header-menumode3 .site-content-header-closebutton,
+            .site-content-header-menumode4 .site-content-header-closebutton,
+            .site-content-header-menumode5 .site-content-header-closebutton,
+            .site-content-header-menumode6 .site-content-header-closebutton  {
+                display: none;
+            }
+        }
+
+    </style>
+    <style nav-ul>
+
+        .site-content-header-menu > ul {
+            width: 100%;
+
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            gap: var(--site-header-layout-navMajorGap);
+
+        }
+
+        /* mode 0 */
+        /* Main */
+        .site-content-header-menumode0 .site-content-header-menu > ul {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage  {
+            position: relative;
+        }
+
+        /* Sub */
+        .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage > a {
+            height: 100%;
+            margin-bottom: var(--site-header-layout-spaceBetween);
+        }
+
+        .site-content-header-menumode0 .site-content-header-menu .site-content-header-submenu {
+            position: absolute;
+            clip-path: inset(0 0 100% 0);
+            text-align: start;
+            left: 0;
+            top: 100%; 
+        }
+
+        .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage:hover .site-content-header-submenu {
+            clip-path: inset(0 0 0 0);
+        }
+
+        .site-content-header-menumode0 .site-content-header-menusubicon {
+            display: none;
+        }
+
+
+        /* mode 1-4 */
+        /* Main */
+        .site-content-header-menumode1 .site-content-header-menu > ul, 
+        .site-content-header-menumode2 .site-content-header-menu > ul, 
+        .site-content-header-menumode3 .site-content-header-menu > ul, 
+        .site-content-header-menumode4 .site-content-header-menu > ul {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: left;
+            text-align: left;
+            flex-direction: column;
+        }
+
+        .site-content-header-menumode5 .site-content-header-menu > ul, 
+        .site-content-header-menumode6 .site-content-header-menu > ul {
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            text-align: center;
+        }
+
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage  {
+            position: relative;
+        }
+
+
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage  {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--site-header-layout-navMinorGap) 0;
+        }
+
+
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage > a,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage > a,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage > a,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage > a,
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage > span,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage > span,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage > span,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage > span  {
+            display: flex;
+            flex: 1 1 50px;
+        }
+
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon {
+            cursor: pointer;
+            width: 100%; 
+            flex: 0 1 50px;
+            transform: rotate(0);
+        }
+
+
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon {
+            transform: rotate(90deg);
+        }
+
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-submenu {
+            display: flex;
+            flex-direction: column;
+            gap: var(--site-header-layout-navMinorGap) 0;
+            padding-left: var(--site-header-layout-navMajorGap);
+            width: 100%;
+            flex: 1 1 100%;
+        }
+
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu {
+            clip-path: inset(0 0 100% 0); 
+        }
+
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu {
+            clip-path: inset(0 0 0 0); 
+        }      
+
+        /* menu mode 5-6 */
+        .site-content-header-menumode5 .site-content-header-menu > ul, 
+        .site-content-header-menumode6 .site-content-header-menu > ul {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: left;
+            text-align: left;
+            flex-direction: column;
+        }
+
+        .site-content-header-menumode5 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode6 .site-content-header-menu .site-content-header-navpage  {
+            position: relative;
+        }
+
+
+        /* MOblie */
+        @media (max-width: 768px) {
+            .site-content-header-menumode0 .site-content-header-menu > ul,
+            .site-content-header-menumode1 .site-content-header-menu > ul,
+            .site-content-header-menumode2 .site-content-header-menu > ul,
+            .site-content-header-menumode3 .site-content-header-menu > ul,
+            .site-content-header-menumode4 .site-content-header-menu > ul,
+            .site-content-header-menumode5 .site-content-header-menu > ul,
+            .site-content-header-menumode6 .site-content-header-menu > ul {
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                justify-content: center;
+                align-items: unset;
+                width: 100%;
+                height: auto;
+            }
+
+            .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage {
+                position: static;
+            }
+
+            .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage > a {
+                height: auto;
+                margin-bottom: 0;
+            }
+
+            .site-content-header-menumode0 .site-content-header-menu .site-content-header-submenu {
+                position: static;
+                clip-path: none;
+                text-align: start;
+                left: auto;
+                top: auto;
+            }
+
+
+
+
+            .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage:hover .site-content-header-submenu {
+                clip-path: none;
+            }
+
+            .site-content-header-menu.site-content-header-align-onleft {
+                text-align: left;
+            }
+
+            .site-content-header-menu.site-content-header-align-oncenter {
+                text-align: center;
+            }    
+
+            .site-content-header-menu.site-content-header-align-onright {
+                text-align: right;
+            }            
+        }       
+    </style>
+    <style>
+        
+
+        /* Nav Menu layout and padding */
+        /*debugger;*/
+
+        @media (max-width: 768px) {}
+
+
+        /* Nav Submenu layout and padding */
+        /*debugger;*/
+        @media (max-width: 768px) {}
+
+    </style>
+    <style mbuttons="complete">
+
+        /* Hamberger Buttons Showup or not + styling */
+        .site-content-header-mbuttons {
+            display: none;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .site-content-header-mbuttons {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                gap: var(--site-header-layout-mobileHeaderMainGap);
+                position: sticky;
+                bottom: 0;
+            }
+
+            .site-content-header-mbuttons.site-content-header-stickyToBottom {
+                margin-top: auto;
+            }
+
+            .site-content-header-mbutton1 {
+                height: atuo;
+                justify-content: space-between;
+                align-items: stretch;
+            }
+
+            .site-content-header-mbutton1.site-content-header-mbuttons a,
+            .site-content-header-mbutton1.site-content-header-buttons button {
+                flex: 1 1 0;
+                min-width: none !important;
+                border-radius: var(--site-header-layout-mobileButonRound);
+            }
+
+
+            .site-content-header-mbutton2 {
+                height: atuo;
+                justify-content: space-between;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+
+            .site-content-header-mbutton2.site-content-header-mbuttons a,
+            .site-content-header-mbutton2.site-content-header-buttons button {
+                flex: 1 1 0;
+                min-height: none !important;
+                border-radius: var(--site-header-layout-mobileButonRound);
+                width: 100% !important;
+            }
+        }
+
+    </style>
+    <style cta-buttons="complete">
+
+        /* CTA buttons */
+        .site-content-header-buttons {
+            display: flex;
+            gap: var(--site-header-layout-mobileHeaderMainGap);
+            align-items: center;
+        }
+
+        .site-content-header-button button,
+        .site-content-header-button a {
+            min-width: fit-content;
+        }
+
+        @media (max-width: 768px) {
+            /* Just keep only the first chlid*/
+            .site-content-header-buttons .site-content-header-secondaryCTA {
+                display: none !important;
+                opacity: 1;
+            }
+
+            .site-content-header-wrap.ismenuopen > .site-content-header-buttons > .site-content-header-primaryCTA {
+                opacity: 0;
+            }
+        }
+
+    </style>
+    <style space="complete">
+        /* Space */
+        .site-content-header-space {
+            flex: 5 5 100%;
+        }
+    </style>
+
+</head>
+<body>
+
+    <header class="site-header" id="preview"></header>
+
+    <div class="demo-controls" hidden>
+        <button id="generateButton">
+            Generate Header
+        </button>
+    </div>
+
+    <p id="pre"></p>
+
+    <div style="height: 2000px"></div>
+
+    <!-- Payload -->
+    <script>
+        function createFlexEngineStyleVaribles() {
+            return {
+                space: (value) => value,
+                curve: (value) => value,
+                integer: (value) => value,
+                boolean: (value) => value,
+                string: (value) => value,
+                media: (value) => value
+            };
+        }
+
+        const flexEngineStyleVarible = createFlexEngineStyleVaribles();
+
+
+
+        const sampleData = {
+            content: {
+                "logo.type": "text",
+                "logo.text": "RaySite",
+
+                nav: [
+                    {
+                        name: "Home",
+                        children: [],
+                        url: "/"
+                    },
+                    {
+                        name: "All Product",
+                        children: [
+                            {
+                                name: "Website",
+                                children: [],
+                                url: "/products/website"
+                            },
+                            {
+                                name: "CMS",
+                                children: [],
+                                url: "/products/cms"
+                            },
+                            {
+                                name: "Notebook",
+                                children: [],
+                                url: "/products/notebook"
+                            },
+                            {
+                                name: "Member Management",
+                                children: [],
+                                url: "/products/member-management"
+                            }
+                        ],
+                        url: "/products"
+                    },
+                    {
+                        name: "Solution",
+                        children: [],
+                        url: "/solution"
+                    },
+                    {
+                        name: "Help?",
+                        children: [
+                            {
+                                name: "About Us",
+                                children: [],
+                                url: "/about-us"
+                            },
+                            {
+                                name: "History",
+                                children: [],
+                                url: "/about-us/history"
+                            },
+                            {
+                                name: "Blog",
+                                children: [],
+                                url: "/blog"
+                            },
+                            {
+                                name: "Devaloper's Docs",
+                                children: [],
+                                url: "/docs"
+                            }
+                        ],
+                        url: ""
+                    },
+                    {
+                        name: "About Us",
+                        url: "/about-us"
+                    }
+                ],
+
+                "primaryButton.enable": true,
+                "primaryButton.text": "Get Started",
+                "primaryButton.url": "/get-started",
+                "primaryButton.newPage": false,
+
+                "secondaryButton.enable": true,
+                "secondaryButton.text": "Log in",
+                "secondaryButton.url": "/login",
+                "secondaryButton.newPage": false
+            },
+
+            layout: {
+                desktopPosition: 4, // done
+                mobileMenuPlace: "left", // done
+                mobileLogoPosition: "center", // done
+                desktopHeaderMaxInnerWidth: "1200px", // done
+                desktopHeaderMainGap: "24px", // done
+                mobileHeaderMainGap: "16px",
+                desktopHeaderSeparateBorderSpace: "1px",
+                desktopMenuMode: 1, // wait for ui
+                spaceBetween: "12px",
+                navMajorGap: "24px",
+                navMinorGap: "8px",
+                nestingSupport: 1,                   // DOM done, wait the Class
+                transitionTime: 300, // Done
+                transitionCurve: "ease", // Done
+                mobileMenuMode: 1, // Done
+                mobileCtaType: 0, // Done
+                hamAnimation: 1, // Done
+                hamAnimationOnDesktop: true, // Done
+                mobileButonRound: "5px", // Done!
+                textAlignInMenu: "left", // Done!
+                stickyToBottom: false //done
+            }
+        };
+
+        const BUILDER_CONFIG = {
+            classPrefix: "site-"
+        }   
+    </script>
+
+    <!-- Runtime script -->
+    <script>
+    // Now is JS runtime.
+    function startRuntime(element) {
+
+        if (element) {
+        const hamburger = element.querySelector(
+            ".site-content-header-hamberger"
+        );
+
+        const menuWrap = element.querySelector(
+            ".site-content-header-wrap"
+        );
+
+
+        /*
+        * --------------------------------------------------
+        * 1. OPEN / CLOSE MAIN MENU
+        * --------------------------------------------------
+        */
+
+        const clearSubmenus = (scope = element) => {
+            scope
+            .querySelectorAll(
+                ".site-content-header-navpage.issubmenuopen"
+            )
+            .forEach((navPage) => {
+                navPage.classList.remove("issubmenuopen");
+            });
+        };
+
+
+        const closeMenu = () => {
+            clearSubmenus();
+            menuWrap?.classList.remove("ismenuopen");
+        };
+
+
+        hamburger?.addEventListener("click", () => {
+            menuWrap?.classList.toggle("ismenuopen");
+        });
+
+
+        /*
+        * --------------------------------------------------
+        * 2. CLOSE BUTTONS
+        * --------------------------------------------------
+        *
+        * There are TWO different types:
+        *
+        * A. GLOBAL CLOSE BUTTON
+        *
+        *    .site-content-header-closebutton
+        *    located directly in / under the main WRAP,
+        *    but NOT inside a navpage.
+        *
+        *    => closes the ENTIRE menu.
+        *
+        *
+        * B. NAVPAGE CLOSE BUTTON
+        *
+        *    .site-content-header-closebutton
+        *    located inside a .site-content-header-navpage.
+        *
+        *    => closes ONLY that navpage's submenu.
+        *
+        * This listener is document-level because the global
+        * close button / Subpage can exist outside `element`.
+        * --------------------------------------------------
+        */
+
+        document.addEventListener("click", (event) => {
+
+            const target = event.target;
+
+            if (!(target instanceof Element)) return;
+
+
+            const closeButton =
+            target.closest(
+                ".site-content-header-closebutton"
+            );
+
+            if (!closeButton) return;
+
+
+            /*
+            * First determine whether this close button
+            * belongs to a navpage.
+            */
+            const navPage =
+            closeButton.closest(
+                ".site-content-header-navpage"
+            );
+
+
+            /*
+            * ------------------------------------------------
+            * NAVPAGE CLOSE BUTTON
+            * ------------------------------------------------
+            *
+            * Only close THIS submenu level.
+            */
+            if (navPage) {
+
+            navPage.classList.remove(
+                "issubmenuopen"
+            );
+
+            /*
+            * Do NOT close the main menu.
+            * Do NOT clear other submenu levels.
+            */
+            return;
+            }
+
+
+            /*
+            * ------------------------------------------------
+            * GLOBAL CLOSE BUTTON
+            * ------------------------------------------------
+            *
+            * It is not inside a navpage, so it closes
+            * the entire menu.
+            */
+            if (
+            menuWrap &&
+            (
+                menuWrap.contains(closeButton) ||
+                element.contains(closeButton)
+            )
+            ) {
+            closeMenu();
+            }
+
+        });
+
+
+        /*
+        * --------------------------------------------------
+        * 3. NESTED MENU BEHAVIOR
+        * --------------------------------------------------
+        *
+        * Mode 1:
+        *   Opening a submenu does NOT close other submenus.
+        *
+        * Mode 2 / 3 / 4:
+        *   Opening a submenu closes other submenus
+        *   in the SAME menu level.
+        *
+        * Clicking an already-open submenu toggles it closed.
+        * --------------------------------------------------
+        */
+
+        function getNestedLevel(nested) {
+
+            if (!nested) return 0;
+
+            for (const className of nested.classList) {
+
+            const match = className.match(
+                /^site-content-header-nested(\d+)$/
+            );
+
+            if (match) {
+                return Number(match[1]);
+            }
+            }
+
+            return 0;
+        }
+
+
+        /*
+        * Find every nested mode.
+        */
+        element
+            .querySelectorAll(
+            '[class*="site-content-header-nested"]'
+            )
+            .forEach((nested) => {
+
+            const level = getNestedLevel(nested);
+
+
+            if (
+                level !== 1 &&
+                level !== 2 &&
+                level !== 3 &&
+                level !== 4
+            ) {
+                return;
+            }
+
+
+            /*
+            * Find the menu bar belonging to this mode.
+            */
+            const menu =
+                nested.querySelector(
+                ".site-content-header-menu"
+                ) ||
+                element.querySelector(
+                ".site-content-header-menu"
+                );
+
+
+            if (!menu) return;
+
+
+            /*
+            * Find every navpage in this menu.
+            */
+            const navPages = Array.from(
+                menu.querySelectorAll(
+                ".site-content-header-navpage"
+                )
+            );
+
+
+            /*
+            * ------------------------------------------------
+            * Toggle one submenu.
+            * ------------------------------------------------
+            */
+            const toggleSubmenu = (navPage) => {
+
+                const isOpen =
+                    navPage.classList.contains(
+                        "issubmenuopen"
+                    );
+
+                /*
+                * If opening:
+                *
+                * Mode 1:
+                *   Leave all other submenus alone.
+                *
+                * Mode 2/3/4:
+                *   Close other navpages in this menu.
+                */
+                if (!isOpen && level !== 1) {
+
+                    navPages.forEach((page) => {
+
+                        if (page !== navPage) {
+
+                            page.classList.remove(
+                                "issubmenuopen"
+                            );
+                        }
+
+                    });
+                }
+
+                const element = navPage.querySelector(".site-content-header-navpage");
+
+                if (element && level == 1) {
+                    if (isOpen) {
+                        element.style.maxHeight = element.scrollHeight + "px";
+                    } else {
+                        element.style.maxHeight = element.scrollHeight + "px";
+
+                        requestAnimationFrame(() => {
+                            element.style.maxHeight = "0px";
+                        });
+                    }
+                }
+
+                
+
+                /*
+                * This is the ONLY state change.
+                * CSS handles the animation.
+                */
+                navPage.classList.toggle(
+                    "issubmenuopen"
+                );
+            };
+
+
+            /*
+            * Configure every navpage.
+            */
+            navPages.forEach((navPage) => {
+
+                /*
+                * Find submenu icon.
+                *
+                * No icon = no submenu trigger.
+                */
+                const submenuIcon =
+                navPage.querySelector(
+                    ".site-content-header-menusubicon"
+                );
+
+
+                /*
+                * ------------------------------------------------
+                * SUBMENU ICON
+                * ------------------------------------------------
+                */
+                if (submenuIcon) {
+
+                submenuIcon.addEventListener(
+                    "click",
+                    (event) => {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    toggleSubmenu(navPage);
+                    }
+                );
+                }
+
+
+                /*
+                * ------------------------------------------------
+                * MODE 3 / 4
+                *
+                * The FIRST direct element of the navpage
+                * becomes another trigger.
+                *
+                * It can be:
+                *   <a>
+                *   <span>
+                *   etc.
+                *
+                * Its normal action is prevented.
+                *
+                * It performs EXACTLY the same toggle as
+                * clicking the submenu icon.
+                * ------------------------------------------------
+                */
+                if (
+                (level === 3 || level === 4) &&
+                submenuIcon
+                ) {
+
+                const firstElement =
+                    navPage.querySelector(
+                    ":scope > *"
+                    );
+
+
+                if (firstElement) {
+
+                    firstElement.addEventListener(
+                    "click",
+                    (event) => {
+
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        toggleSubmenu(navPage);
+                    }
+                    );
+                }
+                }
+
+            });
+
+            });
+
+
+        /*
+        * --------------------------------------------------
+        * 4. .onTop
+        * --------------------------------------------------
+        */
+
+        const updateOnTop = () => {
+
+            if (!menuWrap) return;
+
+
+            const menuIsOpen =
+            menuWrap.classList.contains(
+                "ismenuopen"
+            );
+
+
+            /*
+            * Menu open = never onTop.
+            */
+            if (menuIsOpen) {
+
+            element.classList.remove(
+                "onTop"
+            );
+
+            return;
+            }
+
+
+            /*
+            * Menu closed = onTop depends on scroll.
+            */
+            const isAtTop =
+            window.scrollY <= 0;
+
+
+            element.classList.toggle(
+            "onTop",
+            isAtTop
+            );
+        };
+
+
+        window.addEventListener(
+            "scroll",
+            updateOnTop,
+            { passive: true }
+        );
+
+
+        hamburger?.addEventListener(
+            "click",
+            updateOnTop
+        );
+
+
+        /*
+        * A global close button changes the main menu state,
+        * so update .onTop after it is clicked.
+        *
+        * A navpage close button does NOT affect the main
+        * menu state, so it does not need updateOnTop().
+        */
+        document.addEventListener("click", (event) => {
+
+            const target = event.target;
+
+            if (!(target instanceof Element)) return;
+
+
+            const closeButton =
+            target.closest(
+                ".site-content-header-closebutton"
+            );
+
+            if (!closeButton) return;
+
+
+            const navPage =
+            closeButton.closest(
+                ".site-content-header-navpage"
+            );
+
+
+            /*
+            * Only global close buttons update the main
+            * header state.
+            */
+            if (!navPage) {
+            updateOnTop();
+            }
+
+        });
+
+
+
+
+
+        updateOnTop();
+        }
+    }
+    </script>
+
+    <!-- Creating HTML! -->
+    <script>
+function createHeader(dataArray, documentHTML, node, createAnotherNode) {
+
+    // Do a setup
+    const content = dataArray.content || {};
+    const layout = dataArray.layout || {};
+    const prefix = BUILDER_CONFIG.classPrefix;
+
+    const header = node;
+    // End Setup
+
+
+    // Start Content Creation
+
+    // Wrap
+    const contentWrap = documentHTML.createElement(`div`);
+    contentWrap.classList.add(`${prefix}content-header-wrap`);
+    header.appendChild(contentWrap);
+
+    // Hamburger
+    const hamburger = documentHTML.createElement(`button`);
+    hamburger.classList.add(`${prefix}content-header-hamberger`);
+    hamburger.setAttribute(`aria-label`, `Open navigation menu`);
+    hamburger.type = `button`;
+
+    for (let i = 0; i < 3; i++) {
+        const span = documentHTML.createElement(`span`);
+        span.setAttribute(`aria-hidden`, `true`);
+        hamburger.appendChild(span);
+    }
+
+    contentWrap.appendChild(hamburger);
+
+    // Logo
+    const logoWrap = documentHTML.createElement(`div`);
+    logoWrap.classList.add(`${prefix}content-header-logo`);
+
+    const logoLink = documentHTML.createElement(`a`);
+    logoLink.classList.add(`logo`);
+    logoLink.href = `/`;
+
+    if (content[`logo.type`] === `text`) {
+        const logoText = documentHTML.createElement(`h2`);
+
+        if (content[`logo.text`] != null) {
+            logoText.innerText = content[`logo.text`] ?? "";
+        }
+
+        logoLink.appendChild(logoText);
+ 
+    }
+
+    if (content[`logo.type`] === `image`) {
+        const logoImage = documentHTML.createElement(`img`);
+
+        if (content[`logo.image`] != null) {
+            logoImage.src = content[`logo.image`];
+        }
+
+        logoLink.appendChild(logoImage);
+    }
+
+    logoWrap.appendChild(logoLink);
+    contentWrap.appendChild(logoWrap);
+
+    // Navigation
+    const nav = documentHTML.createElement(`nav`);
+    nav.classList.add(`${prefix}content-header-menu`);
+    nav.setAttribute(`aria-label`, `Primary navigation`);
+
+    // Close button
+    const closeButton = documentHTML.createElement(`button`);
+    closeButton.classList.add(`${prefix}content-header-closebutton`);
+    closeButton.setAttribute(`aria-label`, `Close navigation menu`);
+    closeButton.type = `button`;
+
+    for (let i = 0; i < 3; i++) {
+        const span = documentHTML.createElement(`span`);
+        span.setAttribute(`aria-hidden`, `true`);
+        closeButton.appendChild(span);
+    }
+
+    nav.appendChild(closeButton);
+
+
+    // Navigation list
+    const navList = documentHTML.createElement(`ul`);
+
+    const navItems = Array.isArray(content.nav)
+        ? content.nav
+        : [];
+
+    navItems.forEach(navData => {
+        const navItem = documentHTML.createElement(`li`);
+        navItem.classList.add(`${prefix}content-header-navpage`);
+
+        const navLink = documentHTML.createElement(
+            navData.url ? `a` : `span`
+        );
+
+        navLink.textContent = navData.name ?? ``;
+
+        if (navData.url) {
+            navLink.href = navData.url;
+        }
+
+        navItem.appendChild(navLink);
+
+        // Submenu
+        if (
+            Array.isArray(navData.children) &&
+            navData.children.length > 0
+        ) {
+            const submenu = documentHTML.createElement(`ul`);
+            submenu.classList.add(`${prefix}content-header-submenu`);
+
+            navData.children.forEach(childData => {
+                const submenuItem = documentHTML.createElement(`li`);
+
+                const submenuLink = documentHTML.createElement(
+                    childData.url ? `a` : `span`
+                );
+
+                submenuLink.textContent = childData.name ?? ``;
+
+                if (childData.url) {
+                    submenuLink.href = childData.url;
+                }
+
+                submenuItem.appendChild(submenuLink);
+                submenu.appendChild(submenuItem);
+            });
+
+            navItem.appendChild(submenu);
+        }
+
+        navList.appendChild(navItem);
+    });
+
+    nav.appendChild(navList);
+  
+
+    // Mobile buttons
+    const mobileButtons = documentHTML.createElement(`div`);
+    mobileButtons.classList.add(`${prefix}content-header-mbuttons`);
+
+    if (content[`secondaryButton.enable`]) {
+        const mobileSecondary = documentHTML.createElement(`a`);
+        mobileSecondary.classList.add(
+            `${prefix}content-header-secondaryCTA`
+        );
+        mobileSecondary.textContent =
+            content[`secondaryButton.text`] ?? ``;
+
+        if (content[`secondaryButton.url`] != null) {
+            mobileSecondary.href =
+                content[`secondaryButton.url`];
+        }
+
+        if (content[`secondaryButton.newPage`]) {
+            mobileSecondary.target = `_blank`;
+            mobileSecondary.rel = `noopener noreferrer`;
+        }
+
+        mobileButtons.appendChild(mobileSecondary);
+    }
+
+    if (content[`primaryButton.enable`]) {
+        const mobilePrimary = documentHTML.createElement(`a`);
+        mobilePrimary.classList.add(
+            `${prefix}content-header-primaryCTA`
+        );
+        mobilePrimary.textContent =
+            content[`primaryButton.text`] ?? ``;
+
+        if (content[`primaryButton.url`] != null) {
+            mobilePrimary.href =
+                content[`primaryButton.url`];
+        }
+
+        if (content[`primaryButton.newPage`]) {
+            mobilePrimary.target = `_blank`;
+            mobilePrimary.rel = `noopener noreferrer`;
+        }
+
+        mobileButtons.appendChild(mobilePrimary);
+    }
+
+    nav.appendChild(mobileButtons);
+    contentWrap.appendChild(nav);
+
+
+
+    // Desktop buttons
+    const buttons = documentHTML.createElement(`div`);
+    buttons.classList.add(`${prefix}content-header-buttons`);
+
+    if (content[`secondaryButton.enable`]) {
+        const secondary = documentHTML.createElement(`a`);
+        secondary.classList.add(
+            `${prefix}content-header-secondaryCTA`
+        );
+        secondary.textContent =
+            content[`secondaryButton.text`] ?? ``;
+
+        if (content[`secondaryButton.url`] != null) {
+            secondary.href =
+                content[`secondaryButton.url`];
+        }
+
+        if (content[`secondaryButton.newPage`]) {
+            secondary.target = `_blank`;
+            secondary.rel = `noopener noreferrer`;
+        }
+
+        buttons.appendChild(secondary);
+    }
+
+    if (content[`primaryButton.enable`]) {
+        const primary = documentHTML.createElement(`a`);
+        primary.classList.add(
+            `${prefix}content-header-primaryCTA`
+        );
+        primary.textContent =
+            content[`primaryButton.text`] ?? ``;
+
+        if (content[`primaryButton.url`] != null) {
+            primary.href =
+                content[`primaryButton.url`];
+        }
+
+        if (content[`primaryButton.newPage`]) {
+            primary.target = `_blank`;
+            primary.rel = `noopener noreferrer`;
+        }
+
+        buttons.appendChild(primary);
+    }
+
+    contentWrap.appendChild(buttons);
+
+
+    // Space
+    const spaceWrap = documentHTML.createElement(`div`);
+    spaceWrap.classList.add(`${prefix}content-header-space`);
+
+    contentWrap.appendChild(spaceWrap);
+
+
+    // End Content Creation.
+
+    // Start Varibles Layout Creation (Replace it with AI after)
+    const cssVaribles = `
+        --${prefix}header-layout-desktopHeaderMaxInnerWidth: ${flexEngineStyleVarible.space(layout.desktopHeaderMaxInnerWidth)};
+        --${prefix}header-layout-desktopHeaderMainGap: ${flexEngineStyleVarible.space(layout.desktopHeaderMainGap)};
+        --${prefix}header-layout-mobileHeaderMainGap: ${flexEngineStyleVarible.space(layout.mobileHeaderMainGap)};
+        --${prefix}header-layout-desktopHeaderSeparateBorderSpace: ${flexEngineStyleVarible.space(layout.desktopHeaderSeparateBorderSpace)};
+        --${prefix}header-layout-spaceBetween: ${flexEngineStyleVarible.space(layout.spaceBetween)};
+        --${prefix}header-layout-navMajorGap: ${flexEngineStyleVarible.space(layout.navMajorGap)};
+        --${prefix}header-layout-navMinorGap: ${flexEngineStyleVarible.space(layout.navMinorGap)};
+        --${prefix}header-layout-transitionTime: ${layout.transitionTime};
+        --${prefix}header-layout-transitionCurve: ${flexEngineStyleVarible.curve(layout.transitionCurve)};
+        --${prefix}header-layout-mobileButonRound: ${flexEngineStyleVarible.space(layout.mobileButonRound)};
+    `;
+
+    header.setAttribute(`${prefix}styles-node`, cssVaribles);
+    // End Layout Creation
+
+    // Start Class Layout Creation
+
+    /*
+       DesktopPosition:
+       will be assigned for each element with correct source, like:
+       .site-content-header-onleft
+    */
+    const positionMap = {
+        1: {
+            logo: "onleft",
+            nav: "oncenter",
+            cta: "onright",
+            space: "onhidden"
+        },
+        2: {
+            logo: "onleft",
+            nav: "onleft",
+            cta: "oncenter",
+            space: "onright"
+        },
+        3: {
+            logo: "onleft",
+            nav: "onleft",
+            cta: "onright",
+            space: "oncenter"
+        },
+        4: {
+            logo: "oncenter",
+            nav: "onleft",
+            cta: "onright",
+            space: "onhidden"
+        },
+        5: {
+            logo: "onleft",
+            nav: "onright",
+            cta: "oncenter",
+            space: "onhidden"
+        },
+        6: {
+            logo: "onleft",
+            nav: "onright",
+            cta: "onright",
+            space: "oncenter"
+        },
+        7: {
+            logo: "oncenter",
+            nav: "onright",
+            cta: "onright",
+            space: "onleft"
+        }
+    };
+
+    const position = positionMap[layout.desktopPosition];
+
+    if (position) {
+        logoWrap.classList.add(
+            `${prefix}content-header-${position.logo}`
+        );
+
+        hamburger.classList.add(
+            `${prefix}content-header-${position.nav}`
+        );
+
+        nav.classList.add(
+            `${prefix}content-header-${position.nav}`
+        );
+
+        buttons.classList.add(
+            `${prefix}content-header-${position.cta}`
+        );
+        
+        spaceWrap.classList.add(
+        	`${prefix}content-header-${position.space}`
+        );
+    }
+
+
+    /*
+       MobileMenuPlace:
+       it is either left or right, it will add:
+       .site-content-header-mobile-onleft or onright
+
+       mobileLogoPosition:
+       Almost same, but is left or center.
+
+       REMEMBER: ORDER MATTERS!!!!!!!!!
+    */
+    hamburger.classList.add(
+        `${prefix}content-header-mobile-${(layout.mobileMenuPlace === "left") ? "onleft" : "onright"}`
+    );
+    logoWrap.classList.add(
+        `${prefix}content-header-mobile-${(layout.mobileLogoPosition === "left") ? "onleft" : "oncenter"}`
+    );
+    buttons.classList.add(
+        `${prefix}content-header-mobile-onright`
+    );
+
+    const resultForSpace = (layout.mobileMenuPlace === "left") 
+        ? 
+        (layout.mobileLogoPosition === "left") ? "oncenter" : "onhidden" 
+        : 
+        (layout.mobileLogoPosition === "left") ? "oncenter" : "onleft";
+
+    spaceWrap.classList.add(
+        `${prefix}content-header-mobile-${resultForSpace ?? "onhidden"}`
+    )
+       
+    /*
+       desktopMenuMode:
+        as .site-content-header-menumode{number} on wrap
+    */
+    contentWrap.classList.add(
+        `${prefix}content-header-menumode${layout.desktopMenuMode ?? 0}`
+    );
+
+    /*
+       nestingSupport:
+       as .site-content-header-nested{mode} on menu
+    */
+    nav.classList.add(
+        `${prefix}content-header-nested${layout.nestingSupport}`
+    );
+
+    const nestingSupport = layout.nestingSupport;
+
+    if (nestingSupport >= 1 && nestingSupport <= 4) {
+        nav.querySelectorAll(
+            `.${prefix}content-header-navpage`
+        ).forEach((navpage) => {
+            const submenu = navpage.querySelector(
+                `:scope > .${prefix}content-header-submenu`
+            );
+
+            // No submenu = nothing to process.
+            if (!submenu) {
+                return;
+            }
+
+            /*
+            * nestingSupport 1, 2, 3:
+            * Add the submenu icon before the submenu.
+            *
+            * nestingSupport 4:
+            * No submenu icon.
+            */
+            if (nestingSupport <= 3) {
+                const subIcon = document.createElement('button');
+
+                subIcon.className =
+                    `${prefix}content-header-menusubicon`;
+
+                // Plain Unicode character, not an emoji.
+                subIcon.textContent = '▶';
+
+                submenu.before(subIcon);
+            }
+
+
+
+            /*
+            * nestingSupport 3, 4:
+            * Clone the original navpage link and place
+            * the duplicate immediately after the submenu.
+            */
+            if (nestingSupport >= 3) {
+                const link = navpage.querySelector(
+                    `:scope > a`
+                );
+
+                if (link) {
+                    const clonedLink = link.cloneNode(true);
+
+                    const li = document.createElement('li');
+                    li.appendChild(clonedLink);
+
+                    submenu.prepend(li);
+                }
+            }
+
+            /*
+            * nestingSupport 2, 3, 4:
+            * Add the close button as the first element
+            * inside the submenu.
+            */
+            if (nestingSupport >= 2) {
+                const closeButton = document.createElement('button');
+
+                closeButton.className =
+                    `${prefix}content-header-closebutton`;
+
+                closeButton.innerHTML = `
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                `;
+
+                submenu.prepend(closeButton);
+            }
+        });
+    }
+
+    /*
+       mobileMenuMode:
+       as .site-content-header-mobileMenuAnimamtion{mode} on menu
+    */
+    nav.classList.add(
+        `${prefix}content-header-mobileMenuAnimamtion${layout.mobileMenuMode ?? 6}`
+    );
+    
+    /*
+       mobileCtaType:
+       as .site-content-header-mbutton{mode} on mbotton
+    */
+    mobileButtons.classList.add(
+        `${prefix}content-header-mbutton${layout.mobileCtaType ?? 1}`
+    );
+
+    /*
+       hamAnimation:
+       as .site-content-header-hamAnim{mode} on hamberger desktop.
+    */
+    hamburger.classList.add(
+        `${prefix}content-header-hamAnim${layout.hamAnimation ?? 2}`
+    )
+
+    /* 
+        hamAnimationOnDesktop:
+        as .site-content-header-enableAnimation on hamberber desktop.
+    */
+    hamburger.classList.add(
+        `${prefix}content-header-enableAnimation`
+    )
+
+    nav.classList.add(
+        `${prefix}content-header-align-on${layout.textAlignInMenu ?? "left"}`
+    );
+
+    if (layout.stickyToBottom) {
+        mobileButtons.classList.add(
+            `${prefix}content-header-stickyToBottom`
+        ); 
+    }
+
+    // End Layout Creation
+
+    // Return it back.
+}
+    </script>
+
+    <!-- Run! -->
+    <script>
+function updateHTML() {
+    const preview = document.getElementById(`preview`);
+    const pre = document.getElementById(`pre`);
+    pre.innerText = preview.innerHTML;
+}
+
+
+document.getElementById(`generateButton`).addEventListener("click", () => {
+    const preview = document.getElementById(`preview`);
+
+        createHeader(
+            sampleData,
+            document,
+            preview,
+            null
+        );
+
+        //updateHTML();
+
+        startRuntime(preview);
+});
+
+document.getElementById(`generateButton`).click();
+
+     </script>
+</body>
+</html>
+
