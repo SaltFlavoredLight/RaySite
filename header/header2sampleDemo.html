@@ -39,7 +39,7 @@
         del, dfn, em, img, ins, kbd, q, s, samp,
         small, strike, strong, sub, sup, tt, var,
         b, u, i, center,
-        dl, dt, dd, ol, ul, li,
+        dl, dt, dd, ol, ul, li, button,
         fieldset, form, label, legend,
         table, caption, tbody, tfoot, thead, tr, th, td,
         article, aside, canvas, details, embed, 
@@ -50,13 +50,14 @@
             padding: 0;
             border: 0;
             vertical-align: baseline;
+            background: inherit;
         }
 
         html, body, div, span, applet, object, iframe, p, blockquote, pre,
         a, abbr, acronym, address, cite, code,
         del, dfn, em, img, ins, kbd, q, s, samp,
         strike, sub, sup, tt, var, center,
-        dl, dt, dd, ol, ul, li,
+        dl, dt, dd, ol, ul, li, button,
         fieldset, form, label, legend,
         table, caption, tbody, tfoot, thead, tr, th, td,
         article, aside, canvas, details, embed, 
@@ -348,6 +349,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            overflow: hidden
         }
 
         /* mode 1-6 */
@@ -363,6 +365,8 @@
 
         .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu {
             left: 0;
+            width: 100%;
+            height: 100%;
             transform: translateX(-100%);
         }
 
@@ -372,6 +376,8 @@
 
         .site-content-header-wrap.site-content-header-menumode2 .site-content-header-menu {
             left: 0;
+            width: 100%;
+            height: 100%;
             clip-path: inset(0 100% 0 0);
         }
 
@@ -381,6 +387,8 @@
 
         .site-content-header-wrap.site-content-header-menumode3 .site-content-header-menu {
             right: 0;
+            width: 100%;
+            height: 100%;
             transform: translateX(100%);
         }
 
@@ -390,6 +398,8 @@
 
         .site-content-header-wrap.site-content-header-menumode4 .site-content-header-menu {
             right: 0;
+            width: 100%;
+            height: 100%;
             clip-path: inset(0 0 0 100%);
         }
 
@@ -771,8 +781,6 @@
         }
 
     </style>
-    <style manu-styles>
-    </style>
     <style nav-ul>
 
         .site-content-header-menu > ul {
@@ -821,15 +829,17 @@
             clip-path: inset(0 0 0 0);
         }
 
+        .site-content-header-menumode0 .site-content-header-menusubicon {
+            display: none;
+        }
 
-        /* mode 1-6 */
+
+        /* mode 1-4 */
         /* Main */
         .site-content-header-menumode1 .site-content-header-menu > ul, 
         .site-content-header-menumode2 .site-content-header-menu > ul, 
         .site-content-header-menumode3 .site-content-header-menu > ul, 
-        .site-content-header-menumode4 .site-content-header-menu > ul, 
-        .site-content-header-menumode5 .site-content-header-menu > ul, 
-        .site-content-header-menumode6 .site-content-header-menu > ul {
+        .site-content-header-menumode4 .site-content-header-menu > ul {
             width: 100%;
             height: 100%;
             display: flex;
@@ -850,13 +860,99 @@
         .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage,  
         .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage,  
         .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage,  
-        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage  {
+            position: relative;
+        }
+
+
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage  {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0 var(--site-header-layout-navMinorGap);
+        }
+
+
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage > a,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage > a,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage > a,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage > a,
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage > span,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage > span,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage > span,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage > span  {
+            display: flex;
+            flex: 1 1 50px;
+        }
+
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon {
+            cursor: pointer;
+            width: 100%; 
+            flex: 0 1 50px;
+            transform: rotate(0);
+        }
+
+
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon {
+            transform: rotate(90deg);
+        }
+
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-submenu {
+            display: flex;
+            flex-direction: column;
+            gap: var(--site-header-layout-navMinorGap) 0;
+            padding-left: var(--site-header-layout-navMajorGap);
+            padding-top: var(--site-header-layout-navMinorGap);
+            width: 100%;
+            flex: 1 1 100%;
+        }
+
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu {
+            clip-path: inset(0 0 100% 0);
+            max-height: 0;
+        }
+
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu {
+            clip-path: inset(0 0 0 0);
+        }      
+
+        /* menu mode 5-6 */
+        .site-content-header-menumode5 .site-content-header-menu > ul, 
+        .site-content-header-menumode6 .site-content-header-menu > ul {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: left;
+            text-align: left;
+            flex-direction: column;
+        }
+
         .site-content-header-menumode5 .site-content-header-menu .site-content-header-navpage,  
         .site-content-header-menumode6 .site-content-header-menu .site-content-header-navpage  {
             position: relative;
         }
 
 
+        /* MOblie */
         @media (max-width: 768px) {
             .site-content-header-menumode0 .site-content-header-menu > ul,
             .site-content-header-menumode1 .site-content-header-menu > ul,
@@ -1132,18 +1228,18 @@
             },
 
             layout: {
-                desktopPosition: 3, // done
+                desktopPosition: 4, // done
                 mobileMenuPlace: "left", // done
                 mobileLogoPosition: "center", // done
                 desktopHeaderMaxInnerWidth: "1200px", // done
                 desktopHeaderMainGap: "24px", // done
                 mobileHeaderMainGap: "16px",
                 desktopHeaderSeparateBorderSpace: "1px",
-                desktopMenuMode: 6, // wait for ui
+                desktopMenuMode: 1, // wait for ui
                 spaceBetween: "12px",
                 navMajorGap: "24px",
                 navMinorGap: "8px",
-                nestingSupport: 0,                   // DOM done, wait the Class
+                nestingSupport: 1,                   // DOM done, wait the Class
                 transitionTime: 300, // Done
                 transitionCurve: "ease", // Done
                 mobileMenuMode: 1, // Done
@@ -1162,214 +1258,468 @@
     </script>
 
     <!-- Runtime script -->
-     <script>
-        // Now is JS runtime.
-        function startRuntime(element) {
-            
+    <script>
+    // Now is JS runtime.
+    function startRuntime(element) {
 
-if (element) {
-  const hamburger = element.querySelector(".site-content-header-hamberger");
-  const closeButton = element.querySelector(".site-content-header-closebutton");
-  const menuWrap = element.querySelector(".site-content-header-wrap");
-
-  /*
-   * --------------------------------------------------
-   * 1. OPEN / CLOSE MAIN MENU
-   * --------------------------------------------------
-   */
-
-  const clearSubmenus = () => {
-    element
-      .querySelectorAll(".site-content-header-navpage.issubmenuopen")
-      .forEach((navPage) => {
-        navPage.classList.remove("issubmenuopen");
-      });
-  };
-
-  const closeMenu = () => {
-    // For nested level 2/3, clear submenu state BEFORE closing.
-    const nested = element.querySelector(
-      '[class*="site-content-header-nested"]'
-    );
-
-    const nestedLevel = getNestedLevel(nested);
-
-    if (nestedLevel === 2 || nestedLevel === 3) {
-      clearSubmenus();
-    }
-
-    menuWrap?.classList.remove("ismenuopen");
-  };
-
-  hamburger?.addEventListener("click", () => {
-    menuWrap?.classList.toggle("ismenuopen");
-  });
-
-  closeButton?.addEventListener("click", () => {
-    closeMenu();
-  });
-
-
-  /*
-   * --------------------------------------------------
-   * 2. NESTED MENU BEHAVIOR
-   * --------------------------------------------------
-   *
-   * Supported:
-   *
-   * .site-content-header-nested1
-   * .site-content-header-nested2
-   * .site-content-header-nested3
-   */
-
-  function getNestedLevel(nested) {
-    if (!nested) return 0;
-
-    // Finds the number at the end of:
-    // site-content-header-nested1
-    // site-content-header-nested2
-    // site-content-header-nested3
-    for (const className of nested.classList) {
-      const match = className.match(
-        /^site-content-header-nested(\d+)$/
-      );
-
-      if (match) {
-        return Number(match[1]);
-      }
-    }
-
-    return 0;
-  }
-
-  function setupNestedMenu(nested) {
-    const level = getNestedLevel(nested);
-
-    // 0 = do nothing
-    if (level === 0) return;
-
-    const navPages = nested.querySelectorAll(
-      ".site-content-header-navpage"
-    );
-
-    /*
-     * LEVEL 1
-     *
-     * Every navpage that has a submenu icon
-     * starts with .issubmenuopen.
-     */
-    if (level === 1) {
-      navPages.forEach((navPage) => {
-        const submenuIcon = navPage.querySelector(
-          ".site-content-header-menusubicon"
+        if (element) {
+        const hamburger = element.querySelector(
+            ".site-content-header-hamberger"
         );
 
-        if (submenuIcon) {
-          navPage.classList.add("issubmenuopen");
-        }
-      });
+        const menuWrap = element.querySelector(
+            ".site-content-header-wrap"
+        );
 
-      return;
-    }
 
-    /*
-     * LEVEL 2 / 3
-     *
-     * Only one submenu can be open at a time.
-     */
+        /*
+        * --------------------------------------------------
+        * 1. OPEN / CLOSE MAIN MENU
+        * --------------------------------------------------
+        */
 
-    navPages.forEach((navPage) => {
-      const submenuIcon = navPage.querySelector(
-        ".site-content-header-menusubicon"
-      );
+        const clearSubmenus = (scope = element) => {
+            scope
+            .querySelectorAll(
+                ".site-content-header-navpage.issubmenuopen"
+            )
+            .forEach((navPage) => {
+                navPage.classList.remove("issubmenuopen");
+            });
+        };
 
-      if (!submenuIcon) return;
 
-      /*
-       * LEVEL 2:
-       * Clicking the submenu icon opens this navpage.
-       *
-       * LEVEL 3:
-       * Same behavior, but the clickable element must
-       * be a button inside the navpage's direct <a>.
-       */
-      let trigger = submenuIcon;
+        const closeMenu = () => {
+            clearSubmenus();
+            menuWrap?.classList.remove("ismenuopen");
+        };
 
-      if (level === 3) {
-        trigger = navPage.querySelector(":scope > a button");
 
-        if (!trigger) return;
-      }
-
-      trigger.addEventListener("click", (event) => {
-        event.preventDefault();
-
-        // Close every currently-open submenu first.
-        navPages.forEach((page) => {
-          page.classList.remove("issubmenuopen");
+        hamburger?.addEventListener("click", () => {
+            menuWrap?.classList.toggle("ismenuopen");
         });
 
-        // Then open the clicked one.
-        navPage.classList.add("issubmenuopen");
-      });
-    });
-  }
 
-  /*
-   * Find every nested element and configure it.
-   *
-   * Elements without a numeric suffix are ignored.
-   */
-  element
-    .querySelectorAll('[class*="site-content-header-nested"]')
-    .forEach(setupNestedMenu);
+        /*
+        * --------------------------------------------------
+        * 2. CLOSE BUTTONS
+        * --------------------------------------------------
+        *
+        * There are TWO different types:
+        *
+        * A. GLOBAL CLOSE BUTTON
+        *
+        *    .site-content-header-closebutton
+        *    located directly in / under the main WRAP,
+        *    but NOT inside a navpage.
+        *
+        *    => closes the ENTIRE menu.
+        *
+        *
+        * B. NAVPAGE CLOSE BUTTON
+        *
+        *    .site-content-header-closebutton
+        *    located inside a .site-content-header-navpage.
+        *
+        *    => closes ONLY that navpage's submenu.
+        *
+        * This listener is document-level because the global
+        * close button / Subpage can exist outside `element`.
+        * --------------------------------------------------
+        */
+
+        document.addEventListener("click", (event) => {
+
+            const target = event.target;
+
+            if (!(target instanceof Element)) return;
 
 
-  /*
-   * --------------------------------------------------
-   * 3. .onTop
-   * --------------------------------------------------
-   *
-   * When the menu is open:
-   *   .onTop is ALWAYS removed.
-   *
-   * When the menu is closed:
-   *   .onTop depends on whether the header is
-   *   at the top of the webpage.
-   */
+            const closeButton =
+            target.closest(
+                ".site-content-header-closebutton"
+            );
 
-  const updateOnTop = () => {
-    if (!menuWrap) return;
+            if (!closeButton) return;
 
-    const menuIsOpen = menuWrap.classList.contains("ismenuopen");
 
-    // Menu open = never onTop.
-    if (menuIsOpen) {
-      element.classList.remove("onTop");
-      return;
-    }
+            /*
+            * First determine whether this close button
+            * belongs to a navpage.
+            */
+            const navPage =
+            closeButton.closest(
+                ".site-content-header-navpage"
+            );
 
-    // Menu closed = onTop depends on scroll position.
-    const isAtTop = window.scrollY <= 0;
 
-    element.classList.toggle("onTop", isAtTop);
-  };
+            /*
+            * ------------------------------------------------
+            * NAVPAGE CLOSE BUTTON
+            * ------------------------------------------------
+            *
+            * Only close THIS submenu level.
+            */
+            if (navPage) {
 
-  window.addEventListener("scroll", updateOnTop, { passive: true });
+            navPage.classList.remove(
+                "issubmenuopen"
+            );
 
-  /*
-   * Recalculate immediately and whenever the menu
-   * is opened/closed.
-   */
-  hamburger?.addEventListener("click", updateOnTop);
-  closeButton?.addEventListener("click", updateOnTop);
+            /*
+            * Do NOT close the main menu.
+            * Do NOT clear other submenu levels.
+            */
+            return;
+            }
 
-  updateOnTop();
-}
 
+            /*
+            * ------------------------------------------------
+            * GLOBAL CLOSE BUTTON
+            * ------------------------------------------------
+            *
+            * It is not inside a navpage, so it closes
+            * the entire menu.
+            */
+            if (
+            menuWrap &&
+            (
+                menuWrap.contains(closeButton) ||
+                element.contains(closeButton)
+            )
+            ) {
+            closeMenu();
+            }
+
+        });
+
+
+        /*
+        * --------------------------------------------------
+        * 3. NESTED MENU BEHAVIOR
+        * --------------------------------------------------
+        *
+        * Mode 1:
+        *   Opening a submenu does NOT close other submenus.
+        *
+        * Mode 2 / 3 / 4:
+        *   Opening a submenu closes other submenus
+        *   in the SAME menu level.
+        *
+        * Clicking an already-open submenu toggles it closed.
+        * --------------------------------------------------
+        */
+
+        function getNestedLevel(nested) {
+
+            if (!nested) return 0;
+
+            for (const className of nested.classList) {
+
+            const match = className.match(
+                /^site-content-header-nested(\d+)$/
+            );
+
+            if (match) {
+                return Number(match[1]);
+            }
+            }
+
+            return 0;
         }
-    </script>
 
+
+        /*
+        * Find every nested mode.
+        */
+        element
+            .querySelectorAll(
+            '[class*="site-content-header-nested"]'
+            )
+            .forEach((nested) => {
+
+            const level = getNestedLevel(nested);
+
+
+            if (
+                level !== 1 &&
+                level !== 2 &&
+                level !== 3 &&
+                level !== 4
+            ) {
+                return;
+            }
+
+
+            /*
+            * Find the menu bar belonging to this mode.
+            */
+            const menu =
+                nested.querySelector(
+                ".site-content-header-menu"
+                ) ||
+                element.querySelector(
+                ".site-content-header-menu"
+                );
+
+
+            if (!menu) return;
+
+
+            /*
+            * Find every navpage in this menu.
+            */
+            const navPages = Array.from(
+                menu.querySelectorAll(
+                ".site-content-header-navpage"
+                )
+            );
+
+
+            /*
+            * ------------------------------------------------
+            * Toggle one submenu.
+            * ------------------------------------------------
+            */
+            const toggleSubmenu = (navPage) => {
+
+                const isOpen =
+                    navPage.classList.contains(
+                        "issubmenuopen"
+                    );
+
+                /*
+                * If opening:
+                *
+                * Mode 1:
+                *   Leave all other submenus alone.
+                *
+                * Mode 2/3/4:
+                *   Close other navpages in this menu.
+                */
+                if (!isOpen && level !== 1) {
+
+                    navPages.forEach((page) => {
+
+                        if (page !== navPage) {
+
+                            page.classList.remove(
+                                "issubmenuopen"
+                            );
+                        }
+
+                    });
+                }
+
+                const element = navPage.querySelector(".site-content-header-navpage");
+
+                if (content.style.maxHeight){
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+
+                
+
+                /*
+                * This is the ONLY state change.
+                * CSS handles the animation.
+                */
+                navPage.classList.toggle(
+                    "issubmenuopen"
+                );
+            };
+
+
+            /*
+            * Configure every navpage.
+            */
+            navPages.forEach((navPage) => {
+
+                /*
+                * Find submenu icon.
+                *
+                * No icon = no submenu trigger.
+                */
+                const submenuIcon =
+                navPage.querySelector(
+                    ".site-content-header-menusubicon"
+                );
+
+
+                /*
+                * ------------------------------------------------
+                * SUBMENU ICON
+                * ------------------------------------------------
+                */
+                if (submenuIcon) {
+
+                submenuIcon.addEventListener(
+                    "click",
+                    (event) => {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    toggleSubmenu(navPage);
+                    }
+                );
+                }
+
+
+                /*
+                * ------------------------------------------------
+                * MODE 3 / 4
+                *
+                * The FIRST direct element of the navpage
+                * becomes another trigger.
+                *
+                * It can be:
+                *   <a>
+                *   <span>
+                *   etc.
+                *
+                * Its normal action is prevented.
+                *
+                * It performs EXACTLY the same toggle as
+                * clicking the submenu icon.
+                * ------------------------------------------------
+                */
+                if (
+                (level === 3 || level === 4) &&
+                submenuIcon
+                ) {
+
+                const firstElement =
+                    navPage.querySelector(
+                    ":scope > *"
+                    );
+
+
+                if (firstElement) {
+
+                    firstElement.addEventListener(
+                    "click",
+                    (event) => {
+
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        toggleSubmenu(navPage);
+                    }
+                    );
+                }
+                }
+
+            });
+
+            });
+
+
+        /*
+        * --------------------------------------------------
+        * 4. .onTop
+        * --------------------------------------------------
+        */
+
+        const updateOnTop = () => {
+
+            if (!menuWrap) return;
+
+
+            const menuIsOpen =
+            menuWrap.classList.contains(
+                "ismenuopen"
+            );
+
+
+            /*
+            * Menu open = never onTop.
+            */
+            if (menuIsOpen) {
+
+            element.classList.remove(
+                "onTop"
+            );
+
+            return;
+            }
+
+
+            /*
+            * Menu closed = onTop depends on scroll.
+            */
+            const isAtTop =
+            window.scrollY <= 0;
+
+
+            element.classList.toggle(
+            "onTop",
+            isAtTop
+            );
+        };
+
+
+        window.addEventListener(
+            "scroll",
+            updateOnTop,
+            { passive: true }
+        );
+
+
+        hamburger?.addEventListener(
+            "click",
+            updateOnTop
+        );
+
+
+        /*
+        * A global close button changes the main menu state,
+        * so update .onTop after it is clicked.
+        *
+        * A navpage close button does NOT affect the main
+        * menu state, so it does not need updateOnTop().
+        */
+        document.addEventListener("click", (event) => {
+
+            const target = event.target;
+
+            if (!(target instanceof Element)) return;
+
+
+            const closeButton =
+            target.closest(
+                ".site-content-header-closebutton"
+            );
+
+            if (!closeButton) return;
+
+
+            const navPage =
+            closeButton.closest(
+                ".site-content-header-navpage"
+            );
+
+
+            /*
+            * Only global close buttons update the main
+            * header state.
+            */
+            if (!navPage) {
+            updateOnTop();
+            }
+
+        });
+
+
+
+
+
+        updateOnTop();
+        }
+    }
+    </script>
 
     <!-- Creating HTML! -->
     <script>
@@ -1786,7 +2136,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
             * No submenu icon.
             */
             if (nestingSupport <= 3) {
-                const subIcon = document.createElement('span');
+                const subIcon = document.createElement('button');
 
                 subIcon.className =
                     `${prefix}content-header-menusubicon`;
@@ -1918,3 +2268,4 @@ document.getElementById(`generateButton`).click();
      </script>
 </body>
 </html>
+
