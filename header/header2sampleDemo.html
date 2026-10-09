@@ -872,7 +872,7 @@
             width: 100%;
             display: flex;
             flex-wrap: wrap;
-            gap: 0 var(--site-header-layout-navMinorGap);
+            gap: var(--site-header-layout-navMinorGap) 0;
         }
 
 
@@ -893,6 +893,7 @@
         .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,  
         .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon {
             cursor: pointer;
+
             width: 100%; 
             flex: 0 1 50px;
             transform: rotate(0);
@@ -914,7 +915,6 @@
             flex-direction: column;
             gap: var(--site-header-layout-navMinorGap) 0;
             padding-left: var(--site-header-layout-navMajorGap);
-            padding-top: var(--site-header-layout-navMinorGap);
             width: 100%;
             flex: 1 1 100%;
         }
@@ -923,15 +923,14 @@
         .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
         .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
         .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu {
-            clip-path: inset(0 0 100% 0);
-            max-height: 0;
+            clip-path: inset(0 0 100% 0); 
         }
 
         .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
         .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
         .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
         .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu {
-            clip-path: inset(0 0 0 0);
+            clip-path: inset(0 0 0 0); 
         }      
 
         /* menu mode 5-6 */
@@ -1006,20 +1005,6 @@
                 text-align: right;
             }            
         }       
-    </style>
-    <style>
-        
-
-        /* Nav Menu layout and padding */
-        /*debugger;*/
-
-        @media (max-width: 768px) {}
-
-
-        /* Nav Submenu layout and padding */
-        /*debugger;*/
-        @media (max-width: 768px) {}
-
     </style>
     <style mbuttons="complete">
 
@@ -1514,10 +1499,16 @@
 
                 const element = navPage.querySelector(".site-content-header-navpage");
 
-                if (content.style.maxHeight){
-                    content.style.maxHeight = null;
-                } else {
-                    content.style.maxHeight = content.scrollHeight + "px";
+                if (element && level == 1) {
+                    if (isOpen) {
+                        element.style.maxHeight = element.scrollHeight + "px";
+                    } else {
+                        element.style.maxHeight = element.scrollHeight + "px";
+
+                        requestAnimationFrame(() => {
+                            element.style.maxHeight = "0px";
+                        });
+                    }
                 }
 
                 
