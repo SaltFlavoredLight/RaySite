@@ -349,6 +349,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
 
         /* mode 1-6 */
@@ -359,7 +360,9 @@
         .site-content-header-wrap.site-content-header-menumode5 .site-content-header-menu,
         .site-content-header-wrap.site-content-header-menumode6 .site-content-header-menu {
             position: fixed;
-           
+            display: flex;
+            flex-direction: column;
+            gap: var(--site-header-layout-navMajorGap);
         }
 
         .site-content-header-wrap.site-content-header-menumode1 .site-content-header-menu {
@@ -410,7 +413,7 @@
             position: absolute;
             left: 0;
             right: 0;
-            top: 100%;
+            top: 0;
             margin: auto;
             
             
@@ -418,6 +421,7 @@
         }
 
         .site-content-header-wrap.site-content-header-menumode5.ismenuopen .site-content-header-menu {
+            top: 100%;
             transform: translateY(0);
         }
 
@@ -787,7 +791,6 @@
 
             display: flex;
             flex-direction: column;
-            position: relative;
             justify-content: center;
             align-items: center;
             gap: var(--site-header-layout-navMajorGap);
@@ -848,22 +851,6 @@
             flex-direction: column;
         }
 
-        .site-content-header-menumode5 .site-content-header-menu > ul, 
-        .site-content-header-menumode6 .site-content-header-menu > ul {
-            flex-direction: row;
-            justify-content: center;
-            align-items: flex-start;
-            text-align: center;
-        }
-
-        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage,  
-        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage,  
-        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage,  
-        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage  {
-            position: relative;
-        }
-
-
         .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage,  
         .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage,  
         .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage,  
@@ -873,9 +860,8 @@
             flex-wrap: wrap;
             justify-content: flex-start;
             align-items: stretch;
-            gap: 0;
+            gap: 0 var(--site-header-layout-navMinorGap);
         }
-
 
         .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage > a,  
         .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage > a,  
@@ -891,58 +877,158 @@
             flex: 1 1 50px;
         }
 
-        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,  
-        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,  
-        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,  
+
+        
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,
         .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon {
-            cursor: pointer;
-            width: fit-content;
-            height: fit-content;
+            box-sizing: border-box;
+
+            width: 1lh;
+            height: 1lh;
+            flex: 0 0 1lh;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
             padding: 0;
             margin: 0;
-            aspect-ratio: 1;
-            flex: 0 1 40px;
-            transform: rotate(0);
+            line-height: 1;
+            transform-origin: center;
         }
 
+        /* Nested in 1 or 4 or 5*/
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen {
+            gap: var(--site-header-layout-navMinorGap) var(--site-header-layout-navMinorGap);
+        }
 
-        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,  
-        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,  
-        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,  
-        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon {
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon{
             transform: rotate(90deg);
-            aspect-ratio: 1;
-            width: fit-content;
-            height: fit-content;
-        }
+        }  
 
-        .site-content-header-menumode1 .site-content-header-menu .site-content-header-submenu,  
-        .site-content-header-menumode2 .site-content-header-menu .site-content-header-submenu,  
-        .site-content-header-menumode3 .site-content-header-menu .site-content-header-submenu,  
-        .site-content-header-menumode4 .site-content-header-menu .site-content-header-submenu {
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested4 .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested4 .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested4 .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested4 .site-content-header-submenu {
             display: flex;
             flex-direction: column;
             padding-top: var(--site-header-layout-navMinorGap);
             gap: var(--site-header-layout-navMinorGap) 0;
             padding-left: var(--site-header-layout-navMajorGap);
+            padding-right: var(--site-header-layout-navMajorGap);
             width: 100%;
             flex: 1 1 100%;
-        }
 
-        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
-        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
-        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu,  
-        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu {
             max-height: 0;
-            clip-path: inset(0 0 100% 0); 
+            padding-top: 0;
+            clip-path: inset(0 0 100% 0);
         }
 
         .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
         .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
         .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
-        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu {
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen .site-content-header-submenu {
             clip-path: inset(0 0 0 0); 
         }      
+
+        /* Nested in 2 and 3 ? */
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu,
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            flex-direction: column;
+            gap: var(--site-header-layout-navMajorGap);
+        }
+
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage .site-content-header-submenu,  
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage .site-content-header-submenu {
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: translateX(-100%);
+        }
+
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu {
+            transform: translateX(0);
+        }
+
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage .site-content-header-submenu {
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip-path: inset(0 100% 0 0);
+        }
+
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu{
+            clip-path: inset(0 0 0 0);
+        }
+
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage .site-content-header-submenu {
+            right: 0;
+            width: 100%;
+            height: 100%;
+            transform: translateX(100%);
+        }
+
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu {
+            transform: translateX(0);
+        }
+
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage .site-content-header-submenu {
+            right: 0;
+            width: 100%;
+            height: 100%;
+            clip-path: inset(0 0 0 100%);
+        }
+
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu {
+            clip-path: inset(0 0 0 0);
+        }
+
 
         /* menu mode 5-6 */
         .site-content-header-menumode5 .site-content-header-menu > ul, 
@@ -956,9 +1042,29 @@
             flex-direction: column;
         }
 
+
+        .site-content-header-menumode5 .site-content-header-menu > ul, 
+        .site-content-header-menumode6 .site-content-header-menu > ul {
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            text-align: center;
+        }
+
+
         .site-content-header-menumode5 .site-content-header-menu .site-content-header-navpage,  
         .site-content-header-menumode6 .site-content-header-menu .site-content-header-navpage  {
             position: relative;
+        }
+
+        /* Nested in 0 */
+        /* Nothing, Meh */
+
+        /*Nested in others - we disable everything */
+        /* for everything include a pointer, disbale them. */
+        .site-content-header-menumode5 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,
+        .site-content-header-menumode6 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon {
+            display: none;
         }
 
 
@@ -975,7 +1081,8 @@
                 flex-direction: column;
                 position: relative;
                 justify-content: center;
-                align-items: unset;
+                align-items: left;
+                text-align: left;
                 width: 100%;
                 height: auto;
             }
@@ -992,44 +1099,107 @@
             .site-content-header-menumode0 .site-content-header-menu .site-content-header-submenu {
                 position: static;
                 clip-path: none;
-                text-align: start;
+                text-align: unset;
                 left: auto;
                 top: auto;
             }
 
-
-
-
             .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage:hover .site-content-header-submenu {
                 clip-path: none;
-            }
+            } 
 
-            .site-content-header-menu.site-content-header-align-onleft {
-                text-align: left;
-            }
+        /*.site-content-header-menumode5 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon,
+        .site-content-header-menumode6 .site-content-header-menu .site-content-header-navpage > .site-content-header-menusubicon {
+            
+            box-sizing: border-box;
 
-            .site-content-header-menu.site-content-header-align-oncenter {
-                text-align: center;
-            }    
+            width: 1lh;
+            height: 1lh;
+            flex: 0 0 1lh;
 
-            .site-content-header-menu.site-content-header-align-onright {
-                text-align: right;
-            }            
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0;
+            margin: 0;
+            line-height: 1;
+            transform-origin: center;
+        }*/
+
+
+        .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage,  
+        .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage  {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: stretch;
+            gap: 0 var(--site-header-layout-navMinorGap);
+        }
+
+
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen,
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen {
+            gap: var(--site-header-layout-navMinorGap) var(--site-header-layout-navMinorGap);
+        }
+        .site-content-header-menumode5 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode6 .site-content-header-menu .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon,
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen > .site-content-header-menusubicon{
+            transform: rotate(90deg);
+        }  
+
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu,
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu {
+            display: flex;
+            position: static;
+            flex-direction: column;
+            padding-top: var(--site-header-layout-navMinorGap);
+            gap: var(--site-header-layout-navMinorGap) 0;
+            padding-left: var(--site-header-layout-navMajorGap);
+            padding-right: var(--site-header-layout-navMajorGap);
+            width: 100%;
+            flex: 1 1 100%;
+
+            max-height: 0;
+            padding-top: 0;
+            transform: none;
+            clip-path: inset(0 0 100% 0);
+        }
+
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,
+        .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,  
+        .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu {
+            clip-path: inset(0 0 0 0);
+        } 
+
         }       
-    </style>
-    <style>
-        
-
-        /* Nav Menu layout and padding */
-        /*debugger;*/
-
-        @media (max-width: 768px) {}
-
-
-        /* Nav Submenu layout and padding */
-        /*debugger;*/
-        @media (max-width: 768px) {}
-
     </style>
     <style mbuttons="complete">
 
@@ -1245,11 +1415,11 @@
                 desktopHeaderMainGap: "24px", // done
                 mobileHeaderMainGap: "16px",
                 desktopHeaderSeparateBorderSpace: "1px",
-                desktopMenuMode: 1, // wait for ui
-                spaceBetween: "12px",
-                navMajorGap: "24px",
-                navMinorGap: "8px",
-                nestingSupport: 1,                   // DOM done, wait the Class
+                desktopMenuMode: 0, // done
+                spaceBetween: "12px", // probolbly done
+                navMajorGap: "24px", // done
+                navMinorGap: "8px", // done
+                nestingSupport: 0, // done, remember onMobile  is only allowed 1
                 transitionTime: 300, // Done
                 transitionCurve: "ease", // Done
                 mobileMenuMode: 1, // Done
@@ -1257,7 +1427,7 @@
                 hamAnimation: 1, // Done
                 hamAnimationOnDesktop: true, // Done
                 mobileButonRound: "5px", // Done!
-                textAlignInMenu: "left", // Done!
+                textAlignInMenu: "center", // Done!
                 stickyToBottom: false //done
             }
         };
@@ -1399,7 +1569,7 @@
                 element.contains(closeButton)
             )
             ) {
-            closeMenu();
+                closeMenu();
             }
 
         });
@@ -1450,6 +1620,7 @@
             .forEach((nested) => {
 
             const level = getNestedLevel(nested);
+
 
 
             if (
@@ -1508,7 +1679,7 @@
                 * Mode 2/3/4:
                 *   Close other navpages in this menu.
                 */
-                if (!isOpen && level !== 1) {
+                if (!isOpen && ((level == 2 || level == 3) && (window.innerWidth >= 768))) {
 
                     navPages.forEach((page) => {
 
@@ -1524,20 +1695,20 @@
 
                 const element = navPage.querySelector(".site-content-header-submenu");
 
-                if (element && level == 1) {
+                if (element && ((level == 1 || level == 4) || (window.innerWidth <= 768))) {
                     if (!isOpen) {
                         element.style.maxHeight = element.scrollHeight + "px";
                     } else {
                         element.style.maxHeight = element.scrollHeight + "px";
 
                         requestAnimationFrame(() => {
-                            element.style.maxHeight = "0px";
+                            element.style.maxHeight = null;
                         });
                     }
                 }
 
                 
-
+                debugger;
                 /*
                 * This is the ONLY state change.
                 * CSS handles the animation.
@@ -1603,32 +1774,32 @@
                 * ------------------------------------------------
                 */
                 if (
-                (level === 3 || level === 4) &&
-                submenuIcon
+                    (level === 3 || level === 4) &&
+                    navPage.querySelector(':scope > .site-content-header-submenu')
                 ) {
 
-                const firstElement =
-                    navPage.querySelector(
-                    ":scope > *"
-                    );
+                    const firstElement =
+                        navPage.querySelector(
+                        ":scope > *"
+                        );
 
 
-                if (firstElement) {
+                    if (firstElement) {
 
-                    firstElement.addEventListener(
-                    "click",
-                    (event) => {
+                        firstElement.addEventListener(
+                        "click",
+                        (event) => {
 
-                        event.preventDefault();
-                        event.stopPropagation();
+                            event.preventDefault();
+                            event.stopPropagation();
 
-                        toggleSubmenu(navPage);
+                            toggleSubmenu(navPage);
+                        }
+                        );
                     }
-                    );
-                }
-                }
+                    }
 
-            });
+                });
 
             });
 
@@ -2131,7 +2302,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
 
     const nestingSupport = layout.nestingSupport;
 
-    if (nestingSupport >= 1 && nestingSupport <= 4) {
+    if (nestingSupport >= 1 && nestingSupport <= 5) {
         nav.querySelectorAll(
             `.${prefix}content-header-navpage`
         ).forEach((navpage) => {
@@ -2145,13 +2316,13 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
             }
 
             /*
-            * nestingSupport 1, 2, 3:
+            * nestingSupport 1, 2, 3, 5:
             * Add the submenu icon before the submenu.
             *
             * nestingSupport 4:
             * No submenu icon.
             */
-            if (nestingSupport <= 3) {
+            if (nestingSupport <= 3 || nestingSupport == 5) {
                 const subIcon = document.createElement('button');
 
                 subIcon.className =
@@ -2166,7 +2337,7 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
 
 
             /*
-            * nestingSupport 3, 4:
+            * nestingSupport 3, 4, 5:
             * Clone the original navpage link and place
             * the duplicate immediately after the submenu.
             */
@@ -2186,11 +2357,11 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
             }
 
             /*
-            * nestingSupport 2, 3, 4:
+            * nestingSupport 2, 3:
             * Add the close button as the first element
             * inside the submenu.
             */
-            if (nestingSupport >= 2) {
+            if (nestingSupport == 2 || nestingSupport == 3) {
                 const closeButton = document.createElement('button');
 
                 closeButton.className =
@@ -2240,9 +2411,9 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
     )
 
     nav.classList.add(
-        `${prefix}content-header-align-on${layout.textAlignInMenu ?? "left"}`
+        `${prefix}content-header-align-onleft` //${layout.textAlignInMenu ?? "left"}
     );
-
+    
     if (layout.stickyToBottom) {
         mobileButtons.classList.add(
             `${prefix}content-header-stickyToBottom`
@@ -2285,3 +2456,690 @@ document.getElementById(`generateButton`).click();
 </body>
 </html>
 
+<!-- PROCESSED INFOMATION SHOWN HERE
+
+    const header = {
+        name: "Header",
+        className: "header",
+        alts: [],
+        icon: `
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 -960 960 960"
+                        fill="currentColor"
+                        class="RaySiteUI-c-svg">
+                        <path d="M144-744v-72h672v72H144Zm600 72q33 0 52.5 19.5T816-600v384q0 33-19.5 52.5T744-144H216q-33 0-52.5-19.5T144-216v-384q0-33 19.5-52.5T216-672h528Zm0 72H216v384h528v-384Zm-528 0v384-384Z"/>
+                    </svg>
+                `,
+
+        contentQuery: [
+            {
+                name: "logo.type",
+                label: "Logo Type",
+                description: "Sets the logo type.",
+                type: "selection",
+                choice: [
+                    {
+                        name: "Text",
+                        value: "text"
+                    },
+                    {
+                        name: "Image",
+                        value: "image"
+                    }
+                ]
+            },
+            {
+                name: "logo.text",
+                label: "Logo Text",
+                description: "Sets the text used for the logo.",
+                type: "string/text",
+                visibleIf: {
+                    name: "logo.type",
+                    value: "text"
+                }
+            },
+            {
+                name: "logo.image",
+                label: "Logo IMG",
+                description: "Sets the image used for the logo.",
+                type: "media/img",
+                visibleIf: {
+                    name: "logo.type",
+                    value: "image"
+                }
+            },
+
+            {
+                name: "nav",
+                label: "Navigation",
+                description: "Sets the navigation menu items.",
+                type: "list/nested"
+            },
+
+            {
+                name: "primaryButton.enable",
+                label: "Primary Clickable",
+                description: "Enables the primary button.",
+                type: "boolean/checkmark"
+            },
+            {
+                name: "primaryButton.text",
+                label: "Primary Text",
+                description: "Sets the primary button text.",
+                type: "string/text",
+                visibleIf: {
+                    name: "primaryButton.enable",
+                    value: true
+                }
+            },
+            {
+                name: "primaryButton.url",
+                label: "Primary URL",
+                description: "Sets the link URL for the primary button.",
+                type: "string/text",
+                visibleIf: {
+                    name: "primaryButton.enable",
+                    value: true
+                }
+            },
+            {
+                name: "primaryButton.newPage",
+                label: "Primary Open in New Page",
+                description: "Opens the primary button link in a new page.",
+                type: "boolean/checkmark",
+                visibleIf: {
+                    name: "primaryButton.enable",
+                    value: true
+                }
+            },
+            
+            {
+                name: "secondaryButton.enable",
+                label: "Secondary Clickable",
+                description: "Enables the secondary button after the primary button is enabled.",
+                type: "boolean/checkmark",
+                visibleIf: {
+                    name: "primaryButton.enable",
+                    value: true
+                }
+            },
+            {
+                name: "secondaryButton.text",
+                label: "Secondary Text",
+                description: "Sets the secondary button text.",
+                type: "string/text",
+                visibleIf: {
+                    name: "secondaryButton.enable",
+                    value: true
+                }
+            },
+            {
+                name: "secondaryButton.url",
+                label: "Secondary URL",
+                description: "Sets the link URL for the secondary button.",
+                type: "string/text",
+                visibleIf: {
+                    name: "secondaryButton.enable",
+                    value: true
+                }
+            },
+            {
+                name: "secondaryButton.newPage",
+                label: "Secondary Open in New Page",
+                description: "Opens the secondary button link in a new page.",
+                type: "boolean/checkmark",
+                visibleIf: {
+                    name: "secondaryButton.enable",
+                    value: true
+                }
+            }
+        ],                
+
+        layoutQuery: [
+            {
+                name: "desktopPosition",
+                label: "Desktop Position",
+                description: "Sets the positions of the Logo, Navs, and CTA.",
+                type: "selection",
+                choice: [
+                    {
+                        name: "Nav Center · Logo Left · CTA Right",
+                        value: 1
+                    },
+                    {
+                        name: "Nav Left · Logo Left · CTA Center",
+                        value: 2
+                    },
+                    {
+                        name: "Nav Left · Logo Left · CTA Right",
+                        value: 3
+                    },
+                    {
+                        name: "Nav Left · Logo Center · CTA Right",
+                        value: 4
+                    },
+                    {
+                        name: "Nav Right · Logo Left · CTA Center",
+                        value: 5
+                    },
+                    {
+                        name: "Nav Right · Logo Left · CTA Right",
+                        value: 6
+                    },
+                    {
+                        name: "Nav Right · Logo Center · CTA Right",
+                        value: 7
+                    }
+                ]
+            },
+
+            {
+                name: "mobileMenuPlace",
+                label: "Menu Place",
+                description: "Sets the mobile menu position.",
+                type: "selection",
+                choice: [
+                    {
+                        name: "Left",
+                        value: "left"
+                    },
+                    {
+                        name: "Right",
+                        value: "right"
+                    }
+                ]
+            },
+
+            {
+                name: "desktopHeaderMaxInnerWidth",
+                label: "Max Inner Width",
+                description: "Sets the maximum inner width of the header on the desktop version.",
+                type: "space"
+            },
+
+            {
+                name: "desktopHeaderMainGap",
+                label: "Desktop Main Gap",
+                description: "Sets the main gap within the desktop header.",
+                type: "space"
+            },
+            {
+                name: "mobileHeaderMainGap",
+                label: "Mobile Main Gap",
+                description: "Sets the main gap within the mobile header.",
+                type: "space"
+            },
+
+            {
+                name: "desktopHeaderSeparateBorderSpace",
+                label: "Separate Border Space",
+                description: "Sets the separate border spacing of the desktop header.",
+                type: "space"
+            },
+
+
+            {
+                name: "desktopMenuMode",
+                label: "Desktop Menu Mode",
+                description: "Controls the menu opening mode on the desktop version. 0 means None (on top), while 1-6 select Left Slide, Left Clip, Right Slide, Right Clip, Top Slide, or Top Clip.",
+                type: "selection",
+                choice: [
+                    {
+                        name: "None (on top)",
+                        value: 0
+                    },
+                    {
+                        name: "Left Slide",
+                        value: 1
+                    },
+                    {
+                        name: "Left Clip",
+                        value: 2
+                    },
+                    {
+                        name: "Right Slide",
+                        value: 3
+                    },
+                    {
+                        name: "Right Clip",
+                        value: 4
+                    },
+                    {
+                        name: "Top Slide",
+                        value: 5
+                    },
+                    {
+                        name: "Top Clip",
+                        value: 6
+                    }
+                ]
+            },
+
+            {
+                name: "desktopCoverHeaderOnMenu",
+                label: "Desktop Cover Header On Menu",
+                description: "Controls whether the desktop menu covers the desktop header when the menu opens. Mode 0 does nothing, while modes 1-6 cause the menu to cover the header.",
+                type: "boolean/checkmark",
+                visibleIf: {
+                    name: "desktopMenuMode",
+                    value: (input) => input !== 0
+                }
+            },
+
+            {
+                name: "mobileCoverHeaderOnMenu",
+                label: "Mobile Cover Header On Menu",
+                description: "Controls whether the mobile menu covers the mobile header when the menu opens. Menu modes 1-6 cause the menu to cover the header.",
+                type: "boolean/checkmark"
+            }, 
+
+            {
+                name: "spaceBetween",
+                label: "Space Between",
+                description: "Sets the space between the list and its item. When the menu mode is 0, this is the gap between the list and item. For menu modes 1-6, this setting has no effect. The same setting controls both desktop and mobile.",
+                type: "space",
+                visibleIf: {
+                    name: "desktopMenuMode",
+                    value: 0
+                }
+            },
+
+            {
+                name: "navMajorGap",
+                label: "Nav Major Gap",
+                description: "Sets the major navigation gap. In mode 0, it is the gap between navs. In modes 1-4, it is the vertical gap between navs. Modes 5-6 follow the same behavior as modes 1-4.",
+                type: "space"
+            },
+
+            {
+                name: "navMinorGap",
+                label: "Nav Minor Gap",
+                description: "Sets the minor navigation gap. In mode 0, it is the gap for the list. In modes 1-4, it is the gap between list items. Modes 5-6 use the same behavior and can additionally represent horizontal spacing.",
+                type: "space"
+            },
+
+            {
+                name: "nestingSupport",
+                label: "Nesting Support",
+                description: "Controls how nested menu items behave. 0 means None, 1 means Expand, 2 means Clickable Menu, and 3 means Non-Clickable Menu. In menu modes 1-4, these provide the traditional nesting choices. In modes 5-6, only value 0 is supported.",
+                type: "selection",
+                choice: [
+                    {
+                        name: "None",
+                        value: 0
+                    },
+                    {
+                        name: "Expand",
+                        value: 1
+                    },
+                    {
+                        name: "Clickable Menu (Mobile at Expand)",
+                        value: 2
+                    },
+                    {
+                        name: "Non-Clickable Menu (Mobile at Whole Expand)",
+                        value: 3
+                    },
+                    {
+                        name: "Whole Expend",
+                        value: 4
+                    }
+                ],
+                comment: "only apply in some.",
+                visibleIf: {
+                    name: "desktopMenuMode",
+                    value: (input) => input !== 0,
+                    otherwise: 1
+                }
+            },
+
+            {
+                name: "transitionTime",
+                label: "Transition Time",
+                description: "Sets the transition time used by the menu on both desktop and mobile.",
+                type: "integer"
+            },
+
+            {
+                name: "transitionCurve",
+                label: "Transition Curve",
+                description: "Sets the transition curve used by the menu on both desktop and mobile. Inherit uses the theme's transition curve.",
+                type: "curve",
+            },
+
+            {
+                name: "mobileMenuMode",
+                label: "Mobile Menu Mode",
+                description: "Controls the menu opening animation on the mobile version. 1-6 select Left Slide, Left Clip, Right Slide, Right Clip, Top Slide, or Top Clip.",
+                type: "selection",
+                choice: [
+                    {
+                        name: "Left Slide",
+                        value: 1
+                    },
+                    {
+                        name: "Left Clip",
+                        value: 2
+                    },
+                    {
+                        name: "Right Slide",
+                        value: 3
+                    },
+                    {
+                        name: "Right Clip",
+                        value: 4
+                    },
+                    {
+                        name: "Top Slide",
+                        value: 5
+                    },
+                    {
+                        name: "Top Clip",
+                        value: 6
+                    }
+                ]
+            },
+
+            {
+                name: "mobileCtaType",
+                label: "Mobile CTA Type",
+                description: "Controls the CTA button type on the mobile version. 0 means Call to Action on Standard Button, 1 means Call to Action on Full Stick, and 2 means Call to Action on Full Row.",
+                type: "selection",
+                choice: [
+                    {
+                        name: "Call to Action on Standard Button",
+                        value: 0
+                    },
+                    {
+                        name: "Call to Action on Full Stick",
+                        value: 1
+                    },
+                    {
+                        name: "Call to Action on Full Row",
+                        value: 2
+                    }
+                ]
+            },
+
+            // position!
+            {
+                name: "mobileLogoPosition",
+                label: "Logo Position",
+                description: "Sets the mobile logo position.",
+                type: "selection",
+                choice: [
+                    {
+                        name: "Left",
+                        value: "left"
+                    },
+                    {
+                        name: "Center",
+                        value: "center"
+                    }
+                ]
+            },
+
+            {
+                name: "hamAnimation",
+                label: "Menu Hamberger Animation",
+                description: "this will determine what your animation to grow",
+                type: "selection",
+                choice: [
+                    {
+                        name: "Animation 1",
+                        value: 1
+                    },
+                    {
+                        name: "Animation 2",
+                        value: 2
+                    },
+                    {
+                        name: "Animation 3",
+                        value: 3
+                    }
+                ]
+            },
+
+            {
+                name: "hamAnimationOnDesktop",
+                label: "Also enable Animation on desktop",
+                description: "Check if you wish desktop animation is also can be enabled.",
+                type: "boolean/checkmark",
+                visibleIf: {
+                    name: "desktopMenuMode",
+                    value: (input) => input !== 0
+                }
+            }, 
+
+            {
+                name: "mobileButonRound",
+                label: "Brder of Moblie Button",
+                type: "space/space",
+                visibleIf: {
+                    name: "mobileCtaType",
+                    value: (input) => input !== 0
+                }
+            },
+
+            {
+                name: "stickyToBottom",
+                label: "Menu Sticky to bottom",
+                type: "boolean/checkmark"
+            }, 
+            
+        ],
+
+        initQuery: [],
+        initFunction: function(dataArray, element) {
+            debugger; // in future we will add some default views
+        },
+
+
+        contentFunction: function(dataArray, documentHTML, node, createAnotherNode) {
+        },
+
+        jsRuntime: {},
+
+        cssStyles: [],
+
+
+        extras: [
+            {
+                position: "@context-primaryCTA",
+                sizeQuery: [{
+                    name: "minWidth",
+                    label: "Min Width",
+                    description: "Sets the minimum width.",
+                    type: "space"
+                },
+                {
+                    name: "fullHeight",
+                    label: "Full Height",
+                    description: "Makes the element use full height.",
+                    type: "boolean/checkmark"
+                }],
+                sizeDefault: (sz, isVertical) => {
+                    return {
+                        "min-width": flexEngineStyleVarible.space(sz.minWidth),
+                        "height": sz.fullHeight ? "100%" : "auto"
+                    };
+                },
+                sizeMobile: (sz, isVertical) => {return {}}
+            },
+
+            {
+                position: "@context-secondaryCTA",
+                sizeQuery: [{
+                    name: "minWidth",
+                    label: "Min Width",
+                    description: "Sets the minimum width.",
+                    type: "space"
+                },
+                {
+                    name: "fullHeight",
+                    label: "Full Height",
+                    description: "Makes the element use full height.",
+                    type: "boolean/checkmark"
+                }],
+                sizeDefault: (sz, isVertical) => {
+                    return {
+                        "min-width": flexEngineStyleVarible.space(sz.minWidth),
+                        "height": sz.fullHeight ? "100%" : "auto"
+                    };
+                },
+                sizeMobile: (sz, isVertical) => {return {}}
+            },   
+            
+            {
+                position: "@context-menustyleapply",
+                sizeQuery: [{
+                    name: "widthMode",
+                    label: "Width",
+                    description: "Sets how the width is determined.",
+                    type: "selection",
+                    choice: [
+                        {
+                            name: "Full Width",
+                            value: "full"
+                        },
+                        {
+                            name: "Minimum",
+                            value: "minimum"
+                        },
+                        {
+                            name: "Custom",
+                            value: "custom"
+                        }
+                    ]
+                },
+                {
+                    name: "width",
+                    label: "Width Size",
+                    description: "Sets the custom width.",
+                    type: "space",
+                    visibleIf: {
+                        name: "widthMode",
+                        value: "custom"
+                    }
+                }],
+                sizeDefault: (sz, isVertical) => {
+                    if (sz.widthMode === "full") {
+                        return {
+                            "width": "100%",
+                            "max-width": "100%",
+                            "overflow": "scroll"
+                        };
+                    }
+
+                    if (sz.widthMode === "minimum") {
+                        return {
+                            "width": "auto",
+                            "max-width": "100%",
+                            "overflow": "scroll"
+                        };
+                    }
+
+                    return {
+                        "width": "auto",
+                        "max-width": flexEngineStyleVarible.space(sz.width),
+                        "overflow": "scroll"
+                    };
+                },
+                sizeMobile: (sz, isVertical) => {return {}}
+            }            
+        ],
+
+
+        sizeQuery: [
+            {
+                name: "marginTop",
+                label: "Margin Top",
+                type: "space",
+                defaultAsFull: false
+            },
+            {
+                name: "marginLeft",
+                label: "Margin Left",
+                type: "space",
+                defaultAsFull: false
+            },
+            {
+                name: "marginRight",
+                label: "Margin Right",
+                type: "space",
+                defaultAsFull: false
+            },
+            {
+                name: "mobileMarginTop",
+                label: "Mobile Margin Top",
+                type: "space",
+                defaultAsFull: false
+            },
+            {
+                name: "mobileMarginLeft",
+                label: "Mobile Margin Left",
+                type: "space",
+                defaultAsFull: false
+            },
+            {
+                name: "mobileMarginRight",
+                label: "Mobile Margin Right",
+                type: "space",
+                defaultAsFull: false
+            },
+            {
+                name: "maxWidth",
+                label: "Max Width",
+                description: "Sets the maximum width.",
+                type: "space"
+            },
+            {
+                name: "height",
+                label: "Height",
+                type: "space",
+                default: "60px"
+            },
+            {
+                name: "mobileHeight",
+                label: "Mobile Height",
+                type: "space",
+                default: "60px"
+            }
+        ],
+
+        sizeDefault: (sz, isVertical) => {
+            return {
+                "width": `calc(100% - ${flexEngineStyleVarible.space(sz.marginLeft)} - ${flexEngineStyleVarible.space(sz.marginRight)})`,
+                "max-width": flexEngineStyleVarible.space(sz.maxWidth),
+                "margin-top": flexEngineStyleVarible.space(sz.marginTop),
+                "margin-left": flexEngineStyleVarible.space(sz.marginLeft),
+                "margin-right": flexEngineStyleVarible.space(sz.marginRight),
+                "height": flexEngineStyleVarible.space(sz.height)
+            };
+        },
+
+        sizeMobile: (sz, isVertical) => {
+            return {
+                "width": `calc(100% - ${flexEngineStyleVarible.space(sz.mobileMarginLeft)} - ${flexEngineStyleVarible.space(sz.mobileMarginRight)})`,
+                "margin-top": flexEngineStyleVarible.space(sz.mobileMarginTop),
+                "margin-left": flexEngineStyleVarible.space(sz.mobileMarginLeft),
+                "margin-right": flexEngineStyleVarible.space(sz.mobileMarginRight),
+                "height": flexEngineStyleVarible.space(sz.mobileHeight)
+            };
+        },
+
+
+
+        settings: {
+            elementType: "header",
+            extraSystemState: "onTop",
+            noDelete: true,
+            hide: true,
+            animation: 2,
+            systemClass: true,
+            allowedSortIn: true,
+            disableAction: true
+        }
+    }
+
+-->
