@@ -315,11 +315,15 @@
                     {
                         name: "Clickable Menu",
                         value: 2
-                    },/*
+                    },
                     {
                         name: "Non-Clickable Menu",
                         value: 3
-                    }*/
+                    },
+                    {
+                        name: "Whole Expend without Icon",
+                        value: 4
+                    }
                 ],
                 comment: "even desktop do not apply, moblie does."
             },
@@ -450,28 +454,6 @@
                     name: "mobileCtaType",
                     value: (input) => input !== 0
                 }
-            },
-
-
-            {
-                name: "textAlignInMenu",
-                label: "Text Align",
-                type: "selection",
-                choice: [
-                    {
-                        name: "Left",
-                        value: "left"
-                    },
-                    {
-                        name: "Center",
-                        value: "center"
-                    },
-                    {
-                        name: "Right",
-                        value: "right"
-                    }
-                ]
-
             },
 
             {
