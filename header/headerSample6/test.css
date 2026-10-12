@@ -1,0 +1,122 @@
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .demo-controls {
+            padding: 20px;
+            background: #f3f3f3;
+            border-bottom: 1px solid #ccc;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        .demo-controls button {
+            padding: 10px 16px;
+            cursor: pointer;
+        }
+        
+
+        /* UI CSS System reset */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html, body, div, span, applet, object, iframe,
+        h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+        a, abbr, acronym, address, big, cite, code,
+        del, dfn, em, img, ins, kbd, q, s, samp,
+        small, strike, strong, sub, sup, tt, var,
+        b, u, i, center,
+        dl, dt, dd, ol, ul, li, button,
+        fieldset, form, label, legend,
+        table, caption, tbody, tfoot, thead, tr, th, td,
+        article, aside, canvas, details, embed, 
+        figure, figcaption, footer, header, hgroup, 
+        menu, nav, output, ruby, section, summary,
+        time, mark, audio, video {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            vertical-align: baseline;
+            background: inherit;
+        }
+
+        html, body, div, span, applet, object, iframe, p, blockquote, pre,
+        a, abbr, acronym, address, cite, code,
+        del, dfn, em, img, ins, kbd, q, s, samp,
+        strike, sub, sup, tt, var, center,
+        dl, dt, dd, ol, ul, li, button,
+        fieldset, form, label, legend,
+        table, caption, tbody, tfoot, thead, tr, th, td,
+        article, aside, canvas, details, embed, 
+        figure, figcaption, footer, header, hgroup, 
+        menu, nav, output, ruby, section, summary,
+        time, mark, audio, video {
+            font-size: 100%;
+            font: inherit;
+        }
+
+        /* HTML5 display-role reset for older browsers */
+        article, aside, details, figcaption, figure, 
+        footer, header, hgroup, menu, nav, section {
+            display: block;
+        }
+        body {
+            line-height: 1;
+        }
+        ol, ul {
+            list-style: none;
+        }   
+
+        :root {
+            --site-header-layout-desktopHeaderMaxInnerWidth: 1200px; /*Done*/
+            --site-header-layout-desktopHeaderMainGap: 24px; /*done*/
+            --site-header-layout-mobileHeaderMainGap: 16px; /* done */
+            --site-header-layout-desktopHeaderSeparateBorderSpace: 1px;
+            --site-header-layout-spaceBetween: 12px;
+            --site-header-layout-navMajorGap: 24px;
+            --site-header-layout-navMinorGap: 8px;
+            --site-header-layout-transitionTime: 300ms;
+            --site-header-layout-transitionCurve: ease;
+            --site-header-layout-mobileButonRound: 5px;
+       }
+
+       /*
+       DesktopPosition: (Done!)
+       will be assigned for each element with correct source, like:
+       .site-content-header-onleft
+
+       MobileMenuPlace: (Done!)
+       it is either left or right, it will add:
+       .site-content-header-mobile-onleft or onright
+
+       mobileLogoPosition: (Done!)
+       Almost same, but is left or center.
+
+       desktopMenuMode:
+        as .site-content-header-menumode{number} on wrap
+
+       nestingSupport:
+       as .site-content-header-nested{mode} on menu
+
+       mobileMenuMode: 
+       as .site-content-header-mobileMenuAnimamtion{mode} on menu
+
+       mobileCtaType:
+       as .site-content-header-mbutton{mode} on mbotton
+
+       hamAnimation: (Done!)
+       as .site-content-header-hamAnim{mode} on hamberger desktop. 
+
+       hamAnimationOnDesktop: (Done!)
+       as .site-content-header-enableAnimation on hamberber desktop.
+
+       textAlignInMenu:
+       as .site-content-header-align-on{side} on menu
+
+       stickyToBottom:
+       as .site-content-header-stickyToBottom if true on mbuttons
+       */
