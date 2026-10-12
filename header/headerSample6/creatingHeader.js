@@ -338,5 +338,14 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
 		mobileButtons.classList.add(`${prefix}content-header-stickyToBottom`);
 	}
 	// End Layout Creation
+
+const menuMode = layout.desktopMenuMode;
+const className = "site-content-header-menustyleapply";
+
+if (menuMode >= 1 && menuMode <= 4) {
+    nav.classList.add(className);
+} else if (menuMode >= 5 && menuMode <= 6) {
+    nav.querySelector("ul")?.classList.add(className);
+}
 	// Return it back.
 }
