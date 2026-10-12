@@ -1,0 +1,1061 @@
+[
+        {
+            "object": ".site-header",
+            "info": [
+                { "key": "width", "value": "100%" },
+                { "key": "max-width", "value": "100vw" },
+                { "key": "display", "value": "flex" },
+                { "key": "align-items", "value": "center" },
+                { "key": "justify-content", "value": "center" }
+            ]
+        },
+        {
+            "object": ".site-header.sticky",
+            "info": [
+                { "key": "position", "value": "sticky" },
+                { "key": "top", "value": "0" }
+            ]
+        },
+        {
+            "object": ".site-header",
+            "break": 768,
+            "info": [
+                { "key": "position", "value": "sticky" },
+                { "key": "top", "value": "0" }
+            ]
+        },
+        {
+            "object": ".site-header a",
+            "info": [
+                { "key": "text-decoration", "value": "none" },
+                { "key": "color", "value": "unset" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap",
+            "info": [
+                { "key": "width", "value": "100%" },
+                { "key": "max-width", "value": "var(--site-header-layout-desktopHeaderMaxInnerWidth)" },
+                { "key": "display", "value": "flex" },
+                { "key": "align-items", "value": "center" },
+                { "key": "justify-content", "value": "space-between" },
+                { "key": "position", "value": "relative" },
+                { "key": "gap", "value": "var(--site-header-layout-desktopHeaderMainGap)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap *",
+            "info": [
+                { "key": "transition", "value": "all var(--site-header-layout-transitionTime) var(--site-header-layout-transitionCurve)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-onhidden",
+            "info": [
+                { "key": "display", "value": "none" }
+            ]
+        },
+        {
+            "object": ".site-content-header-onleft",
+            "info": [
+                { "key": "flex", "value": "0 0 auto" },
+                { "key": "text-align", "value": "start" },
+                { "key": "align-items", "value": "flex-start" },
+                { "key": "justify-content", "value": "flex-end" },
+                { "key": "margin-right", "value": "0" },
+                { "key": "margin-left", "value": "0" },
+                { "key": "order", "value": "10" }
+            ]
+        },
+        {
+            "object": ".site-content-header-oncenter",
+            "info": [
+                { "key": "flex", "value": "8 8 auto" },
+                { "key": "align-items", "value": "center" },
+                { "key": "justify-content", "value": "center" },
+                { "key": "text-align", "value": "center" },
+                { "key": "order", "value": "25" }
+            ]
+        },
+        {
+            "object": ".site-content-header-onright",
+            "info": [
+                { "key": "flex", "value": "0 0 auto" },
+                { "key": "text-align", "value": "end" },
+                { "key": "align-items", "value": "flex-end" },
+                { "key": "justify-content", "value": "flex-end" },
+                { "key": "margin-left", "value": "0" },
+                { "key": "order", "value": "39" }
+            ]
+        },
+        {
+            "object": ".site-content-header-hamberger.site-content-header-onleft",
+            "info": [
+                { "key": "order", "value": "11" }
+            ]
+        },
+        {
+            "object": ".site-content-header-logo.site-content-header-onleft",
+            "info": [
+                { "key": "order", "value": "12" }
+            ]
+        },
+        {
+            "object": ".site-content-header-buttons.site-content-header-onleft",
+            "info": [
+                { "key": "order", "value": "13" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menu.site-content-header-onleft",
+            "info": [
+                { "key": "order", "value": "14" }
+            ]
+        },
+        {
+            "object": ".site-content-header-hamberger.site-content-header-onright",
+            "info": [
+                { "key": "order", "value": "39" }
+            ]
+        },
+        {
+            "object": ".site-content-header-logo.site-content-header-onright",
+            "info": [
+                { "key": "order", "value": "38" }
+            ]
+        },
+        {
+            "object": ".site-content-header-buttons.site-content-header-onright",
+            "info": [
+                { "key": "order", "value": "37" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menu.site-content-header-onright",
+            "info": [
+                { "key": "order", "value": "36" }
+            ]
+        },
+        {
+            "object": ".site-content-header-onhidden, .site-content-header-onleft, .site-content-header-oncenter, .site-content-header-onright",
+            "break": 768,
+            "info": [
+                { "key": "flex", "value": "unset" },
+                { "key": "text-align", "value": "unset" },
+                { "key": "align-items", "value": "unset" },
+                { "key": "margin", "value": "unset" }
+            ]
+        },
+        {
+            "object": ".site-content-header-mobile-onhidden",
+            "break": 768,
+            "info": [
+                { "key": "display", "value": "none" }
+            ]
+        },
+        {
+            "object": ".site-content-header-mobile-onleft",
+            "break": 768,
+            "info": [
+                { "key": "flex", "value": "0 0 auto" },
+                { "key": "text-align", "value": "start" },
+                { "key": "align-items", "value": "flex-start" },
+                { "key": "justify-content", "value": "flex-start" },
+                { "key": "margin-right", "value": "0" },
+                { "key": "margin-left", "value": "0" },
+                { "key": "order", "value": "10" }
+            ]
+        },
+        {
+            "object": ".site-content-header-mobile-oncenter",
+            "break": 768,
+            "info": [
+                { "key": "flex", "value": "1 1 auto" },
+                { "key": "align-items", "value": "center" },
+                { "key": "justify-content", "value": "center" },
+                { "key": "text-align", "value": "center" },
+                { "key": "order", "value": "25" }
+            ]
+        },
+        {
+            "object": ".site-content-header-mobile-onright",
+            "break": 768,
+            "info": [
+                { "key": "flex", "value": "0 0 auto" },
+                { "key": "text-align", "value": "end" },
+                { "key": "align-items", "value": "flex-end" },
+                { "key": "justify-content", "value": "flex-end" },
+                { "key": "margin-left", "value": "0" },
+                { "key": "order", "value": "39" }
+            ]
+        },
+        {
+            "object": ".site-content-header-hamberger.site-content-header-mobile-onleft",
+            "break": 768,
+            "info": [
+                { "key": "order", "value": "11" }
+            ]
+        },
+        {
+            "object": ".site-content-header-logo.site-content-header-mobile-onleft",
+            "break": 768,
+            "info": [
+                { "key": "order", "value": "12" }
+            ]
+        },
+        {
+            "object": ".site-content-header-buttons.site-content-header-mobile-onleft",
+            "break": 768,
+            "info": [
+                { "key": "order", "value": "13" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menu.site-content-header-mobile-onleft",
+            "break": 768,
+            "info": [
+                { "key": "order", "value": "14" }
+            ]
+        },
+        {
+            "object": ".site-content-header-hamberger.site-content-header-mobile-onright",
+            "break": 768,
+            "info": [
+                { "key": "order", "value": "39" }
+            ]
+        },
+        {
+            "object": ".site-content-header-logo.site-content-header-mobile-onright",
+            "break": 768,
+            "info": [
+                { "key": "order", "value": "38" }
+            ]
+        },
+        {
+            "object": ".site-content-header-buttons.site-content-header-mobile-onright",
+            "break": 768,
+            "info": [
+                { "key": "order", "value": "37" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menu.site-content-header-mobile-onright",
+            "break": 768,
+            "info": [
+                { "key": "order", "value": "36" }
+            ]
+        },
+        {
+            "object": ".site-content-header-logo>a.logo, .site-content-header-logo>h2 .site-content-header-logo img",
+            "info": [
+                { "key": "text-decoration", "value": "none" },
+                { "key": "display", "value": "flex" },
+                { "key": "justify-content", "value": "center" },
+                { "key": "align-items", "value": "center" },
+                { "key": "width", "value": "100%" },
+                { "key": "height", "value": "100%" },
+                { "key": "color", "value": "inherit" },
+                { "key": "font-size", "value": "100%" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menu > ul a, .site-content-header-menu > ul span, .site-content-header-menu > ul button",
+            "info": [
+                { "key": "width", "value": "100%" }
+            ]
+        },
+        {
+            "object": ".site-content-header-navpage>.site-content-header-menusubicon",
+            "info": [
+                { "key": "box-sizing", "value": "border-box" },
+                { "key": "width", "value": "1lh" },
+                { "key": "height", "value": "1lh" },
+                { "key": "flex", "value": "0 0 1lh" },
+                { "key": "display", "value": "inline-flex" },
+                { "key": "align-items", "value": "center" },
+                { "key": "justify-content", "value": "center" },
+                { "key": "padding", "value": "0" },
+                { "key": "margin", "value": "0" },
+                { "key": "line-height", "value": "1" },
+                { "key": "transform-origin", "value": "center" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-menu",
+            "info": [
+                { "key": "position", "value": "relative" },
+                { "key": "overflow", "value": "visible" },
+                { "key": "display", "value": "flex" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "align-items", "value": "center" },
+                { "key": "justify-content", "value": "center" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-hamberger",
+            "info": [
+                { "key": "display", "value": "none" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-closebutton",
+            "info": [
+                { "key": "display", "value": "none" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-menu > ul",
+            "info": [
+                { "key": "width", "value": "100%" },
+                { "key": "height", "value": "100%" },
+                { "key": "display", "value": "flex" },
+                { "key": "flex-direction", "value": "row" },
+                { "key": "justify-content", "value": "center" },
+                { "key": "align-items", "value": "center" },
+                { "key": "gap", "value": "var(--site-header-layout-spaceBetween)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-navpage",
+            "info": [
+                { "key": "position", "value": "relative" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-navpage > span, .site-content-header-menumode0 .site-content-header-navpage > a",
+            "info": [
+                { "key": "height", "value": "100%" },
+                { "key": "cursor", "value": "pointer" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-submenu",
+            "info": [
+                { "key": "margin-top", "value": "var(--site-header-layout-spaceBetween)" },
+                { "key": "clip-path", "value": "inset(0 0 100% 0)" },
+                { "key": "position", "value": "absolute" },
+                { "key": "left", "value": "0" },
+                { "key": "top", "value": "100%" },
+                { "key": "display", "value": "flex" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "align-items", "value": "left" },
+                { "key": "justify-self", "value": "left" },
+                { "key": "text-align", "value": "left" },
+                { "key": "gap", "value": "var(--site-header-layout-navMinorGap)" },
+                { "key": "width", "value": "250px" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-submenu > li",
+            "info": [
+                { "key": "width", "value": "100%" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-navpage > a:hover + .site-content-header-submenu, .site-content-header-menumode0 .site-content-header-navpage:hover .site-content-header-submenu",
+            "info": [
+                { "key": "clip-path", "value": "inset(0 0 0 0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-menusubicon",
+            "info": [
+                { "key": "display", "value": "none" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1 .site-content-header-menu",
+            "info": [
+                { "key": "left", "value": "0" },
+                { "key": "top", "value": "0" },
+                { "key": "height", "value": "100%" },
+                { "key": "transform", "value": "translateX(-100%)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1.ismenuopen .site-content-header-menu",
+            "info": [
+                { "key": "transform", "value": "translateX(0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode2 .site-content-header-menu",
+            "info": [
+                { "key": "left", "value": "0" },
+                { "key": "top", "value": "0" },
+                { "key": "height", "value": "100%" },
+                { "key": "clip-path", "value": "inset(0 100% 0 0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode2.ismenuopen .site-content-header-menu",
+            "info": [
+                { "key": "clip-path", "value": "inset(0 0 0 0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode3 .site-content-header-menu",
+            "info": [
+                { "key": "right", "value": "0" },
+                { "key": "top", "value": "0" },
+                { "key": "height", "value": "100%" },
+                { "key": "transform", "value": "translateX(100%)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode3.ismenuopen .site-content-header-menu",
+            "info": [
+                { "key": "transform", "value": "translateX(0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode4 .site-content-header-menu",
+            "info": [
+                { "key": "right", "value": "0" },
+                { "key": "top", "value": "0" },
+                { "key": "height", "value": "100%" },
+                { "key": "clip-path", "value": "inset(0 0 0 100%)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode4.ismenuopen .site-content-header-menu",
+            "info": [
+                { "key": "clip-path", "value": "inset(0 0 0 0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1 .site-content-header-menu > ul, .site-content-header-menumode2 .site-content-header-menu > ul, .site-content-header-menumode3 .site-content-header-menu > ul, .site-content-header-menumode4 .site-content-header-menu > ul",
+            "info": [
+                { "key": "width", "value": "100%" },
+                { "key": "height", "value": "100%" },
+                { "key": "display", "value": "flex" },
+                { "key": "justify-content", "value": "flex-start" },
+                { "key": "align-items", "value": "left" },
+                { "key": "text-align", "value": "left" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "gap", "value": "var(--site-header-layout-navMajorGap)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1 .site-content-header-menu, .site-content-header-menumode2 .site-content-header-menu, .site-content-header-menumode3 .site-content-header-menu, .site-content-header-menumode4 .site-content-header-menu",
+            "info": [
+                { "key": "position", "value": "fixed" },
+                { "key": "overflow", "value": "hidden" },
+                { "key": "display", "value": "flex" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "justify-content", "value": "flex-start" },
+                { "key": "align-items", "value": "flex-start" },
+                { "key": "gap", "value": "var(--site-header-layout-navMajorGap)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage, .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage, .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage, .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage",
+            "info": [
+                { "key": "width", "value": "100%" },
+                { "key": "display", "value": "flex" },
+                { "key": "flex-wrap", "value": "wrap" },
+                { "key": "justify-content", "value": "flex-start" },
+                { "key": "align-items", "value": "stretch" },
+                { "key": "gap", "value": "0 var(--site-header-layout-navMinorGap)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage>a, .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage>a, .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage>a, .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage>a, .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage>span, .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage>span, .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage>span, .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage>span",
+            "info": [
+                { "key": "display", "value": "flex" },
+                { "key": "justify-content", "value": "flex-start" },
+                { "key": "align-items", "value": "stretch" },
+                { "key": "flex", "value": "1 1 50px" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1 .site-content-header-menu.site-content-header-nested0 .site-content-header-submenu, .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested0 .site-content-header-submenu, .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested0 .site-content-header-submenu, .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested0 .site-content-header-submenu",
+            "info": [
+                { "key": "display", "value": "flex" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "padding-top", "value": "var(--site-header-layout-navMinorGap)" },
+                { "key": "gap", "value": "var(--site-header-layout-navMinorGap)" },
+                { "key": "padding-left", "value": "var(--site-header-layout-navMajorGap)" },
+                { "key": "padding-right", "value": "var(--site-header-layout-navMajorGap)" },
+                { "key": "width", "value": "100%" },
+                { "key": "flex", "value": "0 0 100%" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu, .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu, .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu, .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-submenu, .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested4 .site-content-header-submenu, .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested4 .site-content-header-submenu, .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested4 .site-content-header-submenu, .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested4 .site-content-header-submenu",
+            "info": [
+                { "key": "display", "value": "flex" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "gap", "value": "var(--site-header-layout-navMinorGap)" },
+                { "key": "padding-left", "value": "var(--site-header-layout-navMajorGap)" },
+                { "key": "padding-right", "value": "var(--site-header-layout-navMajorGap)" },
+                { "key": "width", "value": "100%" },
+                { "key": "flex", "value": "0 0 100%" },
+                { "key": "max-height", "value": "0" },
+                { "key": "padding-top", "value": "0" },
+                { "key": "clip-path", "value": "inset(0 0 100% 0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen, .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen, .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen, .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen, .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen, .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen, .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen, .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen",
+            "info": [
+                { "key": "gap", "value": "var(--site-header-layout-navMinorGap) var(--site-header-layout-navMinorGap)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon, .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon, .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon, .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon, .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon, .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon, .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon, .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon",
+            "info": [
+                { "key": "transform", "value": "rotate(90deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu, .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu, .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu, .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested1 .site-content-header-navpage.issubmenuopen .site-content-header-submenu, .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen .site-content-header-submenu, .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen .site-content-header-submenu, .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen .site-content-header-submenu, .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested4 .site-content-header-navpage.issubmenuopen .site-content-header-submenu",
+            "info": [
+                { "key": "clip-path", "value": "inset(0 0 0 0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu, .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu, .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu, .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu, .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu, .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu, .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu, .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu",
+            "info": [
+                { "key": "position", "value": "absolute" },
+                { "key": "top", "value": "0" },
+                { "key": "bottom", "value": "0" },
+                { "key": "left", "value": "0" },
+                { "key": "right", "value": "0" },
+                { "key": "width", "value": "100%" },
+                { "key": "height", "value": "100%" },
+                { "key": "display", "value": "flex" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "gap", "value": "var(--site-header-layout-navMajorGap)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage .site-content-header-submenu, .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage .site-content-header-submenu",
+            "info": [
+                { "key": "left", "value": "0" },
+                { "key": "width", "value": "100%" },
+                { "key": "height", "value": "100%" },
+                { "key": "transform", "value": "translateX(-100%)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu, .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu",
+            "info": [
+                { "key": "transform", "value": "translateX(0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage .site-content-header-submenu, .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage .site-content-header-submenu",
+            "info": [
+                { "key": "left", "value": "0" },
+                { "key": "width", "value": "100%" },
+                { "key": "height", "value": "100%" },
+                { "key": "clip-path", "value": "inset(0 100% 0 0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu, .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu",
+            "info": [
+                { "key": "clip-path", "value": "inset(0 0 0 0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage .site-content-header-submenu, .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage .site-content-header-submenu",
+            "info": [
+                { "key": "right", "value": "0" },
+                { "key": "width", "value": "100%" },
+                { "key": "height", "value": "100%" },
+                { "key": "transform", "value": "translateX(100%)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu, .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu",
+            "info": [
+                { "key": "transform", "value": "translateX(0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage .site-content-header-submenu, .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage .site-content-header-submenu",
+            "info": [
+                { "key": "right", "value": "0" },
+                { "key": "width", "value": "100%" },
+                { "key": "height", "value": "100%" },
+                { "key": "clip-path", "value": "inset(0 0 0 100%)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu, .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu",
+            "info": [
+                { "key": "clip-path", "value": "inset(0 0 0 0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode5 .site-content-header-menu, .site-content-header-menumode6 .site-content-header-menu",
+            "info": [
+                { "key": "display", "value": "flex" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "justify-content", "value": "center" },
+                { "key": "padding-top", "value": "var(--site-header-layout-spaceBetween)" },
+                { "key": "align-items", "value": "center" },
+                { "key": "flex-wrap", "value": "nowrap" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode5 .site-content-header-menu",
+            "info": [
+                { "key": "position", "value": "absolute" },
+                { "key": "left", "value": "0" },
+                { "key": "right", "value": "0" },
+                { "key": "top", "value": "0" },
+                { "key": "margin", "value": "auto" },
+                { "key": "transform", "value": "translateY(-100%)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode5.ismenuopen .site-content-header-menu",
+            "info": [
+                { "key": "top", "value": "100%" },
+                { "key": "transform", "value": "translateY(0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode6 .site-content-header-menu",
+            "info": [
+                { "key": "position", "value": "absolute" },
+                { "key": "left", "value": "0" },
+                { "key": "right", "value": "0" },
+                { "key": "top", "value": "100%" },
+                { "key": "margin", "value": "auto" },
+                { "key": "clip-path", "value": "inset(0 0 100% 0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode6.ismenuopen .site-content-header-menu",
+            "info": [
+                { "key": "clip-path", "value": "inset(0 0 0 0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode5 .site-content-header-closebutton, .site-content-header-menumode6 .site-content-header-closebutton",
+            "info": [
+                { "key": "display", "value": "none" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode5 .site-content-header-menu > ul, .site-content-header-menumode6 .site-content-header-menu > ul",
+            "info": [
+                { "key": "width", "value": "100%" },
+                { "key": "height", "value": "100%" },
+                { "key": "display", "value": "flex" },
+                { "key": "flex-wrap", "value": "wrap" },
+                { "key": "flex-direction", "value": "row" },
+                { "key": "justify-content", "value": "center" },
+                { "key": "align-items", "value": "flex-start" },
+                { "key": "text-align", "value": "center" },
+                { "key": "gap", "value": "var(--site-header-layout-navMajorGap)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode5 .site-content-header-navpage, .site-content-header-menumode6 .site-content-header-navpage",
+            "info": [
+                { "key": "display", "value": "flex" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "gap", "value": "var(--site-header-layout-navMajorGap)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode5 .site-content-header-submenu, .site-content-header-menumode6 .site-content-header-submenu",
+            "info": [
+                { "key": "display", "value": "flex" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "gap", "value": "var(--site-header-layout-navMinorGap)" }
+            ]
+        },
+        {
+            "object": ".site-header",
+            "break": 768,
+            "info": [
+                { "key": "overflow-x", "value": "clip" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-menu, .site-content-header-menumode1 .site-content-header-menu, .site-content-header-menumode2 .site-content-header-menu, .site-content-header-menumode3 .site-content-header-menu, .site-content-header-menumode4 .site-content-header-menu, .site-content-header-menumode5 .site-content-header-menu, .site-content-header-menumode6 .site-content-header-menu",
+            "break": 768,
+            "info": [
+                { "key": "position", "value": "absolute" },
+                { "key": "top", "value": "100%" },
+                { "key": "left", "value": "0" },
+                { "key": "right", "value": "0" },
+                { "key": "height", "value": "calc(100vh - 100% - 1px)" },
+                { "key": "width", "value": "calc(100% - 1px)" },
+                { "key": "display", "value": "flex" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "align-items", "value": "center" },
+                { "key": "justify-content", "value": "flex-start" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode5 .site-content-header-menu",
+            "break": 768,
+            "info": [
+                { "key": "top", "value": "0" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-hamberger, .site-content-header-menumode1 .site-content-header-hamberger, .site-content-header-menumode2 .site-content-header-hamberger, .site-content-header-menumode3 .site-content-header-hamberger, .site-content-header-menumode4 .site-content-header-hamberger, .site-content-header-menumode5 .site-content-header-hamberger, .site-content-header-menumode6 .site-content-header-hamberger",
+            "break": 768,
+            "info": [
+                { "key": "display", "value": "flex" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-closebutton, .site-content-header-menumode1 .site-content-header-closebutton, .site-content-header-menumode2 .site-content-header-closebutton, .site-content-header-menumode3 .site-content-header-closebutton, .site-content-header-menumode4 .site-content-header-closebutton, .site-content-header-menumode5 .site-content-header-closebutton, .site-content-header-menumode6 .site-content-header-closebutton",
+            "break": 768,
+            "info": [
+                { "key": "display", "value": "none" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-menu>ul, .site-content-header-menumode1 .site-content-header-menu>ul, .site-content-header-menumode2 .site-content-header-menu>ul, .site-content-header-menumode3 .site-content-header-menu>ul, .site-content-header-menumode4 .site-content-header-menu>ul, .site-content-header-menumode5 .site-content-header-menu>ul, .site-content-header-menumode6 .site-content-header-menu>ul",
+            "break": 768,
+            "info": [
+                { "key": "display", "value": "flex" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "position", "value": "relative" },
+                { "key": "justify-content", "value": "stretch" },
+                { "key": "align-items", "value": "left" },
+                { "key": "text-align", "value": "left" },
+                { "key": "width", "value": "100%" },
+                { "key": "height", "value": "auto" },
+                { "key": "gap", "value": "var(--site-header-layout-navMajorGap)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-menu",
+            "break": 768,
+            "info": [
+                { "key": "clip-path", "value": "inset(0 0 100% 0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0.ismenuopen .site-content-header-menu",
+            "break": 768,
+            "info": [
+                { "key": "clip-path", "value": "inset(0 0 0 0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage",
+            "break": 768,
+            "info": [
+                { "key": "position", "value": "static" },
+                { "key": "width", "value": "100%" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage > a",
+            "break": 768,
+            "info": [
+                { "key": "display", "value": "flex" },
+                { "key": "height", "value": "auto" },
+                { "key": "margin-bottom", "value": "0" }
+            ]
+        },
+        {
+            "object": ".site-content-header-menumode0 .site-content-header-menu .site-content-header-submenu",
+            "break": 768,
+            "info": [
+                { "key": "margin-top", "value": "0" },
+                { "key": "position", "value": "static" },
+                { "key": "clip-path", "value": "none" },
+                { "key": "text-align", "value": "unset" },
+                { "key": "left", "value": "auto" },
+                { "key": "top", "value": "auto" },
+                { "key": "padding-top", "value": "var(--site-header-layout-navMinorGap)" },
+                { "key": "gap", "value": "var(--site-header-layout-navMinorGap)" },
+                { "key": "padding-left", "value": "var(--site-header-layout-navMajorGap)" },
+                { "key": "padding-right", "value": "var(--site-header-layout-navMajorGap)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-hamberger, .site-content-header-closebutton",
+            "info": [
+                { "key": "width", "value": "30px" },
+                { "key": "height", "value": "30px" },
+                { "key": "padding", "value": "0" },
+                { "key": "border", "value": "0" },
+                { "key": "display", "value": "flex" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "justify-content", "value": "center" },
+                { "key": "align-items", "value": "center" },
+                { "key": "gap", "value": "7px" },
+                { "key": "background", "value": "transparent" },
+                { "key": "cursor", "value": "pointer" }
+            ]
+        },
+        {
+            "object": ".site-content-header-hamberger span, .site-content-header-closebutton span",
+            "info": [
+                { "key": "display", "value": "block" },
+                { "key": "width", "value": "30px" },
+                { "key": "height", "value": "3px" },
+                { "key": "background", "value": "currentColor" },
+                { "key": "border-radius", "value": "999px" }
+            ]
+        },
+        {
+            "object": ".site-content-header-closebutton span:nth-child(1)",
+            "info": [
+                { "key": "transform", "value": "translateY(10px) rotate(45deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-closebutton span:nth-child(2)",
+            "info": [
+                { "key": "opacity", "value": "0" },
+                { "key": "transform", "value": "scaleX(0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-closebutton span:nth-child(3)",
+            "info": [
+                { "key": "transform", "value": "translateY(-10px) rotate(-45deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim1>span:nth-child(1), .site-content-header-wrap.ismenuopen.site-content-header-menumode5>.site-content-header-hamberger.hamAnim1>span:nth-child(1), .site-content-header-wrap.ismenuopen.site-content-header-menumode6>.site-content-header-hamberger.hamAnim1>span:nth-child(1)",
+            "info": [
+                { "key": "transform", "value": "translateY(10px) rotate(45deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim1>span:nth-child(2), .site-content-header-wrap.ismenuopen.site-content-header-menumode5>.site-content-header-hamberger.hamAnim1>span:nth-child(2), .site-content-header-wrap.ismenuopen.site-content-header-menumode6>.site-content-header-hamberger.hamAnim1>span:nth-child(2)",
+            "info": [
+                { "key": "opacity", "value": "0" },
+                { "key": "transform", "value": "scaleX(0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim1>span:nth-child(3), .site-content-header-wrap.ismenuopen.site-content-header-menumode5>.site-content-header-hamberger.hamAnim1>span:nth-child(3), .site-content-header-wrap.ismenuopen.site-content-header-menumode6>.site-content-header-hamberger.hamAnim1>span:nth-child(3)",
+            "info": [
+                { "key": "transform", "value": "translateY(-10px) rotate(-45deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim2>span:nth-child(1), .site-content-header-wrap.ismenuopen.site-content-header-menumode5>.site-content-header-hamberger.hamAnim2>span:nth-child(1), .site-content-header-wrap.ismenuopen.site-content-header-menumode6>.site-content-header-hamberger.hamAnim2>span:nth-child(1)",
+            "info": [
+                { "key": "transform", "value": "translateY(10px) rotate(135deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim2>span:nth-child(2), .site-content-header-wrap.ismenuopen.site-content-header-menumode5>.site-content-header-hamberger.hamAnim2>span:nth-child(2), .site-content-header-wrap.ismenuopen.site-content-header-menumode6>.site-content-header-hamberger.hamAnim2>span:nth-child(2)",
+            "info": [
+                { "key": "opacity", "value": "0" },
+                { "key": "transform", "value": "scaleX(0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim2>span:nth-child(3), .site-content-header-wrap.ismenuopen.site-content-header-menumode5>.site-content-header-hamberger.hamAnim2>span:nth-child(3), .site-content-header-wrap.ismenuopen.site-content-header-menumode6>.site-content-header-hamberger.hamAnim2>span:nth-child(3)",
+            "info": [
+                { "key": "transform", "value": "translateY(-10px) rotate(-135deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3, .site-content-header-wrap.ismenuopen.site-content-header-menumode5>.site-content-header-hamberger.hamAnim3, .site-content-header-wrap.ismenuopen.site-content-header-menumode6>.site-content-header-hamberger.hamAnim3",
+            "info": [
+                { "key": "transform", "value": "rotate(90deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3>span:nth-child(1), .site-content-header-wrap.ismenuopen.site-content-header-menumode5>.site-content-header-hamberger.hamAnim3>span:nth-child(1), .site-content-header-wrap.ismenuopen.site-content-header-menumode6>.site-content-header-hamberger.hamAnim3>span:nth-child(1)",
+            "info": [
+                { "key": "transform", "value": "translateY(10px) rotate(45deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3>span:nth-child(2), .site-content-header-wrap.ismenuopen.site-content-header-menumode5>.site-content-header-hamberger.hamAnim3>span:nth-child(2), .site-content-header-wrap.ismenuopen.site-content-header-menumode6>.site-content-header-hamberger.hamAnim3>span:nth-child(2)",
+            "info": [
+                { "key": "opacity", "value": "0" },
+                { "key": "transform", "value": "scaleX(0) rotate(180deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-enableAnimation.site-content-header-hamAnim3>span:nth-child(3), .site-content-header-wrap.ismenuopen.site-content-header-menumode5>.site-content-header-hamberger.hamAnim3>span:nth-child(3), .site-content-header-wrap.ismenuopen.site-content-header-menumode6>.site-content-header-hamberger.hamAnim3>span:nth-child(3)",
+            "info": [
+                { "key": "transform", "value": "translateY(-10px) rotate(-45deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-hamAnim1>span:nth-child(1)",
+            "break": 768,
+            "info": [
+                { "key": "transform", "value": "translateY(10px) rotate(45deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-hamAnim1>span:nth-child(2)",
+            "break": 768,
+            "info": [
+                { "key": "opacity", "value": "0" },
+                { "key": "transform", "value": "scaleX(0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-hamAnim1>span:nth-child(3)",
+            "break": 768,
+            "info": [
+                { "key": "transform", "value": "translateY(-10px) rotate(-45deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-hamAnim2>span:nth-child(1)",
+            "break": 768,
+            "info": [
+                { "key": "transform", "value": "translateY(10px) rotate(135deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-hamAnim2>span:nth-child(2)",
+            "break": 768,
+            "info": [
+                { "key": "opacity", "value": "0" },
+                { "key": "transform", "value": "scaleX(0)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-hamAnim2>span:nth-child(3)",
+            "break": 768,
+            "info": [
+                { "key": "transform", "value": "translateY(-10px) rotate(-135deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-hamAnim3",
+            "break": 768,
+            "info": [
+                { "key": "transform", "value": "rotate(90deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-hamAnim3>span:nth-child(1)",
+            "break": 768,
+            "info": [
+                { "key": "transform", "value": "translateY(10px) rotate(45deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-hamAnim3>span:nth-child(2)",
+            "break": 768,
+            "info": [
+                { "key": "opacity", "value": "0" },
+                { "key": "transform", "value": "scaleX(0) rotate(180deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-hamberger.site-content-header-hamAnim3>span:nth-child(3)",
+            "break": 768,
+            "info": [
+                { "key": "transform", "value": "translateY(-10px) rotate(-45deg)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-mbuttons",
+            "info": [
+                { "key": "display", "value": "none" },
+                { "key": "text-align", "value": "center" }
+            ]
+        },
+        {
+            "object": ".site-content-header-mbuttons",
+            "break": 768,
+            "info": [
+                { "key": "display", "value": "flex" },
+                { "key": "justify-content", "value": "center" },
+                { "key": "align-items", "value": "center" },
+                { "key": "width", "value": "100%" },
+                { "key": "gap", "value": "var(--site-header-layout-mobileHeaderMainGap)" },
+                { "key": "position", "value": "sticky" },
+                { "key": "bottom", "value": "0" }
+            ]
+        },
+        {
+            "object": ".site-content-header-mbuttons.site-content-header-stickyToBottom",
+            "break": 768,
+            "info": [
+                { "key": "margin-top", "value": "auto" }
+            ]
+        },
+        {
+            "object": ".site-content-header-mbutton1",
+            "break": 768,
+            "info": [
+                { "key": "height", "value": "auto" },
+                { "key": "justify-content", "value": "space-between" },
+                { "key": "align-items", "value": "stretch" }
+            ]
+        },
+        {
+            "object": ".site-content-header-mbutton1.site-content-header-mbuttons a, .site-content-header-mbutton1.site-content-header-buttons button",
+            "break": 768,
+            "info": [
+                { "key": "flex", "value": "1 1 0" },
+                { "key": "min-width", "value": "none !important" },
+                { "key": "border-radius", "value": "var(--site-header-layout-mobileButonRound)" }
+            ]
+        },
+        {
+            "object": ".site-content-header-mbutton2",
+            "break": 768,
+            "info": [
+                { "key": "height", "value": "auto" },
+                { "key": "justify-content", "value": "space-between" },
+                { "key": "flex-direction", "value": "column" },
+                { "key": "align-items", "value": "stretch" }
+            ]
+        },
+        {
+            "object": ".site-content-header-mbutton2.site-content-header-mbuttons a, .site-content-header-mbutton2.site-content-header-buttons button",
+            "break": 768,
+            "info": [
+                { "key": "flex", "value": "1 1 0" },
+                { "key": "min-height", "value": "none !important" },
+                { "key": "border-radius", "value": "var(--site-header-layout-mobileButonRound)" },
+                { "key": "width", "value": "100% !important" }
+            ]
+        },
+        {
+            "object": ".site-content-header-buttons",
+            "info": [
+                { "key": "display", "value": "flex" },
+                { "key": "gap", "value": "var(--site-header-layout-mobileHeaderMainGap)" },
+                { "key": "align-items", "value": "center" }
+            ]
+        },
+        {
+            "object": ".site-content-header-button button, .site-content-header-button a",
+            "info": [
+                { "key": "min-width", "value": "fit-content" }
+            ]
+        },
+        {
+            "object": ".site-content-header-buttons .site-content-header-secondaryCTA",
+            "break": 768,
+            "info": [
+                { "key": "display", "value": "none !important" },
+                { "key": "opacity", "value": "1" }
+            ]
+        },
+        {
+            "object": ".site-content-header-wrap.ismenuopen>.site-content-header-buttons>.site-content-header-primaryCTA",
+            "break": 768,
+            "info": [
+                { "key": "opacity", "value": "0" }
+            ]
+        },
+        {
+            "object": ".site-content-header-space",
+            "info": [
+                { "key": "flex", "value": "5 5 100%" }
+            ]
+        }
+    ]
