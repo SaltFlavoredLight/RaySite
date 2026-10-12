@@ -15,9 +15,9 @@ import Sortable from 'https://cdn.jsdelivr.net/npm/sortablejs/+esm';
 
 // Builder Configs
 export const BUILDER_CONFIG = {
-	brandName: "RaySite",
-	classPrefix: "rs-",
-	attribution: "Spread the message with RaySite! RaySite is a Free Website builder for you!"
+    brandName: "RaySite",
+    classPrefix: "rs-",
+    attribution: "Spread the message with RaySite! RaySite is a Free Website builder for you!"
 };
 
 
@@ -33,27 +33,27 @@ export const BUILDER_CONFIG = {
 
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const num = v => {
-	const n = Number(v);
-	return Number.isFinite(n) ? n : 0;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
 };
 
-const flexEngineCheckContext = function(contextSetting, label) {
+const flexEngineCheckContext = function (contextSetting, label) {
 
-	// Normalize into array
-	let list = [];
+    // Normalize into array
+    let list = [];
 
-	if (Array.isArray(contextSetting)) {
-		list = contextSetting.map(s => String(s).trim());
-	}
-	else if (typeof contextSetting === "string") {
-		list = contextSetting
-			.replace(/,/g, " ")
-			.split(/\s+/)
-			.map(s => s.trim())
-			.filter(s => s.length > 0);
-	}
+    if (Array.isArray(contextSetting)) {
+        list = contextSetting.map(s => String(s).trim());
+    }
+    else if (typeof contextSetting === "string") {
+        list = contextSetting
+            .replace(/,/g, " ")
+            .split(/\s+/)
+            .map(s => s.trim())
+            .filter(s => s.length > 0);
+    }
 
-	return list.includes(label);
+    return list.includes(label);
 };
 
 /**
@@ -68,41 +68,41 @@ const flexEngineCheckContext = function(contextSetting, label) {
 // Note: replace it by flexEngineDefaultVariables
 // Variable system
 const flexEngineStyleVarible = {
-	color: function(colorObj) {
-                if (!colorObj || !colorObj.mode) {
-                    return "transparent";
-                }
-                const resolveColor = cStr => {
-                    if (!cStr || cStr === "transparent") {
-                        return "transparent";
-                    }
-                    return cStr.startsWith("color-") ? `var(--${cStr})` : cStr;
-                };
-                switch (colorObj.mode) {
-                    case "basic":
-                        return resolveColor(colorObj.color);
-                    case "hex":
-                        return colorObj.hex;
-                    case "variables":
-                        return `var(--${colorObj.variables})`;
-                    case "linearGradient": {
-                        const gradientStops = (colorObj.stops || []).map(stop => `${resolveColor(stop.color)} ${stop.offset}%`).join(", ");
-                        return `linear-gradient(
+    color: function (colorObj) {
+        if (!colorObj || !colorObj.mode) {
+            return "transparent";
+        }
+        const resolveColor = cStr => {
+            if (!cStr || cStr === "transparent") {
+                return "transparent";
+            }
+            return cStr.startsWith("color-") ? `var(--${cStr})` : cStr;
+        };
+        switch (colorObj.mode) {
+            case "basic":
+                return resolveColor(colorObj.color);
+            case "hex":
+                return colorObj.hex;
+            case "variables":
+                return `var(--${colorObj.variables})`;
+            case "linearGradient": {
+                const gradientStops = (colorObj.stops || []).map(stop => `${resolveColor(stop.color)} ${stop.offset}%`).join(", ");
+                return `linear-gradient(
                                     ${colorObj.angle}deg,
                                     ${gradientStops}
                                 )`;
-                    }
-                    case "backgroundIMG": {
-                        const repeat = `
+            }
+            case "backgroundIMG": {
+                const repeat = `
                                     ${colorObj.repeatX ? "repeat-x" : ""}
                                     ${colorObj.repeatY ? "repeat-y" : ""}
                                 `.trim() || "no-repeat";
-                        const posX = ["left", "center", "right"][colorObj.positionX - 1] || "center";
-                        const posY = ["top", "center", "bottom"][colorObj.positionY - 1] || "center";
-                        const attachment = colorObj.attachment ? "fixed" : "scroll";
-                        if (colorObj.coloroverlay && colorObj.coloroverlay !== "transparent") {
-                            const overlayStr = resolveColor(colorObj.coloroverlay);
-                            return `
+                const posX = ["left", "center", "right"][colorObj.positionX - 1] || "center";
+                const posY = ["top", "center", "bottom"][colorObj.positionY - 1] || "center";
+                const attachment = colorObj.attachment ? "fixed" : "scroll";
+                if (colorObj.coloroverlay && colorObj.coloroverlay !== "transparent") {
+                    const overlayStr = resolveColor(colorObj.coloroverlay);
+                    return `
                                         linear-gradient(
                                             ${overlayStr},
                                             ${overlayStr}
@@ -114,8 +114,8 @@ const flexEngineStyleVarible = {
                                         ${repeat}
                                         ${attachment}
                                     `;
-                        }
-                        return `
+                }
+                return `
                                     url("${colorObj.src}")
                                     ${posX}
                                     ${posY}
@@ -123,102 +123,102 @@ const flexEngineStyleVarible = {
                                     ${repeat}
                                     ${attachment}
                                 `;
-                    }
-                    case "inherit":
-                        return "inherit";
-                    case "none":
-                    default:
-                        return "transparent";
-                }
-	},
+            }
+            case "inherit":
+                return "inherit";
+            case "none":
+            default:
+                return "transparent";
+        }
+    },
 
-	space: function(spaceObj) {
-		if (!spaceObj || !spaceObj.mode) return '0px';
+    space: function (spaceObj) {
+        if (!spaceObj || !spaceObj.mode) return '0px';
 
-		switch (spaceObj.mode) {
-			case 'auto':
-				return 'auto';
+        switch (spaceObj.mode) {
+            case 'auto':
+                return 'auto';
 
             case 'none':
                 return '0px';
 
-			case 'variables':
-				return `var(--${BUILDER_CONFIG.classPrefix + spaceObj.variables})`;
+            case 'variables':
+                return `var(--${BUILDER_CONFIG.classPrefix + spaceObj.variables})`;
 
-				// Handles: px, rem, em, %, vw, vh, vmin, vmax, ch
-			default:
-				const validUnits = ['px', 'rem', 'em', '%', 'vw', 'vh', 'vmin', 'vmax', 'ch'];
-				if (validUnits.includes(spaceObj.mode)) {
-					return `${spaceObj.value}${spaceObj.mode}`;
-				}
-
-				// Fallback for unexpected modes
-				return '0px';
-		}
-	},
-
-	media: function(mediaObj) {
-		if (!mediaObj || !mediaObj.mode) return '';
-
-		switch (mediaObj.mode) {
-			case 'internal':
-				const prefix = BUILDER_CONFIG.classPrefix;
-
-				// Constructing: prefix/assets/folder/name
-				return `/${prefix}assets/${mediaObj.folder}/${mediaObj.name}`;
-
-			case 'external':
-				return mediaObj.url;
-
-			default:
-				return '';
-		}
-	},
-
-	// for Head only
-	absMedia: function(mediaObj, mainArray, selfSlug) {
-		if (!mediaObj || !mediaObj.mode) return '';
-
-		switch (mediaObj.mode) {
-			case 'internal':
-
-				const prefix = BUILDER_CONFIG.classPrefix;
-
-				const absoluteDomainEnable = (selfSlug !== null && mainArray.domain !== null && selfSlug !== "" && mainArray.domain !== "");
-				const absoluteDomain = (absoluteDomainEnable) ? `https://${mainArray.domain}` : "/";
-
-				// Constructing: prefix/assets/folder/name
-				return `${absoluteDomain}/${prefix}assets/${mediaObj.folder}/${mediaObj.name}`;
-
-			case 'external':
-				return mediaObj.url;
-
-			default:
-				return '';
-		}
-	},
-
-	curve: function(curveObj) {
-                // Return CSS variable if set to theme mode
-                if (Array.isArray(coords) && coords.length === 1 && coords[0] === 'theme') {
-                    const prefix = (typeof BUILDER_CONFIG !== 'undefined' && BUILDER_CONFIG.classPrefix) 
-                        ? BUILDER_CONFIG.classPrefix 
-                        : 'default';
-                    return `var(--${prefix}-animation-animationCurve)`;
+            // Handles: px, rem, em, %, vw, vh, vmin, vmax, ch
+            default:
+                const validUnits = ['px', 'rem', 'em', '%', 'vw', 'vh', 'vmin', 'vmax', 'ch'];
+                if (validUnits.includes(spaceObj.mode)) {
+                    return `${spaceObj.value}${spaceObj.mode}`;
                 }
 
-                const presetMap = {
-                    '0,0,1,1': 'linear',
-                    '0.25,0.1,0.25,1': 'ease',
-                    '0.42,0,1,1': 'ease-in',
-                    '0,0,0.58,1': 'ease-out',
-                    '0.42,0,0.58,1': 'ease-in-out'
-                };
+                // Fallback for unexpected modes
+                return '0px';
+        }
+    },
 
-                const key = Array.isArray(coords) ? coords.join(',') : '';
+    media: function (mediaObj) {
+        if (!mediaObj || !mediaObj.mode) return '';
 
-                return presetMap[key] || `cubic-bezier(${key})`;
-	},
+        switch (mediaObj.mode) {
+            case 'internal':
+                const prefix = BUILDER_CONFIG.classPrefix;
+
+                // Constructing: prefix/assets/folder/name
+                return `/${prefix}assets/${mediaObj.folder}/${mediaObj.name}`;
+
+            case 'external':
+                return mediaObj.url;
+
+            default:
+                return '';
+        }
+    },
+
+    // for Head only
+    absMedia: function (mediaObj, mainArray, selfSlug) {
+        if (!mediaObj || !mediaObj.mode) return '';
+
+        switch (mediaObj.mode) {
+            case 'internal':
+
+                const prefix = BUILDER_CONFIG.classPrefix;
+
+                const absoluteDomainEnable = (selfSlug !== null && mainArray.domain !== null && selfSlug !== "" && mainArray.domain !== "");
+                const absoluteDomain = (absoluteDomainEnable) ? `https://${mainArray.domain}` : "/";
+
+                // Constructing: prefix/assets/folder/name
+                return `${absoluteDomain}/${prefix}assets/${mediaObj.folder}/${mediaObj.name}`;
+
+            case 'external':
+                return mediaObj.url;
+
+            default:
+                return '';
+        }
+    },
+
+    curve: function (curveObj) {
+        // Return CSS variable if set to theme mode
+        if (Array.isArray(coords) && coords.length === 1 && coords[0] === 'theme') {
+            const prefix = (typeof BUILDER_CONFIG !== 'undefined' && BUILDER_CONFIG.classPrefix)
+                ? BUILDER_CONFIG.classPrefix
+                : 'default';
+            return `var(--${prefix}-animation-animationCurve)`;
+        }
+
+        const presetMap = {
+            '0,0,1,1': 'linear',
+            '0.25,0.1,0.25,1': 'ease',
+            '0.42,0,1,1': 'ease-in',
+            '0,0,0.58,1': 'ease-out',
+            '0.42,0,0.58,1': 'ease-in-out'
+        };
+
+        const key = Array.isArray(coords) ? coords.join(',') : '';
+
+        return presetMap[key] || `cubic-bezier(${key})`;
+    },
 };
 
 
@@ -1077,7 +1077,7 @@ class openDBFlieMaagement {
                     readPromises.push(
                         zipEntry.async('blob').then(blob => {
                             filesToAdd.push({
-                                path: '/' + relativePath, 
+                                path: '/' + relativePath,
                                 data: blob
                             });
                         })
@@ -1119,7 +1119,7 @@ class openDBFlieMaagement {
             }
 
             const blob = await zip.generateAsync({ type: 'blob' });
-            return { 
+            return {
                 blob: blob,
                 exportedCount: fileCount,
                 filename: `export_${new Date().getTime()}.zip`
@@ -1437,7 +1437,7 @@ export const flexEngineDefaultVariables = {
 
             component: class {
                 // Constructor: pass dataArray & entryElement, data is that piece, and entryElement is what the field is, different depending on time
-                constructor(dataArray, entryElement, elementSetting) { 
+                constructor(dataArray, entryElement, elementSetting) {
                     this.dataArray = dataArray; // regieter it
                     this.entryElement = entryElement; // remember it!
 
@@ -1449,17 +1449,17 @@ export const flexEngineDefaultVariables = {
                     input.style.width = '100%';
 
                     input.addEventListener('keydown', (event) => {
-                    if (event.key === '.' || event.key === ',' ) {
-                        event.preventDefault();
-                    }
+                        if (event.key === '.' || event.key === ',') {
+                            event.preventDefault();
+                        }
                     });
 
                     input.addEventListener('input', (event) => {
                         event.target.value = event.target.value.replace(/[^0-9-]/g, '');
 
                         this.dataArray = Number(input.value);
-                    });       
-                    
+                    });
+
                     input.value = this.dataArray;
 
                     this.entryElement.innerHTML = "";
@@ -1474,12 +1474,12 @@ export const flexEngineDefaultVariables = {
                     // another Function: OK, this is an aynsc function, tell system run it after
                 }
 
-                onSave(){
+                onSave() {
                     return this.dataArray;
                 }
             },
 
-            render: function(dataArray, elementSetting, elementSetting) {
+            render: function (dataArray, elementSetting, elementSetting) {
                 return dataArray; // Good, since it is just Number.
             }
         },
@@ -1515,7 +1515,7 @@ export const flexEngineDefaultVariables = {
                         event.target.value = event.target.value.replace(/[^0-9-]/g, '');
                         if (Number(input.value) < 0) {
                             input.value = Number(input.value) * -1;
-                        } 
+                        }
 
                         // Convert to number
                         this.dataArray = Number(input.value);
@@ -1525,8 +1525,8 @@ export const flexEngineDefaultVariables = {
 
                     this.entryElement.innerHTML = "";
                     this.entryElement.appendChild(input);
-                    
-                    return { code: 0};
+
+                    return { code: 0 };
                 }
 
                 onSave() {
@@ -1534,7 +1534,7 @@ export const flexEngineDefaultVariables = {
                 }
             },
 
-            render: function(dataArray, elementSetting) {
+            render: function (dataArray, elementSetting) {
                 return dataArray;
             }
         },
@@ -1725,7 +1725,7 @@ export const flexEngineDefaultVariables = {
                 }
             },
 
-            render: function(dataArray) {
+            render: function (dataArray) {
                 return Number(dataArray);
             }
         },
@@ -1928,7 +1928,7 @@ export const flexEngineDefaultVariables = {
                 }
             },
 
-            render: function(dataArray) {
+            render: function (dataArray) {
                 return Number(dataArray);
             }
         }
@@ -1976,9 +1976,9 @@ export const flexEngineDefaultVariables = {
                 }
             },
 
-            render: function(dataArray) {
+            render: function (dataArray) {
                 return Boolean(dataArray);
-            }         
+            }
         }
     },
 
@@ -2023,7 +2023,7 @@ export const flexEngineDefaultVariables = {
                 }
             },
 
-            render: function(dataArray, elementSetting) {
+            render: function (dataArray, elementSetting) {
                 return String(dataArray);
             }
         },
@@ -2068,7 +2068,7 @@ export const flexEngineDefaultVariables = {
                 }
             },
 
-            render: function(dataArray, elementSetting) {
+            render: function (dataArray, elementSetting) {
                 return String(dataArray);
             }
         },
@@ -2110,7 +2110,7 @@ export const flexEngineDefaultVariables = {
                 }
             },
 
-            render: function(dataArray) {
+            render: function (dataArray) {
                 return String(dataArray);
             }
         }
@@ -2170,7 +2170,7 @@ export const flexEngineDefaultVariables = {
                 }
             },
 
-            render: function(dataArray) {
+            render: function (dataArray) {
                 return Number(dataArray);
             }
         },
@@ -2234,7 +2234,7 @@ export const flexEngineDefaultVariables = {
 
                 initResult() {
                     return { code: 0 };
-                }                
+                }
 
                 // -----------------------------
                 // PREVIEW UPDATE METHOD
@@ -2266,380 +2266,380 @@ export const flexEngineDefaultVariables = {
                 }
             },
 
-            render: function(dataArray) {
+            render: function (dataArray) {
                 return Array.isArray(dataArray) ? dataArray : [];
             }
         }
     },
 
     media: {
-		img: {
-		    strutureSample: { mode: "internal", folder: "img", name: "" },
+        img: {
+            strutureSample: { mode: "internal", folder: "img", name: "" },
 
-		    displayType: "popup",
+            displayType: "popup",
 
-		    cssStyles: [
-		        {
-		            object: ".media-img-preview",
-		            info: [
-		                { key: "width", value: "100%" },
-		                { key: "height", value: "100%" },
-		                { key: "object-fit", value: "cover" },
-		                { key: "object-position", value: "center" },
-		                { key: "display", value: "block" },
-		                { key: "user-select", value: "none" }
-		            ]
-		        },
-		        {
-		            object: ".media-img-row",
-		            info: [
-		                { key: "display", value: "flex" },
-		                { key: "align-items", value: "center" },
-		                { key: "gap", value: "12px" },
-		                { key: "height", value: "60px" },
-		                { key: "padding", value: "6px 8px" },
-		                { key: "border-bottom", value: "1px solid #eee" },
-		                { key: "cursor", value: "pointer" },
-		                { key: "user-select", value: "none" }
-		            ]
-		        },
-		        {
-		            object: ".media-img-thumb",
-		            info: [
-		                { key: "width", value: "100px" },
-		                { key: "height", value: "60px" },
-		                { key: "object-fit", value: "cover" },
-		                { key: "object-position", value: "center" },
-		                { key: "display", value: "block" },
-		                { key: "user-select", value: "none" }
-		            ]
-		        },
-		        {
-		            object: ".media-img-title",
-		            info: [
-		                { key: "flex", value: "1" },
-		                { key: "overflow", value: "hidden" },
-		                { key: "text-overflow", value: "ellipsis" },
-		                { key: "white-space", value: "nowrap" }
-		            ]
-		        },
-		        {
-		            object: ".media-img-overlay",
-		            info: [
-		                { key: "position", value: "absolute" },
-		                { key: "top", value: "0" },
-		                { key: "left", value: "0" },
-		                { key: "width", value: "100%" },
-		                { key: "height", value: "100%" },
-		                { key: "background", value: "rgba(0,0,0,0.85)" },
-		                { key: "display", value: "flex" },
-		                { key: "align-items", value: "center" },
-		                { key: "justify-content", value: "center" },
-		                { key: "z-index", value: "9999" }
-		            ]
-		        },
-		        {
-		            object: ".media-img-overlay img",
-		            info: [
-		                { key: "max-width", value: "95%" },
-		                { key: "max-height", value: "95%" },
-		                { key: "object-fit", value: "contain" }
-		            ]
-		        }
-		    ],
+            cssStyles: [
+                {
+                    object: ".media-img-preview",
+                    info: [
+                        { key: "width", value: "100%" },
+                        { key: "height", value: "100%" },
+                        { key: "object-fit", value: "cover" },
+                        { key: "object-position", value: "center" },
+                        { key: "display", value: "block" },
+                        { key: "user-select", value: "none" }
+                    ]
+                },
+                {
+                    object: ".media-img-row",
+                    info: [
+                        { key: "display", value: "flex" },
+                        { key: "align-items", value: "center" },
+                        { key: "gap", value: "12px" },
+                        { key: "height", value: "60px" },
+                        { key: "padding", value: "6px 8px" },
+                        { key: "border-bottom", value: "1px solid #eee" },
+                        { key: "cursor", value: "pointer" },
+                        { key: "user-select", value: "none" }
+                    ]
+                },
+                {
+                    object: ".media-img-thumb",
+                    info: [
+                        { key: "width", value: "100px" },
+                        { key: "height", value: "60px" },
+                        { key: "object-fit", value: "cover" },
+                        { key: "object-position", value: "center" },
+                        { key: "display", value: "block" },
+                        { key: "user-select", value: "none" }
+                    ]
+                },
+                {
+                    object: ".media-img-title",
+                    info: [
+                        { key: "flex", value: "1" },
+                        { key: "overflow", value: "hidden" },
+                        { key: "text-overflow", value: "ellipsis" },
+                        { key: "white-space", value: "nowrap" }
+                    ]
+                },
+                {
+                    object: ".media-img-overlay",
+                    info: [
+                        { key: "position", value: "absolute" },
+                        { key: "top", value: "0" },
+                        { key: "left", value: "0" },
+                        { key: "width", value: "100%" },
+                        { key: "height", value: "100%" },
+                        { key: "background", value: "rgba(0,0,0,0.85)" },
+                        { key: "display", value: "flex" },
+                        { key: "align-items", value: "center" },
+                        { key: "justify-content", value: "center" },
+                        { key: "z-index", value: "9999" }
+                    ]
+                },
+                {
+                    object: ".media-img-overlay img",
+                    info: [
+                        { key: "max-width", value: "95%" },
+                        { key: "max-height", value: "95%" },
+                        { key: "object-fit", value: "contain" }
+                    ]
+                }
+            ],
 
-		    component: class {
-		        constructor(dataArray, entryElement, elementSetting) {
-		            this.previewElement = entryElement[0];
-		            this.popupElement = entryElement[1];
-		            this.elementSetting = elementSetting;
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    this.previewElement = entryElement[0];
+                    this.popupElement = entryElement[1];
+                    this.elementSetting = elementSetting;
 
-		            this.dataArray = dataArray || { mode: "internal", folder: "img", name: "" };
-		            this._activeTab = this.dataArray.mode === "external" ? "external" : "internal";
+                    this.dataArray = dataArray || { mode: "internal", folder: "img", name: "" };
+                    this._activeTab = this.dataArray.mode === "external" ? "external" : "internal";
 
-		            this._selected =
-		                this.dataArray.mode === "internal"
-		                    ? { mode: "internal", folder: "img", name: this.dataArray.name }
-		                    : (this.dataArray.mode === "external"
-		                        ? { mode: "external", url: this.dataArray.url }
-		                        : null);
+                    this._selected =
+                        this.dataArray.mode === "internal"
+                            ? { mode: "internal", folder: "img", name: this.dataArray.name }
+                            : (this.dataArray.mode === "external"
+                                ? { mode: "external", url: this.dataArray.url }
+                                : null);
 
-		            this._objectUrls = new Set();
+                    this._objectUrls = new Set();
 
-		            this.previewText = document.createElement("div");
-		            this.previewText.className = "media-img-preview";
-		            this.updatePreview();
+                    this.previewText = document.createElement("div");
+                    this.previewText.className = "media-img-preview";
+                    this.updatePreview();
 
-		            this.previewElement.innerHTML = "";
-		            this.previewElement.appendChild(this.previewText);
-		        }
-
-                initResult() {
-		            // RETURN ASYNC POPUP INITIALIZER
-		            return async () => {
-		                this.popupElement.innerHTML = "";
-                
-		                if (window.getComputedStyle(this.popupElement).position === "static") {
-		                    this.popupElement.style.position = "relative";
-		                }
-
-		                let tabBar = document.createElement("div");
-		                let tabInternal = document.createElement("button");
-		                tabInternal.textContent = "Internal";
-		                let tabExternal = document.createElement("button");
-		                tabExternal.textContent = "External";
-		                let tabUpload = document.createElement("button");
-		                tabUpload.textContent = "Upload";
-
-		                tabBar.appendChild(tabInternal);
-		                tabBar.appendChild(tabExternal);
-		                tabBar.appendChild(tabUpload);
-
-		                let internalContainer = document.createElement("div");
-		                internalContainer.style.maxHeight = "320px";
-		                internalContainer.style.overflowY = "auto";
-
-		                let externalContainer = document.createElement("div");
-		                let externalInput = document.createElement("input");
-		                externalInput.type = "url";
-		                externalInput.style.width = "100%";
-		                externalInput.value =
-		                    this.dataArray.mode === "external" ? (this.dataArray.url || "") : "";
-		                externalContainer.appendChild(externalInput);
-
-		                // UPLOAD TAB UI
-		                let uploadContainer = document.createElement("div");
-		                uploadContainer.style.padding = "10px";
-
-		                let fileInput = document.createElement("input");
-		                fileInput.type = "file";
-		                fileInput.accept = "image/*";
-		                fileInput.style.marginBottom = "10px";
-		                fileInput.style.display = "block";
-
-		                let nameInput = document.createElement("input");
-		                nameInput.type = "text";
-		                nameInput.placeholder = "(optional) Name of this asset";
-		                nameInput.style.width = "100%";
-		                nameInput.style.padding = "6px";
-
-		                uploadContainer.appendChild(fileInput);
-		                uploadContainer.appendChild(nameInput);
-
-		                this.popupElement.appendChild(tabBar);
-		                this.popupElement.appendChild(internalContainer);
-		                this.popupElement.appendChild(externalContainer);
-		                this.popupElement.appendChild(uploadContainer);
-
-		                let overlay = document.createElement("div");
-		                overlay.className = "media-img-overlay";
-		                overlay.style.display = "none";
-		                let overlayImg = document.createElement("img");
-		                overlay.appendChild(overlayImg);
-		                this.popupElement.appendChild(overlay);
-
-		                const closeOverlay = () => {
-		                    overlay.style.display = "none";
-		                    overlayImg.src = "";
-		                };
-		                overlay.onclick = closeOverlay;
-		                overlayImg.onclick = (e) => { e.stopPropagation(); closeOverlay(); };
-
-		                let showInternal = () => {
-		                    this._activeTab = "internal";
-		                    internalContainer.style.display = "block";
-		                    externalContainer.style.display = "none";
-		                    uploadContainer.style.display = "none";
-		                };
-		                let showExternal = () => {
-		                    this._activeTab = "external";
-		                    internalContainer.style.display = "none";
-		                    externalContainer.style.display = "block";
-		                    uploadContainer.style.display = "none";
-		                };
-		                let showUpload = () => {
-		                    this._activeTab = "upload";
-		                    internalContainer.style.display = "none";
-		                    externalContainer.style.display = "none";
-		                    uploadContainer.style.display = "block";
-		                };
-
-		                if (this.dataArray.mode === "external") showExternal();
-		                else showInternal();
-
-		                tabInternal.onclick = showInternal;
-		                tabExternal.onclick = showExternal;
-		                tabUpload.onclick = showUpload;
-
-		                let assets = await flexEngineFileSystem.listAssets("img");
-
-		                const processAssetChunk = async (items, index = 0) => {
-		                    const chunkSize = 5;
-		                    const limit = Math.min(index + chunkSize, items.length);
-
-		                    for (let i = index; i < limit; i++) {
-		                        let file = items[i];
-
-		                        let row = document.createElement("div");
-		                        row.className = "media-img-row";
-		                        row.dataset.assetName = file.name;
-
-		                        let thumb = document.createElement("img");
-		                        thumb.className = "media-img-thumb";
-
-		                        let title = document.createElement("div");
-		                        title.className = "media-img-title";
-		                        title.textContent = file.name;
-
-		                        let selectRow = () => {
-		                            this._selected = { mode: "internal", folder: "img", name: row.dataset.assetName };
-		                            let siblings = internalContainer.querySelectorAll(".media-img-row");
-		                            siblings.forEach(s => s.style.background = "");
-		                            row.style.background = "rgba(0,120,215,0.08)";
-		                        };
-
-		                        row.onclick = () => selectRow();
-		                        title.onclick = (e) => { e.stopPropagation(); selectRow(); };
-
-		                        try {
-		                            let blob = await flexEngineFileSystem.readAsset("/img/" + file.name);
-		                            let url = URL.createObjectURL(blob);
-		                            thumb.src = url;
-		                            thumb.dataset.objectUrl = url;
-		                            this._objectUrls.add(url);
-		                        } catch (e) {
-		                            thumb.src = "https://raystudio.net/404img.png";
-		                        }
-
-		                        thumb.onclick = (e) => {
-		                            e.stopPropagation();
-		                            selectRow();
-		                            if (thumb.dataset.objectUrl || thumb.src) {
-		                                overlayImg.src = thumb.dataset.objectUrl || thumb.src;
-		                                overlay.style.display = "flex";
-		                            }
-		                        };
-
-		                        row.appendChild(thumb);
-		                        row.appendChild(title);
-		                        internalContainer.appendChild(row);
-		                    }
-
-		                    if (limit < items.length) {
-		                        setTimeout(() => processAssetChunk(items, limit), 20);
-		                    }
-		                };
-
-		                if (assets && assets.length > 0) {
-		                    await processAssetChunk(assets);
-		                }
-
-		                externalInput.addEventListener("input", () => {
-		                    let v = externalInput.value.trim();
-		                    if (v && this._activeTab === "external") {
-		                        this._selected = { mode: "external", url: v };
-		                    }
-		                });
-
-		                this._popupExternalInput = externalInput;
-		                this._popupFileInput = fileInput;
-		                this._popupNameInput = nameInput;
-		            };
+                    this.previewElement.innerHTML = "";
+                    this.previewElement.appendChild(this.previewText);
                 }
 
-		        updatePreview() {
-		            if (this.dataArray.mode === "internal") {
-		                this.previewText.textContent = this.dataArray.name || "(no image)";
-		            } else if (this.dataArray.mode === "external") {
-		                this.previewText.textContent = this.dataArray.url || "(no external URL)";
-		            } else {
-		                this.previewText.textContent = "(no image)";
-		            }
-		        }
+                initResult() {
+                    // RETURN ASYNC POPUP INITIALIZER
+                    return async () => {
+                        this.popupElement.innerHTML = "";
 
-		        async onPopupClose() {
-		            if (this._activeTab === "external" && this._popupExternalInput && this._popupExternalInput.value.trim() !== "") {
-		                this.dataArray = {
-		                    mode: "external",
-		                    url: this._popupExternalInput.value.trim()
-		                };
-		            } else if (this._activeTab === "upload" && this._popupFileInput && this._popupFileInput.files.length > 0) {
-		                let file = this._popupFileInput.files[0];
-		                let customName = this._popupNameInput ? this._popupNameInput.value.trim() : "";
-                
-		                let ext = "";
-		                let baseName = file.name;
-		                const dotIndex = file.name.lastIndexOf(".");
-		                if (dotIndex !== -1) {
-		                    baseName = file.name.substring(0, dotIndex);
-		                    ext = file.name.substring(dotIndex);
-		                }
+                        if (window.getComputedStyle(this.popupElement).position === "static") {
+                            this.popupElement.style.position = "relative";
+                        }
 
-		                if (customName !== "") {
-		                    baseName = customName;
-		                }
+                        let tabBar = document.createElement("div");
+                        let tabInternal = document.createElement("button");
+                        tabInternal.textContent = "Internal";
+                        let tabExternal = document.createElement("button");
+                        tabExternal.textContent = "External";
+                        let tabUpload = document.createElement("button");
+                        tabUpload.textContent = "Upload";
 
-		                let finalName = baseName + ext;
+                        tabBar.appendChild(tabInternal);
+                        tabBar.appendChild(tabExternal);
+                        tabBar.appendChild(tabUpload);
 
-		                try {
-		                    let assets = await flexEngineFileSystem.listAssets("img");
-		                    let existingNames = new Set(assets ? assets.map(a => a.name) : []);
+                        let internalContainer = document.createElement("div");
+                        internalContainer.style.maxHeight = "320px";
+                        internalContainer.style.overflowY = "auto";
 
-		                    let counter = 1;
-		                    while (existingNames.has(finalName)) {
-		                        finalName = `${baseName} (${counter})${ext}`;
-		                        counter++;
-		                    }
+                        let externalContainer = document.createElement("div");
+                        let externalInput = document.createElement("input");
+                        externalInput.type = "url";
+                        externalInput.style.width = "100%";
+                        externalInput.value =
+                            this.dataArray.mode === "external" ? (this.dataArray.url || "") : "";
+                        externalContainer.appendChild(externalInput);
 
-		                    let resCode = await flexEngineFileSystem.updateAsset("img", finalName, file);
+                        // UPLOAD TAB UI
+                        let uploadContainer = document.createElement("div");
+                        uploadContainer.style.padding = "10px";
 
-		                    if (resCode === 0 || resCode === 2) {
-		                        this.dataArray = {
-		                            mode: "internal",
-		                            folder: "img",
-		                            name: finalName
-		                        };
-		                    }
-		                } catch (err) {
-		                    console.error("Failed to upload image asset:", err);
-		                }
-		            } else if (this._selected) {
-		                this.dataArray = this._selected;
-		            }
+                        let fileInput = document.createElement("input");
+                        fileInput.type = "file";
+                        fileInput.accept = "image/*";
+                        fileInput.style.marginBottom = "10px";
+                        fileInput.style.display = "block";
 
-		            this._objectUrls.forEach(u => URL.revokeObjectURL(u));
-		            this._objectUrls.clear();
+                        let nameInput = document.createElement("input");
+                        nameInput.type = "text";
+                        nameInput.placeholder = "(optional) Name of this asset";
+                        nameInput.style.width = "100%";
+                        nameInput.style.padding = "6px";
 
-		            const dynamicOverlay = this.popupElement.querySelector(".media-img-overlay");
-		            if (dynamicOverlay) {
-		                dynamicOverlay.remove();
-		            }
+                        uploadContainer.appendChild(fileInput);
+                        uploadContainer.appendChild(nameInput);
 
-		            this.updatePreview();
-		        }
+                        this.popupElement.appendChild(tabBar);
+                        this.popupElement.appendChild(internalContainer);
+                        this.popupElement.appendChild(externalContainer);
+                        this.popupElement.appendChild(uploadContainer);
 
-		        onSave() {
-		            return this.dataArray;
-		        }
-		    },
+                        let overlay = document.createElement("div");
+                        overlay.className = "media-img-overlay";
+                        overlay.style.display = "none";
+                        let overlayImg = document.createElement("img");
+                        overlay.appendChild(overlayImg);
+                        this.popupElement.appendChild(overlay);
 
-		    render: function(dataArray) {
-		        if (!dataArray || !dataArray.mode)
-		            return "https://raystudio.net/404img.png";
+                        const closeOverlay = () => {
+                            overlay.style.display = "none";
+                            overlayImg.src = "";
+                        };
+                        overlay.onclick = closeOverlay;
+                        overlayImg.onclick = (e) => { e.stopPropagation(); closeOverlay(); };
 
-		        switch (dataArray.mode) {
-		            case "internal":
-		                let prefix = BUILDER_CONFIG.classPrefix;
-		                return "/" + prefix + "assets/img/" + dataArray.name;
+                        let showInternal = () => {
+                            this._activeTab = "internal";
+                            internalContainer.style.display = "block";
+                            externalContainer.style.display = "none";
+                            uploadContainer.style.display = "none";
+                        };
+                        let showExternal = () => {
+                            this._activeTab = "external";
+                            internalContainer.style.display = "none";
+                            externalContainer.style.display = "block";
+                            uploadContainer.style.display = "none";
+                        };
+                        let showUpload = () => {
+                            this._activeTab = "upload";
+                            internalContainer.style.display = "none";
+                            externalContainer.style.display = "none";
+                            uploadContainer.style.display = "block";
+                        };
 
-		            case "external":
-		                return dataArray.url;
+                        if (this.dataArray.mode === "external") showExternal();
+                        else showInternal();
 
-		            default:
-		                return "https://raystudio.net/404img.png";
-		        }
-		    }
-		},
+                        tabInternal.onclick = showInternal;
+                        tabExternal.onclick = showExternal;
+                        tabUpload.onclick = showUpload;
+
+                        let assets = await flexEngineFileSystem.listAssets("img");
+
+                        const processAssetChunk = async (items, index = 0) => {
+                            const chunkSize = 5;
+                            const limit = Math.min(index + chunkSize, items.length);
+
+                            for (let i = index; i < limit; i++) {
+                                let file = items[i];
+
+                                let row = document.createElement("div");
+                                row.className = "media-img-row";
+                                row.dataset.assetName = file.name;
+
+                                let thumb = document.createElement("img");
+                                thumb.className = "media-img-thumb";
+
+                                let title = document.createElement("div");
+                                title.className = "media-img-title";
+                                title.textContent = file.name;
+
+                                let selectRow = () => {
+                                    this._selected = { mode: "internal", folder: "img", name: row.dataset.assetName };
+                                    let siblings = internalContainer.querySelectorAll(".media-img-row");
+                                    siblings.forEach(s => s.style.background = "");
+                                    row.style.background = "rgba(0,120,215,0.08)";
+                                };
+
+                                row.onclick = () => selectRow();
+                                title.onclick = (e) => { e.stopPropagation(); selectRow(); };
+
+                                try {
+                                    let blob = await flexEngineFileSystem.readAsset("/img/" + file.name);
+                                    let url = URL.createObjectURL(blob);
+                                    thumb.src = url;
+                                    thumb.dataset.objectUrl = url;
+                                    this._objectUrls.add(url);
+                                } catch (e) {
+                                    thumb.src = "https://raystudio.net/404img.png";
+                                }
+
+                                thumb.onclick = (e) => {
+                                    e.stopPropagation();
+                                    selectRow();
+                                    if (thumb.dataset.objectUrl || thumb.src) {
+                                        overlayImg.src = thumb.dataset.objectUrl || thumb.src;
+                                        overlay.style.display = "flex";
+                                    }
+                                };
+
+                                row.appendChild(thumb);
+                                row.appendChild(title);
+                                internalContainer.appendChild(row);
+                            }
+
+                            if (limit < items.length) {
+                                setTimeout(() => processAssetChunk(items, limit), 20);
+                            }
+                        };
+
+                        if (assets && assets.length > 0) {
+                            await processAssetChunk(assets);
+                        }
+
+                        externalInput.addEventListener("input", () => {
+                            let v = externalInput.value.trim();
+                            if (v && this._activeTab === "external") {
+                                this._selected = { mode: "external", url: v };
+                            }
+                        });
+
+                        this._popupExternalInput = externalInput;
+                        this._popupFileInput = fileInput;
+                        this._popupNameInput = nameInput;
+                    };
+                }
+
+                updatePreview() {
+                    if (this.dataArray.mode === "internal") {
+                        this.previewText.textContent = this.dataArray.name || "(no image)";
+                    } else if (this.dataArray.mode === "external") {
+                        this.previewText.textContent = this.dataArray.url || "(no external URL)";
+                    } else {
+                        this.previewText.textContent = "(no image)";
+                    }
+                }
+
+                async onPopupClose() {
+                    if (this._activeTab === "external" && this._popupExternalInput && this._popupExternalInput.value.trim() !== "") {
+                        this.dataArray = {
+                            mode: "external",
+                            url: this._popupExternalInput.value.trim()
+                        };
+                    } else if (this._activeTab === "upload" && this._popupFileInput && this._popupFileInput.files.length > 0) {
+                        let file = this._popupFileInput.files[0];
+                        let customName = this._popupNameInput ? this._popupNameInput.value.trim() : "";
+
+                        let ext = "";
+                        let baseName = file.name;
+                        const dotIndex = file.name.lastIndexOf(".");
+                        if (dotIndex !== -1) {
+                            baseName = file.name.substring(0, dotIndex);
+                            ext = file.name.substring(dotIndex);
+                        }
+
+                        if (customName !== "") {
+                            baseName = customName;
+                        }
+
+                        let finalName = baseName + ext;
+
+                        try {
+                            let assets = await flexEngineFileSystem.listAssets("img");
+                            let existingNames = new Set(assets ? assets.map(a => a.name) : []);
+
+                            let counter = 1;
+                            while (existingNames.has(finalName)) {
+                                finalName = `${baseName} (${counter})${ext}`;
+                                counter++;
+                            }
+
+                            let resCode = await flexEngineFileSystem.updateAsset("img", finalName, file);
+
+                            if (resCode === 0 || resCode === 2) {
+                                this.dataArray = {
+                                    mode: "internal",
+                                    folder: "img",
+                                    name: finalName
+                                };
+                            }
+                        } catch (err) {
+                            console.error("Failed to upload image asset:", err);
+                        }
+                    } else if (this._selected) {
+                        this.dataArray = this._selected;
+                    }
+
+                    this._objectUrls.forEach(u => URL.revokeObjectURL(u));
+                    this._objectUrls.clear();
+
+                    const dynamicOverlay = this.popupElement.querySelector(".media-img-overlay");
+                    if (dynamicOverlay) {
+                        dynamicOverlay.remove();
+                    }
+
+                    this.updatePreview();
+                }
+
+                onSave() {
+                    return this.dataArray;
+                }
+            },
+
+            render: function (dataArray) {
+                if (!dataArray || !dataArray.mode)
+                    return "https://raystudio.net/404img.png";
+
+                switch (dataArray.mode) {
+                    case "internal":
+                        let prefix = BUILDER_CONFIG.classPrefix;
+                        return "/" + prefix + "assets/img/" + dataArray.name;
+
+                    case "external":
+                        return dataArray.url;
+
+                    default:
+                        return "https://raystudio.net/404img.png";
+                }
+            }
+        },
 
         audio: {
             strutureSample: { mode: "internal", folder: "audio", name: "" },
@@ -2740,13 +2740,13 @@ export const flexEngineDefaultVariables = {
 
                     this.previewElement.innerHTML = "";
                     this.previewElement.appendChild(this.previewText);
-		        }
+                }
 
                 initResult() {
                     // RETURN ASYNC POPUP INITIALIZER
                     return async () => {
                         this.popupElement.innerHTML = "";
-                        
+
                         if (window.getComputedStyle(this.popupElement).position === "static") {
                             this.popupElement.style.position = "relative";
                         }
@@ -2962,7 +2962,7 @@ export const flexEngineDefaultVariables = {
 
                         let file = this._popupFileInput.files[0];
                         let customName = this._popupNameInput ? this._popupNameInput.value.trim() : "";
-                        
+
                         let ext = "";
                         let baseName = file.name;
                         const dotIndex = file.name.lastIndexOf(".");
@@ -3019,7 +3019,7 @@ export const flexEngineDefaultVariables = {
                 }
             },
 
-            render: function(dataArray) {
+            render: function (dataArray) {
                 if (!dataArray || !dataArray.mode)
                     return "";
 
@@ -3035,8 +3035,8 @@ export const flexEngineDefaultVariables = {
                         return "";
                 }
             }
-        },      
-        
+        },
+
         video: {
             strutureSample: { mode: "internal", folder: "video", name: "" },
 
@@ -3139,13 +3139,13 @@ export const flexEngineDefaultVariables = {
 
                     this.previewElement.innerHTML = "";
                     this.previewElement.appendChild(this.previewText);
-		        }
+                }
 
                 initResult() {
                     // RETURN ASYNC POPUP INITIALIZER
                     return async () => {
                         this.popupElement.innerHTML = "";
-                        
+
                         if (window.getComputedStyle(this.popupElement).position === "static") {
                             this.popupElement.style.position = "relative";
                         }
@@ -3351,7 +3351,7 @@ export const flexEngineDefaultVariables = {
                                             iconContainer.innerHTML = `<img src="${frameUrl}" style="width:100%;height:100%;object-fit:cover;" />`;
                                         }
                                     })
-                                    .catch(() => {});
+                                    .catch(() => { });
 
                                 // CLICK ICON TO SHOW FULL VIDEO PREVIEW
                                 iconContainer.onclick = async (e) => {
@@ -3420,7 +3420,7 @@ export const flexEngineDefaultVariables = {
 
                         let file = this._popupFileInput.files[0];
                         let customName = this._popupNameInput ? this._popupNameInput.value.trim() : "";
-                        
+
                         let ext = "";
                         let baseName = file.name;
                         const dotIndex = file.name.lastIndexOf(".");
@@ -3478,7 +3478,7 @@ export const flexEngineDefaultVariables = {
                 }
             },
 
-            render: function(dataArray) {
+            render: function (dataArray) {
                 if (!dataArray || !dataArray.mode)
                     return "";
 
@@ -3494,7 +3494,7 @@ export const flexEngineDefaultVariables = {
                         return "";
                 }
             }
-        }        
+        }
     },
 
     space: {
@@ -3791,7 +3791,7 @@ export const flexEngineDefaultVariables = {
                     const numInput = document.createElement("input");
                     numInput.type = "number";
                     numInput.className = "space-number-input";
-                    
+
                     const select = document.createElement("select");
                     select.className = "space-mode-select";
                     const options = [{
@@ -3896,7 +3896,7 @@ export const flexEngineDefaultVariables = {
 
                     select.value = this.dataArray.mode || "px";
                     select.addEventListener("change", syncUI);
-                    
+
                     slider.addEventListener("input", (e) => {
                         const val = Number(e.target.value);
                         if (select.value === "variables") {
@@ -3930,7 +3930,7 @@ export const flexEngineDefaultVariables = {
                     return this.dataArray;
                 }
             },
-            render: function(spaceObj) {
+            render: function (spaceObj) {
                 if (!spaceObj || !spaceObj.mode) return '0px';
                 switch (spaceObj.mode) {
                     case 'auto':
@@ -3965,8 +3965,8 @@ export const flexEngineDefaultVariables = {
                     this.dataArray = dataArray;
 
                     // Check if initial value is the theme keyword
-                    this.isTheme = Array.isArray(this.dataArray) && 
-                        this.dataArray.length === 1 && 
+                    this.isTheme = Array.isArray(this.dataArray) &&
+                        this.dataArray.length === 1 &&
                         this.dataArray[0] === 'theme';
 
                     const PRESETS = {
@@ -3990,8 +3990,8 @@ export const flexEngineDefaultVariables = {
 
                     const initialCoords = this.isTheme
                         ? [0.42, 0, 0.58, 1]
-                        : (Array.isArray(this.dataArray) && this.dataArray.length === 4 
-                            ? [...this.dataArray] 
+                        : (Array.isArray(this.dataArray) && this.dataArray.length === 4
+                            ? [...this.dataArray]
                             : [0.42, 0, 0.58, 1]);
 
                     this.entryElement = entryElement;
@@ -4028,8 +4028,8 @@ export const flexEngineDefaultVariables = {
                     });
 
                     // Set initial select value based on initial coordinates
-                    this.select.value = this.isTheme 
-                        ? 'theme' 
+                    this.select.value = this.isTheme
+                        ? 'theme'
                         : (PRESETS[initialCoords.join(',')] || 'custom');
 
                     controlBar.appendChild(this.select);
@@ -4125,11 +4125,11 @@ export const flexEngineDefaultVariables = {
                 }
             },
 
-            render: function(coords) {
+            render: function (coords) {
                 // Return CSS variable if set to theme mode
                 if (Array.isArray(coords) && coords.length === 1 && coords[0] === 'theme') {
-                    const prefix = (typeof BUILDER_CONFIG !== 'undefined' && BUILDER_CONFIG.classPrefix) 
-                        ? BUILDER_CONFIG.classPrefix 
+                    const prefix = (typeof BUILDER_CONFIG !== 'undefined' && BUILDER_CONFIG.classPrefix)
+                        ? BUILDER_CONFIG.classPrefix
                         : 'default';
                     return `var(--${prefix}-animation-animationCurve)`;
                 }
@@ -4185,10 +4185,10 @@ export const flexEngineDefaultVariables = {
                 onSave() {
                     this.editor.destroy();
                     return this.dataArray;
-                }                
+                }
             },
 
-            render: function(coords) {
+            render: function (coords) {
                 const presetMap = {
                     '0,0,1,1': 'linear',
                     '0.25,0.1,0.25,1': 'ease',
@@ -4894,9 +4894,8 @@ export const flexEngineDefaultVariables = {
                     modes.forEach(mode => {
                         if (mode.hidden) return;
                         const btn = document.createElement("div");
-                        btn.className = `color-switch-btn ${
-                                    activeMode === mode.value ? "active" : ""
-                                }`;
+                        btn.className = `color-switch-btn ${activeMode === mode.value ? "active" : ""
+                            }`;
                         btn.textContent = mode.label;
                         btn.addEventListener("click", () => {
                             if (activeMode === mode.value) return;
@@ -5130,13 +5129,13 @@ export const flexEngineDefaultVariables = {
                         this.dataArray.stops.length < 2
                     ) {
                         this.dataArray.stops = [{
-                                color: "color-primaryColor",
-                                offset: 0
-                            },
-                            {
-                                color: "color-secondaryColor",
-                                offset: 100
-                            }
+                            color: "color-primaryColor",
+                            offset: 0
+                        },
+                        {
+                            color: "color-secondaryColor",
+                            offset: 100
+                        }
                         ];
                     }
 
@@ -5261,8 +5260,8 @@ export const flexEngineDefaultVariables = {
                             "color-switch-btn" +
                             (
                                 this.openStopIndex === index ?
-                                " active" :
-                                ""
+                                    " active" :
+                                    ""
                             );
 
                         /*
@@ -5722,7 +5721,7 @@ export const flexEngineDefaultVariables = {
 
                     const activeStop =
                         this.dataArray.stops[
-                            this.openStopIndex
+                        this.openStopIndex
                         ];
 
                     if (!activeStop) {
@@ -6268,7 +6267,7 @@ export const flexEngineDefaultVariables = {
                 }
             },
             // Color renderer
-            render: function(colorObj) {
+            render: function (colorObj) {
                 if (!colorObj || !colorObj.mode) {
                     return "transparent";
                 }
@@ -7019,9 +7018,8 @@ export const flexEngineDefaultVariables = {
                     modes.forEach(mode => {
                         if (mode.hidden) return;
                         const btn = document.createElement("div");
-                        btn.className = `color-switch-btn ${
-                                    activeMode === mode.value ? "active" : ""
-                                }`;
+                        btn.className = `color-switch-btn ${activeMode === mode.value ? "active" : ""
+                            }`;
                         btn.textContent = mode.label;
                         btn.addEventListener("click", () => {
                             if (activeMode === mode.value) return;
@@ -7252,13 +7250,13 @@ export const flexEngineDefaultVariables = {
                         this.dataArray.stops.length < 2
                     ) {
                         this.dataArray.stops = [{
-                                color: "color-primaryColor",
-                                offset: 0
-                            },
-                            {
-                                color: "color-secondaryColor",
-                                offset: 100
-                            }
+                            color: "color-primaryColor",
+                            offset: 0
+                        },
+                        {
+                            color: "color-secondaryColor",
+                            offset: 100
+                        }
                         ];
                     }
 
@@ -7383,8 +7381,8 @@ export const flexEngineDefaultVariables = {
                             "color-switch-btn" +
                             (
                                 this.openStopIndex === index ?
-                                " active" :
-                                ""
+                                    " active" :
+                                    ""
                             );
 
                         /*
@@ -7844,7 +7842,7 @@ export const flexEngineDefaultVariables = {
 
                     const activeStop =
                         this.dataArray.stops[
-                            this.openStopIndex
+                        this.openStopIndex
                         ];
 
                     if (!activeStop) {
@@ -8368,7 +8366,7 @@ export const flexEngineDefaultVariables = {
                 }
             },
             // Color renderer
-            render: function(colorObj) {
+            render: function (colorObj) {
                 if (!colorObj || !colorObj.mode) {
                     return "transparent";
                 }
@@ -8431,7 +8429,7 @@ export const flexEngineDefaultVariables = {
                         return "transparent";
                 }
             }
-        }            
+        }
     },
 
     list: {
@@ -9402,7 +9400,7 @@ export const flexEngineDefaultVariables = {
                     const result = {
                         name:
                             item === null ||
-                            item === undefined
+                                item === undefined
                                 ? ""
                                 : String(item)
                     };
@@ -10149,1201 +10147,1201 @@ export const flexEngineDefaultVariables = {
             // CANVAS PREVIEW
             // =================================================
 
-            render: function(dataArray) {
+            render: function (dataArray) {
                 return dataArray;
             }
         },
 
-		category: {
-			strutureSample: [],
-			displayType: "popupMedium",
-			cssStyles: [
-				// ============================================================
-				// ROOT
-				// ============================================================
-				{
-					object: ".sort-list-root",
-					info: [{
-						key: "width",
-						value: "100%"
-					}, {
-						key: "max-width",
-						value: "100%"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				},
-				// ============================================================
-				// ADD
-				// ============================================================
-				{
-					object: ".sort-list-add",
-					info: [{
-						key: "display",
-						value: "flex"
-					}, {
-						key: "flex-wrap",
-						value: "wrap"
-					}, {
-						key: "width",
-						value: "100%"
-					}, {
-						key: "gap",
-						value: "8px"
-					}, {
-						key: "margin-bottom",
-						value: "15px"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				}, {
-					object: ".sort-list-input",
-					info: [{
-						key: "flex",
-						value: "1 1 0"
-					}, {
-						key: "min-width",
-						value: "0"
-					}, {
-						key: "width",
-						value: "100%"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				}, {
-					object: ".sort-list-add-category",
-					info: [{
-						key: "flex",
-						value: "0 0 140px"
-					}, {
-						key: "width",
-						value: "140px"
-					}, {
-						key: "min-width",
-						value: "140px"
-					}, {
-						key: "max-width",
-						value: "140px"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				}, {
-					object: ".sort-list-add-button",
-					info: [{
-						key: "flex",
-						value: "0 0 auto"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				},
-				// ============================================================
-				// SINGLE HEADER
-				// ============================================================
-				{
-					object: ".sort-list-header",
-					info: [{
-						key: "display",
-						value: "flex"
-					}, {
-						key: "flex-wrap",
-						value: "wrap"
-					}, {
-						key: "width",
-						value: "100%"
-					}, {
-						key: "align-items",
-						value: "center"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				},
-				// ============================================================
-				// LIST
-				// ============================================================
-				{
-					object: ".sort-list-list",
-					info: [{
-						key: "display",
-						value: "flex"
-					}, {
-						key: "flex-direction",
-						value: "column"
-					}, {
-						key: "width",
-						value: "100%"
-					}, {
-						key: "max-width",
-						value: "100%"
-					}, {
-						key: "min-width",
-						value: "0"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				},
-				// ============================================================
-				// CATEGORY
-				//
-				// THE ENTIRE TITLE IS THE HANDLE.
-				// ============================================================
-				{
-					object: ".sort-list-category-title",
-					info: [{
-						key: "display",
-						value: "flex"
-					}, {
-						key: "width",
-						value: "100%"
-					}, {
-						key: "min-height",
-						value: "36px"
-					}, {
-						key: "align-items",
-						value: "center"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}, {
-						key: "margin",
-						value: "18px 0 8px 0"
-					}, {
-						key: "padding",
-						value: "6px 10px"
-					}, {
-						key: "font-size",
-						value: "18px"
-					}, {
-						key: "font-weight",
-						value: "bold"
-					}, {
-						key: "cursor",
-						value: "grab"
-					}, {
-						key: "user-select",
-						value: "none"
-					}, {
-						key: "touch-action",
-						value: "none"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				},
-				// ============================================================
-				// CATEGORY GHOST
-				// ============================================================
-				{
-					object: ".sort-list-category-ghost",
-					info: [{
-						key: "opacity",
-						value: "0.35"
-					}]
-				},
-				// ============================================================
-				// ROW
-				// ============================================================
-				{
-					object: ".sort-list-row",
-					info: [{
-						key: "display",
-						value: "flex"
-					}, {
-						key: "flex-wrap",
-						value: "wrap"
-					}, {
-						key: "width",
-						value: "100%"
-					}, {
-						key: "max-width",
-						value: "100%"
-					}, {
-						key: "min-width",
-						value: "0"
-					}, {
-						key: "align-items",
-						value: "center"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				},
-				// ============================================================
-				// ROW DRAG
-				// ============================================================
-				{
-					object: ".sort-list-drag",
-					info: [{
-						key: "display",
-						value: "flex"
-					}, {
-						key: "flex",
-						value: "0 0 30px"
-					}, {
-						key: "width",
-						value: "30px"
-					}, {
-						key: "min-width",
-						value: "30px"
-					}, {
-						key: "max-width",
-						value: "30px"
-					}, {
-						key: "height",
-						value: "30px"
-					}, {
-						key: "align-items",
-						value: "center"
-					}, {
-						key: "justify-content",
-						value: "center"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				}, {
-					object: ".sort-list-handle",
-					info: [{
-						key: "display",
-						value: "flex"
-					}, {
-						key: "width",
-						value: "100%"
-					}, {
-						key: "height",
-						value: "100%"
-					}, {
-						key: "align-items",
-						value: "center"
-					}, {
-						key: "justify-content",
-						value: "center"
-					}, {
-						key: "cursor",
-						value: "grab"
-					}, {
-						key: "user-select",
-						value: "none"
-					}, {
-						key: "touch-action",
-						value: "none"
-					}]
-				},
-				// ============================================================
-				// NAME
-				// ============================================================
-				{
-					object: ".sort-list-name",
-					info: [{
-						key: "display",
-						value: "flex"
-					}, {
-						key: "flex",
-						value: "1 1 0"
-					}, {
-						key: "min-width",
-						value: "0"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				}, {
-					object: ".sort-list-name-input",
-					info: [{
-						key: "display",
-						value: "block"
-					}, {
-						key: "width",
-						value: "100%"
-					}, {
-						key: "min-width",
-						value: "0"
-					}, {
-						key: "height",
-						value: "30px"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				},
-				// ============================================================
-				// TEXT
-				// ============================================================
-				{
-					object: ".sort-list-field-text",
-					info: [{
-						key: "display",
-						value: "flex"
-					}, {
-						key: "flex",
-						value: "0 0 200px"
-					}, {
-						key: "width",
-						value: "200px"
-					}, {
-						key: "min-width",
-						value: "200px"
-					}, {
-						key: "max-width",
-						value: "200px"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				},
-				// ============================================================
-				// INTEGER
-				// ============================================================
-				{
-					object: ".sort-list-field-integer",
-					info: [{
-						key: "display",
-						value: "flex"
-					}, {
-						key: "flex",
-						value: "0 0 60px"
-					}, {
-						key: "width",
-						value: "60px"
-					}, {
-						key: "min-width",
-						value: "60px"
-					}, {
-						key: "max-width",
-						value: "60px"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				},
-				// ============================================================
-				// CHECKMARK
-				// ============================================================
-				{
-					object: ".sort-list-field-checkmark",
-					info: [{
-						key: "display",
-						value: "flex"
-					}, {
-						key: "flex",
-						value: "0 0 60px"
-					}, {
-						key: "width",
-						value: "60px"
-					}, {
-						key: "min-width",
-						value: "60px"
-					}, {
-						key: "max-width",
-						value: "60px"
-					}, {
-						key: "align-items",
-						value: "center"
-					}, {
-						key: "justify-content",
-						value: "center"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				},
-				// ============================================================
-				// INPUT
-				// ============================================================
-				{
-					object: ".sort-list-field-input",
-					info: [{
-						key: "display",
-						value: "block"
-					}, {
-						key: "width",
-						value: "100%"
-					}, {
-						key: "min-width",
-						value: "0"
-					}, {
-						key: "height",
-						value: "30px"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				},
-				// ============================================================
-				// CHECKBOX
-				// ============================================================
-				{
-					object: ".sort-list-field-checkbox",
-					info: [{
-						key: "width",
-						value: "18px"
-					}, {
-						key: "height",
-						value: "18px"
-					}, {
-						key: "margin",
-						value: "0"
-					}]
-				},
-				// ============================================================
-				// DELETE
-				// ============================================================
-				{
-					object: ".sort-list-delete",
-					info: [{
-						key: "display",
-						value: "flex"
-					}, {
-						key: "flex",
-						value: "0 0 40px"
-					}, {
-						key: "width",
-						value: "40px"
-					}, {
-						key: "min-width",
-						value: "40px"
-					}, {
-						key: "max-width",
-						value: "40px"
-					}, {
-						key: "align-items",
-						value: "center"
-					}, {
-						key: "justify-content",
-						value: "center"
-					}, {
-						key: "box-sizing",
-						value: "border-box"
-					}]
-				}, {
-					object: ".sort-list-remove",
-					info: [{
-						key: "display",
-						value: "flex"
-					}, {
-						key: "align-items",
-						value: "center"
-					}, {
-						key: "justify-content",
-						value: "center"
-					}, {
-						key: "width",
-						value: "28px"
-					}, {
-						key: "height",
-						value: "28px"
-					}, {
-						key: "padding",
-						value: "0"
-					}, {
-						key: "border",
-						value: "0"
-					}, {
-						key: "background",
-						value: "transparent"
-					}, {
-						key: "cursor",
-						value: "pointer"
-					}]
-				},
-				// ============================================================
-				// GHOST
-				// ============================================================
-				{
-					object: ".sort-list-ghost",
-					info: [{
-						key: "opacity",
-						value: "0.35"
-					}]
-				}
-			],
-			component: class {
-				constructor(dataArray, entryElement, elementSetting) {
-					this.previewElement = entryElement[0];
-					this.popupElement = entryElement[1];
-					this.elementSetting = elementSetting;
-					// ========================================================
-					// ORIGINAL DATA
-					// ========================================================
-					this.originalDataArray = dataArray;
-					// ========================================================
-					// OPTIONS
-					// ========================================================
-					this.allowNewItem = elementSetting.allowNewItem !== false;
-					// ========================================================
-					// CATEGORIES
-					// ========================================================
-					this.categories = Array.isArray(elementSetting.category) ? elementSetting.category.map(category => ({
-						label: String(category.label ?? "")
-					})).filter(category => category.label) : [];
-					// ========================================================
-					// EXTRA FIELDS
-					// ========================================================
-					this.extraFields = Array.isArray(elementSetting.extraFields) ? elementSetting.extraFields.map(field => ({
-						label: String(field.label ?? ""),
-						type: this.normalizeFieldType(field.type),
-						default: field.default,
-						optional: field.optional === true
-					})) : [];
-					// ========================================================
-					// WORKING COPY
-					// ========================================================
-					this.workingArray = (Array.isArray(dataArray) ? dataArray : []).map(item => this.cloneItem(item));
-					// ========================================================
-					// SORTABLE
-					// ========================================================
-					this.sortable = null;
-					// ========================================================
-					// PREVIEW
-					// ========================================================
-					this.previewElement.innerHTML = "";
-					this.previewText = document.createElement("p");
-					this.previewElement.appendChild(this.previewText);
-					// ========================================================
-					// POPUP
-					// ========================================================
-					this.popupElement.innerHTML = "";
-					this.rootElement = document.createElement("div");
-					this.rootElement.className = "sort-list-root";
-					this.popupElement.appendChild(this.rootElement);
-					// ========================================================
-					// ADD
-					// ========================================================
-					if (this.allowNewItem) {
-						this.createAddArea();
-					}
-					// ========================================================
-					// SINGLE HEADER
-					// ========================================================
-					this.rootElement.appendChild(this.createHeader());
-					// ========================================================
-					// SINGLE FLAT LIST
-					// ========================================================
-					this.listElement = document.createElement("div");
-					this.listElement.className = "sort-list-list";
-					this.rootElement.appendChild(this.listElement);
-					// ========================================================
-					// INITIAL BUILD
-					// ========================================================
-					this.renderList();
-					this.updatePreview();
-				}
-				// ============================================================
-				// FIELD TYPE
-				// ============================================================
-				normalizeFieldType(type) {
-					const value = String(type ?? "text").toLowerCase();
-					if (value === "integer") {
-						return "integer";
-					}
-					if (value === "checkmark" || value === "checkbox" || value === "check") {
-						return "checkmark";
-					}
-					return "text";
-				}
-				// ============================================================
-				// CATEGORY HELPERS
-				// ============================================================
-				getCategoryNames() {
-					return this.categories.map(category => category.label);
-				}
-				getFirstCategory() {
-					return (this.categories[0]?.label ?? "");
-				}
-				getValidCategory(category) {
-					const names = this.getCategoryNames();
-					if (names.includes(category)) {
-						return category;
-					}
-					return this.getFirstCategory();
-				}
-				// ============================================================
-				// FIELD DEFAULT
-				// ============================================================
-				getDefaultFieldValue(field) {
-					if (field.default !== undefined) {
-						return this.normalizeFieldValue(field, field.default);
-					}
-					switch (field.type) {
-						case "integer":
-							return 0;
-						case "checkmark":
-							return false;
-						default:
-							return "";
-					}
-				}
-				// ============================================================
-				// FIELD NORMALIZE
-				// ============================================================
-				normalizeFieldValue(field, value) {
-					switch (field.type) {
-						case "integer": {
-							const number = Number(value);
-							if (!Number.isFinite(number)) {
-								return 0;
-							}
-							return Math.trunc(number);
-						}
-						case "checkmark":
-							return Boolean(value);
-						default:
-							return (value === null || value === undefined) ? "" : String(value);
-					}
-				}
-				// ============================================================
-				// CLONE ITEM
-				// ============================================================
-				cloneItem(item) {
-					const result = {};
-					if (item && typeof item === "object" && !Array.isArray(item)) {
-						Object.assign(result, item);
-					}
-					result.name = result.name ?? "";
-					result.category = this.getValidCategory(result.category);
-					this.extraFields.forEach(field => {
-						if (result[field.label] === undefined) {
-							result[field.label] = this.getDefaultFieldValue(field);
-						} else {
-							result[field.label] = this.normalizeFieldValue(field, result[field.label]);
-						}
-					});
-					return result;
-				}
-				// ============================================================
-				// CREATE ITEM
-				// ============================================================
-				createDefaultItem(name, category) {
-					const item = {
-						name: String(name),
-						category: this.getValidCategory(category)
-					};
-					this.extraFields.forEach(field => {
-						item[field.label] = this.getDefaultFieldValue(field);
-					});
-					return item;
-				}
-				// ============================================================
-				// ADD AREA
-				// ============================================================
-				createAddArea() {
-					const addArea = document.createElement("div");
-					addArea.className = "sort-list-add";
-					this.addInput = document.createElement("input");
-					this.addInput.type = "text";
-					this.addInput.className = "sort-list-input";
-					this.addInput.placeholder = "Add list element...";
-					this.addCategory = document.createElement("select");
-					this.addCategory.className = "sort-list-add-category";
-					this.categories.forEach(category => {
-						const option = document.createElement("option");
-						option.value = category.label;
-						option.textContent = category.label;
-						this.addCategory.appendChild(option);
-					});
-					const addButton = document.createElement("button");
-					addButton.type = "button";
-					addButton.className = "sort-list-add-button";
-					addButton.textContent = "Add";
-					addArea.appendChild(this.addInput);
-					addArea.appendChild(this.addCategory);
-					addArea.appendChild(addButton);
-					this.rootElement.appendChild(addArea);
-					const addItem = () => {
-						const name = this.addInput.value.trim();
-						if (!name) {
-							return;
-						}
-						this.workingArray.push(this.createDefaultItem(name, this.addCategory.value));
-						this.renderList();
-						this.updatePreview();
-						this.addInput.value = "";
-						this.addInput.focus();
-					};
-					addButton.addEventListener("click", addItem);
-					this.addInput.addEventListener("keydown", event => {
-						if (event.key === "Enter") {
-							event.preventDefault();
-							addItem();
-						}
-					});
-				}
-				// ============================================================
-				// FIELD CLASS
-				// ============================================================
-				getFieldClass(field) {
-					switch (field.type) {
-						case "integer":
-							return "sort-list-field-integer";
-						case "checkmark":
-							return "sort-list-field-checkmark";
-						default:
-							return "sort-list-field-text";
-					}
-				}
-				// ============================================================
-				// HEADER
-				// ============================================================
-				createHeader() {
-					const header = document.createElement("div");
-					header.className = "sort-list-header";
-					header.appendChild(this.createHeaderCell("", "sort-list-drag"));
-					header.appendChild(this.createHeaderCell("Name", "sort-list-name"));
-					this.extraFields.forEach(field => {
-						let label = field.label;
-						if (field.optional) {
-							label += " (optional)";
-						}
-						header.appendChild(this.createHeaderCell(label, this.getFieldClass(field)));
-					});
-					header.appendChild(this.createHeaderCell("Delete", "sort-list-delete"));
-					return header;
-				}
-				// ============================================================
-				// HEADER CELL
-				// ============================================================
-				createHeaderCell(text, className) {
-					const element = document.createElement("div");
-					element.className = className;
-					element.textContent = text;
-					return element;
-				}
-				// ============================================================
-				// FIELD INPUT
-				// ============================================================
-				createFieldInput(field, item) {
-					let input;
-					switch (field.type) {
-						case "integer": {
-							input = document.createElement("input");
-							input.type = "number";
-							input.step = "1";
-							input.className = "sort-list-field-input";
-							input.value = item[field.label] ?? "";
-							input.addEventListener("input",
-								() => {
-									item[field.label] = input.value === "" ? "" : this.normalizeFieldValue(field, input.value);
-								});
-							break;
-						}
-						case "checkmark": {
-							input = document.createElement("input");
-							input.type = "checkbox";
-							input.className = "sort-list-field-checkbox";
-							input.checked = Boolean(item[field.label]);
-							input.addEventListener("change",
-								() => {
-									item[field.label] = input.checked;
-								});
-							return input;
-						}
-						default: {
-							input = document.createElement("input");
-							input.type = "text";
-							input.className = "sort-list-field-input";
-							input.value = item[field.label] ?? "";
-							input.addEventListener("input",
-								() => {
-									item[field.label] = input.value;
-								});
-							break;
-						}
-					}
-					return input;
-				}
-				// ============================================================
-				// CATEGORY TITLE
-				// ============================================================
-				createCategoryTitle(category) {
-					const title = document.createElement("div");
-					/*
-					 * IMPORTANT:
-					 *
-					 * Category title is itself
-					 * the Sortable handle.
-					 */
-					title.className = "sort-list-category-title";
-					title.dataset.type = "category";
-					title.dataset.category = category.label;
-					title.textContent = category.label;
-					title._sortListCategory = category.label;
-					return title;
-				}
-				// ============================================================
-				// ROW
-				// ============================================================
-				createRow(item) {
-					const row = document.createElement("div");
-					row.className = "sort-list-row";
-					row.dataset.type = "item";
-					row._sortListItem = item;
-					// --------------------------------------------------------
-					// DRAG HANDLE
-					// --------------------------------------------------------
-					const dragCell = document.createElement("div");
-					dragCell.className = "sort-list-drag";
-					const handle = document.createElement("span");
-					handle.className = "sort-list-handle";
-					handle.textContent = "☷";
-					dragCell.appendChild(handle);
-					row.appendChild(dragCell);
-					// --------------------------------------------------------
-					// NAME
-					// --------------------------------------------------------
-					const nameCell = document.createElement("div");
-					nameCell.className = "sort-list-name";
-					const nameInput = document.createElement("input");
-					nameInput.type = "text";
-					nameInput.className = "sort-list-name-input";
-					nameInput.value = item.name ?? "";
-					nameInput.addEventListener("input",
-						() => {
-							item.name = nameInput.value;
-							this.updatePreview();
-						});
-					nameCell.appendChild(nameInput);
-					row.appendChild(nameCell);
-					// --------------------------------------------------------
-					// EXTRA FIELDS
-					// --------------------------------------------------------
-					this.extraFields.forEach(field => {
-						const cell = document.createElement("div");
-						cell.className = this.getFieldClass(field);
-						cell.appendChild(this.createFieldInput(field, item));
-						row.appendChild(cell);
-					});
-					// --------------------------------------------------------
-					// DELETE
-					// --------------------------------------------------------
-					const deleteCell = document.createElement("div");
-					deleteCell.className = "sort-list-delete";
-					const deleteButton = document.createElement("button");
-					deleteButton.type = "button";
-					deleteButton.className = "sort-list-remove";
-					deleteButton.textContent = "×";
-					deleteButton.addEventListener("click", event => {
-						event.preventDefault();
-						event.stopPropagation();
-						const index = this.workingArray.indexOf(item);
-						if (index === -1) {
-							return;
-						}
-						this.workingArray.splice(index, 1);
-						this.renderList();
-						this.updatePreview();
-					});
-					deleteCell.appendChild(deleteButton);
-					row.appendChild(deleteCell);
-					return row;
-				}
-				// ============================================================
-				// RENDER LIST
-				// ============================================================
-				renderList() {
-					this.destroySortable();
-					this.listElement.innerHTML = "";
-					/*
-					 * IMPORTANT:
-					 *
-					 * The DOM has TWO kinds of sortable things:
-					 *
-					 * 1. category titles
-					 * 2. normal rows
-					 *
-					 * Everything is inside ONE flat list.
-					 */
-					this.categories.forEach(category => {
-						this.listElement.appendChild(this.createCategoryTitle(category));
-						this.workingArray.filter(item => item.category === category.label).forEach(item => {
-							this.listElement.appendChild(this.createRow(item));
-						});
-					});
-					this.createSortable();
-				}
-				// ============================================================
-				// READ FLAT DOM
-				// ============================================================
-				syncFromDOM() {
-					const result = [];
-					let currentCategory = null;
-					/*
-					 * The DOM is the source of truth.
-					 *
-					 * Category title:
-					 *     changes currentCategory
-					 *
-					 * Item row:
-					 *     receives currentCategory
-					 */
-					Array.from(this.listElement.children).forEach(element => {
-						// ------------------------------------------------
-						// CATEGORY
-						// ------------------------------------------------
-						if (element.dataset.type === "category") {
-							currentCategory = this.getValidCategory(element.dataset.category);
-							return;
-						}
-						// ------------------------------------------------
-						// ITEM
-						// ------------------------------------------------
-						if (element.dataset.type === "item") {
-							const item = element._sortListItem;
-							if (!item) {
-								return;
-							}
-							/*
-							 * The item now belongs to
-							 * the most recent category title.
-							 */
-							item.category = currentCategory;
-							result.push(item);
-						}
-					});
-					this.workingArray = result;
-					/*
-					 * Also calculate category order from
-					 * the DOM.
-					 */
-					const newCategoryOrder = [];
-					Array.from(this.listElement.children).forEach(element => {
-						if (element.dataset.type !== "category") {
-							return;
-						}
-						const category = element.dataset.category;
-						if (!newCategoryOrder.includes(category)) {
-							newCategoryOrder.push(category);
-						}
-					});
-					/*
-					 * Keep elementSetting.category as
-					 * configuration, but use the DOM order
-					 * for display/order.
-					 */
-					this.currentCategoryOrder = newCategoryOrder;
-				}
-				// ============================================================
-				// SORTABLE
-				// ============================================================
-				createSortable() {
-					if (typeof Sortable === "undefined") {
-						return;
-					}
-					this.sortable = new Sortable(this.listElement, {
-						animation: 150,
-						direction: "vertical",
-						draggable: ".sort-list-category-title, .sort-list-row",
-						/*
-						 * Only the FIRST category title is locked.
-						 *
-						 * The other category titles are still
-						 * completely draggable.
-						 */
-						filter: ".sort-list-category-title:first-child",
-						ghostClass: "sort-list-ghost",
-						onStart: event => {
-							const firstCategory = this.listElement.querySelector(".sort-list-category-title:first-child");
-							/*
-							 * Extra safety:
-							 *
-							 * The first category can never
-							 * become the dragged element.
-							 */
-							if (event.item === firstCategory) {
-								event.preventDefault();
-								return;
-							}
-							if (event.item.dataset.type === "category") {
-								this.draggingType = "category";
-							} else {
-								this.draggingType = "item";
-							}
-						},
-						onMove: event => {
-							const firstCategory = this.listElement.querySelector(".sort-list-category-title:first-child");
-							const dragged = event.dragged;
-							const related = event.related;
-							// ============================================================
-							// FIRST CATEGORY IS ALWAYS LOCKED
-							// ============================================================
-							if (dragged === firstCategory) {
-								return false;
-							}
-							// ============================================================
-							// NEVER INSERT ANYTHING BEFORE FIRST CATEGORY
-							// ============================================================
-							if (related === firstCategory && event.willInsertAfter === false) {
-								return false;
-							}
-							// ============================================================
-							// CATEGORY HEADER RESTRICTION
-							// A CATEGORY CANNOT MOVE OVER ANOTHER CATEGORY
-							// ============================================================
-							const draggedIsCategory = dragged && dragged.dataset.type === "category";
-							const relatedIsCategory = related && related.dataset.type === "category";
-							if (draggedIsCategory && relatedIsCategory) {
-								return false;
-							}
-							// ============================================================
-							// ALREADY-SAFE DROP
-							// ============================================================
-							return true;
-						},
-						onEnd: () => {
-							this.syncFromDOM();
-							this.rebuildFromDOM();
-							this.updatePreview();
-							this.draggingType = null;
-						}
-					});
-				}
-				// ============================================================
-				// REBUILD FROM DOM
-				// ============================================================
-				rebuildFromDOM() {
-					/*
-					 * For now the DOM itself is already the
-					 * ordering source.
-					 *
-					 * We only recreate the row/category DOM
-					 * when something else needs a rebuild.
-					 */
-					const elements = Array.from(this.listElement.children);
-					const state = [];
-					elements.forEach(element => {
-						if (element.dataset.type === "category") {
-							state.push({
-								type: "category",
-								category: element.dataset.category
-							});
-							return;
-						}
-						if (element.dataset.type === "item") {
-							state.push({
-								type: "item",
-								item: element._sortListItem
-							});
-						}
-					});
-					/*
-					 * We intentionally DON'T rebuild the
-					 * DOM here.
-					 *
-					 * The DOM is already what Sortable made.
-					 */
-				}
-				// ============================================================
-				// DESTROY
-				// ============================================================
-				destroySortable() {
-					if (this.sortable) {
-						this.sortable.destroy();
-						this.sortable = null;
-					}
-				}
-				// ============================================================
-				// PREVIEW
-				// ============================================================
-				updatePreview() {
-					const parts = [];
-					let currentCategory = null;
-					/*
-					 * Use workingArray for the actual
-					 * preview grouping.
-					 */
-					this.getCategoryNamesInWorkingOrder().forEach(category => {
-						const names = this.workingArray.filter(item => item.category === category).map(item => item.name);
-						parts.push(`${category}: ${names.join(", ")}`);
-					});
-					this.previewText.textContent = parts.join(" | ");
-				}
-				// ============================================================
-				// CATEGORY ORDER
-				// ============================================================
-				getCategoryNamesInWorkingOrder() {
-					const result = [];
-					/*
-					 * First use the current DOM category order.
-					 */
-					Array.from(this.listElement.children).forEach(element => {
-						if (element.dataset.type !== "category") {
-							return;
-						}
-						const category = element.dataset.category;
-						if (!result.includes(category)) {
-							result.push(category);
-						}
-					});
-					/*
-					 * Make sure no category disappears
-					 * from the preview.
-					 */
-					this.getCategoryNames().forEach(category => {
-						if (!result.includes(category)) {
-							result.push(category);
-						}
-					});
-					return result;
-				}
-				// ============================================================
-				// POPUP CLOSE
-				// ============================================================
-				onPopupClose() {
-					/*
-					 * Commit working data here.
-					 */
-					this.syncFromDOM();
-					if (Array.isArray(this.originalDataArray)) {
-						this.originalDataArray.splice(0, this.originalDataArray.length, ...this.workingArray);
-					}
-					this.updatePreview();
-					return this.originalDataArray;
-				}
-				// ============================================================
-				// DESTROY
-				// ============================================================
-				onSave() {
-					/*
-					 * onSave ONLY destroys Sortable.
-					 */
-					this.destroySortable();
-					return this.originalDataArray;
-				}
-				// ============================================================
-				// RESULT
-				// ============================================================
-				initResult() {
-					return {
-						code: 0
-					};
-				}
-			},
-			// ================================================================
-			// CANVAS RENDER
-			// ================================================================
-			render: function(dataArray) {
-				if (!Array.isArray(dataArray)) {
-					return "";
-				}
-				return dataArray.map(item => {
-					if (item && typeof item === "object" && !Array.isArray(item)) {
-						return (item.name ?? "");
-					}
-					return String(item);
-				}).join(", ");
-			}
-		},
+        category: {
+            strutureSample: [],
+            displayType: "popupMedium",
+            cssStyles: [
+                // ============================================================
+                // ROOT
+                // ============================================================
+                {
+                    object: ".sort-list-root",
+                    info: [{
+                        key: "width",
+                        value: "100%"
+                    }, {
+                        key: "max-width",
+                        value: "100%"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                },
+                // ============================================================
+                // ADD
+                // ============================================================
+                {
+                    object: ".sort-list-add",
+                    info: [{
+                        key: "display",
+                        value: "flex"
+                    }, {
+                        key: "flex-wrap",
+                        value: "wrap"
+                    }, {
+                        key: "width",
+                        value: "100%"
+                    }, {
+                        key: "gap",
+                        value: "8px"
+                    }, {
+                        key: "margin-bottom",
+                        value: "15px"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                }, {
+                    object: ".sort-list-input",
+                    info: [{
+                        key: "flex",
+                        value: "1 1 0"
+                    }, {
+                        key: "min-width",
+                        value: "0"
+                    }, {
+                        key: "width",
+                        value: "100%"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                }, {
+                    object: ".sort-list-add-category",
+                    info: [{
+                        key: "flex",
+                        value: "0 0 140px"
+                    }, {
+                        key: "width",
+                        value: "140px"
+                    }, {
+                        key: "min-width",
+                        value: "140px"
+                    }, {
+                        key: "max-width",
+                        value: "140px"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                }, {
+                    object: ".sort-list-add-button",
+                    info: [{
+                        key: "flex",
+                        value: "0 0 auto"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                },
+                // ============================================================
+                // SINGLE HEADER
+                // ============================================================
+                {
+                    object: ".sort-list-header",
+                    info: [{
+                        key: "display",
+                        value: "flex"
+                    }, {
+                        key: "flex-wrap",
+                        value: "wrap"
+                    }, {
+                        key: "width",
+                        value: "100%"
+                    }, {
+                        key: "align-items",
+                        value: "center"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                },
+                // ============================================================
+                // LIST
+                // ============================================================
+                {
+                    object: ".sort-list-list",
+                    info: [{
+                        key: "display",
+                        value: "flex"
+                    }, {
+                        key: "flex-direction",
+                        value: "column"
+                    }, {
+                        key: "width",
+                        value: "100%"
+                    }, {
+                        key: "max-width",
+                        value: "100%"
+                    }, {
+                        key: "min-width",
+                        value: "0"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                },
+                // ============================================================
+                // CATEGORY
+                //
+                // THE ENTIRE TITLE IS THE HANDLE.
+                // ============================================================
+                {
+                    object: ".sort-list-category-title",
+                    info: [{
+                        key: "display",
+                        value: "flex"
+                    }, {
+                        key: "width",
+                        value: "100%"
+                    }, {
+                        key: "min-height",
+                        value: "36px"
+                    }, {
+                        key: "align-items",
+                        value: "center"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }, {
+                        key: "margin",
+                        value: "18px 0 8px 0"
+                    }, {
+                        key: "padding",
+                        value: "6px 10px"
+                    }, {
+                        key: "font-size",
+                        value: "18px"
+                    }, {
+                        key: "font-weight",
+                        value: "bold"
+                    }, {
+                        key: "cursor",
+                        value: "grab"
+                    }, {
+                        key: "user-select",
+                        value: "none"
+                    }, {
+                        key: "touch-action",
+                        value: "none"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                },
+                // ============================================================
+                // CATEGORY GHOST
+                // ============================================================
+                {
+                    object: ".sort-list-category-ghost",
+                    info: [{
+                        key: "opacity",
+                        value: "0.35"
+                    }]
+                },
+                // ============================================================
+                // ROW
+                // ============================================================
+                {
+                    object: ".sort-list-row",
+                    info: [{
+                        key: "display",
+                        value: "flex"
+                    }, {
+                        key: "flex-wrap",
+                        value: "wrap"
+                    }, {
+                        key: "width",
+                        value: "100%"
+                    }, {
+                        key: "max-width",
+                        value: "100%"
+                    }, {
+                        key: "min-width",
+                        value: "0"
+                    }, {
+                        key: "align-items",
+                        value: "center"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                },
+                // ============================================================
+                // ROW DRAG
+                // ============================================================
+                {
+                    object: ".sort-list-drag",
+                    info: [{
+                        key: "display",
+                        value: "flex"
+                    }, {
+                        key: "flex",
+                        value: "0 0 30px"
+                    }, {
+                        key: "width",
+                        value: "30px"
+                    }, {
+                        key: "min-width",
+                        value: "30px"
+                    }, {
+                        key: "max-width",
+                        value: "30px"
+                    }, {
+                        key: "height",
+                        value: "30px"
+                    }, {
+                        key: "align-items",
+                        value: "center"
+                    }, {
+                        key: "justify-content",
+                        value: "center"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                }, {
+                    object: ".sort-list-handle",
+                    info: [{
+                        key: "display",
+                        value: "flex"
+                    }, {
+                        key: "width",
+                        value: "100%"
+                    }, {
+                        key: "height",
+                        value: "100%"
+                    }, {
+                        key: "align-items",
+                        value: "center"
+                    }, {
+                        key: "justify-content",
+                        value: "center"
+                    }, {
+                        key: "cursor",
+                        value: "grab"
+                    }, {
+                        key: "user-select",
+                        value: "none"
+                    }, {
+                        key: "touch-action",
+                        value: "none"
+                    }]
+                },
+                // ============================================================
+                // NAME
+                // ============================================================
+                {
+                    object: ".sort-list-name",
+                    info: [{
+                        key: "display",
+                        value: "flex"
+                    }, {
+                        key: "flex",
+                        value: "1 1 0"
+                    }, {
+                        key: "min-width",
+                        value: "0"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                }, {
+                    object: ".sort-list-name-input",
+                    info: [{
+                        key: "display",
+                        value: "block"
+                    }, {
+                        key: "width",
+                        value: "100%"
+                    }, {
+                        key: "min-width",
+                        value: "0"
+                    }, {
+                        key: "height",
+                        value: "30px"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                },
+                // ============================================================
+                // TEXT
+                // ============================================================
+                {
+                    object: ".sort-list-field-text",
+                    info: [{
+                        key: "display",
+                        value: "flex"
+                    }, {
+                        key: "flex",
+                        value: "0 0 200px"
+                    }, {
+                        key: "width",
+                        value: "200px"
+                    }, {
+                        key: "min-width",
+                        value: "200px"
+                    }, {
+                        key: "max-width",
+                        value: "200px"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                },
+                // ============================================================
+                // INTEGER
+                // ============================================================
+                {
+                    object: ".sort-list-field-integer",
+                    info: [{
+                        key: "display",
+                        value: "flex"
+                    }, {
+                        key: "flex",
+                        value: "0 0 60px"
+                    }, {
+                        key: "width",
+                        value: "60px"
+                    }, {
+                        key: "min-width",
+                        value: "60px"
+                    }, {
+                        key: "max-width",
+                        value: "60px"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                },
+                // ============================================================
+                // CHECKMARK
+                // ============================================================
+                {
+                    object: ".sort-list-field-checkmark",
+                    info: [{
+                        key: "display",
+                        value: "flex"
+                    }, {
+                        key: "flex",
+                        value: "0 0 60px"
+                    }, {
+                        key: "width",
+                        value: "60px"
+                    }, {
+                        key: "min-width",
+                        value: "60px"
+                    }, {
+                        key: "max-width",
+                        value: "60px"
+                    }, {
+                        key: "align-items",
+                        value: "center"
+                    }, {
+                        key: "justify-content",
+                        value: "center"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                },
+                // ============================================================
+                // INPUT
+                // ============================================================
+                {
+                    object: ".sort-list-field-input",
+                    info: [{
+                        key: "display",
+                        value: "block"
+                    }, {
+                        key: "width",
+                        value: "100%"
+                    }, {
+                        key: "min-width",
+                        value: "0"
+                    }, {
+                        key: "height",
+                        value: "30px"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                },
+                // ============================================================
+                // CHECKBOX
+                // ============================================================
+                {
+                    object: ".sort-list-field-checkbox",
+                    info: [{
+                        key: "width",
+                        value: "18px"
+                    }, {
+                        key: "height",
+                        value: "18px"
+                    }, {
+                        key: "margin",
+                        value: "0"
+                    }]
+                },
+                // ============================================================
+                // DELETE
+                // ============================================================
+                {
+                    object: ".sort-list-delete",
+                    info: [{
+                        key: "display",
+                        value: "flex"
+                    }, {
+                        key: "flex",
+                        value: "0 0 40px"
+                    }, {
+                        key: "width",
+                        value: "40px"
+                    }, {
+                        key: "min-width",
+                        value: "40px"
+                    }, {
+                        key: "max-width",
+                        value: "40px"
+                    }, {
+                        key: "align-items",
+                        value: "center"
+                    }, {
+                        key: "justify-content",
+                        value: "center"
+                    }, {
+                        key: "box-sizing",
+                        value: "border-box"
+                    }]
+                }, {
+                    object: ".sort-list-remove",
+                    info: [{
+                        key: "display",
+                        value: "flex"
+                    }, {
+                        key: "align-items",
+                        value: "center"
+                    }, {
+                        key: "justify-content",
+                        value: "center"
+                    }, {
+                        key: "width",
+                        value: "28px"
+                    }, {
+                        key: "height",
+                        value: "28px"
+                    }, {
+                        key: "padding",
+                        value: "0"
+                    }, {
+                        key: "border",
+                        value: "0"
+                    }, {
+                        key: "background",
+                        value: "transparent"
+                    }, {
+                        key: "cursor",
+                        value: "pointer"
+                    }]
+                },
+                // ============================================================
+                // GHOST
+                // ============================================================
+                {
+                    object: ".sort-list-ghost",
+                    info: [{
+                        key: "opacity",
+                        value: "0.35"
+                    }]
+                }
+            ],
+            component: class {
+                constructor(dataArray, entryElement, elementSetting) {
+                    this.previewElement = entryElement[0];
+                    this.popupElement = entryElement[1];
+                    this.elementSetting = elementSetting;
+                    // ========================================================
+                    // ORIGINAL DATA
+                    // ========================================================
+                    this.originalDataArray = dataArray;
+                    // ========================================================
+                    // OPTIONS
+                    // ========================================================
+                    this.allowNewItem = elementSetting.allowNewItem !== false;
+                    // ========================================================
+                    // CATEGORIES
+                    // ========================================================
+                    this.categories = Array.isArray(elementSetting.category) ? elementSetting.category.map(category => ({
+                        label: String(category.label ?? "")
+                    })).filter(category => category.label) : [];
+                    // ========================================================
+                    // EXTRA FIELDS
+                    // ========================================================
+                    this.extraFields = Array.isArray(elementSetting.extraFields) ? elementSetting.extraFields.map(field => ({
+                        label: String(field.label ?? ""),
+                        type: this.normalizeFieldType(field.type),
+                        default: field.default,
+                        optional: field.optional === true
+                    })) : [];
+                    // ========================================================
+                    // WORKING COPY
+                    // ========================================================
+                    this.workingArray = (Array.isArray(dataArray) ? dataArray : []).map(item => this.cloneItem(item));
+                    // ========================================================
+                    // SORTABLE
+                    // ========================================================
+                    this.sortable = null;
+                    // ========================================================
+                    // PREVIEW
+                    // ========================================================
+                    this.previewElement.innerHTML = "";
+                    this.previewText = document.createElement("p");
+                    this.previewElement.appendChild(this.previewText);
+                    // ========================================================
+                    // POPUP
+                    // ========================================================
+                    this.popupElement.innerHTML = "";
+                    this.rootElement = document.createElement("div");
+                    this.rootElement.className = "sort-list-root";
+                    this.popupElement.appendChild(this.rootElement);
+                    // ========================================================
+                    // ADD
+                    // ========================================================
+                    if (this.allowNewItem) {
+                        this.createAddArea();
+                    }
+                    // ========================================================
+                    // SINGLE HEADER
+                    // ========================================================
+                    this.rootElement.appendChild(this.createHeader());
+                    // ========================================================
+                    // SINGLE FLAT LIST
+                    // ========================================================
+                    this.listElement = document.createElement("div");
+                    this.listElement.className = "sort-list-list";
+                    this.rootElement.appendChild(this.listElement);
+                    // ========================================================
+                    // INITIAL BUILD
+                    // ========================================================
+                    this.renderList();
+                    this.updatePreview();
+                }
+                // ============================================================
+                // FIELD TYPE
+                // ============================================================
+                normalizeFieldType(type) {
+                    const value = String(type ?? "text").toLowerCase();
+                    if (value === "integer") {
+                        return "integer";
+                    }
+                    if (value === "checkmark" || value === "checkbox" || value === "check") {
+                        return "checkmark";
+                    }
+                    return "text";
+                }
+                // ============================================================
+                // CATEGORY HELPERS
+                // ============================================================
+                getCategoryNames() {
+                    return this.categories.map(category => category.label);
+                }
+                getFirstCategory() {
+                    return (this.categories[0]?.label ?? "");
+                }
+                getValidCategory(category) {
+                    const names = this.getCategoryNames();
+                    if (names.includes(category)) {
+                        return category;
+                    }
+                    return this.getFirstCategory();
+                }
+                // ============================================================
+                // FIELD DEFAULT
+                // ============================================================
+                getDefaultFieldValue(field) {
+                    if (field.default !== undefined) {
+                        return this.normalizeFieldValue(field, field.default);
+                    }
+                    switch (field.type) {
+                        case "integer":
+                            return 0;
+                        case "checkmark":
+                            return false;
+                        default:
+                            return "";
+                    }
+                }
+                // ============================================================
+                // FIELD NORMALIZE
+                // ============================================================
+                normalizeFieldValue(field, value) {
+                    switch (field.type) {
+                        case "integer": {
+                            const number = Number(value);
+                            if (!Number.isFinite(number)) {
+                                return 0;
+                            }
+                            return Math.trunc(number);
+                        }
+                        case "checkmark":
+                            return Boolean(value);
+                        default:
+                            return (value === null || value === undefined) ? "" : String(value);
+                    }
+                }
+                // ============================================================
+                // CLONE ITEM
+                // ============================================================
+                cloneItem(item) {
+                    const result = {};
+                    if (item && typeof item === "object" && !Array.isArray(item)) {
+                        Object.assign(result, item);
+                    }
+                    result.name = result.name ?? "";
+                    result.category = this.getValidCategory(result.category);
+                    this.extraFields.forEach(field => {
+                        if (result[field.label] === undefined) {
+                            result[field.label] = this.getDefaultFieldValue(field);
+                        } else {
+                            result[field.label] = this.normalizeFieldValue(field, result[field.label]);
+                        }
+                    });
+                    return result;
+                }
+                // ============================================================
+                // CREATE ITEM
+                // ============================================================
+                createDefaultItem(name, category) {
+                    const item = {
+                        name: String(name),
+                        category: this.getValidCategory(category)
+                    };
+                    this.extraFields.forEach(field => {
+                        item[field.label] = this.getDefaultFieldValue(field);
+                    });
+                    return item;
+                }
+                // ============================================================
+                // ADD AREA
+                // ============================================================
+                createAddArea() {
+                    const addArea = document.createElement("div");
+                    addArea.className = "sort-list-add";
+                    this.addInput = document.createElement("input");
+                    this.addInput.type = "text";
+                    this.addInput.className = "sort-list-input";
+                    this.addInput.placeholder = "Add list element...";
+                    this.addCategory = document.createElement("select");
+                    this.addCategory.className = "sort-list-add-category";
+                    this.categories.forEach(category => {
+                        const option = document.createElement("option");
+                        option.value = category.label;
+                        option.textContent = category.label;
+                        this.addCategory.appendChild(option);
+                    });
+                    const addButton = document.createElement("button");
+                    addButton.type = "button";
+                    addButton.className = "sort-list-add-button";
+                    addButton.textContent = "Add";
+                    addArea.appendChild(this.addInput);
+                    addArea.appendChild(this.addCategory);
+                    addArea.appendChild(addButton);
+                    this.rootElement.appendChild(addArea);
+                    const addItem = () => {
+                        const name = this.addInput.value.trim();
+                        if (!name) {
+                            return;
+                        }
+                        this.workingArray.push(this.createDefaultItem(name, this.addCategory.value));
+                        this.renderList();
+                        this.updatePreview();
+                        this.addInput.value = "";
+                        this.addInput.focus();
+                    };
+                    addButton.addEventListener("click", addItem);
+                    this.addInput.addEventListener("keydown", event => {
+                        if (event.key === "Enter") {
+                            event.preventDefault();
+                            addItem();
+                        }
+                    });
+                }
+                // ============================================================
+                // FIELD CLASS
+                // ============================================================
+                getFieldClass(field) {
+                    switch (field.type) {
+                        case "integer":
+                            return "sort-list-field-integer";
+                        case "checkmark":
+                            return "sort-list-field-checkmark";
+                        default:
+                            return "sort-list-field-text";
+                    }
+                }
+                // ============================================================
+                // HEADER
+                // ============================================================
+                createHeader() {
+                    const header = document.createElement("div");
+                    header.className = "sort-list-header";
+                    header.appendChild(this.createHeaderCell("", "sort-list-drag"));
+                    header.appendChild(this.createHeaderCell("Name", "sort-list-name"));
+                    this.extraFields.forEach(field => {
+                        let label = field.label;
+                        if (field.optional) {
+                            label += " (optional)";
+                        }
+                        header.appendChild(this.createHeaderCell(label, this.getFieldClass(field)));
+                    });
+                    header.appendChild(this.createHeaderCell("Delete", "sort-list-delete"));
+                    return header;
+                }
+                // ============================================================
+                // HEADER CELL
+                // ============================================================
+                createHeaderCell(text, className) {
+                    const element = document.createElement("div");
+                    element.className = className;
+                    element.textContent = text;
+                    return element;
+                }
+                // ============================================================
+                // FIELD INPUT
+                // ============================================================
+                createFieldInput(field, item) {
+                    let input;
+                    switch (field.type) {
+                        case "integer": {
+                            input = document.createElement("input");
+                            input.type = "number";
+                            input.step = "1";
+                            input.className = "sort-list-field-input";
+                            input.value = item[field.label] ?? "";
+                            input.addEventListener("input",
+                                () => {
+                                    item[field.label] = input.value === "" ? "" : this.normalizeFieldValue(field, input.value);
+                                });
+                            break;
+                        }
+                        case "checkmark": {
+                            input = document.createElement("input");
+                            input.type = "checkbox";
+                            input.className = "sort-list-field-checkbox";
+                            input.checked = Boolean(item[field.label]);
+                            input.addEventListener("change",
+                                () => {
+                                    item[field.label] = input.checked;
+                                });
+                            return input;
+                        }
+                        default: {
+                            input = document.createElement("input");
+                            input.type = "text";
+                            input.className = "sort-list-field-input";
+                            input.value = item[field.label] ?? "";
+                            input.addEventListener("input",
+                                () => {
+                                    item[field.label] = input.value;
+                                });
+                            break;
+                        }
+                    }
+                    return input;
+                }
+                // ============================================================
+                // CATEGORY TITLE
+                // ============================================================
+                createCategoryTitle(category) {
+                    const title = document.createElement("div");
+                    /*
+                     * IMPORTANT:
+                     *
+                     * Category title is itself
+                     * the Sortable handle.
+                     */
+                    title.className = "sort-list-category-title";
+                    title.dataset.type = "category";
+                    title.dataset.category = category.label;
+                    title.textContent = category.label;
+                    title._sortListCategory = category.label;
+                    return title;
+                }
+                // ============================================================
+                // ROW
+                // ============================================================
+                createRow(item) {
+                    const row = document.createElement("div");
+                    row.className = "sort-list-row";
+                    row.dataset.type = "item";
+                    row._sortListItem = item;
+                    // --------------------------------------------------------
+                    // DRAG HANDLE
+                    // --------------------------------------------------------
+                    const dragCell = document.createElement("div");
+                    dragCell.className = "sort-list-drag";
+                    const handle = document.createElement("span");
+                    handle.className = "sort-list-handle";
+                    handle.textContent = "☷";
+                    dragCell.appendChild(handle);
+                    row.appendChild(dragCell);
+                    // --------------------------------------------------------
+                    // NAME
+                    // --------------------------------------------------------
+                    const nameCell = document.createElement("div");
+                    nameCell.className = "sort-list-name";
+                    const nameInput = document.createElement("input");
+                    nameInput.type = "text";
+                    nameInput.className = "sort-list-name-input";
+                    nameInput.value = item.name ?? "";
+                    nameInput.addEventListener("input",
+                        () => {
+                            item.name = nameInput.value;
+                            this.updatePreview();
+                        });
+                    nameCell.appendChild(nameInput);
+                    row.appendChild(nameCell);
+                    // --------------------------------------------------------
+                    // EXTRA FIELDS
+                    // --------------------------------------------------------
+                    this.extraFields.forEach(field => {
+                        const cell = document.createElement("div");
+                        cell.className = this.getFieldClass(field);
+                        cell.appendChild(this.createFieldInput(field, item));
+                        row.appendChild(cell);
+                    });
+                    // --------------------------------------------------------
+                    // DELETE
+                    // --------------------------------------------------------
+                    const deleteCell = document.createElement("div");
+                    deleteCell.className = "sort-list-delete";
+                    const deleteButton = document.createElement("button");
+                    deleteButton.type = "button";
+                    deleteButton.className = "sort-list-remove";
+                    deleteButton.textContent = "×";
+                    deleteButton.addEventListener("click", event => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        const index = this.workingArray.indexOf(item);
+                        if (index === -1) {
+                            return;
+                        }
+                        this.workingArray.splice(index, 1);
+                        this.renderList();
+                        this.updatePreview();
+                    });
+                    deleteCell.appendChild(deleteButton);
+                    row.appendChild(deleteCell);
+                    return row;
+                }
+                // ============================================================
+                // RENDER LIST
+                // ============================================================
+                renderList() {
+                    this.destroySortable();
+                    this.listElement.innerHTML = "";
+                    /*
+                     * IMPORTANT:
+                     *
+                     * The DOM has TWO kinds of sortable things:
+                     *
+                     * 1. category titles
+                     * 2. normal rows
+                     *
+                     * Everything is inside ONE flat list.
+                     */
+                    this.categories.forEach(category => {
+                        this.listElement.appendChild(this.createCategoryTitle(category));
+                        this.workingArray.filter(item => item.category === category.label).forEach(item => {
+                            this.listElement.appendChild(this.createRow(item));
+                        });
+                    });
+                    this.createSortable();
+                }
+                // ============================================================
+                // READ FLAT DOM
+                // ============================================================
+                syncFromDOM() {
+                    const result = [];
+                    let currentCategory = null;
+                    /*
+                     * The DOM is the source of truth.
+                     *
+                     * Category title:
+                     *     changes currentCategory
+                     *
+                     * Item row:
+                     *     receives currentCategory
+                     */
+                    Array.from(this.listElement.children).forEach(element => {
+                        // ------------------------------------------------
+                        // CATEGORY
+                        // ------------------------------------------------
+                        if (element.dataset.type === "category") {
+                            currentCategory = this.getValidCategory(element.dataset.category);
+                            return;
+                        }
+                        // ------------------------------------------------
+                        // ITEM
+                        // ------------------------------------------------
+                        if (element.dataset.type === "item") {
+                            const item = element._sortListItem;
+                            if (!item) {
+                                return;
+                            }
+                            /*
+                             * The item now belongs to
+                             * the most recent category title.
+                             */
+                            item.category = currentCategory;
+                            result.push(item);
+                        }
+                    });
+                    this.workingArray = result;
+                    /*
+                     * Also calculate category order from
+                     * the DOM.
+                     */
+                    const newCategoryOrder = [];
+                    Array.from(this.listElement.children).forEach(element => {
+                        if (element.dataset.type !== "category") {
+                            return;
+                        }
+                        const category = element.dataset.category;
+                        if (!newCategoryOrder.includes(category)) {
+                            newCategoryOrder.push(category);
+                        }
+                    });
+                    /*
+                     * Keep elementSetting.category as
+                     * configuration, but use the DOM order
+                     * for display/order.
+                     */
+                    this.currentCategoryOrder = newCategoryOrder;
+                }
+                // ============================================================
+                // SORTABLE
+                // ============================================================
+                createSortable() {
+                    if (typeof Sortable === "undefined") {
+                        return;
+                    }
+                    this.sortable = new Sortable(this.listElement, {
+                        animation: 150,
+                        direction: "vertical",
+                        draggable: ".sort-list-category-title, .sort-list-row",
+                        /*
+                         * Only the FIRST category title is locked.
+                         *
+                         * The other category titles are still
+                         * completely draggable.
+                         */
+                        filter: ".sort-list-category-title:first-child",
+                        ghostClass: "sort-list-ghost",
+                        onStart: event => {
+                            const firstCategory = this.listElement.querySelector(".sort-list-category-title:first-child");
+                            /*
+                             * Extra safety:
+                             *
+                             * The first category can never
+                             * become the dragged element.
+                             */
+                            if (event.item === firstCategory) {
+                                event.preventDefault();
+                                return;
+                            }
+                            if (event.item.dataset.type === "category") {
+                                this.draggingType = "category";
+                            } else {
+                                this.draggingType = "item";
+                            }
+                        },
+                        onMove: event => {
+                            const firstCategory = this.listElement.querySelector(".sort-list-category-title:first-child");
+                            const dragged = event.dragged;
+                            const related = event.related;
+                            // ============================================================
+                            // FIRST CATEGORY IS ALWAYS LOCKED
+                            // ============================================================
+                            if (dragged === firstCategory) {
+                                return false;
+                            }
+                            // ============================================================
+                            // NEVER INSERT ANYTHING BEFORE FIRST CATEGORY
+                            // ============================================================
+                            if (related === firstCategory && event.willInsertAfter === false) {
+                                return false;
+                            }
+                            // ============================================================
+                            // CATEGORY HEADER RESTRICTION
+                            // A CATEGORY CANNOT MOVE OVER ANOTHER CATEGORY
+                            // ============================================================
+                            const draggedIsCategory = dragged && dragged.dataset.type === "category";
+                            const relatedIsCategory = related && related.dataset.type === "category";
+                            if (draggedIsCategory && relatedIsCategory) {
+                                return false;
+                            }
+                            // ============================================================
+                            // ALREADY-SAFE DROP
+                            // ============================================================
+                            return true;
+                        },
+                        onEnd: () => {
+                            this.syncFromDOM();
+                            this.rebuildFromDOM();
+                            this.updatePreview();
+                            this.draggingType = null;
+                        }
+                    });
+                }
+                // ============================================================
+                // REBUILD FROM DOM
+                // ============================================================
+                rebuildFromDOM() {
+                    /*
+                     * For now the DOM itself is already the
+                     * ordering source.
+                     *
+                     * We only recreate the row/category DOM
+                     * when something else needs a rebuild.
+                     */
+                    const elements = Array.from(this.listElement.children);
+                    const state = [];
+                    elements.forEach(element => {
+                        if (element.dataset.type === "category") {
+                            state.push({
+                                type: "category",
+                                category: element.dataset.category
+                            });
+                            return;
+                        }
+                        if (element.dataset.type === "item") {
+                            state.push({
+                                type: "item",
+                                item: element._sortListItem
+                            });
+                        }
+                    });
+                    /*
+                     * We intentionally DON'T rebuild the
+                     * DOM here.
+                     *
+                     * The DOM is already what Sortable made.
+                     */
+                }
+                // ============================================================
+                // DESTROY
+                // ============================================================
+                destroySortable() {
+                    if (this.sortable) {
+                        this.sortable.destroy();
+                        this.sortable = null;
+                    }
+                }
+                // ============================================================
+                // PREVIEW
+                // ============================================================
+                updatePreview() {
+                    const parts = [];
+                    let currentCategory = null;
+                    /*
+                     * Use workingArray for the actual
+                     * preview grouping.
+                     */
+                    this.getCategoryNamesInWorkingOrder().forEach(category => {
+                        const names = this.workingArray.filter(item => item.category === category).map(item => item.name);
+                        parts.push(`${category}: ${names.join(", ")}`);
+                    });
+                    this.previewText.textContent = parts.join(" | ");
+                }
+                // ============================================================
+                // CATEGORY ORDER
+                // ============================================================
+                getCategoryNamesInWorkingOrder() {
+                    const result = [];
+                    /*
+                     * First use the current DOM category order.
+                     */
+                    Array.from(this.listElement.children).forEach(element => {
+                        if (element.dataset.type !== "category") {
+                            return;
+                        }
+                        const category = element.dataset.category;
+                        if (!result.includes(category)) {
+                            result.push(category);
+                        }
+                    });
+                    /*
+                     * Make sure no category disappears
+                     * from the preview.
+                     */
+                    this.getCategoryNames().forEach(category => {
+                        if (!result.includes(category)) {
+                            result.push(category);
+                        }
+                    });
+                    return result;
+                }
+                // ============================================================
+                // POPUP CLOSE
+                // ============================================================
+                onPopupClose() {
+                    /*
+                     * Commit working data here.
+                     */
+                    this.syncFromDOM();
+                    if (Array.isArray(this.originalDataArray)) {
+                        this.originalDataArray.splice(0, this.originalDataArray.length, ...this.workingArray);
+                    }
+                    this.updatePreview();
+                    return this.originalDataArray;
+                }
+                // ============================================================
+                // DESTROY
+                // ============================================================
+                onSave() {
+                    /*
+                     * onSave ONLY destroys Sortable.
+                     */
+                    this.destroySortable();
+                    return this.originalDataArray;
+                }
+                // ============================================================
+                // RESULT
+                // ============================================================
+                initResult() {
+                    return {
+                        code: 0
+                    };
+                }
+            },
+            // ================================================================
+            // CANVAS RENDER
+            // ================================================================
+            render: function (dataArray) {
+                if (!Array.isArray(dataArray)) {
+                    return "";
+                }
+                return dataArray.map(item => {
+                    if (item && typeof item === "object" && !Array.isArray(item)) {
+                        return (item.name ?? "");
+                    }
+                    return String(item);
+                }).join(", ");
+            }
+        },
 
         nested: {
             strutureSample: [],
-            
+
             displayType: "popupMedium",
-            
+
             cssStyles: [{
                 object: ".advance-root",
                 info: [{
@@ -11807,8 +11805,8 @@ export const flexEngineDefaultVariables = {
                     value: "2px"
                 }]
             }],
-            
-            
+
+
             component: class {
                 constructor(
                     dataArray,
@@ -11818,265 +11816,265 @@ export const flexEngineDefaultVariables = {
                     // =================================================
                     // ELEMENTS
                     // =================================================
-                    
+
                     this.previewElement =
                         entryElement[0];
-                    
+
                     this.popupElement =
                         entryElement[1];
-                    
+
                     this.elementSetting =
                         elementSetting;
-                    
+
                     // =================================================
                     // ORIGINAL PROXY
                     // =================================================
-                    
+
                     this.originalDataArray =
                         dataArray;
-                    
+
                     // =================================================
                     // NEST LIMIT
                     // =================================================
-                    
+
                     this.nestLimit = Math.max(
                         1,
                         Number(
                             elementSetting.nestLimit
                         ) || 1
                     );
-                    
+
                     // =================================================
                     // EXTRA FIELD SCHEMA
                     // =================================================
-                    
+
                     this.extraFields =
                         Array.isArray(
                             elementSetting.extraFields
                         ) ?
-                        elementSetting.extraFields :
-                        [];
-                    
+                            elementSetting.extraFields :
+                            [];
+
                     // =================================================
                     // NORMALIZE FIELD SCHEMA
                     // =================================================
-                    
+
                     this.extraFields =
                         this.extraFields.map(
                             field => ({
                                 label: field.label ??
                                     "",
-                                
+
                                 type: this.normalizeFieldType(
                                     field.type
                                 ),
-                                
+
                                 default: field.default,
-                                
+
                                 optional: field.optional === true
                             })
                         );
-                    
+
                     // =================================================
                     // WORKING TREE
                     // =================================================
-                    
+
                     this.workingArray =
                         this.cloneTree(
                             Array.isArray(dataArray) ?
-                            dataArray :
-                            (
-                                Array.isArray(
-                                    elementSetting.default
-                                ) ?
-                                elementSetting.default :
-                                []
-                            )
+                                dataArray :
+                                (
+                                    Array.isArray(
+                                        elementSetting.default
+                                    ) ?
+                                        elementSetting.default :
+                                        []
+                                )
                         );
-                    
+
                     this.ensureIds(
                         this.workingArray
                     );
-                    
+
                     // =================================================
                     // SORTABLE INSTANCES
                     // =================================================
-                    
+
                     this.sortables = [];
-                    
+
                     this.draggedElement =
                         null;
-                    
+
                     // =================================================
                     // PREVIEW
                     // =================================================
-                    
+
                     this.previewElement.innerHTML =
                         "";
-                    
+
                     this.previewTreeElement =
                         document.createElement(
                             "div"
                         );
-                    
+
                     this.previewTreeElement.className =
                         "advance-preview-tree";
-                    
+
                     this.previewElement.appendChild(
                         this.previewTreeElement
                     );
-                    
+
                     this.updatePreview();
-                    
+
                     // =================================================
                     // POPUP
                     // =================================================
-                    
+
                     this.popupElement.innerHTML =
                         "";
-                    
+
                     this.rootElement =
                         document.createElement(
                             "div"
                         );
-                    
+
                     this.rootElement.className =
                         "advance-root";
-                    
+
                     this.popupElement.appendChild(
                         this.rootElement
                     );
-                    
+
                     // =================================================
                     // ADD AREA
                     // =================================================
-                    
+
                     const addArea =
                         document.createElement(
                             "div"
                         );
-                    
+
                     addArea.className =
                         "advance-add";
-                    
+
                     this.addInput =
                         document.createElement(
                             "input"
                         );
-                    
+
                     this.addInput.type =
                         "text";
-                    
+
                     this.addInput.className =
                         "advance-add-input";
-                    
+
                     this.addInput.placeholder =
                         "Add list element...";
-                    
+
                     const addButton =
                         document.createElement(
                             "button"
                         );
-                    
+
                     addButton.type =
                         "button";
-                    
+
                     addButton.className =
                         "advance-add-button";
-                    
+
                     addButton.textContent =
                         "Add";
-                    
+
                     addArea.appendChild(
                         this.addInput
                     );
-                    
+
                     addArea.appendChild(
                         addButton
                     );
-                    
+
                     this.rootElement.appendChild(
                         addArea
                     );
-                    
+
                     // =================================================
                     // TABLE CONTAINER
                     // =================================================
-                    
+
                     this.tableElement =
                         document.createElement(
                             "div"
                         );
-                    
+
                     this.tableElement.className =
                         "advance-table";
-                    
+
                     this.rootElement.appendChild(
                         this.tableElement
                     );
-                    
+
                     // =================================================
                     // HEADER
                     // =================================================
-                    
+
                     this.createHeader();
-                    
+
                     // =================================================
                     // ROOT LIST
                     // =================================================
-                    
+
                     this.rootList =
                         document.createElement(
                             "div"
                         );
-                    
+
                     this.rootList.className =
                         "advance-list";
-                    
+
                     this.rootList.dataset.depth =
                         "1";
-                    
+
                     this.tableElement.appendChild(
                         this.rootList
                     );
-                    
+
                     // =================================================
                     // ADD ROOT ITEM
                     // =================================================
-                    
+
                     const addRootItem =
                         () => {
                             const value =
                                 this.addInput.value.trim();
-                            
+
                             if (!value) {
                                 return;
                             }
-                            
+
                             const newItem =
                                 this.createDefaultItem(
                                     value
                                 );
-                            
+
                             this.workingArray.push(
                                 newItem
                             );
-                            
+
                             this.addInput.value =
                                 "";
-                            
+
                             this.renderTree();
-                            
+
                             this.addInput.focus();
-                            
+
                             this.updatePreview();
                         };
-                    
+
                     addButton.addEventListener(
                         "click",
                         addRootItem
                     );
-                    
+
                     this.addInput.addEventListener(
                         "keydown",
                         event => {
@@ -12085,45 +12083,45 @@ export const flexEngineDefaultVariables = {
                                 "Enter"
                             ) {
                                 event.preventDefault();
-                                
+
                                 addRootItem();
                             }
                         }
                     );
-                    
+
                     // =================================================
                     // INITIAL RENDER
                     // =================================================
-                    
+
                     this.renderTree();
                 }
-                
+
                 // =====================================================
                 // RESULT
                 // =====================================================
-                
+
                 initResult() {
                     return {
                         code: 0
                     };
                 }
-                
+
                 // =====================================================
                 // FIELD TYPE
                 // =====================================================
-                
+
                 normalizeFieldType(type) {
                     const value =
                         String(
                             type ?? "text"
                         ).toLowerCase();
-                    
+
                     if (
                         value === "integer"
                     ) {
                         return "integer";
                     }
-                    
+
                     if (
                         value === "checkmark" ||
                         value === "checkbox" ||
@@ -12131,14 +12129,14 @@ export const flexEngineDefaultVariables = {
                     ) {
                         return "checkmark";
                     }
-                    
+
                     return "text";
                 }
-                
+
                 // =====================================================
                 // DEFAULT VALUE
                 // =====================================================
-                
+
                 getDefaultFieldValue(
                     field
                 ) {
@@ -12151,31 +12149,31 @@ export const flexEngineDefaultVariables = {
                             field.default
                         );
                     }
-                    
+
                     switch (
-                        field.type
+                    field.type
                     ) {
                         case "integer":
                             return 0;
-                            
+
                         case "checkmark":
                             return false;
-                            
+
                         default:
                             return "";
                     }
                 }
-                
+
                 // =====================================================
                 // NORMALIZE FIELD VALUE
                 // =====================================================
-                
+
                 normalizeFieldValue(
                     field,
                     value
                 ) {
                     switch (
-                        field.type
+                    field.type
                     ) {
                         case "integer": {
                             if (
@@ -12185,41 +12183,41 @@ export const flexEngineDefaultVariables = {
                             ) {
                                 return 0;
                             }
-                            
+
                             const number =
                                 Number(value);
-                            
+
                             return Number.isFinite(
-                                    number
-                                ) ?
+                                number
+                            ) ?
                                 Math.trunc(
                                     number
                                 ) :
                                 0;
                         }
-                        
+
                         case "checkmark":
                             return Boolean(
                                 value
                             );
-                            
+
                         case "text":
                         default:
                             return (
                                 value === null ||
-                                value === undefined ?
-                                "" :
-                                String(
-                                    value
-                                )
+                                    value === undefined ?
+                                    "" :
+                                    String(
+                                        value
+                                    )
                             );
                     }
                 }
-                
+
                 // =====================================================
                 // CREATE DEFAULT ITEM
                 // =====================================================
-                
+
                 createDefaultItem(
                     name
                 ) {
@@ -12227,7 +12225,7 @@ export const flexEngineDefaultVariables = {
                         name: String(name),
                         children: []
                     };
-                    
+
                     this.extraFields.forEach(
                         field => {
                             item[field.label] =
@@ -12236,22 +12234,22 @@ export const flexEngineDefaultVariables = {
                                 );
                         }
                     );
-                    
+
                     item.__advanceId =
                         this.createId();
-                    
+
                     return item;
                 }
-                
+
                 // =====================================================
                 // CLONE TREE
                 // =====================================================
-                
+
                 cloneTree(array) {
                     if (!Array.isArray(array)) {
                         return [];
                     }
-                    
+
                     return array.map(
                         item => {
                             if (
@@ -12261,72 +12259,72 @@ export const flexEngineDefaultVariables = {
                             ) {
                                 const result = {
                                     ...item,
-                                    
+
                                     name: item.name ??
                                         item.label ??
                                         "",
-                                    
+
                                     children: this.cloneTree(
                                         Array.isArray(
                                             item.children
                                         ) ?
-                                        item.children :
-                                        []
+                                            item.children :
+                                            []
                                     )
                                 };
-                                
+
                                 // ---------------------------------
                                 // Ensure extra fields exist.
                                 // ---------------------------------
-                                
+
                                 this.extraFields
                                     .forEach(
                                         field => {
                                             if (
                                                 result[
-                                                    field.label
+                                                field.label
                                                 ] ===
                                                 undefined
                                             ) {
                                                 result[
-                                                        field.label
-                                                    ] =
+                                                    field.label
+                                                ] =
                                                     this.getDefaultFieldValue(
                                                         field
                                                     );
                                             } else {
                                                 result[
-                                                        field.label
-                                                    ] =
+                                                    field.label
+                                                ] =
                                                     this.normalizeFieldValue(
                                                         field,
                                                         result[
-                                                            field.label
+                                                        field.label
                                                         ]
                                                     );
                                             }
                                         }
                                     );
-                                
+
                                 return result;
                             }
-                            
+
                             return this.createDefaultItem(
                                 String(item)
                             );
                         }
                     );
                 }
-                
+
                 // =====================================================
                 // IDS
                 // =====================================================
-                
+
                 ensureIds(array) {
                     if (!Array.isArray(array)) {
                         return;
                     }
-                    
+
                     array.forEach(
                         item => {
                             if (
@@ -12335,7 +12333,7 @@ export const flexEngineDefaultVariables = {
                                 item.__advanceId =
                                     this.createId();
                             }
-                            
+
                             if (
                                 Array.isArray(
                                     item.children
@@ -12348,77 +12346,77 @@ export const flexEngineDefaultVariables = {
                         }
                     );
                 }
-                
+
                 createId() {
                     return (
                         "advance_" +
                         Date.now().toString(36) +
                         "_" +
                         Math.random()
-                        .toString(36)
-                        .slice(2, 10)
+                            .toString(36)
+                            .slice(2, 10)
                     );
                 }
-                
+
                 // =====================================================
                 // HEADER
                 // =====================================================
-                
+
                 createHeader() {
                     const message = document.createElement("div");
                     message.classList.add("advance-nest-space-text");
                     message.style.fontSize = "14px"
                     message.textContent = "(Hint: you can drag the element to the bottom of the other element for nesting)"
                     this.tableElement.appendChild(message)
-                    
+
                     const header =
                         document.createElement(
                             "div"
                         );
-                    
+
                     header.className =
                         "advance-header";
-                    
+
                     const columns = [
                         "Name",
                         ...this.extraFields.map(
                             field =>
-                            field.label
+                                field.label
                         ),
                         ""
                     ];
-                    
+
                     header.style.gridTemplateColumns =
                         this.getGridColumns();
-                    
+
                     columns.forEach(
                         label => {
                             const cell =
                                 document.createElement(
                                     "div"
                                 );
-                            
+
                             cell.className =
                                 "advance-header-cell";
-                            
+
                             cell.textContent =
                                 label;
-                            
+
                             header.appendChild(
                                 cell
                             );
                         }
                     );
-                    
+
                     this.tableElement.appendChild(
                         header
                     );
                 }
-                
+
                 // =====================================================
                 // GRID
                 // =====================================================
-                
+
                 getGridColumns() {
                     /*
                     * Name gets the remaining
@@ -12429,42 +12427,42 @@ export const flexEngineDefaultVariables = {
                     *
                     * Last column is remove button.
                     */
-                    
+
                     const fields =
                         this.extraFields.length;
-                    
+
                     if (fields === 0) {
                         return "minmax(0, 1fr) 36px";
                     }
-                    
+
                     return (
                         "minmax(180px, 1fr) " +
                         Array(
                             fields
                         )
-                        .fill(
-                            "minmax(90px, 0.35fr)"
-                        )
-                        .join(" ") +
+                            .fill(
+                                "minmax(90px, 0.35fr)"
+                            )
+                            .join(" ") +
                         " 36px"
                     );
                 }
-                
+
                 // =====================================================
                 // PREVIEW
                 // =====================================================
-                
+
                 updatePreview() {
                     this.previewTreeElement.innerHTML =
                         "";
-                    
+
                     this.renderPreviewLevel(
                         this.workingArray,
                         this.previewTreeElement,
                         1
                     );
                 }
-                
+
                 renderPreviewLevel(
                     array,
                     container,
@@ -12473,32 +12471,32 @@ export const flexEngineDefaultVariables = {
                     if (!Array.isArray(array)) {
                         return;
                     }
-                    
+
                     array.forEach(
                         item => {
                             const row =
                                 document.createElement(
                                     "div"
                                 );
-                            
+
                             row.className =
                                 "advance-preview-item";
-                            
+
                             row.style.paddingLeft =
                                 (
                                     (depth - 1) *
                                     20
                                 ) + "px";
-                            
+
                             row.textContent =
                                 String(
                                     item.name ?? ""
                                 );
-                            
+
                             container.appendChild(
                                 row
                             );
-                            
+
                             if (
                                 Array.isArray(
                                     item.children
@@ -12514,34 +12512,34 @@ export const flexEngineDefaultVariables = {
                         }
                     );
                 }
-                
+
                 // =====================================================
                 // RENDER TREE
                 // =====================================================
-                
+
                 renderTree() {
                     this.destroySortables();
-                    
+
                     this.rootList.innerHTML =
                         "";
-                    
+
                     this.ensureIds(
                         this.workingArray
                     );
-                    
+
                     this.renderLevel(
                         this.workingArray,
                         this.rootList,
                         1
                     );
-                    
+
                     this.updatePreview();
                 }
-                
+
                 // =====================================================
                 // RENDER LEVEL
                 // =====================================================
-                
+
                 renderLevel(
                     array,
                     listElement,
@@ -12549,7 +12547,7 @@ export const flexEngineDefaultVariables = {
                 ) {
                     listElement.dataset.depth =
                         String(depth);
-                    
+
                     array.forEach(
                         item => {
                             const element =
@@ -12558,22 +12556,22 @@ export const flexEngineDefaultVariables = {
                                     array,
                                     depth
                                 );
-                            
+
                             listElement.appendChild(
                                 element
                             );
                         }
                     );
-                    
+
                     this.createSortable(
                         listElement
                     );
                 }
-                
+
                 // =====================================================
                 // CREATE ITEM
                 // =====================================================
-                
+
                 createItem(
                     item,
                     parentArray,
@@ -12583,157 +12581,157 @@ export const flexEngineDefaultVariables = {
                         document.createElement(
                             "div"
                         );
-                    
+
                     wrapper.className =
                         "advance-item";
-                    
+
                     wrapper.dataset.advanceId =
                         item.__advanceId;
-                    
+
                     wrapper.dataset.depth =
                         String(depth);
-                    
+
                     // =================================================
                     // ROW
                     // =================================================
-                    
+
                     const row =
                         document.createElement(
                             "div"
                         );
-                    
+
                     row.className =
                         "advance-item-row";
-                    
+
                     row.style.gridTemplateColumns =
                         this.getGridColumns();
-                    
+
                     // =================================================
                     // NAME
                     // =================================================
-                    
+
                     const nameCell =
                         document.createElement(
                             "div"
                         );
-                    
+
                     nameCell.className =
                         "advance-name-cell";
-                    
+
                     const handle =
                         document.createElement(
                             "span"
                         );
-                    
+
                     handle.className =
                         "advance-handle";
-                    
+
                     handle.textContent =
                         "☷";
-                    
+
                     const nameInput =
                         document.createElement(
                             "input"
                         );
-                    
+
                     nameInput.type =
                         "text";
-                    
+
                     nameInput.className =
                         "advance-item-input";
-                    
+
                     nameInput.value =
                         item.name ?? "";
-                    
+
                     nameInput.addEventListener(
                         "input",
                         () => {
                             item.name =
                                 nameInput.value;
-                            
+
                             this.updatePreview();
                         }
                     );
-                    
+
                     nameCell.appendChild(
                         handle
                     );
-                    
+
                     nameCell.appendChild(
                         nameInput
                     );
-                    
+
                     row.appendChild(
                         nameCell
                     );
-                    
+
                     // =================================================
                     // EXTRA FIELDS
                     // =================================================
-                    
+
                     this.extraFields.forEach(
                         field => {
                             const cell =
                                 document.createElement(
                                     "div"
                                 );
-                            
+
                             cell.className =
                                 "advance-cell";
-                            
+
                             const input =
                                 this.createFieldInput(
                                     field,
                                     item
                                 );
-                            
+
                             cell.appendChild(
                                 input
                             );
-                            
+
                             row.appendChild(
                                 cell
                             );
                         }
                     );
-                    
+
                     // =================================================
                     // REMOVE
                     // =================================================
-                    
+
                     const removeCell =
                         document.createElement(
                             "div"
                         );
-                    
+
                     removeCell.className =
                         "advance-cell";
-                    
+
                     const remove =
                         document.createElement(
                             "button"
                         );
-                    
+
                     remove.type =
                         "button";
-                    
+
                     remove.className =
                         "advance-remove";
-                    
+
                     remove.textContent =
                         "×";
-                    
+
                     remove.addEventListener(
                         "click",
                         event => {
                             event.preventDefault();
                             event.stopPropagation();
-                            
+
                             const index =
                                 parentArray.indexOf(
                                     item
                                 );
-                            
+
                             if (
                                 index !== -1
                             ) {
@@ -12742,27 +12740,27 @@ export const flexEngineDefaultVariables = {
                                     1
                                 );
                             }
-                            
+
                             this.renderTree();
                         }
                     );
-                    
+
                     removeCell.appendChild(
                         remove
                     );
-                    
+
                     row.appendChild(
                         removeCell
                     );
-                    
+
                     wrapper.appendChild(
                         row
                     );
-                    
+
                     // =================================================
                     // CHILDREN
                     // =================================================
-                    
+
                     if (
                         depth <
                         this.nestLimit
@@ -12774,42 +12772,42 @@ export const flexEngineDefaultVariables = {
                         ) {
                             item.children = [];
                         }
-                        
+
                         const childrenArea =
                             document.createElement(
                                 "div"
                             );
-                        
+
                         childrenArea.className =
                             "advance-children";
-                        
+
                         // ---------------------------------------------
                         // CHILD LIST
                         // ---------------------------------------------
-                        
+
                         const childList =
                             document.createElement(
                                 "div"
                             );
-                        
+
                         childList.className =
                             "advance-list";
-                        
+
                         childList.dataset.depth =
                             String(
                                 depth + 1
                             );
-                        
+
                         this.renderLevel(
                             item.children,
                             childList,
                             depth + 1
                         );
-                        
+
                         childrenArea.appendChild(
                             childList
                         );
-                        
+
                         // ---------------------------------------------
                         // NEST SPACE
                         // ---------------------------------------------
@@ -12846,125 +12844,125 @@ export const flexEngineDefaultVariables = {
                             nestSpace
                         );
                         */
-                        
+
                         wrapper.appendChild(
                             childrenArea
                         );
                     }
-                    
+
                     return wrapper;
                 }
-                
+
                 // =====================================================
                 // FIELD INPUT
                 // =====================================================
-                
+
                 createFieldInput(
                     field,
                     item
                 ) {
                     let input;
-                    
+
                     switch (
-                        field.type
+                    field.type
                     ) {
                         case "integer":
                             input =
                                 document.createElement(
                                     "input"
                                 );
-                            
+
                             input.type =
                                 "number";
-                            
+
                             input.step =
                                 "1";
-                            
+
                             input.className =
                                 "advance-field-input";
-                            
+
                             input.value =
                                 item[
-                                    field.label
+                                field.label
                                 ] ?? 0;
-                            
+
                             input.addEventListener(
                                 "input",
                                 () => {
                                     item[
-                                            field.label
-                                        ] =
+                                        field.label
+                                    ] =
                                         this.normalizeFieldValue(
                                             field,
                                             input.value
                                         );
                                 }
                             );
-                            
+
                             break;
-                            
+
                         case "checkmark":
                             input =
                                 document.createElement(
                                     "input"
                                 );
-                            
+
                             input.type =
                                 "checkbox";
-                            
+
                             input.className =
                                 "advance-field-checkbox";
-                            
+
                             input.checked =
                                 Boolean(
                                     item[
-                                        field.label
+                                    field.label
                                     ]
                                 );
-                            
+
                             input.addEventListener(
                                 "change",
                                 () => {
                                     item[
-                                            field.label
-                                        ] =
+                                        field.label
+                                    ] =
                                         input.checked;
                                 }
                             );
-                            
+
                             break;
-                            
+
                         case "text":
                         default:
                             input =
                                 document.createElement(
                                     "input"
                                 );
-                            
+
                             input.type =
                                 "text";
-                            
+
                             input.className =
                                 "advance-field-input";
-                            
+
                             input.value =
                                 item[
-                                    field.label
+                                field.label
                                 ] ?? "";
-                            
+
                             input.addEventListener(
                                 "input",
                                 () => {
                                     item[
-                                            field.label
-                                        ] =
+                                        field.label
+                                    ] =
                                         input.value;
                                 }
                             );
-                            
+
                             break;
                     }
-                    
+
                     // -------------------------------------------------
                     // OPTIONAL
                     // -------------------------------------------------
@@ -12976,21 +12974,21 @@ export const flexEngineDefaultVariables = {
                     // The schema itself controls whether the field
                     // must exist.
                     // -------------------------------------------------
-                    
+
                     if (
                         field.optional === false
                     ) {
                         input.dataset.required =
                             "true";
                     }
-                    
+
                     return input;
                 }
-                
+
                 // =====================================================
                 // SORTABLE
                 // =====================================================
-                
+
                 createSortable(
                     listElement
                 ) {
@@ -13000,118 +12998,118 @@ export const flexEngineDefaultVariables = {
                     ) {
                         return;
                     }
-                    
+
                     const sortable =
                         new Sortable(
                             listElement, {
-                                animation: 180,
-                                
-                                direction: "vertical",
-                                
-                                draggable: ".advance-item",
-                                
-                                handle: ".advance-handle",
-                                
-                                ghostClass: "advance-ghost",
-                                
-                                chosenClass: "advance-chosen",
-                                
-                                dragClass: "advance-drag",
-                                
-                                fallbackOnBody: true,
-                                
-                                swapThreshold: 0.65,
-                                
-                                emptyInsertThreshold: 20,
-                                
-                                group: {
-                                    name: "advance-tree",
-                                    
-                                    pull: true,
-                                    
-                                    put: true
-                                },
-                                
-                                // =====================================
-                                // START
-                                // =====================================
-                                
-                                onStart: event => {
-                                    this.draggedElement =
-                                        event.item;
-                                    
-                                    this.showValidNestSpaces(
-                                        event.item
-                                    );
-                                },
-                                
-                                // =====================================
-                                // MOVE
-                                // =====================================
-                                
-                                onMove: event => {
-                                    return this.handleMove(
-                                        event
-                                    );
-                                },
-                                
-                                // =====================================
-                                // END
-                                // =====================================
-                                
-                                onEnd: event => {
-                                    this.hideNestSpaces();
-                                    
-                                    this.draggedElement =
-                                        null;
-                                    
-                                    this.rebuildTreeFromDOM();
-                                    
-                                    this.updatePreview();
-                                }
+                            animation: 180,
+
+                            direction: "vertical",
+
+                            draggable: ".advance-item",
+
+                            handle: ".advance-handle",
+
+                            ghostClass: "advance-ghost",
+
+                            chosenClass: "advance-chosen",
+
+                            dragClass: "advance-drag",
+
+                            fallbackOnBody: true,
+
+                            swapThreshold: 0.65,
+
+                            emptyInsertThreshold: 20,
+
+                            group: {
+                                name: "advance-tree",
+
+                                pull: true,
+
+                                put: true
+                            },
+
+                            // =====================================
+                            // START
+                            // =====================================
+
+                            onStart: event => {
+                                this.draggedElement =
+                                    event.item;
+
+                                this.showValidNestSpaces(
+                                    event.item
+                                );
+                            },
+
+                            // =====================================
+                            // MOVE
+                            // =====================================
+
+                            onMove: event => {
+                                return this.handleMove(
+                                    event
+                                );
+                            },
+
+                            // =====================================
+                            // END
+                            // =====================================
+
+                            onEnd: event => {
+                                this.hideNestSpaces();
+
+                                this.draggedElement =
+                                    null;
+
+                                this.rebuildTreeFromDOM();
+
+                                this.updatePreview();
                             }
+                        }
                         );
-                    
+
                     this.sortables.push(
                         sortable
                     );
                 }
-                
+
                 // =====================================================
                 // ON MOVE
                 // =====================================================
-                
+
                 handleMove(
                     event
                 ) {
                     const dragged =
                         event.dragged;
-                    
+
                     const destination =
                         event.to;
-                    
+
                     if (
                         !dragged ||
                         !destination
                     ) {
                         return false;
                     }
-                    
+
                     // -------------------------------------------------
                     // Can't move into itself.
                     // -------------------------------------------------
-                    
+
                     if (
                         dragged ===
                         destination
                     ) {
                         return false;
                     }
-                    
+
                     // -------------------------------------------------
                     // Can't move into own descendants.
                     // -------------------------------------------------
-                    
+
                     if (
                         dragged.contains(
                             destination
@@ -13119,55 +13117,55 @@ export const flexEngineDefaultVariables = {
                     ) {
                         return false;
                     }
-                    
+
                     // -------------------------------------------------
                     // Destination depth.
                     // -------------------------------------------------
-                    
+
                     const destinationDepth =
                         this.getListDepth(
                             destination
                         );
-                    
+
                     // -------------------------------------------------
                     // Height of entire dragged subtree.
                     // -------------------------------------------------
-                    
+
                     const subtreeDepth =
                         this.getDOMSubtreeDepth(
                             dragged
                         );
-                    
+
                     // -------------------------------------------------
                     // Resulting deepest level.
                     // -------------------------------------------------
-                    
+
                     const deepestLevel =
                         destinationDepth +
                         subtreeDepth -
                         1;
-                    
+
                     // -------------------------------------------------
                     // NEST LIMIT.
                     // -------------------------------------------------
-                    
+
                     if (
                         deepestLevel >
                         this.nestLimit
                     ) {
                         return false;
                     }
-                    
+
                     // -------------------------------------------------
                     // Make sure destination isn't
                     // actually inside dragged subtree.
                     // -------------------------------------------------
-                    
+
                     const owner =
                         destination.closest(
                             ".advance-item"
                         );
-                    
+
                     if (
                         owner &&
                         owner ===
@@ -13175,14 +13173,14 @@ export const flexEngineDefaultVariables = {
                     ) {
                         return false;
                     }
-                    
+
                     return true;
                 }
-                
+
                 // =====================================================
                 // LIST DEPTH
                 // =====================================================
-                
+
                 getListDepth(
                     list
                 ) {
@@ -13190,18 +13188,18 @@ export const flexEngineDefaultVariables = {
                         Number(
                             list.dataset.depth
                         );
-                    
+
                     return Number.isFinite(
-                            depth
-                        ) ?
+                        depth
+                    ) ?
                         depth :
                         1;
                 }
-                
+
                 // =====================================================
                 // DOM SUBTREE DEPTH
                 // =====================================================
-                
+
                 getDOMSubtreeDepth(
                     element
                 ) {
@@ -13209,22 +13207,22 @@ export const flexEngineDefaultVariables = {
                         Number(
                             element.dataset.depth
                         ) || 1;
-                    
+
                     let maximum =
                         rootDepth;
-                    
+
                     const descendants =
                         element.querySelectorAll(
                             ".advance-item"
                         );
-                    
+
                     descendants.forEach(
                         child => {
                             const depth =
                                 Number(
                                     child.dataset.depth
                                 );
-                            
+
                             if (
                                 Number.isFinite(
                                     depth
@@ -13238,18 +13236,18 @@ export const flexEngineDefaultVariables = {
                             }
                         }
                     );
-                    
+
                     return (
                         maximum -
                         rootDepth +
                         1
                     );
                 }
-                
+
                 // =====================================================
                 // NEST SPACE VISIBILITY
                 // =====================================================
-                
+
                 showValidNestSpaces(
                     dragged
                 ) {
@@ -13257,51 +13255,51 @@ export const flexEngineDefaultVariables = {
                         this.popupElement.querySelectorAll(
                             ".advance-nest-space"
                         );
-                    
+
                     const subtreeDepth =
                         this.getDOMSubtreeDepth(
                             dragged
                         );
-                    
+
                     spaces.forEach(
                         space => {
                             const ownerId =
                                 space.dataset
-                                .ownerId;
-                            
+                                    .ownerId;
+
                             // Never allow nesting into
                             // the dragged item itself.
-                            
+
                             if (
                                 ownerId ===
                                 dragged.dataset
-                                .advanceId
+                                    .advanceId
                             ) {
                                 space.style.display =
                                     "none";
-                                
+
                                 return;
                             }
-                            
+
                             const childList =
                                 space.previousElementSibling;
-                            
+
                             if (
                                 !childList
                             ) {
                                 return;
                             }
-                            
+
                             const destinationDepth =
                                 this.getListDepth(
                                     childList
                                 );
-                            
+
                             const resultingDepth =
                                 destinationDepth +
                                 subtreeDepth -
                                 1;
-                            
+
                             if (
                                 resultingDepth <=
                                 this.nestLimit
@@ -13315,13 +13313,13 @@ export const flexEngineDefaultVariables = {
                         }
                     );
                 }
-                
+
                 hideNestSpaces() {
                     const spaces =
                         this.popupElement.querySelectorAll(
                             ".advance-nest-space"
                         );
-                    
+
                     spaces.forEach(
                         space => {
                             space.style.display =
@@ -13329,19 +13327,19 @@ export const flexEngineDefaultVariables = {
                         }
                     );
                 }
-                
+
                 // =====================================================
                 // REBUILD TREE
                 // =====================================================
-                
+
                 rebuildTreeFromDOM() {
                     const oldTree =
                         this.workingArray;
-                    
+
                     const readList =
                         listElement => {
                             const result = [];
-                            
+
                             Array.from(
                                 listElement.children
                             ).forEach(
@@ -13353,64 +13351,64 @@ export const flexEngineDefaultVariables = {
                                     ) {
                                         return;
                                     }
-                                    
+
                                     const id =
                                         element.dataset
-                                        .advanceId;
-                                    
+                                            .advanceId;
+
                                     const oldItem =
                                         this.findById(
                                             oldTree,
                                             id
                                         );
-                                    
+
                                     const item =
                                         oldItem ?
-                                        {
-                                            ...oldItem
-                                        } :
-                                        this.createDefaultItem(
-                                            ""
-                                        );
-                                    
+                                            {
+                                                ...oldItem
+                                            } :
+                                            this.createDefaultItem(
+                                                ""
+                                            );
+
                                     item.__advanceId =
                                         id;
-                                    
+
                                     // ---------------------------------
                                     // NAME
                                     // ---------------------------------
-                                    
+
                                     const nameInput =
                                         element.querySelector(
                                             ":scope > .advance-item-row > .advance-name-cell > .advance-item-input"
                                         );
-                                    
+
                                     item.name =
                                         nameInput ?
-                                        nameInput.value :
-                                        "";
-                                    
+                                            nameInput.value :
+                                            "";
+
                                     // ---------------------------------
                                     // EXTRA FIELDS
                                     // ---------------------------------
-                                    
+
                                     const row =
                                         element.querySelector(
                                             ":scope > .advance-item-row"
                                         );
-                                    
+
                                     if (row) {
                                         const cells =
                                             Array.from(
                                                 row.children
                                             );
-                                        
+
                                         // Cell 0 = name.
                                         // Last cell = remove.
                                         //
                                         // Extra fields are
                                         // between them.
-                                        
+
                                         this.extraFields.forEach(
                                             (
                                                 field,
@@ -13418,39 +13416,39 @@ export const flexEngineDefaultVariables = {
                                             ) => {
                                                 const cell =
                                                     cells[
-                                                        fieldIndex +
-                                                        1
+                                                    fieldIndex +
+                                                    1
                                                     ];
-                                                
+
                                                 if (
                                                     !cell
                                                 ) {
                                                     return;
                                                 }
-                                                
+
                                                 const input =
                                                     cell.querySelector(
                                                         "input"
                                                     );
-                                                
+
                                                 if (
                                                     !input
                                                 ) {
                                                     return;
                                                 }
-                                                
+
                                                 if (
                                                     field.type ===
                                                     "checkmark"
                                                 ) {
                                                     item[
-                                                            field.label
-                                                        ] =
+                                                        field.label
+                                                    ] =
                                                         input.checked;
                                                 } else {
                                                     item[
-                                                            field.label
-                                                        ] =
+                                                        field.label
+                                                    ] =
                                                         this.normalizeFieldValue(
                                                             field,
                                                             input.value
@@ -13459,16 +13457,16 @@ export const flexEngineDefaultVariables = {
                                             }
                                         );
                                     }
-                                    
+
                                     // ---------------------------------
                                     // CHILDREN
                                     // ---------------------------------
-                                    
+
                                     const childList =
                                         element.querySelector(
                                             ":scope > .advance-children > .advance-list"
                                         );
-                                    
+
                                     if (
                                         childList
                                     ) {
@@ -13479,26 +13477,26 @@ export const flexEngineDefaultVariables = {
                                     } else {
                                         item.children = [];
                                     }
-                                    
+
                                     result.push(
                                         item
                                     );
                                 }
                             );
-                            
+
                             return result;
                         };
-                    
+
                     this.workingArray =
                         readList(
                             this.rootList
                         );
                 }
-                
+
                 // =====================================================
                 // FIND BY ID
                 // =====================================================
-                
+
                 findById(
                     array,
                     id
@@ -13510,7 +13508,7 @@ export const flexEngineDefaultVariables = {
                     ) {
                         return null;
                     }
-                    
+
                     for (
                         const item of array
                     ) {
@@ -13521,7 +13519,7 @@ export const flexEngineDefaultVariables = {
                         ) {
                             return item;
                         }
-                        
+
                         if (
                             item &&
                             Array.isArray(
@@ -13533,20 +13531,20 @@ export const flexEngineDefaultVariables = {
                                     item.children,
                                     id
                                 );
-                            
+
                             if (found) {
                                 return found;
                             }
                         }
                     }
-                    
+
                     return null;
                 }
-                
+
                 // =====================================================
                 // DESTROY SORTABLE
                 // =====================================================
-                
+
                 destroySortables() {
                     if (
                         !Array.isArray(
@@ -13554,10 +13552,10 @@ export const flexEngineDefaultVariables = {
                         )
                     ) {
                         this.sortables = [];
-                        
+
                         return;
                     }
-                    
+
                     this.sortables.forEach(
                         sortable => {
                             if (
@@ -13569,14 +13567,14 @@ export const flexEngineDefaultVariables = {
                             }
                         }
                     );
-                    
+
                     this.sortables = [];
                 }
-                
+
                 // =====================================================
                 // CLEAN DATA
                 // =====================================================
-                
+
                 cleanTree(
                     array
                 ) {
@@ -13587,11 +13585,11 @@ export const flexEngineDefaultVariables = {
                     ) {
                         return [];
                     }
-                    
+
                     return array.map(
                         item => {
                             const result = {};
-                            
+
                             Object.keys(
                                 item
                             ).forEach(
@@ -13605,58 +13603,58 @@ export const flexEngineDefaultVariables = {
                                     }
                                 }
                             );
-                            
+
                             result.children =
                                 this.cleanTree(
                                     Array.isArray(
                                         item.children
                                     ) ?
-                                    item.children :
-                                    []
+                                        item.children :
+                                        []
                                 );
-                            
+
                             return result;
                         }
                     );
                 }
-                
+
                 // =====================================================
                 // POPUP CLOSE
                 // =====================================================
-                
+
                 onPopupClose() {
                     this.hideNestSpaces();
-                    
+
                     this.updatePreview();
                 }
-                
+
                 // =====================================================
                 // SAVE
                 // =====================================================
-                
+
                 onSave() {
                     // -----------------------------------------------
                     // Destroy ALL Sortable instances.
                     // -----------------------------------------------
-                    
+
                     this.destroySortables();
-                    
+
                     this.draggedElement =
                         null;
-                    
+
                     // -----------------------------------------------
                     // Clean internal IDs.
                     // -----------------------------------------------
-                    
+
                     const cleanData =
                         this.cleanTree(
                             this.workingArray
                         );
-                    
+
                     // -----------------------------------------------
                     // Commit to existing Proxy.
                     // -----------------------------------------------
-                    
+
                     if (
                         Array.isArray(
                             this.originalDataArray
@@ -13667,19 +13665,19 @@ export const flexEngineDefaultVariables = {
                             this.originalDataArray.length,
                             ...cleanData
                         );
-                        
+
                         return this.originalDataArray;
                     }
-                    
+
                     return cleanData;
                 }
             },
-            
+
             // =========================================================
             // CANVAS RENDER
             // =========================================================
-            
-            render: function(
+
+            render: function (
                 dataArray
             ) {
                 return dataArray;
@@ -13706,73 +13704,73 @@ export const flexEngineDefaultVariables = {
 
 // Animation Registery
 export const flexEngineDefaultAnimation = {
-	0: {
-		name: "showup",
-		query: [],
-		variables: function(anim) {
-			return "";
-		},
-		cssRawCode: `
+    0: {
+        name: "showup",
+        query: [],
+        variables: function (anim) {
+            return "";
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 			}
 			to {
 				opacity: 1;
 			}`,
-		setting: {
-			timeOverride: true,
-			timeOverrideSeconds: 0
-		}
-	},
+        setting: {
+            timeOverride: true,
+            timeOverrideSeconds: 0
+        }
+    },
 
-	1: {
-		name: "fade",
-		query: [],
-		variables: function(anim) {
-			return "";
-		},
-		cssRawCode: `
+    1: {
+        name: "fade",
+        query: [],
+        variables: function (anim) {
+            return "";
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 			}
 			to {
 				opacity: 1;
 			}`,
-		setting: {}
-	},
+        setting: {}
+    },
 
-	2: {
-		name: "flyIn",
-		query: [
-			{
-				name: "direction",
-				label: "Direction",
-				type: "integer/slide",
-				min: 0,
-				max: 359,
-				step: 1,
-				default: 0
-			},
-			{
-				name: "intensity",
-				label: "Distance",
-				type: "integer/noNeg",
-				default: 60
-			}
-		],
-		variables: function(anim) {
-			const direction = (num(anim.direction) % 360 + 360) % 360;
-			const intensity = Math.max(0, num(anim.intensity));
-			const rad = direction * Math.PI / 180;
-			const x = Math.cos(rad) * intensity;
-			const y = Math.sin(rad) * intensity;
+    2: {
+        name: "flyIn",
+        query: [
+            {
+                name: "direction",
+                label: "Direction",
+                type: "integer/slide",
+                min: 0,
+                max: 359,
+                step: 1,
+                default: 0
+            },
+            {
+                name: "intensity",
+                label: "Distance",
+                type: "integer/noNeg",
+                default: 60
+            }
+        ],
+        variables: function (anim) {
+            const direction = (num(anim.direction) % 360 + 360) % 360;
+            const intensity = Math.max(0, num(anim.intensity));
+            const rad = direction * Math.PI / 180;
+            const x = Math.cos(rad) * intensity;
+            const y = Math.sin(rad) * intensity;
 
-			return (
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-flyIn-x:${x}px;` +
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-flyIn-y:${y}px;`
-			);
-		},
-		cssRawCode: `
+            return (
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-flyIn-x:${x}px;` +
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-flyIn-y:${y}px;`
+            );
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 				transform: translate(
@@ -13784,25 +13782,25 @@ export const flexEngineDefaultAnimation = {
 				opacity: 1;
 				transform: translate(0, 0);
 			}`,
-		setting: {}
-	},
+        setting: {}
+    },
 
-	3: {
-		name: "growTurn",
-		query: [
-			{
-				name: "rotate",
-				label: "Rotate Deg",
-				type: "integer",
-				default: -25
-			}
-		],
-		variables: function(anim) {
-			const rotate = num(anim.rotate);
+    3: {
+        name: "growTurn",
+        query: [
+            {
+                name: "rotate",
+                label: "Rotate Deg",
+                type: "integer",
+                default: -25
+            }
+        ],
+        variables: function (anim) {
+            const rotate = num(anim.rotate);
 
-			return `--${BUILDER_CONFIG.classPrefix}animation-variables-growTurn-rotate:${rotate}deg;`;
-		},
-		cssRawCode: `
+            return `--${BUILDER_CONFIG.classPrefix}animation-variables-growTurn-rotate:${rotate}deg;`;
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 				transform: scale(0.3) rotate(
@@ -13813,16 +13811,16 @@ export const flexEngineDefaultAnimation = {
 				opacity: 1;
 				transform: scale(1) rotate(0deg);
 			}`,
-		setting: {}
-	},
+        setting: {}
+    },
 
-	4: {
-		name: "zoom",
-		query: [],
-		variables: function(anim) {
-			return "";
-		},
-		cssRawCode: `
+    4: {
+        name: "zoom",
+        query: [],
+        variables: function (anim) {
+            return "";
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 				transform: scale(0.4);
@@ -13831,28 +13829,28 @@ export const flexEngineDefaultAnimation = {
 				opacity: 1;
 				transform: scale(1);
 			}`,
-		setting: {}
-	},
+        setting: {}
+    },
 
-	5: {
-		name: "basicZoom",
-		query: [
-			{
-				name: "scaleStart",
-				label: "Starting Scale %",
-				type: "integer/slide",
-				min: 0,
-				max: 100,
-				step: 1,
-				default: 85
-			}
-		],
-		variables: function(anim) {
-			const scaleStart = num(anim.scaleStart) || 100;
+    5: {
+        name: "basicZoom",
+        query: [
+            {
+                name: "scaleStart",
+                label: "Starting Scale %",
+                type: "integer/slide",
+                min: 0,
+                max: 100,
+                step: 1,
+                default: 85
+            }
+        ],
+        variables: function (anim) {
+            const scaleStart = num(anim.scaleStart) || 100;
 
-			return `--${BUILDER_CONFIG.classPrefix}animation-variables-basicZoom-scaleStart:${scaleStart / 100};`;
-		},
-		cssRawCode: `
+            return `--${BUILDER_CONFIG.classPrefix}animation-variables-basicZoom-scaleStart:${scaleStart / 100};`;
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 				transform: scale(
@@ -13863,46 +13861,46 @@ export const flexEngineDefaultAnimation = {
 				opacity: 1;
 				transform: scale(1);
 			}`,
-		setting: {}
-	},
+        setting: {}
+    },
 
-	6: {
-		name: "rise",
-		query: [
-			{
-				name: "direction",
-				label: "Direction",
-				type: "selection",
-				choice: [
-					{ label: "Top", value: 1 },
-					{ label: "Top Right", value: 2 },
-					{ label: "Right", value: 3 },
-					{ label: "Bottom Right", value: 4 },
-					{ label: "Bottom", value: 5 },
-					{ label: "Bottom Left", value: 6 },
-					{ label: "Left", value: 7 },
-					{ label: "Top Left", value: 8 }
-				]
-			},
-			{
-				name: "intensity",
-				label: "Distance",
-				type: "integer/noNeg",
-				default: 25
-			}
-		],
-		variables: function(anim) {
-			const direction = clamp(num(anim.direction) || 1, 1, 8);
-			const intensity = Math.max(0, num(anim.intensity));
-			const angle = (direction - 1) * 45;
-			const rad = angle * Math.PI / 180;
+    6: {
+        name: "rise",
+        query: [
+            {
+                name: "direction",
+                label: "Direction",
+                type: "selection",
+                choice: [
+                    { label: "Top", value: 1 },
+                    { label: "Top Right", value: 2 },
+                    { label: "Right", value: 3 },
+                    { label: "Bottom Right", value: 4 },
+                    { label: "Bottom", value: 5 },
+                    { label: "Bottom Left", value: 6 },
+                    { label: "Left", value: 7 },
+                    { label: "Top Left", value: 8 }
+                ]
+            },
+            {
+                name: "intensity",
+                label: "Distance",
+                type: "integer/noNeg",
+                default: 25
+            }
+        ],
+        variables: function (anim) {
+            const direction = clamp(num(anim.direction) || 1, 1, 8);
+            const intensity = Math.max(0, num(anim.intensity));
+            const angle = (direction - 1) * 45;
+            const rad = angle * Math.PI / 180;
 
-			return (
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-rise-x:${Math.cos(rad) * intensity}px;` +
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-rise-y:${Math.sin(rad) * intensity}px;`
-			);
-		},
-		cssRawCode: `
+            return (
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-rise-x:${Math.cos(rad) * intensity}px;` +
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-rise-y:${Math.sin(rad) * intensity}px;`
+            );
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 				transform: translate(
@@ -13914,31 +13912,31 @@ export const flexEngineDefaultAnimation = {
 				opacity: 1;
 				transform: translate(0, 0);
 			}`,
-		setting: {}
-	},
+        setting: {}
+    },
 
-	7: {
-		name: "stretch",
-		query: [
-			{
-				name: "direction",
-				label: "Direction",
-				type: "selection",
-				choice: [
-					{ label: "Top", value: 1 },
-					{ label: "Right", value: 2 },
-					{ label: "Bottom", value: 3 },
-					{ label: "Left", value: 4 }
-				]
-			}
-		],
-		variables: function(anim) {
-			const direction = clamp(num(anim.direction) || 1, 1, 4);
-			const map = ["top", "right", "bottom", "left"];
+    7: {
+        name: "stretch",
+        query: [
+            {
+                name: "direction",
+                label: "Direction",
+                type: "selection",
+                choice: [
+                    { label: "Top", value: 1 },
+                    { label: "Right", value: 2 },
+                    { label: "Bottom", value: 3 },
+                    { label: "Left", value: 4 }
+                ]
+            }
+        ],
+        variables: function (anim) {
+            const direction = clamp(num(anim.direction) || 1, 1, 4);
+            const map = ["top", "right", "bottom", "left"];
 
-			return `--${BUILDER_CONFIG.classPrefix}animation-variables-stretch-origin:${map[direction - 1]};`;
-		},
-		cssRawCode: `
+            return `--${BUILDER_CONFIG.classPrefix}animation-variables-stretch-origin:${map[direction - 1]};`;
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 				transform-origin: var(
@@ -13951,37 +13949,37 @@ export const flexEngineDefaultAnimation = {
 				opacity: 1;
 				transform: scaleX(1);
 			}`,
-		setting: {}
-	},
+        setting: {}
+    },
 
-	8: {
-		name: "wipe",
-		query: [
-			{
-				name: "direction",
-				label: "Direction",
-				type: "selection",
-				choice: [
-					{ label: "Top", value: 1 },
-					{ label: "Right", value: 2 },
-					{ label: "Bottom", value: 3 },
-					{ label: "Left", value: 4 }
-				]
-			}
-		],
-		variables: function(anim) {
-			const direction = clamp(num(anim.direction) || 1, 1, 4);
+    8: {
+        name: "wipe",
+        query: [
+            {
+                name: "direction",
+                label: "Direction",
+                type: "selection",
+                choice: [
+                    { label: "Top", value: 1 },
+                    { label: "Right", value: 2 },
+                    { label: "Bottom", value: 3 },
+                    { label: "Left", value: 4 }
+                ]
+            }
+        ],
+        variables: function (anim) {
+            const direction = clamp(num(anim.direction) || 1, 1, 4);
 
-			const clip = [
-				"inset(100% 0 0 0)",
-				"inset(0 0 0 100%)",
-				"inset(0 0 100% 0)",
-				"inset(0 100% 0 0)"
-			];
+            const clip = [
+                "inset(100% 0 0 0)",
+                "inset(0 0 0 100%)",
+                "inset(0 0 100% 0)",
+                "inset(0 100% 0 0)"
+            ];
 
-			return `--${BUILDER_CONFIG.classPrefix}animation-variables-wipe-from:${clip[direction - 1]};`;
-		},
-		cssRawCode: `
+            return `--${BUILDER_CONFIG.classPrefix}animation-variables-wipe-from:${clip[direction - 1]};`;
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 				clip-path: var(
@@ -13993,57 +13991,57 @@ export const flexEngineDefaultAnimation = {
 				opacity: 1;
 				clip-path: inset(0 0 0 0);
 			}`,
-		setting: {}
-	},
+        setting: {}
+    },
 
-	9: {
-		name: "peekIn",
-		query: [
-			{
-				name: "direction",
-				label: "Direction",
-				type: "selection",
-				choice: [
-					{ label: "Top", value: 1 },
-					{ label: "Right", value: 2 },
-					{ label: "Bottom", value: 3 },
-					{ label: "Left", value: 4 }
-				]
-			},
-			{
-				name: "intensity",
-				label: "Distance",
-				type: "integer/noNeg",
-				default: 40
-			}
-		],
-		variables: function(anim) {
-			const direction = clamp(num(anim.direction) || 1, 1, 4);
-			const intensity = Math.max(0, num(anim.intensity));
+    9: {
+        name: "peekIn",
+        query: [
+            {
+                name: "direction",
+                label: "Direction",
+                type: "selection",
+                choice: [
+                    { label: "Top", value: 1 },
+                    { label: "Right", value: 2 },
+                    { label: "Bottom", value: 3 },
+                    { label: "Left", value: 4 }
+                ]
+            },
+            {
+                name: "intensity",
+                label: "Distance",
+                type: "integer/noNeg",
+                default: 40
+            }
+        ],
+        variables: function (anim) {
+            const direction = clamp(num(anim.direction) || 1, 1, 4);
+            const intensity = Math.max(0, num(anim.intensity));
 
-			const dirs = [
-				[0, -1],
-				[1, 0],
-				[0, 1],
-				[-1, 0]
-			];
+            const dirs = [
+                [0, -1],
+                [1, 0],
+                [0, 1],
+                [-1, 0]
+            ];
 
-			const d = dirs[direction - 1];
+            const d = dirs[direction - 1];
 
-			const clip = [
-				"inset(100% 0 0 0)",
-				"inset(0 0 0 100%)",
-				"inset(0 0 100% 0)",
-				"inset(0 100% 0 0)"
-			];
+            const clip = [
+                "inset(100% 0 0 0)",
+                "inset(0 0 0 100%)",
+                "inset(0 0 100% 0)",
+                "inset(0 100% 0 0)"
+            ];
 
-			return (
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-peekIn-x:${d[0] * intensity}px;` +
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-peekIn-y:${d[1] * intensity}px;` +
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-peekIn-from:${clip[direction - 1]};`
-			);
-		},
-		cssRawCode: `
+            return (
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-peekIn-x:${d[0] * intensity}px;` +
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-peekIn-y:${d[1] * intensity}px;` +
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-peekIn-from:${clip[direction - 1]};`
+            );
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 				transform: translate(
@@ -14060,49 +14058,49 @@ export const flexEngineDefaultAnimation = {
 				transform: translate(0, 0);
 				clip-path: inset(0 0 0 0);
 			}`,
-		setting: {}
-	},
+        setting: {}
+    },
 
-	10: {
-		name: "box",
-		query: [
-			{
-				name: "x",
-				label: "Horizontal Origin",
-				type: "selection",
-				choice: [
-					{ label: "Right", value: 1 },
-					{ label: "Center", value: 2 },
-					{ label: "Left", value: 3 }
-				]
-			},
-			{
-				name: "y",
-				label: "Vertical Origin",
-				type: "selection",
-				choice: [
-					{ label: "Bottom", value: 1 },
-					{ label: "Center", value: 2 },
-					{ label: "Top", value: 3 }
-				]
-			}
-		],
-		variables: function(anim) {
-			const xIndex = clamp(num(anim.x) || 1, 1, 3);
-			const yIndex = clamp(num(anim.y) || 1, 1, 3);
+    10: {
+        name: "box",
+        query: [
+            {
+                name: "x",
+                label: "Horizontal Origin",
+                type: "selection",
+                choice: [
+                    { label: "Right", value: 1 },
+                    { label: "Center", value: 2 },
+                    { label: "Left", value: 3 }
+                ]
+            },
+            {
+                name: "y",
+                label: "Vertical Origin",
+                type: "selection",
+                choice: [
+                    { label: "Bottom", value: 1 },
+                    { label: "Center", value: 2 },
+                    { label: "Top", value: 3 }
+                ]
+            }
+        ],
+        variables: function (anim) {
+            const xIndex = clamp(num(anim.x) || 1, 1, 3);
+            const yIndex = clamp(num(anim.y) || 1, 1, 3);
 
-			const map = {
-				1: "100%",
-				2: "50%",
-				3: "0%"
-			};
+            const map = {
+                1: "100%",
+                2: "50%",
+                3: "0%"
+            };
 
-			return (
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-box-x:${map[xIndex]};` +
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-box-y:${map[yIndex]};`
-			);
-		},
-		cssRawCode: `
+            return (
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-box-x:${map[xIndex]};` +
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-box-y:${map[yIndex]};`
+            );
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 				clip-path: inset(
@@ -14116,16 +14114,16 @@ export const flexEngineDefaultAnimation = {
 				opacity: 1;
 				clip-path: inset(0 0 0 0);
 			}`,
-		setting: {}
-	},
+        setting: {}
+    },
 
-	11: {
-		name: "expand",
-		query: [],
-		variables: function(anim) {
-			return "";
-		},
-		cssRawCode: `
+    11: {
+        name: "expand",
+        query: [],
+        variables: function (anim) {
+            return "";
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 				transform: scale(0);
@@ -14134,50 +14132,50 @@ export const flexEngineDefaultAnimation = {
 				opacity: 1;
 				transform: scale(1);
 			}`,
-		setting: {}
-	},
+        setting: {}
+    },
 
-	12: {
-		name: "tumble",
-		query: [
-			{
-				name: "directionRight",
-				label: "Direction Right?",
-				type: "selection",
-				choice: [
-					{ label: "Left", value: 0 },
-					{ label: "Right", value: 1 }
-				]
-			},
-			{
-				name: "fromUp",
-				label: "From Up?",
-				type: "selection",
-				choice: [
-					{ label: "No", value: 0 },
-					{ label: "Yes", value: 1 }
-				]
-			},
-			{
-				name: "rotateIntensity",
-				label: "Rotate Deg",
-				type: "integer",
-				default: -120
-			}
-		],
-		variables: function(anim) {
-			const directionRight = anim.directionRight ? 1 : 0;
-			const fromUp = anim.fromUp ? 1 : 0;
-			const intensity = num(anim.rotateIntensity);
+    12: {
+        name: "tumble",
+        query: [
+            {
+                name: "directionRight",
+                label: "Direction Right?",
+                type: "selection",
+                choice: [
+                    { label: "Left", value: 0 },
+                    { label: "Right", value: 1 }
+                ]
+            },
+            {
+                name: "fromUp",
+                label: "From Up?",
+                type: "selection",
+                choice: [
+                    { label: "No", value: 0 },
+                    { label: "Yes", value: 1 }
+                ]
+            },
+            {
+                name: "rotateIntensity",
+                label: "Rotate Deg",
+                type: "integer",
+                default: -120
+            }
+        ],
+        variables: function (anim) {
+            const directionRight = anim.directionRight ? 1 : 0;
+            const fromUp = anim.fromUp ? 1 : 0;
+            const intensity = num(anim.rotateIntensity);
 
-			return (
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-tumble-x:${directionRight ? 40 : -40}px;` +
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-tumble-y:${fromUp ? -40 : 40}px;` +
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-tumble-intensity:${intensity}deg;` +
-				`transform-origin:top left;`
-			);
-		},
-		cssRawCode: `
+            return (
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-tumble-x:${directionRight ? 40 : -40}px;` +
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-tumble-y:${fromUp ? -40 : 40}px;` +
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-tumble-intensity:${intensity}deg;` +
+                `transform-origin:top left;`
+            );
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 				transform-origin: top left;
@@ -14194,38 +14192,38 @@ export const flexEngineDefaultAnimation = {
 				opacity: 1;
 				transform: translate(0, 0) rotate(0deg);
 			}`,
-		setting: {}
-	},
+        setting: {}
+    },
 
-	13: {
-		name: "rotate",
-		query: [
-			{
-				name: "directionRight",
-				label: "Direction Right?",
-				type: "selection",
-				choice: [
-					{ label: "Left", value: 0 },
-					{ label: "Right", value: 1 }
-				]
-			},
-			{
-				name: "rotateIntensity",
-				label: "Rotate Deg",
-				type: "integer",
-				default: 180
-			}
-		],
-		variables: function(anim) {
-			const directionRight = anim.directionRight ? 1 : 0;
-			const intensity = num(anim.rotateIntensity);
+    13: {
+        name: "rotate",
+        query: [
+            {
+                name: "directionRight",
+                label: "Direction Right?",
+                type: "selection",
+                choice: [
+                    { label: "Left", value: 0 },
+                    { label: "Right", value: 1 }
+                ]
+            },
+            {
+                name: "rotateIntensity",
+                label: "Rotate Deg",
+                type: "integer",
+                default: 180
+            }
+        ],
+        variables: function (anim) {
+            const directionRight = anim.directionRight ? 1 : 0;
+            const intensity = num(anim.rotateIntensity);
 
-			return (
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-rotate-intensity:${directionRight ? intensity : -intensity}deg;` +
-				`transform-origin:center center;`
-			);
-		},
-		cssRawCode: `
+            return (
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-rotate-intensity:${directionRight ? intensity : -intensity}deg;` +
+                `transform-origin:center center;`
+            );
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 				transform:
@@ -14238,44 +14236,44 @@ export const flexEngineDefaultAnimation = {
 				opacity: 1;
 				transform: translateY(0) rotate(0deg);
 			}`,
-		setting: {}
-	},
+        setting: {}
+    },
 
-	14: {
-		name: "slideRotate",
-		query: [
-			{
-				name: "rotateIntensity",
-				label: "Rotate Deg",
-				type: "integer",
-				default: 180
-			},
-			{
-				name: "slideAmountX",
-				label: "Slide X",
-				type: "integer",
-				default: 0
-			},
-			{
-				name: "slideAmountY",
-				label: "Slide Y",
-				type: "integer",
-				default: 100
-			}
-		],
-		variables: function(anim) {
-			const intensity = num(anim.rotateIntensity);
-			const slideX = num(anim.slideAmountX);
-			const slideY = num(anim.slideAmountY);
+    14: {
+        name: "slideRotate",
+        query: [
+            {
+                name: "rotateIntensity",
+                label: "Rotate Deg",
+                type: "integer",
+                default: 180
+            },
+            {
+                name: "slideAmountX",
+                label: "Slide X",
+                type: "integer",
+                default: 0
+            },
+            {
+                name: "slideAmountY",
+                label: "Slide Y",
+                type: "integer",
+                default: 100
+            }
+        ],
+        variables: function (anim) {
+            const intensity = num(anim.rotateIntensity);
+            const slideX = num(anim.slideAmountX);
+            const slideY = num(anim.slideAmountY);
 
-			return (
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-slideRotate-intensity:${intensity}deg;` +
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-slideRotate-slideX:${slideX}px;` +
-				`--${BUILDER_CONFIG.classPrefix}animation-variables-slideRotate-slideY:${slideY}px;` +
-				`transform-origin:center center;`
-			);
-		},
-		cssRawCode: `
+            return (
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-slideRotate-intensity:${intensity}deg;` +
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-slideRotate-slideX:${slideX}px;` +
+                `--${BUILDER_CONFIG.classPrefix}animation-variables-slideRotate-slideY:${slideY}px;` +
+                `transform-origin:center center;`
+            );
+        },
+        cssRawCode: `
 			from {
 				opacity: 0;
 				transform:
@@ -14291,1478 +14289,1478 @@ export const flexEngineDefaultAnimation = {
 				opacity: 1;
 				transform: translate(0, 0) rotate(0deg);
 			}`,
-		setting: {}
-	}
+        setting: {}
+    }
 };
 
 
 // Animation
 export const flexEngineAnimation = {
-	name: "animation",
-
-	// selfQuery and allQuery, 
-	// however those were demytric, we use get name().
-	get selfQuery() {
-		let query = [
-			{
-				name: "animationType",
-				label: "Animation",
-				type: "selection",
-				choice: [
-					{
-						name: "Inherit",
-						value: -1
-					},
-					...Object.keys(flexEngineDefaultAnimation).map(key => ({
-						name: flexEngineDefaultAnimation[key].name,
-						value: Number(key)
-					}))
-				],
-				default: 1
-			},
-
-			{
-				name: "animationCurve",
-				label: "Curve",
-				type: "curve",
-				visibleIf: {
-					name: "animationType",
-					value: [
-						0, 1, 2, 3, 4, 5, 6, 7,
-						8, 9, 10, 11, 12, 13, 14
-					]
-				}
-			},
-
-			{
-				name: "duration",
-				label: "Duration",
-				type: "number",
-				default: 0.6,
-				visibleIf: {
-					name: "animationType",
-					value: [
-						0, 1, 2, 3, 4, 5, 6, 7,
-						8, 9, 10, 11, 12, 13, 14
-					]
-				}
-			},
-
-			{
-				name: "delayTime",
-				label: "Delay",
-				type: "number",
-				default: 0,
-				visibleIf: {
-					name: "animationType",
-					value: [
-						0, 1, 2, 3, 4, 5, 6, 7,
-						8, 9, 10, 11, 12, 13, 14
-					]
-				}
-			},
-
-			{
-				name: "trigger",
-				label: "Trigger",
-				type: "integer",
-				default: 1,
-				visibleIf: {
-					name: "animationType",
-					value: [
-						0, 1, 2, 3, 4, 5, 6, 7,
-						8, 9, 10, 11, 12, 13, 14
-					]
-				}
-			}
-		];
-
-		const optionalQueryMap = {};
-		const optionalQueryOrder = [];
-
-		Object.keys(flexEngineDefaultAnimation).forEach(function(key) {
-
-			const animationType = Number(key);
-			const animation = flexEngineDefaultAnimation[animationType];
-
-			if (!animation || !Array.isArray(animation.query)) {
-				return;
-			}
-
-			animation.query.forEach(function(animationQuery) {
-
-				if (!animationQuery || !animationQuery.name) {
-					return;
-				}
-
-				const name = animationQuery.name;
-
-				if (!optionalQueryMap[name]) {
-
-					optionalQueryMap[name] = {
-						...animationQuery,
-						visibleIf: {
-							name: "animationType",
-							value: [animationType]
-						}
-					};
-
-					optionalQueryOrder.push(name);
-
-				} else {
-
-					optionalQueryMap[name].visibleIf.value.push(animationType);
-
-				}
-
-			});
-
-		});
-
-		optionalQueryOrder.forEach(function(name) {
-			query.push(optionalQueryMap[name]);
-		});
-
-		return query;
-	},
-	
-	get allQuery() {
-		const query = [
-			{
-				name: "animationType",
-				label: "Animation",
-				type: "selection",
-				choice: Object.keys(flexEngineDefaultAnimation).map(key => ({
-					name: flexEngineDefaultAnimation[key].name,
-					value: Number(key)
-				}))
-			},
-
-			{
-				name: "animationCurve",
-				label: "Curve",
-				type: "curve"
-			},
-
-			{
-				name: "duration",
-				label: "Duration",
-				type: "number",
-				default: 0.6
-			},
-
-			{
-				name: "delayTime",
-				label: "First Delay",
-				type: "number",
-				default: 0
-			},
-
-			{
-				name: "executionInterval",
-				label: "Execution Interval",
-				type: "number",
-				default: 0
-			},
-
-			{
-				name: "trigger",
-				label: "Trigger",
-				type: "integer",
-				default: 1
-			}
-		];
-
-
-		/*
-			Keep track of which animation IDs
-			contain each optional query.
-
-			Example:
-
-			{
-				direction: {
-					query: {...},
-					animationTypes: [2, 6, 7, 8, 9]
-				}
-			}
-		*/
-		const optionalQueries = new Map();
-
-
-		/*
-			Check every animation.
-		*/
-		Object.keys(flexEngineDefaultAnimation).forEach(key => {
-
-			const animationNumber = Number(key);
-			const animation =
-				flexEngineDefaultAnimation[animationNumber];
-
-			/*
-				Check every optional query belonging
-				to this animation.
-			*/
-			(animation.query || []).forEach(animationQuery => {
-
-				const name = animationQuery.name;
-
-				/*
-					First definition wins.
-
-					If another animation later uses the
-					same name, we DO NOT replace the query.
-				*/
-				if (!optionalQueries.has(name)) {
-
-					optionalQueries.set(name, {
-						query: {
-							...animationQuery
-						},
-						animationTypes: [
-							animationNumber
-						]
-					});
-
-					return;
-				}
-
-
-				/*
-					Same variable already exists.
-
-					Only add this animation number.
-				*/
-				const existing =
-					optionalQueries.get(name);
-
-				if (
-					!existing.animationTypes.includes(
-						animationNumber
-					)
-				) {
-					existing.animationTypes.push(
-						animationNumber
-					);
-				}
-
-			});
-
-		});
-
-
-		/*
-			Convert the collected optional queries
-			into actual query definitions.
-		*/
-		optionalQueries.forEach(function(data) {
-
-			const optionalQuery = {
-				...data.query,
-
-				visibleIf: {
-					name: "animationType",
-					value: data.animationTypes
-				}
-			};
-
-			query.push(optionalQuery);
-
-		});
-
-
-		return query;
-	},
-
-	// render part.
-	render: {
-		// Animation completely disabled.
-		0: function(dataArray, node) {
-			const prefix = BUILDER_CONFIG.classPrefix;
-
-			node.setAttribute(
-				`${prefix}animation-config-self`,
-				""
-			);
-
-			node.setAttribute(
-				`${prefix}animation-config-self-trigger`,
-				""
-			);
-
-			node.setAttribute(
-				`${prefix}animation-config-all`,
-				""
-			);
-
-			node.setAttribute(
-				`${prefix}animation-config-all-trigger`,
-				""
-			);
-
-			node.setAttribute(
-				`${prefix}animation-config-all-firstdelay`,
-				""
-			);
-
-			node.setAttribute(
-				`${prefix}animation-config-all-timeRange`,
-				""
-			);
-
-			return;			
-		},
-
-		// Animation enabled for this node itself
-		1: function(dataArray, node) {
-			const prefix = BUILDER_CONFIG.classPrefix;
-
-			const attrName = `${prefix}animation-config-self`;
-			const triggerAttr = `${prefix}animation-config-self-trigger`;
-
-			const anim = dataArray.animation;
-
-			/*
-				Inherit animation from another animation context.
-
-				This must happen before resolving animationType,
-				variables, curve, duration, etc.
-			*/
-			if (Number(anim.animationType) === -1) {
-				node.setAttribute(attrName, "inherit");
-				node.setAttribute(triggerAttr, "");
-				return;
-			}
-
-
-			/*
-				Resolve animation type.
-
-				Animation IDs:
-				0  showup
-				1  fade
-				2  flyIn
-				3  growTurn
-				4  zoom
-				5  basicZoom
-				6  rise
-				7  stretch
-				8  wipe
-				9  peekIn
-				10 box
-				11 expand
-				12 tumble
-				13 rotate
-				14 slideRotate
-			*/
-			let animationNumber = Number(anim.animationType);
-
-			if (!Number.isInteger(animationNumber) || !flexEngineDefaultAnimation[animationNumber]) {
-				animationNumber = 1;
-			}
-
-			const entry = flexEngineDefaultAnimation[animationNumber];
-
-
-			/*
-				Build animation-specific CSS variables.
-			*/
-			let cssVars = "";
-
-			if (typeof entry.variables === "function") {
-				try {
-					cssVars = entry.variables(anim) || "";
-				}
-				catch (e) {
-					cssVars = "";
-				}
-			}
-
-
-			/*
-				Animation duration.
-
-				If the animation's setting explicitly overrides
-				the time, use that value instead of anim.duration.
-
-				Example:
-				showup -> timeOverride = true
-				showup -> timeOverrideSeconds = 0
-
-				So showup always uses 0s regardless of anim.duration.
-			*/
-			let duration;
-
-			if (
-				entry.setting &&
-				entry.setting.timeOverride === true
-			) {
-				duration = `${entry.setting.timeOverrideSeconds}s`;
-			}
-			else {
-				duration = `${num(anim.duration) || 0.6}s`;
-			}
-
-
-			/*
-				Animation curve.
-
-				anim.animationCurve is the raw curve data/array.
-
-				Do NOT treat it as the final CSS string.
-
-				The curve renderer converts the stored data
-				into the actual CSS timing-function value.
-			*/
-			let curve = "";
-
-			try {
-				curve = flexEngineDefaultVariables.curve.curve.render(
-					anim.animationCurve
-				) || "";
-			}
-			catch (e) {
-				curve = "";
-			}
+    name: "animation",
+
+    // selfQuery and allQuery, 
+    // however those were demytric, we use get name().
+    get selfQuery() {
+        let query = [
+            {
+                name: "animationType",
+                label: "Animation",
+                type: "selection",
+                choice: [
+                    {
+                        name: "Inherit",
+                        value: -1
+                    },
+                    ...Object.keys(flexEngineDefaultAnimation).map(key => ({
+                        name: flexEngineDefaultAnimation[key].name,
+                        value: Number(key)
+                    }))
+                ],
+                default: 1
+            },
+
+            {
+                name: "animationCurve",
+                label: "Curve",
+                type: "curve",
+                visibleIf: {
+                    name: "animationType",
+                    value: [
+                        0, 1, 2, 3, 4, 5, 6, 7,
+                        8, 9, 10, 11, 12, 13, 14
+                    ]
+                }
+            },
+
+            {
+                name: "duration",
+                label: "Duration",
+                type: "number",
+                default: 0.6,
+                visibleIf: {
+                    name: "animationType",
+                    value: [
+                        0, 1, 2, 3, 4, 5, 6, 7,
+                        8, 9, 10, 11, 12, 13, 14
+                    ]
+                }
+            },
+
+            {
+                name: "delayTime",
+                label: "Delay",
+                type: "number",
+                default: 0,
+                visibleIf: {
+                    name: "animationType",
+                    value: [
+                        0, 1, 2, 3, 4, 5, 6, 7,
+                        8, 9, 10, 11, 12, 13, 14
+                    ]
+                }
+            },
+
+            {
+                name: "trigger",
+                label: "Trigger",
+                type: "integer",
+                default: 1,
+                visibleIf: {
+                    name: "animationType",
+                    value: [
+                        0, 1, 2, 3, 4, 5, 6, 7,
+                        8, 9, 10, 11, 12, 13, 14
+                    ]
+                }
+            }
+        ];
+
+        const optionalQueryMap = {};
+        const optionalQueryOrder = [];
+
+        Object.keys(flexEngineDefaultAnimation).forEach(function (key) {
+
+            const animationType = Number(key);
+            const animation = flexEngineDefaultAnimation[animationType];
+
+            if (!animation || !Array.isArray(animation.query)) {
+                return;
+            }
+
+            animation.query.forEach(function (animationQuery) {
+
+                if (!animationQuery || !animationQuery.name) {
+                    return;
+                }
+
+                const name = animationQuery.name;
+
+                if (!optionalQueryMap[name]) {
+
+                    optionalQueryMap[name] = {
+                        ...animationQuery,
+                        visibleIf: {
+                            name: "animationType",
+                            value: [animationType]
+                        }
+                    };
+
+                    optionalQueryOrder.push(name);
+
+                } else {
+
+                    optionalQueryMap[name].visibleIf.value.push(animationType);
+
+                }
+
+            });
+
+        });
+
+        optionalQueryOrder.forEach(function (name) {
+            query.push(optionalQueryMap[name]);
+        });
+
+        return query;
+    },
+
+    get allQuery() {
+        const query = [
+            {
+                name: "animationType",
+                label: "Animation",
+                type: "selection",
+                choice: Object.keys(flexEngineDefaultAnimation).map(key => ({
+                    name: flexEngineDefaultAnimation[key].name,
+                    value: Number(key)
+                }))
+            },
+
+            {
+                name: "animationCurve",
+                label: "Curve",
+                type: "curve"
+            },
+
+            {
+                name: "duration",
+                label: "Duration",
+                type: "number",
+                default: 0.6
+            },
+
+            {
+                name: "delayTime",
+                label: "First Delay",
+                type: "number",
+                default: 0
+            },
+
+            {
+                name: "executionInterval",
+                label: "Execution Interval",
+                type: "number",
+                default: 0
+            },
+
+            {
+                name: "trigger",
+                label: "Trigger",
+                type: "integer",
+                default: 1
+            }
+        ];
+
+
+        /*
+            Keep track of which animation IDs
+            contain each optional query.
+
+            Example:
+
+            {
+                direction: {
+                    query: {...},
+                    animationTypes: [2, 6, 7, 8, 9]
+                }
+            }
+        */
+        const optionalQueries = new Map();
+
+
+        /*
+            Check every animation.
+        */
+        Object.keys(flexEngineDefaultAnimation).forEach(key => {
+
+            const animationNumber = Number(key);
+            const animation =
+                flexEngineDefaultAnimation[animationNumber];
+
+            /*
+                Check every optional query belonging
+                to this animation.
+            */
+            (animation.query || []).forEach(animationQuery => {
+
+                const name = animationQuery.name;
+
+                /*
+                    First definition wins.
+
+                    If another animation later uses the
+                    same name, we DO NOT replace the query.
+                */
+                if (!optionalQueries.has(name)) {
+
+                    optionalQueries.set(name, {
+                        query: {
+                            ...animationQuery
+                        },
+                        animationTypes: [
+                            animationNumber
+                        ]
+                    });
+
+                    return;
+                }
+
+
+                /*
+                    Same variable already exists.
+
+                    Only add this animation number.
+                */
+                const existing =
+                    optionalQueries.get(name);
+
+                if (
+                    !existing.animationTypes.includes(
+                        animationNumber
+                    )
+                ) {
+                    existing.animationTypes.push(
+                        animationNumber
+                    );
+                }
+
+            });
+
+        });
+
+
+        /*
+            Convert the collected optional queries
+            into actual query definitions.
+        */
+        optionalQueries.forEach(function (data) {
+
+            const optionalQuery = {
+                ...data.query,
+
+                visibleIf: {
+                    name: "animationType",
+                    value: data.animationTypes
+                }
+            };
+
+            query.push(optionalQuery);
+
+        });
+
+
+        return query;
+    },
+
+    // render part.
+    render: {
+        // Animation completely disabled.
+        0: function (dataArray, node) {
+            const prefix = BUILDER_CONFIG.classPrefix;
+
+            node.setAttribute(
+                `${prefix}animation-config-self`,
+                ""
+            );
+
+            node.setAttribute(
+                `${prefix}animation-config-self-trigger`,
+                ""
+            );
+
+            node.setAttribute(
+                `${prefix}animation-config-all`,
+                ""
+            );
+
+            node.setAttribute(
+                `${prefix}animation-config-all-trigger`,
+                ""
+            );
+
+            node.setAttribute(
+                `${prefix}animation-config-all-firstdelay`,
+                ""
+            );
+
+            node.setAttribute(
+                `${prefix}animation-config-all-timeRange`,
+                ""
+            );
+
+            return;
+        },
+
+        // Animation enabled for this node itself
+        1: function (dataArray, node) {
+            const prefix = BUILDER_CONFIG.classPrefix;
+
+            const attrName = `${prefix}animation-config-self`;
+            const triggerAttr = `${prefix}animation-config-self-trigger`;
+
+            const anim = dataArray.animation;
+
+            /*
+                Inherit animation from another animation context.
+
+                This must happen before resolving animationType,
+                variables, curve, duration, etc.
+            */
+            if (Number(anim.animationType) === -1) {
+                node.setAttribute(attrName, "inherit");
+                node.setAttribute(triggerAttr, "");
+                return;
+            }
+
+
+            /*
+                Resolve animation type.
+
+                Animation IDs:
+                0  showup
+                1  fade
+                2  flyIn
+                3  growTurn
+                4  zoom
+                5  basicZoom
+                6  rise
+                7  stretch
+                8  wipe
+                9  peekIn
+                10 box
+                11 expand
+                12 tumble
+                13 rotate
+                14 slideRotate
+            */
+            let animationNumber = Number(anim.animationType);
+
+            if (!Number.isInteger(animationNumber) || !flexEngineDefaultAnimation[animationNumber]) {
+                animationNumber = 1;
+            }
+
+            const entry = flexEngineDefaultAnimation[animationNumber];
+
+
+            /*
+                Build animation-specific CSS variables.
+            */
+            let cssVars = "";
+
+            if (typeof entry.variables === "function") {
+                try {
+                    cssVars = entry.variables(anim) || "";
+                }
+                catch (e) {
+                    cssVars = "";
+                }
+            }
+
+
+            /*
+                Animation duration.
+
+                If the animation's setting explicitly overrides
+                the time, use that value instead of anim.duration.
+
+                Example:
+                showup -> timeOverride = true
+                showup -> timeOverrideSeconds = 0
+
+                So showup always uses 0s regardless of anim.duration.
+            */
+            let duration;
+
+            if (
+                entry.setting &&
+                entry.setting.timeOverride === true
+            ) {
+                duration = `${entry.setting.timeOverrideSeconds}s`;
+            }
+            else {
+                duration = `${num(anim.duration) || 0.6}s`;
+            }
+
+
+            /*
+                Animation curve.
+
+                anim.animationCurve is the raw curve data/array.
+
+                Do NOT treat it as the final CSS string.
 
+                The curve renderer converts the stored data
+                into the actual CSS timing-function value.
+            */
+            let curve = "";
 
-			/*
-				Animation delay.
-			*/
-			const delay = `${anim.delayTime || 0}s`;
+            try {
+                curve = flexEngineDefaultVariables.curve.curve.render(
+                    anim.animationCurve
+                ) || "";
+            }
+            catch (e) {
+                curve = "";
+            }
 
-
-			/*
-				Build final animation shorthand.
-			*/
-			const animationName = entry.name;
 
-			const cssAnim =
-				`animation:${prefix}animation-${animationName} ` +
-				`${duration} ${curve} ${delay} 1 normal both;`;
+            /*
+                Animation delay.
+            */
+            const delay = `${anim.delayTime || 0}s`;
 
 
-			/*
-				Write final attributes.
-			*/
-			node.setAttribute(
-				attrName,
-				cssVars + cssAnim
-			);
+            /*
+                Build final animation shorthand.
+            */
+            const animationName = entry.name;
 
-			node.setAttribute(
-				triggerAttr,
-				anim.trigger || 1
-			);
-		},
-
-		// Animation enabled as a SECTION.
-		2: function(dataArray, node, expend = true) {
-			const prefix = BUILDER_CONFIG.classPrefix;
-
-			const attrSelf = `${prefix}animation-config-self`;
-			const attrSelfTrigger = `${prefix}animation-config-self-trigger`;
+            const cssAnim =
+                `animation:${prefix}animation-${animationName} ` +
+                `${duration} ${curve} ${delay} 1 normal both;`;
 
-			const attrAll = `${prefix}animation-config-all`;
-			const attrAllTrigger = `${prefix}animation-config-all-trigger`;
 
-			const attrFirstDelay = `${prefix}animation-config-all-firstdelay`;
-			const attrTimeRange = `${prefix}animation-config-all-timeRange`;
+            /*
+                Write final attributes.
+            */
+            node.setAttribute(
+                attrName,
+                cssVars + cssAnim
+            );
 
-			const attrInherit = `${prefix}animation-self-inherit`;
+            node.setAttribute(
+                triggerAttr,
+                anim.trigger || 1
+            );
+        },
 
-			if (!node || !dataArray) {
-				return;
-			}
+        // Animation enabled as a SECTION.
+        2: function (dataArray, node, expend = true) {
+            const prefix = BUILDER_CONFIG.classPrefix;
 
-			const animationData = dataArray.animation || {};
+            const attrSelf = `${prefix}animation-config-self`;
+            const attrSelfTrigger = `${prefix}animation-config-self-trigger`;
 
+            const attrAll = `${prefix}animation-config-all`;
+            const attrAllTrigger = `${prefix}animation-config-all-trigger`;
 
-			const selfData = structuredClone(dataArray);
+            const attrFirstDelay = `${prefix}animation-config-all-firstdelay`;
+            const attrTimeRange = `${prefix}animation-config-all-timeRange`;
 
-			selfData.animation = animationData.self || {};
+            const attrInherit = `${prefix}animation-self-inherit`;
 
-			flexEngineAnimation.render[1](selfData, node);
+            if (!node || !dataArray) {
+                return;
+            }
 
-			const allAnimation = animationData.all;
+            const animationData = dataArray.animation || {};
 
-			if (!allAnimation) {
-				node.setAttribute(attrAll, "");
-				node.setAttribute(attrAllTrigger, "");
-				node.setAttribute(attrFirstDelay, "");
-				node.setAttribute(attrTimeRange, "");
 
-				if (expend === true) {
-					flexEngineAnimation.applySectionAnimation(node);
-				}
+            const selfData = structuredClone(dataArray);
 
-				return;
-			}
+            selfData.animation = animationData.self || {};
 
+            flexEngineAnimation.render[1](selfData, node);
 
-			if (Number(allAnimation.animationType) === -1) {
-				node.setAttribute(attrAll, "inherit");
-				node.setAttribute(attrAllTrigger, "");
+            const allAnimation = animationData.all;
 
-				node.setAttribute(attrFirstDelay, "");
-				node.setAttribute(attrTimeRange, "");
+            if (!allAnimation) {
+                node.setAttribute(attrAll, "");
+                node.setAttribute(attrAllTrigger, "");
+                node.setAttribute(attrFirstDelay, "");
+                node.setAttribute(attrTimeRange, "");
 
-				return;
-			}
+                if (expend === true) {
+                    flexEngineAnimation.applySectionAnimation(node);
+                }
 
+                return;
+            }
 
-			let animationNumber = Number(allAnimation.animationType);
 
-			if (
-				!Number.isInteger(animationNumber) ||
-				!flexEngineDefaultAnimation[animationNumber]
-			) {
-				animationNumber = 1;
-			}
-
-			const entry = flexEngineDefaultAnimation[animationNumber];
+            if (Number(allAnimation.animationType) === -1) {
+                node.setAttribute(attrAll, "inherit");
+                node.setAttribute(attrAllTrigger, "");
 
+                node.setAttribute(attrFirstDelay, "");
+                node.setAttribute(attrTimeRange, "");
 
-			let cssVars = "";
+                return;
+            }
 
-			if (typeof entry.variables === "function") {
-				try {
-					cssVars = entry.variables(allAnimation) || "";
-				} catch (e) {
-					cssVars = "";
-				}
-			}
 
+            let animationNumber = Number(allAnimation.animationType);
 
-			let duration;
+            if (
+                !Number.isInteger(animationNumber) ||
+                !flexEngineDefaultAnimation[animationNumber]
+            ) {
+                animationNumber = 1;
+            }
 
-			if (
-				entry.setting &&
-				entry.setting.timeOverride === true
-			) {
-				duration =
-					`${num(entry.setting.timeOverrideSeconds) || 0}s`;
-			} else {
-				duration =
-					`${num(allAnimation.duration) || 0.6}s`;
-			}
+            const entry = flexEngineDefaultAnimation[animationNumber];
 
 
-			let curve = "";
+            let cssVars = "";
 
-			try {
-				curve =
-					flexEngineDefaultVariables.curve.curve.render(
-						allAnimation.animationCurve
-					) || "";
-			} catch (e) {
-				curve = "";
-			}
+            if (typeof entry.variables === "function") {
+                try {
+                    cssVars = entry.variables(allAnimation) || "";
+                } catch (e) {
+                    cssVars = "";
+                }
+            }
 
 
-			const animationName = entry.name;
+            let duration;
 
-			const cssAnim =
-				`animation:${prefix}animation-${animationName} ` +
-				`${duration} ${curve} <delay>s 1 normal both;`;
+            if (
+                entry.setting &&
+                entry.setting.timeOverride === true
+            ) {
+                duration =
+                    `${num(entry.setting.timeOverrideSeconds) || 0}s`;
+            } else {
+                duration =
+                    `${num(allAnimation.duration) || 0.6}s`;
+            }
 
 
-			node.setAttribute(
-				attrAll,
-				cssVars + cssAnim
-			);
+            let curve = "";
 
-			node.setAttribute(
-				attrAllTrigger,
-				allAnimation.trigger || 1
-			);
+            try {
+                curve =
+                    flexEngineDefaultVariables.curve.curve.render(
+                        allAnimation.animationCurve
+                    ) || "";
+            } catch (e) {
+                curve = "";
+            }
 
 
-			node.setAttribute(
-				attrFirstDelay,
-				num(allAnimation.delayTime) || 0
-			);
+            const animationName = entry.name;
 
-			node.setAttribute(
-				attrTimeRange,
-				num(allAnimation.executionInterval) || 0
-			);
+            const cssAnim =
+                `animation:${prefix}animation-${animationName} ` +
+                `${duration} ${curve} <delay>s 1 normal both;`;
 
 
-			if (expend === true) {
-				flexEngineAnimation.applySectionAnimation(node);
-			};
-		},
-		
-		// Animation bepass, as inherit only.
-		3: function(dataArray, node) {
-			const prefix = BUILDER_CONFIG.classPrefix;
+            node.setAttribute(
+                attrAll,
+                cssVars + cssAnim
+            );
 
-			node.setAttribute(
-				`${prefix}animation-config-self`,
-				"inherit"
-			);
+            node.setAttribute(
+                attrAllTrigger,
+                allAnimation.trigger || 1
+            );
 
-			node.setAttribute(
-				`${prefix}animation-config-self-trigger`,
-				""
-			);
 
-			return;
-		},
+            node.setAttribute(
+                attrFirstDelay,
+                num(allAnimation.delayTime) || 0
+            );
 
-		// for unKnown node, if we cannot find one, atuo fallback.
-		"other": function(dataArray, node) {
-			return;
-		}
-	},
+            node.setAttribute(
+                attrTimeRange,
+                num(allAnimation.executionInterval) || 0
+            );
 
-	//this schema allow custom helper functions.
-	applySectionAnimation: function(node) {
-		const prefix = BUILDER_CONFIG.classPrefix;
 
-		const attrAll = `${prefix}animation-config-all`;
-		const attrAllTrigger = `${prefix}animation-config-all-trigger`;
+            if (expend === true) {
+                flexEngineAnimation.applySectionAnimation(node);
+            };
+        },
 
-		const attrSelf = `${prefix}animation-config-self`;
-		const attrSelfTrigger = `${prefix}animation-config-self-trigger`;
+        // Animation bepass, as inherit only.
+        3: function (dataArray, node) {
+            const prefix = BUILDER_CONFIG.classPrefix;
 
-		const attrFirstDelay = `${prefix}animation-config-all-firstdelay`;
-		const attrTimeRange = `${prefix}animation-config-all-timeRange`;
+            node.setAttribute(
+                `${prefix}animation-config-self`,
+                "inherit"
+            );
 
-		const attrInherit = `${prefix}animation-self-inherit`;
+            node.setAttribute(
+                `${prefix}animation-config-self-trigger`,
+                ""
+            );
 
-		const DELAY_PLACEHOLDER = "<delay>";
+            return;
+        },
 
+        // for unKnown node, if we cannot find one, atuo fallback.
+        "other": function (dataArray, node) {
+            return;
+        }
+    },
 
-		const allConfig = node.getAttribute(attrAll) || "";
-		const allTrigger = node.getAttribute(attrAllTrigger) || "";
+    //this schema allow custom helper functions.
+    applySectionAnimation: function (node) {
+        const prefix = BUILDER_CONFIG.classPrefix;
 
+        const attrAll = `${prefix}animation-config-all`;
+        const attrAllTrigger = `${prefix}animation-config-all-trigger`;
 
-		if (
-			!allConfig ||
-			allConfig === "inherit"
-		) {
-			return;
-		}
+        const attrSelf = `${prefix}animation-config-self`;
+        const attrSelfTrigger = `${prefix}animation-config-self-trigger`;
 
+        const attrFirstDelay = `${prefix}animation-config-all-firstdelay`;
+        const attrTimeRange = `${prefix}animation-config-all-timeRange`;
 
-		const parseNumber = function(value) {
-			if (value === null || value === undefined) {
-				return 0;
-			}
+        const attrInherit = `${prefix}animation-self-inherit`;
 
-			const parsed = parseFloat(
-				String(value).trim()
-			);
+        const DELAY_PLACEHOLDER = "<delay>";
 
-			return Number.isFinite(parsed)
-				? parsed
-				: 0;
-		};
 
-		const firstDelay = parseNumber(
-			node.getAttribute(attrFirstDelay)
-		);
+        const allConfig = node.getAttribute(attrAll) || "";
+        const allTrigger = node.getAttribute(attrAllTrigger) || "";
 
-		const timeRange = parseNumber(
-			node.getAttribute(attrTimeRange)
-		);
 
+        if (
+            !allConfig ||
+            allConfig === "inherit"
+        ) {
+            return;
+        }
 
-		let count = 0;
 
+        const parseNumber = function (value) {
+            if (value === null || value === undefined) {
+                return 0;
+            }
 
-		const walk = function(currentNode, depth) {
+            const parsed = parseFloat(
+                String(value).trim()
+            );
 
-			const currentInherit =
-				currentNode.getAttribute(attrInherit);
+            return Number.isFinite(parsed)
+                ? parsed
+                : 0;
+        };
 
-			const enabled =
-				currentInherit !== null &&
-				currentInherit !== "" &&
-				currentInherit !== "0";
+        const firstDelay = parseNumber(
+            node.getAttribute(attrFirstDelay)
+        );
 
-			if (enabled) {
+        const timeRange = parseNumber(
+            node.getAttribute(attrTimeRange)
+        );
 
-				currentNode.setAttribute(
-					attrInherit,
-					String(depth)
-				);
 
+        let count = 0;
 
-				const delayValue =
-					firstDelay + count * timeRange;
 
+        const walk = function (currentNode, depth) {
 
-				const selfConfig =
-					allConfig.replace(
-						new RegExp(DELAY_PLACEHOLDER, "g"),
-						String(delayValue)
-					);
+            const currentInherit =
+                currentNode.getAttribute(attrInherit);
 
-				currentNode.setAttribute(
-					attrSelf,
-					selfConfig
-				);
+            const enabled =
+                currentInherit !== null &&
+                currentInherit !== "" &&
+                currentInherit !== "0";
 
-				currentNode.setAttribute(
-					attrSelfTrigger,
-					allTrigger
-				);
+            if (enabled) {
 
+                currentNode.setAttribute(
+                    attrInherit,
+                    String(depth)
+                );
 
-				count++;
-			}
 
+                const delayValue =
+                    firstDelay + count * timeRange;
 
-			[...currentNode.children].forEach(child => {
-				walk(child, depth + 1);
-			});
-		};
 
+                const selfConfig =
+                    allConfig.replace(
+                        new RegExp(DELAY_PLACEHOLDER, "g"),
+                        String(delayValue)
+                    );
 
-		[...node.children].forEach(child => {
-			walk(child, 1);
-		});
-	}
+                currentNode.setAttribute(
+                    attrSelf,
+                    selfConfig
+                );
+
+                currentNode.setAttribute(
+                    attrSelfTrigger,
+                    allTrigger
+                );
+
+
+                count++;
+            }
+
+
+            [...currentNode.children].forEach(child => {
+                walk(child, depth + 1);
+            });
+        };
+
+
+        [...node.children].forEach(child => {
+            walk(child, 1);
+        });
+    }
 };
 
 
 // Trans. System
 export const flexEngineTransition = {
-	name: "transition",
+    name: "transition",
 
     // query
-	selfQuery: [
-
-		{
-			name: "inherit",
-			label: "Inherit",
-			type: "boolean/checkmark"
-		},
-
-		{
-			name: "property",
-			label: "Property",
-			type: "selection/popup",
-
-			catergory: [
-				{
-					label: "Basic",
-					choice: [
-						{ name: "all", label: "All" },
-						{ name: "opacity", label: "Opacity" },
-						{ name: "visibility", label: "Visibility" }
-					]
-				},
-
-				{
-					label: "Transform",
-					choice: [
-						{ name: "transform", label: "Transform" }
-					]
-				},
-
-				{
-					label: "Size",
-					choice: [
-						{ name: "width", label: "Width" },
-						{ name: "height", label: "Height" },
-						{ name: "min-width", label: "Minimum Width" },
-						{ name: "max-width", label: "Maximum Width" },
-						{ name: "min-height", label: "Minimum Height" },
-						{ name: "max-height", label: "Maximum Height" }
-					]
-				},
-
-				{
-					label: "Spacing",
-					choice: [
-						{ name: "padding", label: "Padding" },
-						{ name: "padding-top", label: "Padding Top" },
-						{ name: "padding-right", label: "Padding Right" },
-						{ name: "padding-bottom", label: "Padding Bottom" },
-						{ name: "padding-left", label: "Padding Left" }
-					]
-				},
-
-				{
-					label: "Background & Color",
-					choice: [
-						{ name: "background", label: "Background" },
-						{ name: "background-color", label: "Background Color" },
-						{ name: "color", label: "Text Color" },
-						{ name: "border-color", label: "Border Color" }
-					]
-				},
-
-				{
-					label: "Border",
-					choice: [
-						{ name: "border", label: "Border" },
-						{ name: "border-width", label: "Border Width" },
-						{ name: "border-top-width", label: "Top Border Width" },
-						{ name: "border-right-width", label: "Right Border Width" },
-						{ name: "border-bottom-width", label: "Bottom Border Width" },
-						{ name: "border-left-width", label: "Left Border Width" },
-						{ name: "border-radius", label: "Border Radius" }
-					]
-				},
-
-				{
-					label: "Shadow & Filter",
-					choice: [
-						{ name: "box-shadow", label: "Box Shadow" },
-						{ name: "filter", label: "Filter" },
-						{ name: "backdrop-filter", label: "Backdrop Filter" }
-					]
-				},
-
-				{
-					label: "Other",
-					choice: [
-						{ name: "font-size", label: "Font Size" },
-						{ name: "line-height", label: "Line Height" },
-						{ name: "letter-spacing", label: "Letter Spacing" },
-						{ name: "flex", label: "Flex" },
-						{ name: "flex-grow", label: "Flex Grow" },
-						{ name: "flex-shrink", label: "Flex Shrink" },
-						{ name: "gap", label: "Gap" }
-					]
-				}
-			],
-
-			default: [],
-
-			visibleIf: {
-				name: "inherit",
-				value: false
-			}
-		},
-
-		{
-			name: "duration",
-			label: "Duration",
-			type: "integer/noNeg",
-			default: 300,
-
-			visibleIf: {
-				name: "inherit",
-				value: false
-			}
-		},
-
-		{
-			name: "delay",
-			label: "Delay",
-			type: "integer/noNeg",
-			default: 0,
-
-			visibleIf: {
-				name: "inherit",
-				value: false
-			}
-		},
-
-		{
-			name: "curve",
-			label: "Timing Curve",
-			type: "curve/curve",
-
-			visibleIf: {
-				name: "inherit",
-				value: false
-			}
-		}
-	],
-
-	allQuery: [
-
-		{
-			name: "property",
-			label: "Property",
-			type: "selection/popup",
-
-			catergory: [
-				{
-					label: "Basic",
-					choice: [
-						{ name: "all", label: "All" },
-						{ name: "opacity", label: "Opacity" },
-						{ name: "visibility", label: "Visibility" }
-					]
-				},
-
-				{
-					label: "Transform",
-					choice: [
-						{ name: "transform", label: "Transform" }
-					]
-				},
-
-				{
-					label: "Size",
-					choice: [
-						{ name: "width", label: "Width" },
-						{ name: "height", label: "Height" },
-						{ name: "min-width", label: "Minimum Width" },
-						{ name: "max-width", label: "Maximum Width" },
-						{ name: "min-height", label: "Minimum Height" },
-						{ name: "max-height", label: "Maximum Height" }
-					]
-				},
-
-				{
-					label: "Spacing",
-					choice: [
-						{ name: "margin", label: "Margin" },
-						{ name: "margin-top", label: "Margin Top" },
-						{ name: "margin-right", label: "Margin Right" },
-						{ name: "margin-bottom", label: "Margin Bottom" },
-						{ name: "margin-left", label: "Margin Left" },
-
-						{ name: "padding", label: "Padding" },
-						{ name: "padding-top", label: "Padding Top" },
-						{ name: "padding-right", label: "Padding Right" },
-						{ name: "padding-bottom", label: "Padding Bottom" },
-						{ name: "padding-left", label: "Padding Left" }
-					]
-				},
-
-				{
-					label: "Background & Color",
-					choice: [
-						{ name: "background", label: "Background" },
-						{ name: "background-color", label: "Background Color" },
-						{ name: "color", label: "Text Color" },
-						{ name: "border-color", label: "Border Color" }
-					]
-				},
-
-				{
-					label: "Border",
-					choice: [
-						{ name: "border", label: "Border" },
-						{ name: "border-width", label: "Border Width" },
-						{ name: "border-top-width", label: "Top Border Width" },
-						{ name: "border-right-width", label: "Right Border Width" },
-						{ name: "border-bottom-width", label: "Bottom Border Width" },
-						{ name: "border-left-width", label: "Left Border Width" },
-						{ name: "border-radius", label: "Border Radius" }
-					]
-				},
-
-				{
-					label: "Shadow & Filter",
-					choice: [
-						{ name: "box-shadow", label: "Box Shadow" },
-						{ name: "filter", label: "Filter" },
-						{ name: "backdrop-filter", label: "Backdrop Filter" }
-					]
-				},
-
-				{
-					label: "Other",
-					choice: [
-						{ name: "font-size", label: "Font Size" },
-						{ name: "line-height", label: "Line Height" },
-						{ name: "letter-spacing", label: "Letter Spacing" },
-						{ name: "flex", label: "Flex" },
-						{ name: "flex-grow", label: "Flex Grow" },
-						{ name: "flex-shrink", label: "Flex Shrink" },
-						{ name: "gap", label: "Gap" }
-					]
-				}
-			],
-
-			default: []
-		},
-
-		{
-			name: "duration",
-			label: "Duration",
-			type: "integer/noNeg",
-			default: 300
-		},
-
-		{
-			name: "delay",
-			label: "Delay",
-			type: "integer/noNeg",
-			default: 0
-		},
-
-		{
-			name: "curve",
-			label: "Timing Curve",
-			type: "curve/curve"
-		}
-	],
-
-
-	// render
-	render: {
-
-		0: function(dataArray, node) {
-
-			if (!node) {
-				return;
-			}
-
-			const prefix =
-				BUILDER_CONFIG.classPrefix;
-
-			node.setAttribute(
-				`${prefix}transition-config-self`,
-				""
-			);
-
-			node.setAttribute(
-				`${prefix}transition-config-all`,
-				""
-			);
-
-			node.setAttribute(
-				`${prefix}transition-self-inherit`,
-				""
-			);
-
-			return;
-		},
-
-		1: function(dataArray, node) {
-
-			if (!node) {
-				return;
-			}
-
-			const prefix =
-				BUILDER_CONFIG.classPrefix;
-
-			const attrSelf =
-				`${prefix}transition-config-self`;
-
-			const attrInherit =
-				`${prefix}transition-self-inherit`;
-
-			const transition =
-				dataArray &&
-				dataArray.transition &&
-				dataArray.transition.self;
-
-
-			/*
-			 * Inherit from parent SECTION.
-			 */
-			if (
-				transition &&
-				transition.inherit === true
-			) {
-
-				node.setAttribute(
-					attrInherit,
-					"1"
-				);
-
-				node.setAttribute(
-					attrSelf,
-					"inherit"
-				);
-
-				return;
-			}
-
-
-			/*
-			 * Normal SELF transition.
-			 */
-			node.setAttribute(
-				attrInherit,
-				""
-			);
-
-
-			const selfCSS =
-				flexEngineTransition.renderSingle(
-					transition
-				);
-
-
-			node.setAttribute(
-				attrSelf,
-				selfCSS
-					? `transition:${selfCSS};`
-					: ""
-			);
-
-			return;
-		},
-
-		2: function(dataArray, node) {
-
-			if (!node || !dataArray) {
-				return;
-			}
-
-			const prefix =
-				BUILDER_CONFIG.classPrefix;
-
-			const attrSelf =
-				`${prefix}transition-config-self`;
-
-			const attrAll =
-				`${prefix}transition-config-all`;
-
-			const transitionData =
-				dataArray.transition || {};
-
-
-			/*
-			 * Render SELF.
-			 */
-			const selfData =
-				structuredClone(dataArray);
-
-			selfData.transition =
-				transitionData.self || {};
-
-			flexEngineTransition.render[1](
-				selfData,
-				node
-			);
-
-
-			/*
-			 * Render ALL.
-			 */
-			const allTransition =
-				transitionData.all;
-
-
-			if (!allTransition) {
-
-				node.setAttribute(
-					attrAll,
-					""
-				);
-
-				return;
-			}
-
-
-			const allCSS =
-				flexEngineTransition.renderSingle(
-					allTransition
-				);
-
-
-			node.setAttribute(
-				attrAll,
-				allCSS
-					? `transition:${allCSS};`
-					: ""
-			);
-
-			return;
-		},
-
-		3: function(dataArray, node) {
-
-			if (!node) {
-				return;
-			}
-
-			const prefix =
-				BUILDER_CONFIG.classPrefix;
-
-			node.setAttribute(
-				`${prefix}transition-config-self`,
-				"inherit"
-			);
-
-			node.setAttribute(
-				`${prefix}transition-self-inherit`,
-				"1"
-			);
-
-			return;
-		},
-
-		"other": function(dataArray, node) {
-
-			return;
-		}
-	},
-
-
-	// helper functions
-	applySectionTransition: function(node) {
-
-		if (!node) {
-			return;
-		}
-
-		const prefix =
-			BUILDER_CONFIG.classPrefix;
-
-		const attrAll =
-			`${prefix}transition-config-all`;
-
-		const attrSelf =
-			`${prefix}transition-config-self`;
-
-		const attrSelfInherit =
-			`${prefix}transition-self-inherit`;
-
-		const allConfig =
-			node.getAttribute(attrAll) || "";
-
-
-		if (
-			!allConfig ||
-			allConfig === "inherit"
-		) {
-			return;
-		}
-
-
-		const walk =
-			function(currentNode, currentDepth) {
-
-				const currentInherit =
-					currentNode.getAttribute(
-						attrSelfInherit
-					);
-
-				const enabled =
-					currentInherit !== null &&
-					currentInherit !== "" &&
-					currentInherit !== "0";
-
-
-				if (enabled) {
-
-					currentNode.setAttribute(
-						attrSelfInherit,
-						String(currentDepth)
-					);
-
-					currentNode.setAttribute(
-						attrSelf,
-						allConfig
-					);
-				}
-
-
-				[...currentNode.children].forEach(
-					function(child) {
-						walk(
-							child,
-							currentDepth + 1
-						);
-					}
-				);
-			};
-
-
-		[...node.children].forEach(
-			function(child) {
-				walk(child, 1);
-			}
-		);
-	},
-
-	renderSingle: function(transition) {
-
-		if (!transition) {
-			return "";
-		}
-
-		if (!Array.isArray(transition.property)) {
-			return "";
-		}
-
-		if (transition.property.length === 0) {
-			return "";
-		}
-
-
-		const duration =
-			Math.max(
-				0,
-				Number(transition.duration) || 0
-			);
-
-		const delay =
-			Math.max(
-				0,
-				Number(transition.delay) || 0
-			);
-
-
-		let curve = "";
-
-		try {
-			curve =
-				flexEngineDefaultVaribles
-					.curve
-					.curve
-					.render(
-						transition.curve
-					) || "ease";
-		}
-		catch (e) {
-			curve = "ease";
-		}
-
-
-		const durationSeconds =
-			duration / 1000;
-
-		const delaySeconds =
-			delay / 1000;
-
-
-		const parts = [];
-
-
-		for (
-			const property of transition.property
-		) {
-
-			if (
-				typeof property !== "string" ||
-				property.trim() === ""
-			) {
-				continue;
-			}
-
-			parts.push(
-				`${property} ${durationSeconds}s ${curve} ${delaySeconds}s`
-			);
-		}
-
-
-		return parts.join(",");
-	}
+    selfQuery: [
+
+        {
+            name: "inherit",
+            label: "Inherit",
+            type: "boolean/checkmark"
+        },
+
+        {
+            name: "property",
+            label: "Property",
+            type: "selection/popup",
+
+            catergory: [
+                {
+                    label: "Basic",
+                    choice: [
+                        { name: "all", label: "All" },
+                        { name: "opacity", label: "Opacity" },
+                        { name: "visibility", label: "Visibility" }
+                    ]
+                },
+
+                {
+                    label: "Transform",
+                    choice: [
+                        { name: "transform", label: "Transform" }
+                    ]
+                },
+
+                {
+                    label: "Size",
+                    choice: [
+                        { name: "width", label: "Width" },
+                        { name: "height", label: "Height" },
+                        { name: "min-width", label: "Minimum Width" },
+                        { name: "max-width", label: "Maximum Width" },
+                        { name: "min-height", label: "Minimum Height" },
+                        { name: "max-height", label: "Maximum Height" }
+                    ]
+                },
+
+                {
+                    label: "Spacing",
+                    choice: [
+                        { name: "padding", label: "Padding" },
+                        { name: "padding-top", label: "Padding Top" },
+                        { name: "padding-right", label: "Padding Right" },
+                        { name: "padding-bottom", label: "Padding Bottom" },
+                        { name: "padding-left", label: "Padding Left" }
+                    ]
+                },
+
+                {
+                    label: "Background & Color",
+                    choice: [
+                        { name: "background", label: "Background" },
+                        { name: "background-color", label: "Background Color" },
+                        { name: "color", label: "Text Color" },
+                        { name: "border-color", label: "Border Color" }
+                    ]
+                },
+
+                {
+                    label: "Border",
+                    choice: [
+                        { name: "border", label: "Border" },
+                        { name: "border-width", label: "Border Width" },
+                        { name: "border-top-width", label: "Top Border Width" },
+                        { name: "border-right-width", label: "Right Border Width" },
+                        { name: "border-bottom-width", label: "Bottom Border Width" },
+                        { name: "border-left-width", label: "Left Border Width" },
+                        { name: "border-radius", label: "Border Radius" }
+                    ]
+                },
+
+                {
+                    label: "Shadow & Filter",
+                    choice: [
+                        { name: "box-shadow", label: "Box Shadow" },
+                        { name: "filter", label: "Filter" },
+                        { name: "backdrop-filter", label: "Backdrop Filter" }
+                    ]
+                },
+
+                {
+                    label: "Other",
+                    choice: [
+                        { name: "font-size", label: "Font Size" },
+                        { name: "line-height", label: "Line Height" },
+                        { name: "letter-spacing", label: "Letter Spacing" },
+                        { name: "flex", label: "Flex" },
+                        { name: "flex-grow", label: "Flex Grow" },
+                        { name: "flex-shrink", label: "Flex Shrink" },
+                        { name: "gap", label: "Gap" }
+                    ]
+                }
+            ],
+
+            default: [],
+
+            visibleIf: {
+                name: "inherit",
+                value: false
+            }
+        },
+
+        {
+            name: "duration",
+            label: "Duration",
+            type: "integer/noNeg",
+            default: 300,
+
+            visibleIf: {
+                name: "inherit",
+                value: false
+            }
+        },
+
+        {
+            name: "delay",
+            label: "Delay",
+            type: "integer/noNeg",
+            default: 0,
+
+            visibleIf: {
+                name: "inherit",
+                value: false
+            }
+        },
+
+        {
+            name: "curve",
+            label: "Timing Curve",
+            type: "curve/curve",
+
+            visibleIf: {
+                name: "inherit",
+                value: false
+            }
+        }
+    ],
+
+    allQuery: [
+
+        {
+            name: "property",
+            label: "Property",
+            type: "selection/popup",
+
+            catergory: [
+                {
+                    label: "Basic",
+                    choice: [
+                        { name: "all", label: "All" },
+                        { name: "opacity", label: "Opacity" },
+                        { name: "visibility", label: "Visibility" }
+                    ]
+                },
+
+                {
+                    label: "Transform",
+                    choice: [
+                        { name: "transform", label: "Transform" }
+                    ]
+                },
+
+                {
+                    label: "Size",
+                    choice: [
+                        { name: "width", label: "Width" },
+                        { name: "height", label: "Height" },
+                        { name: "min-width", label: "Minimum Width" },
+                        { name: "max-width", label: "Maximum Width" },
+                        { name: "min-height", label: "Minimum Height" },
+                        { name: "max-height", label: "Maximum Height" }
+                    ]
+                },
+
+                {
+                    label: "Spacing",
+                    choice: [
+                        { name: "margin", label: "Margin" },
+                        { name: "margin-top", label: "Margin Top" },
+                        { name: "margin-right", label: "Margin Right" },
+                        { name: "margin-bottom", label: "Margin Bottom" },
+                        { name: "margin-left", label: "Margin Left" },
+
+                        { name: "padding", label: "Padding" },
+                        { name: "padding-top", label: "Padding Top" },
+                        { name: "padding-right", label: "Padding Right" },
+                        { name: "padding-bottom", label: "Padding Bottom" },
+                        { name: "padding-left", label: "Padding Left" }
+                    ]
+                },
+
+                {
+                    label: "Background & Color",
+                    choice: [
+                        { name: "background", label: "Background" },
+                        { name: "background-color", label: "Background Color" },
+                        { name: "color", label: "Text Color" },
+                        { name: "border-color", label: "Border Color" }
+                    ]
+                },
+
+                {
+                    label: "Border",
+                    choice: [
+                        { name: "border", label: "Border" },
+                        { name: "border-width", label: "Border Width" },
+                        { name: "border-top-width", label: "Top Border Width" },
+                        { name: "border-right-width", label: "Right Border Width" },
+                        { name: "border-bottom-width", label: "Bottom Border Width" },
+                        { name: "border-left-width", label: "Left Border Width" },
+                        { name: "border-radius", label: "Border Radius" }
+                    ]
+                },
+
+                {
+                    label: "Shadow & Filter",
+                    choice: [
+                        { name: "box-shadow", label: "Box Shadow" },
+                        { name: "filter", label: "Filter" },
+                        { name: "backdrop-filter", label: "Backdrop Filter" }
+                    ]
+                },
+
+                {
+                    label: "Other",
+                    choice: [
+                        { name: "font-size", label: "Font Size" },
+                        { name: "line-height", label: "Line Height" },
+                        { name: "letter-spacing", label: "Letter Spacing" },
+                        { name: "flex", label: "Flex" },
+                        { name: "flex-grow", label: "Flex Grow" },
+                        { name: "flex-shrink", label: "Flex Shrink" },
+                        { name: "gap", label: "Gap" }
+                    ]
+                }
+            ],
+
+            default: []
+        },
+
+        {
+            name: "duration",
+            label: "Duration",
+            type: "integer/noNeg",
+            default: 300
+        },
+
+        {
+            name: "delay",
+            label: "Delay",
+            type: "integer/noNeg",
+            default: 0
+        },
+
+        {
+            name: "curve",
+            label: "Timing Curve",
+            type: "curve/curve"
+        }
+    ],
+
+
+    // render
+    render: {
+
+        0: function (dataArray, node) {
+
+            if (!node) {
+                return;
+            }
+
+            const prefix =
+                BUILDER_CONFIG.classPrefix;
+
+            node.setAttribute(
+                `${prefix}transition-config-self`,
+                ""
+            );
+
+            node.setAttribute(
+                `${prefix}transition-config-all`,
+                ""
+            );
+
+            node.setAttribute(
+                `${prefix}transition-self-inherit`,
+                ""
+            );
+
+            return;
+        },
+
+        1: function (dataArray, node) {
+
+            if (!node) {
+                return;
+            }
+
+            const prefix =
+                BUILDER_CONFIG.classPrefix;
+
+            const attrSelf =
+                `${prefix}transition-config-self`;
+
+            const attrInherit =
+                `${prefix}transition-self-inherit`;
+
+            const transition =
+                dataArray &&
+                dataArray.transition &&
+                dataArray.transition.self;
+
+
+            /*
+             * Inherit from parent SECTION.
+             */
+            if (
+                transition &&
+                transition.inherit === true
+            ) {
+
+                node.setAttribute(
+                    attrInherit,
+                    "1"
+                );
+
+                node.setAttribute(
+                    attrSelf,
+                    "inherit"
+                );
+
+                return;
+            }
+
+
+            /*
+             * Normal SELF transition.
+             */
+            node.setAttribute(
+                attrInherit,
+                ""
+            );
+
+
+            const selfCSS =
+                flexEngineTransition.renderSingle(
+                    transition
+                );
+
+
+            node.setAttribute(
+                attrSelf,
+                selfCSS
+                    ? `transition:${selfCSS};`
+                    : ""
+            );
+
+            return;
+        },
+
+        2: function (dataArray, node) {
+
+            if (!node || !dataArray) {
+                return;
+            }
+
+            const prefix =
+                BUILDER_CONFIG.classPrefix;
+
+            const attrSelf =
+                `${prefix}transition-config-self`;
+
+            const attrAll =
+                `${prefix}transition-config-all`;
+
+            const transitionData =
+                dataArray.transition || {};
+
+
+            /*
+             * Render SELF.
+             */
+            const selfData =
+                structuredClone(dataArray);
+
+            selfData.transition =
+                transitionData.self || {};
+
+            flexEngineTransition.render[1](
+                selfData,
+                node
+            );
+
+
+            /*
+             * Render ALL.
+             */
+            const allTransition =
+                transitionData.all;
+
+
+            if (!allTransition) {
+
+                node.setAttribute(
+                    attrAll,
+                    ""
+                );
+
+                return;
+            }
+
+
+            const allCSS =
+                flexEngineTransition.renderSingle(
+                    allTransition
+                );
+
+
+            node.setAttribute(
+                attrAll,
+                allCSS
+                    ? `transition:${allCSS};`
+                    : ""
+            );
+
+            return;
+        },
+
+        3: function (dataArray, node) {
+
+            if (!node) {
+                return;
+            }
+
+            const prefix =
+                BUILDER_CONFIG.classPrefix;
+
+            node.setAttribute(
+                `${prefix}transition-config-self`,
+                "inherit"
+            );
+
+            node.setAttribute(
+                `${prefix}transition-self-inherit`,
+                "1"
+            );
+
+            return;
+        },
+
+        "other": function (dataArray, node) {
+
+            return;
+        }
+    },
+
+
+    // helper functions
+    applySectionTransition: function (node) {
+
+        if (!node) {
+            return;
+        }
+
+        const prefix =
+            BUILDER_CONFIG.classPrefix;
+
+        const attrAll =
+            `${prefix}transition-config-all`;
+
+        const attrSelf =
+            `${prefix}transition-config-self`;
+
+        const attrSelfInherit =
+            `${prefix}transition-self-inherit`;
+
+        const allConfig =
+            node.getAttribute(attrAll) || "";
+
+
+        if (
+            !allConfig ||
+            allConfig === "inherit"
+        ) {
+            return;
+        }
+
+
+        const walk =
+            function (currentNode, currentDepth) {
+
+                const currentInherit =
+                    currentNode.getAttribute(
+                        attrSelfInherit
+                    );
+
+                const enabled =
+                    currentInherit !== null &&
+                    currentInherit !== "" &&
+                    currentInherit !== "0";
+
+
+                if (enabled) {
+
+                    currentNode.setAttribute(
+                        attrSelfInherit,
+                        String(currentDepth)
+                    );
+
+                    currentNode.setAttribute(
+                        attrSelf,
+                        allConfig
+                    );
+                }
+
+
+                [...currentNode.children].forEach(
+                    function (child) {
+                        walk(
+                            child,
+                            currentDepth + 1
+                        );
+                    }
+                );
+            };
+
+
+        [...node.children].forEach(
+            function (child) {
+                walk(child, 1);
+            }
+        );
+    },
+
+    renderSingle: function (transition) {
+
+        if (!transition) {
+            return "";
+        }
+
+        if (!Array.isArray(transition.property)) {
+            return "";
+        }
+
+        if (transition.property.length === 0) {
+            return "";
+        }
+
+
+        const duration =
+            Math.max(
+                0,
+                Number(transition.duration) || 0
+            );
+
+        const delay =
+            Math.max(
+                0,
+                Number(transition.delay) || 0
+            );
+
+
+        let curve = "";
+
+        try {
+            curve =
+                flexEngineDefaultVaribles
+                    .curve
+                    .curve
+                    .render(
+                        transition.curve
+                    ) || "ease";
+        }
+        catch (e) {
+            curve = "ease";
+        }
+
+
+        const durationSeconds =
+            duration / 1000;
+
+        const delaySeconds =
+            delay / 1000;
+
+
+        const parts = [];
+
+
+        for (
+            const property of transition.property
+        ) {
+
+            if (
+                typeof property !== "string" ||
+                property.trim() === ""
+            ) {
+                continue;
+            }
+
+            parts.push(
+                `${property} ${durationSeconds}s ${curve} ${delaySeconds}s`
+            );
+        }
+
+
+        return parts.join(",");
+    }
 };
 
 
 // Action System, that's too Strange so we cannot count.
 export const flexEngineActionQuery = [
-	{
-		name: "enable",
-		label: "Clickable",
-		type: "boolean/checkmark"
-	},
-	{
-		name: "action.mode",
-		label: "Action",
-		type: "selection",
-		choice: [{
-			name: "Link",
-			value: "a"
-		}, {
-			name: "Download",
-			value: "download"
-		}, {
-			name: "Open Popup",
-			value: "openPopup"
-		}, {
-			name: "Close This Popup",
-			value: "closeThisPopup"
-		}, {
-			name: "Run JavaScript",
-			value: "runJS"
-		}],
-		visibleIf: {
-			name: "enable",
-			value: true
-		}
-	},
-	{
-		name: "action.url",
-		label: "URL",
-		type: "string/text",
-		visibleIf: {
-			name: "action.mode",
-			value: ["a", "download"]
-		}
-	},
-	{
-		name: "action.newPage",
-		label: "Open in New Page",
-		type: "boolean/checkmark",
-		visibleIf: {
-			name: "action.mode",
-			value: "a"
-		}
-	},
-	{
-		name: "action.forceDownload",
-		label: "Force Download",
-		type: "boolean/checkmark",
-		visibleIf: {
-			name: "action.mode",
-			value: "download"
-		}
-	},
-	{
-		name: "action.popupID",
-		label: "Popup ID",
-		type: "string/text",
-		visibleIf: {
-			name: "action.mode",
-			value: "openPopup"
-		}
-	},
-	{
-		name: "action.JS",
-		label: "JavaScript",
-		type: "string/text",
-		visibleIf: {
-			name: "action.mode",
-			value: "runJS"
-		}
-	}
+    {
+        name: "enable",
+        label: "Clickable",
+        type: "boolean/checkmark"
+    },
+    {
+        name: "action.mode",
+        label: "Action",
+        type: "selection",
+        choice: [{
+            name: "Link",
+            value: "a"
+        }, {
+            name: "Download",
+            value: "download"
+        }, {
+            name: "Open Popup",
+            value: "openPopup"
+        }, {
+            name: "Close This Popup",
+            value: "closeThisPopup"
+        }, {
+            name: "Run JavaScript",
+            value: "runJS"
+        }],
+        visibleIf: {
+            name: "enable",
+            value: true
+        }
+    },
+    {
+        name: "action.url",
+        label: "URL",
+        type: "string/text",
+        visibleIf: {
+            name: "action.mode",
+            value: ["a", "download"]
+        }
+    },
+    {
+        name: "action.newPage",
+        label: "Open in New Page",
+        type: "boolean/checkmark",
+        visibleIf: {
+            name: "action.mode",
+            value: "a"
+        }
+    },
+    {
+        name: "action.forceDownload",
+        label: "Force Download",
+        type: "boolean/checkmark",
+        visibleIf: {
+            name: "action.mode",
+            value: "download"
+        }
+    },
+    {
+        name: "action.popupID",
+        label: "Popup ID",
+        type: "string/text",
+        visibleIf: {
+            name: "action.mode",
+            value: "openPopup"
+        }
+    },
+    {
+        name: "action.JS",
+        label: "JavaScript",
+        type: "string/text",
+        visibleIf: {
+            name: "action.mode",
+            value: "runJS"
+        }
+    }
 ];
 
-export const flexEngineCreateAction = function(documentHTML, clickable, nodeStyleDefault) {
-	let node = documentHTML.createElement(nodeStyleDefault);
-	if (!clickable || clickable.enable !== true || !clickable.action) {
-		return node;
-	}
-	const action = clickable.action;
-	if (action.mode === "a") {
-		node = documentHTML.createElement("a");
-		node.href = action.url || "";
-		if (action.newPage === true) {
-			node.target = "_blank";
-		}
-	}
-	if (action.mode === "download") {
-		node = documentHTML.createElement("a");
-		node.href = action.url || "";
-		node.target = "_blank";
-		node.download = "";
-		if (action.forceDownload === true) {
-			node.setAttribute("download", action.forceDownload);
-		}
-	}
-	if (action.mode === "openPopup") {
-		node = documentHTML.createElement("button");
-		node.setAttribute(`data-${BUILDER_CONFIG.classPrefix}popup-id`, action.popupID || "");
-	}
-	if (action.mode === "closeThisPopup") {
-		node = documentHTML.createElement("button");
-		node.setAttribute(`data-${BUILDER_CONFIG.classPrefix}popup-id`, "0");
-	}
-	if (action.mode === "runJS") {
-		node = documentHTML.createElement("button");
-		node.setAttribute("onclick", action.JS || "");
-	}
-	return node;
+export const flexEngineCreateAction = function (documentHTML, clickable, nodeStyleDefault) {
+    let node = documentHTML.createElement(nodeStyleDefault);
+    if (!clickable || clickable.enable !== true || !clickable.action) {
+        return node;
+    }
+    const action = clickable.action;
+    if (action.mode === "a") {
+        node = documentHTML.createElement("a");
+        node.href = action.url || "";
+        if (action.newPage === true) {
+            node.target = "_blank";
+        }
+    }
+    if (action.mode === "download") {
+        node = documentHTML.createElement("a");
+        node.href = action.url || "";
+        node.target = "_blank";
+        node.download = "";
+        if (action.forceDownload === true) {
+            node.setAttribute("download", action.forceDownload);
+        }
+    }
+    if (action.mode === "openPopup") {
+        node = documentHTML.createElement("button");
+        node.setAttribute(`data-${BUILDER_CONFIG.classPrefix}popup-id`, action.popupID || "");
+    }
+    if (action.mode === "closeThisPopup") {
+        node = documentHTML.createElement("button");
+        node.setAttribute(`data-${BUILDER_CONFIG.classPrefix}popup-id`, "0");
+    }
+    if (action.mode === "runJS") {
+        node = documentHTML.createElement("button");
+        node.setAttribute("onclick", action.JS || "");
+    }
+    return node;
 };
 
 
@@ -15804,462 +15802,462 @@ export const flexEngineCreateAction = function(documentHTML, clickable, nodeStyl
  */
 
 const flexEngineDefaultAppearance = {
-	styleQuery: [{
-		name: "paddingTop",
-		label: "Padding Top",
-		type: "space"
-	}, {
-		name: "paddingBottom",
-		label: "Padding Bottom",
-		type: "space"
-	}, {
-		name: "paddingLeft",
-		label: "Padding Left",
-		type: "space"
-	}, {
-		name: "paddingRight",
-		label: "Padding Right",
-		type: "space"
-	}, {
-		name: "borderMode",
-		label: "Border Style",
-		type: "selection",
-		choice: [{
-			label: "Solid",
-			value: "solid"
-		}, {
-			label: "None",
-			value: "none"
-		}, {
-			label: "Dashed",
-			value: "dashed"
-		}, {
-			label: "Dotted",
-			value: "dotted"
-		}, {
-			label: "Double",
-			value: "double"
-		}]
-	}, {
-		name: "borderTop",
-		label: "Top Border",
-		type: "space"
-	}, {
-		name: "borderBottom",
-		label: "Bottom Border",
-		type: "space"
-	}, {
-		name: "borderLeft",
-		label: "Left Border",
-		type: "space"
-	}, {
-		name: "borderRight",
-		label: "Right Border",
-		type: "space"
-	}, {
-		name: "borderRadius",
-		label: "Border Radius",
-		type: "integer/noNeg"
-	}, {
-		name: "shadow",
-		label: "Shadow",
-		type: "boolean/checkmark"
-	}, {
-		name: "shadowInset",
-		label: "Shadow Inset",
-		type: "boolean/checkmark"
-	}, {
-		name: "shadowOffsetX",
-		label: "Shadow Offset X",
-		type: "integer"
-	}, {
-		name: "shadowOffsetY",
-		label: "Shadow Offset Y",
-		type: "integer"
-	}, {
-		name: "shadowBlur",
-		label: "Shadow Blur",
-		type: "integer/noNeg"
-	}, {
-		name: "shadowExpand",
-		label: "Shadow Expand",
-		type: "integer"
-	}, {
-		name: "shadowColor",
-		label: "Shadow Color",
-		type: "color/picker"
-	}, {
-		name: "textColor",
-		label: "Text Color",
-		type: "color/picker"
-	}, {
-		name: "background",
-		label: "Background",
-		type: "color/picker"
-	}, {
-		name: "blur",
-		label: "Blur",
-		type: "integer/noNeg"
-	}, {
-		name: "font",
-		label: "Font",
-		type: "string/text"
-	}, {
-		name: "markColor",
-		label: "Caret Color",
-		type: "color/picker"
-	}, {
-		name: "mobilePaddingTop",
-		label: "Mobile Padding Top",
-		type: "space"
-	}, {
-		name: "mobilePaddingBottom",
-		label: "Mobile Padding Bottom",
-		type: "space"
-	}, {
-		name: "mobilePaddingLeft",
-		label: "Mobile Padding Left",
-		type: "space"
-	}, {
-		name: "mobilePaddingRight",
-		label: "Mobile Padding Right",
-		type: "space"
-	}],
-	styleDefault: (s) => {
-		return {
-			"padding-top": flexEngineStyleVarible.space(s.paddingTop),
-			"padding-bottom": flexEngineStyleVarible.space(s.paddingBottom),
-			"padding-left": flexEngineStyleVarible.space(s.paddingLeft),
-			"padding-right": flexEngineStyleVarible.space(s.paddingRight),
-			"border-style": s.borderMode || "solid",
-			"border-top": flexEngineStyleVarible.space(s.borderTop) || "0px",
-			"border-bottom": flexEngineStyleVarible.space(s.borderBottom) || "0px",
-			"border-left": flexEngineStyleVarible.space(s.borderLeft) || "0px",
-			"border-right": flexEngineStyleVarible.space(s.borderRight) || "0px",
-			"border-radius": `${s.borderRadius || 0}px`,
-			"box-shadow": s.shadow ? `${s.shadowInset ? 'inset ' : ''}${s.shadowOffsetX || 0}px ${s.shadowOffsetY || 0}px ${s.shadowBlur || 0}px ${s.shadowExpand || 0}px ${flexEngineStyleVarible.color(s.shadowColor)}` : "none",
-			"color": flexEngineStyleVarible.color(s.textColor),
-			"background": flexEngineStyleVarible.color(s.background),
-			"filter": s.blur ? `blur(${s.blur}px)` : "none",
-			"font-family": s.font || "inherit",
-			"caret-color": flexEngineStyleVarible.color(s.markColor),
-		};
-	},
-	styleMobile: (s) => {
-		return {
-			"padding-top": flexEngineStyleVarible.space(s.mobilePaddingTop),
-			"padding-bottom": flexEngineStyleVarible.space(s.mobilePaddingBottom),
-			"padding-left": flexEngineStyleVarible.space(s.mobilePaddingLeft),
-			"padding-right": flexEngineStyleVarible.space(s.mobilePaddingRight)
-		};
-	},
+    styleQuery: [{
+        name: "paddingTop",
+        label: "Padding Top",
+        type: "space"
+    }, {
+        name: "paddingBottom",
+        label: "Padding Bottom",
+        type: "space"
+    }, {
+        name: "paddingLeft",
+        label: "Padding Left",
+        type: "space"
+    }, {
+        name: "paddingRight",
+        label: "Padding Right",
+        type: "space"
+    }, {
+        name: "borderMode",
+        label: "Border Style",
+        type: "selection",
+        choice: [{
+            label: "Solid",
+            value: "solid"
+        }, {
+            label: "None",
+            value: "none"
+        }, {
+            label: "Dashed",
+            value: "dashed"
+        }, {
+            label: "Dotted",
+            value: "dotted"
+        }, {
+            label: "Double",
+            value: "double"
+        }]
+    }, {
+        name: "borderTop",
+        label: "Top Border",
+        type: "space"
+    }, {
+        name: "borderBottom",
+        label: "Bottom Border",
+        type: "space"
+    }, {
+        name: "borderLeft",
+        label: "Left Border",
+        type: "space"
+    }, {
+        name: "borderRight",
+        label: "Right Border",
+        type: "space"
+    }, {
+        name: "borderRadius",
+        label: "Border Radius",
+        type: "integer/noNeg"
+    }, {
+        name: "shadow",
+        label: "Shadow",
+        type: "boolean/checkmark"
+    }, {
+        name: "shadowInset",
+        label: "Shadow Inset",
+        type: "boolean/checkmark"
+    }, {
+        name: "shadowOffsetX",
+        label: "Shadow Offset X",
+        type: "integer"
+    }, {
+        name: "shadowOffsetY",
+        label: "Shadow Offset Y",
+        type: "integer"
+    }, {
+        name: "shadowBlur",
+        label: "Shadow Blur",
+        type: "integer/noNeg"
+    }, {
+        name: "shadowExpand",
+        label: "Shadow Expand",
+        type: "integer"
+    }, {
+        name: "shadowColor",
+        label: "Shadow Color",
+        type: "color/picker"
+    }, {
+        name: "textColor",
+        label: "Text Color",
+        type: "color/picker"
+    }, {
+        name: "background",
+        label: "Background",
+        type: "color/picker"
+    }, {
+        name: "blur",
+        label: "Blur",
+        type: "integer/noNeg"
+    }, {
+        name: "font",
+        label: "Font",
+        type: "string/text"
+    }, {
+        name: "markColor",
+        label: "Caret Color",
+        type: "color/picker"
+    }, {
+        name: "mobilePaddingTop",
+        label: "Mobile Padding Top",
+        type: "space"
+    }, {
+        name: "mobilePaddingBottom",
+        label: "Mobile Padding Bottom",
+        type: "space"
+    }, {
+        name: "mobilePaddingLeft",
+        label: "Mobile Padding Left",
+        type: "space"
+    }, {
+        name: "mobilePaddingRight",
+        label: "Mobile Padding Right",
+        type: "space"
+    }],
+    styleDefault: (s) => {
+        return {
+            "padding-top": flexEngineStyleVarible.space(s.paddingTop),
+            "padding-bottom": flexEngineStyleVarible.space(s.paddingBottom),
+            "padding-left": flexEngineStyleVarible.space(s.paddingLeft),
+            "padding-right": flexEngineStyleVarible.space(s.paddingRight),
+            "border-style": s.borderMode || "solid",
+            "border-top": flexEngineStyleVarible.space(s.borderTop) || "0px",
+            "border-bottom": flexEngineStyleVarible.space(s.borderBottom) || "0px",
+            "border-left": flexEngineStyleVarible.space(s.borderLeft) || "0px",
+            "border-right": flexEngineStyleVarible.space(s.borderRight) || "0px",
+            "border-radius": `${s.borderRadius || 0}px`,
+            "box-shadow": s.shadow ? `${s.shadowInset ? 'inset ' : ''}${s.shadowOffsetX || 0}px ${s.shadowOffsetY || 0}px ${s.shadowBlur || 0}px ${s.shadowExpand || 0}px ${flexEngineStyleVarible.color(s.shadowColor)}` : "none",
+            "color": flexEngineStyleVarible.color(s.textColor),
+            "background": flexEngineStyleVarible.color(s.background),
+            "filter": s.blur ? `blur(${s.blur}px)` : "none",
+            "font-family": s.font || "inherit",
+            "caret-color": flexEngineStyleVarible.color(s.markColor),
+        };
+    },
+    styleMobile: (s) => {
+        return {
+            "padding-top": flexEngineStyleVarible.space(s.mobilePaddingTop),
+            "padding-bottom": flexEngineStyleVarible.space(s.mobilePaddingBottom),
+            "padding-left": flexEngineStyleVarible.space(s.mobilePaddingLeft),
+            "padding-right": flexEngineStyleVarible.space(s.mobilePaddingRight)
+        };
+    },
 
 
-	sizeQuery: [],
-	sizeDefault: (sz, isVertical) => {
-		return {};
-	},
+    sizeQuery: [],
+    sizeDefault: (sz, isVertical) => {
+        return {};
+    },
 
-	sizeMobile: (sz, isVertical) => {
-		return {};
-	}
+    sizeMobile: (sz, isVertical) => {
+        return {};
+    }
 };
 
 const flexEngineStylesToCss = (cssObject) => {
-	if (!cssObject || typeof cssObject !== "object") {
-		return "";
-	}
+    if (!cssObject || typeof cssObject !== "object") {
+        return "";
+    }
 
-	return Object.entries(cssObject)
-		.filter(([_, value]) => value !== undefined && value !== null && value !== "")
-		.map(([key, value]) => `${key}: ${value};`)
-		.join("");
+    return Object.entries(cssObject)
+        .filter(([_, value]) => value !== undefined && value !== null && value !== "")
+        .map(([key, value]) => `${key}: ${value};`)
+        .join("");
 };
 
 const flexEngineStylesResolveRegistry = (elementMode) => {
-	const rawMode = String(elementMode || "");
-	const separatorIndex = rawMode.indexOf("/");
-	const category = separatorIndex === -1 ? rawMode : rawMode.substring(0, separatorIndex);
-	const element = separatorIndex === -1 ? "" : rawMode.substring(separatorIndex + 1);
-	const isRoot = category === "@root";
+    const rawMode = String(elementMode || "");
+    const separatorIndex = rawMode.indexOf("/");
+    const category = separatorIndex === -1 ? rawMode : rawMode.substring(0, separatorIndex);
+    const element = separatorIndex === -1 ? "" : rawMode.substring(separatorIndex + 1);
+    const isRoot = category === "@root";
 
-	const categoryRegistry = isRoot
-		? (flexEngineRootElement || {})
-		: (flexEngineDefaultElements?.[category] || {});
+    const categoryRegistry = isRoot
+        ? (flexEngineRootElement || {})
+        : (flexEngineDefaultElements?.[category] || {});
 
-	const elementRegistry =
-		categoryRegistry?.[element] && typeof categoryRegistry[element] === "object"
-			? categoryRegistry[element]
-			: {};
+    const elementRegistry =
+        categoryRegistry?.[element] && typeof categoryRegistry[element] === "object"
+            ? categoryRegistry[element]
+            : {};
 
-	return {
-		categoryRegistry,
-		elementRegistry
-	};
+    return {
+        categoryRegistry,
+        elementRegistry
+    };
 };
 
 const flexEngineStylesCreateBaseRegistry = (elementRegistry, categoryRegistry) => {
-	const getProcessor = (name) =>
-		typeof elementRegistry?.[name] === "function"
-			? elementRegistry[name]
-			: typeof categoryRegistry?.[name] === "function"
-				? categoryRegistry[name]
-				: typeof flexEngineDefaultAppearance?.[name] === "function"
-					? flexEngineDefaultAppearance[name]
-					: () => ({});
+    const getProcessor = (name) =>
+        typeof elementRegistry?.[name] === "function"
+            ? elementRegistry[name]
+            : typeof categoryRegistry?.[name] === "function"
+                ? categoryRegistry[name]
+                : typeof flexEngineDefaultAppearance?.[name] === "function"
+                    ? flexEngineDefaultAppearance[name]
+                    : () => ({});
 
-	return {
-		styleDefault: getProcessor("styleDefault"),
-		styleMobile: getProcessor("styleMobile"),
-		sizeDefault: getProcessor("sizeDefault"),
-		sizeMobile: getProcessor("sizeMobile"),
-		extras: elementRegistry?.extras ?? categoryRegistry?.extras ?? null
-	};
+    return {
+        styleDefault: getProcessor("styleDefault"),
+        styleMobile: getProcessor("styleMobile"),
+        sizeDefault: getProcessor("sizeDefault"),
+        sizeMobile: getProcessor("sizeMobile"),
+        extras: elementRegistry?.extras ?? categoryRegistry?.extras ?? null
+    };
 };
 
 const flexEngineStylesNormalizeExtras = (extras) => {
-	const normalized = {};
+    const normalized = {};
 
-	if (!extras) {
-		return normalized;
-	}
+    if (!extras) {
+        return normalized;
+    }
 
-	if (typeof extras === "string") {
-		normalized[extras] = {};
-		return normalized;
-	}
+    if (typeof extras === "string") {
+        normalized[extras] = {};
+        return normalized;
+    }
 
-	if (Array.isArray(extras)) {
-		extras.forEach((item) => {
-			if (typeof item === "string") {
-				normalized[item] = {};
-				return;
-			}
+    if (Array.isArray(extras)) {
+        extras.forEach((item) => {
+            if (typeof item === "string") {
+                normalized[item] = {};
+                return;
+            }
 
-			if (!item || typeof item !== "object") {
-				return;
-			}
+            if (!item || typeof item !== "object") {
+                return;
+            }
 
-			const position = item.position ?? item.target ?? item.name ?? item.key;
+            const position = item.position ?? item.target ?? item.name ?? item.key;
 
-			if (position) {
-				normalized[String(position)] = item;
-			}
-		});
+            if (position) {
+                normalized[String(position)] = item;
+            }
+        });
 
-		return normalized;
-	}
+        return normalized;
+    }
 
-	if (
-		typeof extras === "object" &&
-		(extras.position ||
-			extras.target ||
-			extras.styleDefault ||
-			extras.styleMobile ||
-			extras.sizeDefault ||
-			extras.sizeMobile)
-	) {
-		const position = extras.position ?? extras.target;
+    if (
+        typeof extras === "object" &&
+        (extras.position ||
+            extras.target ||
+            extras.styleDefault ||
+            extras.styleMobile ||
+            extras.sizeDefault ||
+            extras.sizeMobile)
+    ) {
+        const position = extras.position ?? extras.target;
 
-		if (position) {
-			normalized[String(position)] = extras;
-		}
+        if (position) {
+            normalized[String(position)] = extras;
+        }
 
-		return normalized;
-	}
+        return normalized;
+    }
 
-	Object.entries(extras).forEach(([position, config]) => {
-		normalized[position] =
-			config && typeof config === "object"
-				? config
-				: {};
-	});
+    Object.entries(extras).forEach(([position, config]) => {
+        normalized[position] =
+            config && typeof config === "object"
+                ? config
+                : {};
+    });
 
-	return normalized;
+    return normalized;
 };
 
 const flexEngineStylesProcessState = (tateData, stateName, processorRegistry, isVertical) => {
-	if (!stateData || typeof stateData !== "object") {
-		return null;
-	}
+    if (!stateData || typeof stateData !== "object") {
+        return null;
+    }
 
-	const styleData =
-		stateData.style && typeof stateData.style === "object"
-			? stateData.style
-			: {};
+    const styleData =
+        stateData.style && typeof stateData.style === "object"
+            ? stateData.style
+            : {};
 
-	const sizeData =
-		stateData.size && typeof stateData.size === "object"
-			? stateData.size
-			: {};
+    const sizeData =
+        stateData.size && typeof stateData.size === "object"
+            ? stateData.size
+            : {};
 
-	const isMobile = stateName === "onMobile" || stateName === "onMobileHover";
+    const isMobile = stateName === "onMobile" || stateName === "onMobileHover";
 
-	const styleProcessor = isMobile
-		? processorRegistry.styleMobile
-		: processorRegistry.styleDefault;
+    const styleProcessor = isMobile
+        ? processorRegistry.styleMobile
+        : processorRegistry.styleDefault;
 
-	const sizeProcessor = isMobile
-		? processorRegistry.sizeMobile
-		: processorRegistry.sizeDefault;
+    const sizeProcessor = isMobile
+        ? processorRegistry.sizeMobile
+        : processorRegistry.sizeDefault;
 
-	return {
-		...(typeof styleProcessor === "function"
-			? styleProcessor(styleData) || {}
-			: {}),
-		...(typeof sizeProcessor === "function"
-			? sizeProcessor(sizeData, isVertical) || {}
-			: {})
-	};
+    return {
+        ...(typeof styleProcessor === "function"
+            ? styleProcessor(styleData) || {}
+            : {}),
+        ...(typeof sizeProcessor === "function"
+            ? sizeProcessor(sizeData, isVertical) || {}
+            : {})
+    };
 };
 
 const flexEngineStylesBuildClassName = (prefix, appearanceName, position, stateName) => {
-	const cleanAppearance = String(appearanceName || "").replace(/^\./, "");
+    const cleanAppearance = String(appearanceName || "").replace(/^\./, "");
 
-	const stateSuffix = {
-		default: "",
-		onMobile: "-onMobile",
-		hover: "-onHover",
-		onMobileHover: "-onMobileHover"
-	}[stateName] || "";
+    const stateSuffix = {
+        default: "",
+        onMobile: "-onMobile",
+        hover: "-onHover",
+        onMobileHover: "-onMobileHover"
+    }[stateName] || "";
 
-	const targetSuffix =
-		position === undefined ||
-		position === null ||
-		position === "" ||
-		position === "base"
-			? ""
+    const targetSuffix =
+        position === undefined ||
+            position === null ||
+            position === "" ||
+            position === "base"
+            ? ""
             : `-at${toAlphaEscape(String(position))}`;
 
-	return `${prefix}-styles-${cleanAppearance}${stateSuffix}${targetSuffix}`;
+    return `${prefix}-styles-${cleanAppearance}${stateSuffix}${targetSuffix}`;
 };
 
 export const flexEngineStylingSystem = function (dataArray, node, isVertical, elementMode) {
-	if (!node || !dataArray || typeof dataArray !== "object") {
-		return;
-	}
+    if (!node || !dataArray || typeof dataArray !== "object") {
+        return;
+    }
 
-	const {
-		categoryRegistry,
-		elementRegistry
-	} = flexEngineStylesResolveRegistry(elementMode);
+    const {
+        categoryRegistry,
+        elementRegistry
+    } = flexEngineStylesResolveRegistry(elementMode);
 
-	const baseRegistry = flexEngineStylesCreateBaseRegistry(
-		elementRegistry,
-		categoryRegistry
-	);
+    const baseRegistry = flexEngineStylesCreateBaseRegistry(
+        elementRegistry,
+        categoryRegistry
+    );
 
-	const extraRegistry = flexEngineStylesNormalizeExtras(
-		baseRegistry.extras
-	);
+    const extraRegistry = flexEngineStylesNormalizeExtras(
+        baseRegistry.extras
+    );
 
-	const appearance =
-		dataArray.appearance &&
-		typeof dataArray.appearance === "object"
-			? dataArray.appearance
-			: {};
+    const appearance =
+        dataArray.appearance &&
+            typeof dataArray.appearance === "object"
+            ? dataArray.appearance
+            : {};
 
-	const prefix = BUILDER_CONFIG?.classPrefix || "";
+    const prefix = BUILDER_CONFIG?.classPrefix || "";
 
-	const states = [
-		"default",
-		"onMobile",
-		"hover",
-		"onMobileHover"
-	];
+    const states = [
+        "default",
+        "onMobile",
+        "hover",
+        "onMobileHover"
+    ];
 
-	Object.entries(appearance).forEach(
-		([appearanceName, appearanceData]) => {
-			if (
-				!appearanceData ||
-				typeof appearanceData !== "object"
-			) {
-				return;
-			}
+    Object.entries(appearance).forEach(
+        ([appearanceName, appearanceData]) => {
+            if (
+                !appearanceData ||
+                typeof appearanceData !== "object"
+            ) {
+                return;
+            }
 
-			const positions = new Set(["base"]);
+            const positions = new Set(["base"]);
 
-			Object.keys(appearanceData).forEach((key) => {
-				positions.add(String(key));
-			});
+            Object.keys(appearanceData).forEach((key) => {
+                positions.add(String(key));
+            });
 
-			Object.keys(extraRegistry || {}).forEach((key) => {
-				positions.add(String(key));
-			});
+            Object.keys(extraRegistry || {}).forEach((key) => {
+                positions.add(String(key));
+            });
 
-			positions.forEach((position) => {
-				const targetData = appearanceData?.[position];
+            positions.forEach((position) => {
+                const targetData = appearanceData?.[position];
 
-				const extraConfig =
-					position === "base"
-						? null
-						: extraRegistry?.[position] || null;
+                const extraConfig =
+                    position === "base"
+                        ? null
+                        : extraRegistry?.[position] || null;
 
-				const processorRegistry = extraConfig
-					? {
-							styleDefault:
-								typeof extraConfig.styleDefault ===
-								"function"
-									? extraConfig.styleDefault
-									: baseRegistry.styleDefault,
+                const processorRegistry = extraConfig
+                    ? {
+                        styleDefault:
+                            typeof extraConfig.styleDefault ===
+                                "function"
+                                ? extraConfig.styleDefault
+                                : baseRegistry.styleDefault,
 
-							styleMobile:
-								typeof extraConfig.styleMobile ===
-								"function"
-									? extraConfig.styleMobile
-									: baseRegistry.styleMobile,
+                        styleMobile:
+                            typeof extraConfig.styleMobile ===
+                                "function"
+                                ? extraConfig.styleMobile
+                                : baseRegistry.styleMobile,
 
-							sizeDefault:
-								typeof extraConfig.sizeDefault ===
-								"function"
-									? extraConfig.sizeDefault
-									: baseRegistry.sizeDefault,
+                        sizeDefault:
+                            typeof extraConfig.sizeDefault ===
+                                "function"
+                                ? extraConfig.sizeDefault
+                                : baseRegistry.sizeDefault,
 
-							sizeMobile:
-								typeof extraConfig.sizeMobile ===
-								"function"
-									? extraConfig.sizeMobile
-									: baseRegistry.sizeMobile
-						}
-					: baseRegistry;
+                        sizeMobile:
+                            typeof extraConfig.sizeMobile ===
+                                "function"
+                                ? extraConfig.sizeMobile
+                                : baseRegistry.sizeMobile
+                    }
+                    : baseRegistry;
 
-				states.forEach((stateName) => {
-					const stateData = targetData?.[stateName];
+                states.forEach((stateName) => {
+                    const stateData = targetData?.[stateName];
 
-					if (
-						!stateData ||
-						typeof stateData !== "object"
-					) {
-						return;
-					}
+                    if (
+                        !stateData ||
+                        typeof stateData !== "object"
+                    ) {
+                        return;
+                    }
 
-					const cssObject = flexEngineStylesProcessState(
-						stateData,
-						stateName,
-						processorRegistry,
-						isVertical
-					);
+                    const cssObject = flexEngineStylesProcessState(
+                        stateData,
+                        stateName,
+                        processorRegistry,
+                        isVertical
+                    );
 
-					if (!cssObject) {
-						return;
-					}
+                    if (!cssObject) {
+                        return;
+                    }
 
-					const attributeName =
-						flexEngineStylesBuildClassName(
-							prefix,
-							appearanceName,
-							position,
-							stateName
-						);
+                    const attributeName =
+                        flexEngineStylesBuildClassName(
+                            prefix,
+                            appearanceName,
+                            position,
+                            stateName
+                        );
 
-					node.setAttribute(
-						attributeName,
-						flexEngineStylesToCss(cssObject)
-					);
-				});
-			});
-		}
-	);
+                    node.setAttribute(
+                        attributeName,
+                        flexEngineStylesToCss(cssObject)
+                    );
+                });
+            });
+        }
+    );
 };
 
 
@@ -16359,28 +16357,28 @@ export const flexEngineDefaultElements = {
             }
         ],
 
-		sizeDefault: (sz, isVertical) => {
-			return {
-				"width": isVertical ? flexEngineStyleVarible.space(sz.across) : flexEngineStyleVarible.space(sz.along),
-				"height": isVertical ? flexEngineStyleVarible.space(sz.along) : flexEngineStyleVarible.space(sz.across),
-				"flex-grow": sz.alongGrow || 0,
-				"flex-shrink": sz.alongShrink === true ? 1 : 0,
-				"overflow-x": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible'),
-				"overflow-y": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible'),
-				"align-self": (sz.acrossAlign > 0) ? ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'][sz.acrossAlign - 1] : 'auto'
-			}
-		},
-		sizeMobile: (sz, isVertical) => {
-			return {
-				"min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
-			}
-		},
+        sizeDefault: (sz, isVertical) => {
+            return {
+                "width": isVertical ? flexEngineStyleVarible.space(sz.across) : flexEngineStyleVarible.space(sz.along),
+                "height": isVertical ? flexEngineStyleVarible.space(sz.along) : flexEngineStyleVarible.space(sz.across),
+                "flex-grow": sz.alongGrow || 0,
+                "flex-shrink": sz.alongShrink === true ? 1 : 0,
+                "overflow-x": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible'),
+                "overflow-y": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible'),
+                "align-self": (sz.acrossAlign > 0) ? ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'][sz.acrossAlign - 1] : 'auto'
+            }
+        },
+        sizeMobile: (sz, isVertical) => {
+            return {
+                "min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
+            }
+        },
 
         elements: {
             text: {
                 className: "text",
                 alts: ["p"],
-                
+
                 icon: `
                     <svg xmlns="http://www.w3.org/2000/svg" 
                         viewBox="0 -960 960 960" 
@@ -16392,20 +16390,20 @@ export const flexEngineDefaultElements = {
 
                 contentQuery: [
                     {
-                        name: "textbox", 
+                        name: "textbox",
                         type: "interactiveTextBox",
                     }
                 ],
                 layoutQuery: [],
 
-                contentFunction: function(dataArray, documentHTML, node) {
+                contentFunction: function (dataArray, documentHTML, node) {
                     const deltaOps = dataArray.content;
                     const converter = new QuillDeltaToHtmlConverter(deltaOps, {
                         classPrefix: `${BUILDER_CONFIG.classPrefix}content-text`
                     });
                     const html = converter.convert();
                     node.innerHTML = html;
-                },  
+                },
                 cssStyles: [],
                 jsRuntime: {},
 
@@ -16415,7 +16413,7 @@ export const flexEngineDefaultElements = {
             heading: {
                 className: "heading",
                 alts: ["h1", "h2", "h3", "h4", "h5", "h6"],
-                
+
                 icon: `
                     <svg xmlns="http://www.w3.org/2000/svg" 
                         viewBox="0 -960 960 960" 
@@ -16427,31 +16425,31 @@ export const flexEngineDefaultElements = {
 
                 contentQuery: [
                     {
-                        name: "textbox", 
+                        name: "textbox",
                         type: "interactiveTextBox",
                     }
                 ],
                 layoutQuery: [],
 
-                contentFunction: function(dataArray, documentHTML, node) {
+                contentFunction: function (dataArray, documentHTML, node) {
                     const deltaOps = dataArray.content;
                     const converter = new QuillDeltaToHtmlConverter(deltaOps, {
                         classPrefix: `${BUILDER_CONFIG.classPrefix}content-text`
                     });
                     const html = converter.convert();
                     node.innerHTML = html;
-                },  
+                },
                 cssStyles: [],
                 jsRuntime: {},
 
 
                 settings: {}
             },
-            
+
             image: {
                 className: "image",
                 alts: ["img"],
-                
+
                 icon: `
                     <svg xmlns="http://www.w3.org/2000/svg" 
                         viewBox="0 -960 960 960" 
@@ -16468,40 +16466,40 @@ export const flexEngineDefaultElements = {
 
                 contentQuery: [
                     {
-                        name: "source", 
+                        name: "source",
                         type: "media/img",
                     },
                     {
-                        name: "alt", 
+                        name: "alt",
                         label: "alt text",
                         type: "string/textbox",
-                    }, 
+                    },
                     {
-                        name: "displayX", 
+                        name: "displayX",
                         label: "X Alignment",
                         type: "selection",
                         choice: [
-                            {label: "left", value: 1},
-                            {label: "center", value: 2},
-                            {label: "right", value: 3}
+                            { label: "left", value: 1 },
+                            { label: "center", value: 2 },
+                            { label: "right", value: 3 }
                         ],
                         default: 2,
-                    },  
+                    },
                     {
-                        name: "displayY", 
+                        name: "displayY",
                         label: "Y Alignment",
                         type: "selection",
                         choice: [
-                            {label: "top", value: 1},
-                            {label: "center", value: 2},
-                            {label: "bottom", value: 3}
+                            { label: "top", value: 1 },
+                            { label: "center", value: 2 },
+                            { label: "bottom", value: 3 }
                         ],
                         default: 2,
-                    },                                                         
+                    },
                 ],
                 layoutQuery: [],
 
-                contentFunction: function(dataArray, documentHTML, node) {
+                contentFunction: function (dataArray, documentHTML, node) {
                     const content = dataArray.content;
                     // Resolve media URL
                     const src = flexEngineStyleVarible.media(content.source);
@@ -16523,7 +16521,7 @@ export const flexEngineDefaultElements = {
                     // Insert into node
                     node.innerHTML = ""; // clear previous content if needed
                     node.appendChild(img); // DOM insertion
-                },  
+                },
                 cssStyles: [
                     {
                         object: "@context",
@@ -16546,8 +16544,8 @@ export const flexEngineDefaultElements = {
                         type: "media/img"
                     }
                 ],
-                
-                initFunction: function(dataArray, element) {
+
+                initFunction: function (dataArray, element) {
                     const sourceData = dataArray.src;
 
                     // Ensure the element and its content object exist safely
@@ -16555,7 +16553,7 @@ export const flexEngineDefaultElements = {
                     if (!element.content) element.content = {};
 
                     // Step 2: Insert it directly into element.content.source
-                    element.content.source = sourceData;           
+                    element.content.source = sourceData;
                 },
 
                 settings: {}
@@ -16584,7 +16582,7 @@ export const flexEngineDefaultElements = {
 
                 layoutQuery: [],
 
-                contentFunction: function(dataArray, documentHTML, node) {
+                contentFunction: function (dataArray, documentHTML, node) {
                     const content = dataArray.content;
                     const label = content.label || "";
 
@@ -16617,7 +16615,7 @@ export const flexEngineDefaultElements = {
 
                 layoutQuery: [],
 
-                contentFunction: function(dataArray, documentHTML, node) {
+                contentFunction: function (dataArray, documentHTML, node) {
                     const hr = documentHTML.createElement("hr");
                     hr.className = `${BUILDER_CONFIG.classPrefix}context-hr`;
 
@@ -16661,7 +16659,7 @@ export const flexEngineDefaultElements = {
 
                 layoutQuery: [],
 
-                contentFunction: function(dataArray, documentHTML, node) {
+                contentFunction: function (dataArray, documentHTML, node) {
                     // Spacer is layout-only — no DOM insertion
                     return;
                 },
@@ -16681,7 +16679,7 @@ export const flexEngineDefaultElements = {
             allowedSortTo: ["container", "section/section", "@root/popup", "@root/CTA", "@root/Footer"]
         }
     },
-    
+
     media: {
         sizeQuery: [
             {
@@ -16753,29 +16751,29 @@ export const flexEngineDefaultElements = {
             }
         ],
 
-		sizeDefault: (sz, isVertical) => {
-			return {
-				"width": isVertical ? flexEngineStyleVarible.space(sz.across) : flexEngineStyleVarible.space(sz.along),
-				"height": isVertical ? flexEngineStyleVarible.space(sz.along) : flexEngineStyleVarible.space(sz.across),
-				"flex-grow": sz.alongGrow || 0,
-				"flex-shrink": sz.alongShrink === true ? 1 : 0,
-				"overflow-x": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible'),
-				"overflow-y": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible'),
-				"align-self": (sz.acrossAlign > 0) ? ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'][sz.acrossAlign - 1] : 'auto'
-			}
-		},
-        
-		sizeMobile: (sz, isVertical) => {
-			return {
-				"min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
-			}
-		},
+        sizeDefault: (sz, isVertical) => {
+            return {
+                "width": isVertical ? flexEngineStyleVarible.space(sz.across) : flexEngineStyleVarible.space(sz.along),
+                "height": isVertical ? flexEngineStyleVarible.space(sz.along) : flexEngineStyleVarible.space(sz.across),
+                "flex-grow": sz.alongGrow || 0,
+                "flex-shrink": sz.alongShrink === true ? 1 : 0,
+                "overflow-x": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible'),
+                "overflow-y": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible'),
+                "align-self": (sz.acrossAlign > 0) ? ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'][sz.acrossAlign - 1] : 'auto'
+            }
+        },
+
+        sizeMobile: (sz, isVertical) => {
+            return {
+                "min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
+            }
+        },
 
         elements: {
             audio: {
                 className: "audio",
                 alts: [],
-                
+
                 icon: `
                     <svg xmlns="http://www.w3.org/2000/svg" 
                         viewBox="0 -960 960 960" 
@@ -16787,31 +16785,31 @@ export const flexEngineDefaultElements = {
 
                 contentQuery: [
                     {
-                        name: "source", 
+                        name: "source",
                         label: "Source",
                         type: "media/audio",
                     },
                     {
-                        name: "hideControls", 
+                        name: "hideControls",
                         label: "Hide Controls",
                         type: "boolean/checkmark",
-                    }, 
+                    },
                     {
-                        name: "loop", 
+                        name: "loop",
                         label: "Loop Audio",
                         type: "boolean/checkmark",
-                    }                                          
+                    }
                 ],
                 layoutQuery: [],
 
-                contentFunction: function(dataArray, documentHTML, node) {
+                contentFunction: function (dataArray, documentHTML, node) {
                     const content = dataArray.content;
                     const src = flexEngineStyleVarible.media(content.source);
                     const audio = documentHTML.createElement("audio");
-                    
+
                     audio.className = `${BUILDER_CONFIG.classPrefix}context-audio`;
                     audio.src = src;
-                    
+
                     // Handle native audio player properties
                     if (!content.hideControls) {
                         audio.controls = true;
@@ -16819,10 +16817,10 @@ export const flexEngineDefaultElements = {
                     if (content.loop) {
                         audio.loop = true;
                     }
-                    
-                    node.innerHTML = ""; 
-                    node.appendChild(audio); 
-                },  
+
+                    node.innerHTML = "";
+                    node.appendChild(audio);
+                },
                 cssStyles: [
                     {
                         object: "@context",
@@ -16840,7 +16838,7 @@ export const flexEngineDefaultElements = {
             video: {
                 className: "video",
                 alts: ["video"],
-                
+
                 icon: `
                     <svg xmlns="http://www.w3.org/2000/svg" 
                         viewBox="0 -960 960 960" 
@@ -16874,7 +16872,7 @@ export const flexEngineDefaultElements = {
                             name: "autoplay",
                             value: false,
                             otherwise: false
-                        }                        
+                        }
                     },
                     {
                         name: "loop",
@@ -16894,15 +16892,15 @@ export const flexEngineDefaultElements = {
                 ],
                 layoutQuery: [],
 
-                contentFunction: function(dataArray, documentHTML, node) {
+                contentFunction: function (dataArray, documentHTML, node) {
                     const content = dataArray.content;
                     const src = flexEngineStyleVarible.media(content.source);
                     const poster = content.thumbnail ? flexEngineStyleVarible.media(content.thumbnail) : null;
                     const video = documentHTML.createElement("video");
-                    
+
                     video.className = `${BUILDER_CONFIG.classPrefix}context-video`;
                     video.src = src;
-                    
+
                     if (poster) {
                         video.poster = poster;
                     }
@@ -16922,18 +16920,18 @@ export const flexEngineDefaultElements = {
                         video.disablePictureInPicture = true;
                         video.setAttribute("disablepictureinpicture", "");
                     }
-                    
+
                     const fallback = documentHTML.createElement("p");
                     fallback.textContent = "Oh no! your Browser does not support Embed Video! but that's OK, download the video at ";
-                    
+
                     const link = documentHTML.createElement("a");
                     link.href = src;
                     link.textContent = "here!";
                     link.download = "";
-                    
+
                     fallback.appendChild(link);
                     video.appendChild(fallback);
-                    
+
                     node.innerHTML = "";
                     node.appendChild(video);
                 },
@@ -17028,7 +17026,7 @@ export const flexEngineDefaultElements = {
                     }
                 ],
 
-                initFunction: function(dataArray, element) {
+                initFunction: function (dataArray, element) {
                     const rawURL = dataArray.url || "";
 
                     if (!element) element = {};
@@ -17072,7 +17070,7 @@ export const flexEngineDefaultElements = {
                     }
                 },
 
-                contextFunction: function(dataArray, documentHTML, node) {
+                contextFunction: function (dataArray, documentHTML, node) {
                     const c = dataArray.content;
 
                     let url = `https://player.vimeo.com/video/${encodeURIComponent(c.sourceID)}`;
@@ -17137,7 +17135,7 @@ export const flexEngineDefaultElements = {
 
                 settings: {}
             },
-     
+
             ytVideo: {
                 name: "YouTube Video",
                 className: "ytVideo",
@@ -17201,7 +17199,7 @@ export const flexEngineDefaultElements = {
                     }
                 ],
 
-                initFunction: function(dataArray, element) {
+                initFunction: function (dataArray, element) {
                     const rawURL = dataArray.url || "";
 
                     if (!element) element = {};
@@ -17256,7 +17254,7 @@ export const flexEngineDefaultElements = {
                     }
                 },
 
-                contextFunction: function(dataArray, documentHTML, node) {
+                contextFunction: function (dataArray, documentHTML, node) {
                     const c = dataArray.content;
 
                     let url = `https://www.youtube.com/embed/${encodeURIComponent(c.videoID)}`;
@@ -17323,7 +17321,7 @@ export const flexEngineDefaultElements = {
 
                 settings: {}
             },
-            
+
             iframe: {
                 name: "Embeds",
                 className: "iframe",
@@ -17436,7 +17434,7 @@ export const flexEngineDefaultElements = {
                     }
                 ],
 
-                initFunction: function(dataArray, element) {
+                initFunction: function (dataArray, element) {
                     const raw = dataArray.text || "";
 
                     if (!element) element = {};
@@ -17506,7 +17504,7 @@ export const flexEngineDefaultElements = {
                     element.content.embedAsHTML = false;
                 },
 
-                contextFunction: function(dataArray, documentHTML, node) {
+                contextFunction: function (dataArray, documentHTML, node) {
                     const iframe = documentHTML.createElement("iframe");
                     iframe.className = `${BUILDER_CONFIG.classPrefix}context-iframe`;
 
@@ -17569,7 +17567,7 @@ export const flexEngineDefaultElements = {
                             { key: "border", value: "none" }
                         ]
                     }
-                ],  
+                ],
 
                 jsRuntime: {},
 
@@ -17694,7 +17692,7 @@ export const flexEngineDefaultElements = {
                     }
                 ],
 
-                initFunction: function(dataArray, element) {
+                initFunction: function (dataArray, element) {
                     const raw = dataArray.text || "";
 
                     if (!element) element = {};
@@ -17737,7 +17735,7 @@ export const flexEngineDefaultElements = {
                     element.content.gDocsID = docId;
                 },
 
-                contextFunction: function(dataArray, documentHTML, node) {
+                contextFunction: function (dataArray, documentHTML, node) {
                     const el = documentHTML.createElement("div");
                     el.className = `${BUILDER_CONFIG.classPrefix}context-gdocs`;
 
@@ -17783,7 +17781,7 @@ export const flexEngineDefaultElements = {
                 },
 
                 jsRuntime: {
-                    forEach: function(BUILDER_CONFIG) {
+                    forEach: function (BUILDER_CONFIG) {
                         return `
                             const docId = element.getAttribute(\`data-${BUILDER_CONFIG.classPrefix}gdocid\`);
                             const url = \`https://docs.google.com/document/d/e/\${docId}/pub?embedded=true\`;
@@ -17865,11 +17863,11 @@ export const flexEngineDefaultElements = {
                     }
                 ],
 
-                initFunction: function(dataArray, element) {
+                initFunction: function (dataArray, element) {
                     element.content.channelID = dataArray.channelID || "";
                 },
 
-                contextFunction: function(dataArray, documentHTML, node) {
+                contextFunction: function (dataArray, documentHTML, node) {
                     // Add data attribute
                     node.setAttribute(`data-${BUILDER_CONFIG.classPrefix}ytchannelid`, dataArray.content.channelID);
 
@@ -17915,7 +17913,7 @@ export const flexEngineDefaultElements = {
                         }
                     ],
 
-                    forEach: function(BUILDER_CONFIG) {
+                    forEach: function (BUILDER_CONFIG) {
                         return `
                             const channelId = element.getAttribute(\`data-${BUILDER_CONFIG.classPrefix}ytchannelid\`);
 
@@ -18026,11 +18024,11 @@ export const flexEngineDefaultElements = {
                     }
                 ],
 
-                initFunction: function(dataArray, element) {
+                initFunction: function (dataArray, element) {
                     element.content.html = dataArray.html || "";
                 },
 
-                contextFunction: function(dataArray, documentHTML, node) {
+                contextFunction: function (dataArray, documentHTML, node) {
                     node.innerHTML = dataArray.content.html;
                 },
 
@@ -18121,23 +18119,23 @@ export const flexEngineDefaultElements = {
             }
         ],
 
-		sizeDefault: (sz, isVertical) => {
-			return {
-				"width": isVertical ? flexEngineStyleVarible.space(sz.across) : flexEngineStyleVarible.space(sz.along),
-				"height": isVertical ? flexEngineStyleVarible.space(sz.along) : flexEngineStyleVarible.space(sz.across),
-				"flex-grow": sz.alongGrow || 0,
-				"flex-shrink": sz.alongShrink === true ? 1 : 0,
-				"overflow-x": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible'),
-				"overflow-y": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible'),
-				"align-self": (sz.acrossAlign > 0) ? ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'][sz.acrossAlign - 1] : 'auto'
-			}
-		},
-        
-		sizeMobile: (sz, isVertical) => {
-			return {
-				"min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
-			}
-		},
+        sizeDefault: (sz, isVertical) => {
+            return {
+                "width": isVertical ? flexEngineStyleVarible.space(sz.across) : flexEngineStyleVarible.space(sz.along),
+                "height": isVertical ? flexEngineStyleVarible.space(sz.along) : flexEngineStyleVarible.space(sz.across),
+                "flex-grow": sz.alongGrow || 0,
+                "flex-shrink": sz.alongShrink === true ? 1 : 0,
+                "overflow-x": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible'),
+                "overflow-y": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible'),
+                "align-self": (sz.acrossAlign > 0) ? ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'][sz.acrossAlign - 1] : 'auto'
+            }
+        },
+
+        sizeMobile: (sz, isVertical) => {
+            return {
+                "min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
+            }
+        },
 
         elements: {
             div: {
@@ -18261,7 +18259,7 @@ export const flexEngineDefaultElements = {
 
                 initFunction: null,
 
-                contextFunction: function(dataArray, documentHTML, node, createAnotherNode) {
+                contextFunction: function (dataArray, documentHTML, node, createAnotherNode) {
                     const layout = dataArray.layout || {};
                     const content = dataArray.content;
 
@@ -18330,11 +18328,11 @@ export const flexEngineDefaultElements = {
                 cssStyles: [],
 
                 settings: {
-                    sortablePart: function(elemnent){
+                    sortablePart: function (elemnent) {
                         return element;
                     }
                 }
-            }     
+            }
         },
 
         setting: {
@@ -18412,7 +18410,7 @@ export const flexEngineDefaultElements = {
                         type: "interactiveElements"
                     }
                 ],
-                
+
                 layoutQuery: [
                     {
                         name: "spaceAcross",
@@ -18479,12 +18477,12 @@ export const flexEngineDefaultElements = {
 
                 initQuery: [],
 
-                initFunction: function(dataArray, element) {
+                initFunction: function (dataArray, element) {
                     debugger; // in future we will add some default views
                 },
 
 
-                contentFunction: function(dataArray, documentHTML, node, createAnotherNode) {
+                contentFunction: function (dataArray, documentHTML, node, createAnotherNode) {
                     const layout = dataArray.layout;
                     let cssOutput = "";
                     let cssMobileOutput = "";
@@ -18550,7 +18548,7 @@ export const flexEngineDefaultElements = {
 
                     if (layout.displayType === 0) {
                         innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-standard`);
-                    } else if(layout.displayType === 1) {
+                    } else if (layout.displayType === 1) {
                         innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-wide`);
                     } else {
                         innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-full`);
@@ -18598,7 +18596,7 @@ export const flexEngineDefaultElements = {
                 ],
 
                 settings: {
-                    sortablePart: function(element) {
+                    sortablePart: function (element) {
                         return element.firstElementChild;
                     },
                     elementType: "section"
@@ -18622,11 +18620,11 @@ export const flexEngineDefaultElements = {
 
 // @root Elements 
 export const flexEngineRootElement = {
-	popup: {
-		name: "Popup",
-		className: "popup",
+    popup: {
+        name: "Popup",
+        className: "popup",
         alts: [],
-		icon: `
+        icon: `
             <svg xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 -960 960 960"
                 fill="currentColor"
@@ -18634,148 +18632,148 @@ export const flexEngineRootElement = {
                 <path d="M533-408h187v-216H533v216ZM168-192q-29.7 0-50.85-21.16Q96-234.32 96-264.04v-432.24Q96-726 117.15-747T168-768h624q29.7 0 50.85 21.16Q864-725.68 864-695.96v432.24Q864-234 842.85-213T792-192H168Zm0-72h624v-432H168v432Zm0 0v-432 432Z"/>
             </svg>
         `,
-		contentQuery: [{
-			name: "@global",
-			label: "Elements",
-			type: "interactiveElements"
-		}],
+        contentQuery: [{
+            name: "@global",
+            label: "Elements",
+            type: "interactiveElements"
+        }],
 
-		layoutQuery: [{
-			name: "spaceAcross",
-			label: "Align it to...",
-			type: "selection",
-			choice: [{
-				label: "Left",
-				value: 1
-			}, {
-				label: "Center",
-				value: 2
-			}, {
-				label: "Right",
-				value: 3
-			}, {
-				label: "Stretch it",
-				value: 4
-			}],
-			default: 1
-		}, {
-			name: "spaceAlong",
-			label: "in Height, perfer...",
-			type: "selection",
-			choice: [{
-				label: "Top",
-				value: 1
-			}, {
-				label: "Center",
-				value: 2
-			}, {
-				label: "Buttom",
-				value: 3
-			}],
-			default: 1
-		}, {
-			name: "overflow",
-			label: "Height Overflow Behavior",
-			type: "selection",
-			choice: [{
-				label: "Scroll",
-				value: 1
-			}, {
-				label: "Hidden",
-				value: 2
-			}, {
-				label: "No Action",
-				value: 3
-			}],
-			default: 3
-		}, {
-			name: "gap",
-			label: "Gaps Length",
-			type: "space"
-		}, {
-			name: "mobileGap",
-			label: "Gap on Mobile",
-			type: "space"
-		}, {
-			name: "mobileReverseDirection",
-			label: "Reverse Direction on Mobile?",
-			type: "boolean/checkmark",
-			default: false
-		}],
+        layoutQuery: [{
+            name: "spaceAcross",
+            label: "Align it to...",
+            type: "selection",
+            choice: [{
+                label: "Left",
+                value: 1
+            }, {
+                label: "Center",
+                value: 2
+            }, {
+                label: "Right",
+                value: 3
+            }, {
+                label: "Stretch it",
+                value: 4
+            }],
+            default: 1
+        }, {
+            name: "spaceAlong",
+            label: "in Height, perfer...",
+            type: "selection",
+            choice: [{
+                label: "Top",
+                value: 1
+            }, {
+                label: "Center",
+                value: 2
+            }, {
+                label: "Buttom",
+                value: 3
+            }],
+            default: 1
+        }, {
+            name: "overflow",
+            label: "Height Overflow Behavior",
+            type: "selection",
+            choice: [{
+                label: "Scroll",
+                value: 1
+            }, {
+                label: "Hidden",
+                value: 2
+            }, {
+                label: "No Action",
+                value: 3
+            }],
+            default: 3
+        }, {
+            name: "gap",
+            label: "Gaps Length",
+            type: "space"
+        }, {
+            name: "mobileGap",
+            label: "Gap on Mobile",
+            type: "space"
+        }, {
+            name: "mobileReverseDirection",
+            label: "Reverse Direction on Mobile?",
+            type: "boolean/checkmark",
+            default: false
+        }],
 
-		initQuery: [],
-		initFunction: function(dataArray, element) {
-			debugger; // in future we will add some default views
-		},
+        initQuery: [],
+        initFunction: function (dataArray, element) {
+            debugger; // in future we will add some default views
+        },
 
-		contentFunction: function(dataArray, documentHTML, node, createAnotherNode) {
-			const layout = dataArray.layout;
-			let cssOutput = "";
-			let cssMobileOutput = "";
-			// spaceAcross
-			if (layout.spaceAcross) {
-				const map = {
-					1: "flex-start",
-					2: "center",
-					3: "flex-end",
-					4: "stretch"
-				};
-				cssOutput += `justify-content:${map[layout.spaceAcross]};`;
-			}
-			// spaceAlong
-			if (layout.spaceAlong) {
-				const map = {
-					1: "flex-start",
-					2: "center",
-					3: "flex-end"
-				};
-				cssOutput += `align-items:${map[layout.spaceAlong]};`;
-			}
-			// overflow
-			if (layout.overflow) {
-				const map = {
-					1: "scroll",
-					2: "hidden",
-					3: null
-				};
-				if (map[layout.overflow]) {
-					cssOutput += `overflow:${map[layout.overflow]};`;
-				}
-			}
-			// gap
-			if (layout.gap !== undefined) {
-				const gapValue = flexEngineStyleVariable.space[layout.gap];
-				cssOutput += `gap:${gapValue};`;
-			}
-			// mobile reverse direction
-			if (layout.mobileReverseDirection) {
-				cssMobileOutput += `flex-direction:column-reverse;`;
-			}
-			// mobile gap
-			if (layout.mobileGap !== undefined) {
-				const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
-				cssMobileOutput += `gap:${gapValue};`;
-			}
-			// apply attributes
-			const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at_gt__s_div";
-			const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at_gt__s_div";
-			node.setAttribute(prefix, cssOutput);
-			node.setAttribute(prefixMobile, cssMobileOutput);
-			let innerNode = documentHTML.createElement("div");
+        contentFunction: function (dataArray, documentHTML, node, createAnotherNode) {
+            const layout = dataArray.layout;
+            let cssOutput = "";
+            let cssMobileOutput = "";
+            // spaceAcross
+            if (layout.spaceAcross) {
+                const map = {
+                    1: "flex-start",
+                    2: "center",
+                    3: "flex-end",
+                    4: "stretch"
+                };
+                cssOutput += `justify-content:${map[layout.spaceAcross]};`;
+            }
+            // spaceAlong
+            if (layout.spaceAlong) {
+                const map = {
+                    1: "flex-start",
+                    2: "center",
+                    3: "flex-end"
+                };
+                cssOutput += `align-items:${map[layout.spaceAlong]};`;
+            }
+            // overflow
+            if (layout.overflow) {
+                const map = {
+                    1: "scroll",
+                    2: "hidden",
+                    3: null
+                };
+                if (map[layout.overflow]) {
+                    cssOutput += `overflow:${map[layout.overflow]};`;
+                }
+            }
+            // gap
+            if (layout.gap !== undefined) {
+                const gapValue = flexEngineStyleVariable.space[layout.gap];
+                cssOutput += `gap:${gapValue};`;
+            }
+            // mobile reverse direction
+            if (layout.mobileReverseDirection) {
+                cssMobileOutput += `flex-direction:column-reverse;`;
+            }
+            // mobile gap
+            if (layout.mobileGap !== undefined) {
+                const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
+                cssMobileOutput += `gap:${gapValue};`;
+            }
+            // apply attributes
+            const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at_gt__s_div";
+            const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at_gt__s_div";
+            node.setAttribute(prefix, cssOutput);
+            node.setAttribute(prefixMobile, cssMobileOutput);
+            let innerNode = documentHTML.createElement("div");
             innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-popup`);
-			// children
-			if (Array.isArray(dataArray.context)) {
-				dataArray.context.forEach(ctx => {
-					const childNode = createAnotherNode(ctx, documentHTML, true);
-					if (childNode) {
-						innerNode.appendChild(childNode);
-					}
-				});
-			}
-			node.appendChild(innerNode);
-		},
+            // children
+            if (Array.isArray(dataArray.context)) {
+                dataArray.context.forEach(ctx => {
+                    const childNode = createAnotherNode(ctx, documentHTML, true);
+                    if (childNode) {
+                        innerNode.appendChild(childNode);
+                    }
+                });
+            }
+            node.appendChild(innerNode);
+        },
 
-		jsRuntime: {},
+        jsRuntime: {},
         cssStyles: [{
             object: "@context",
             info: [{
@@ -18888,24 +18886,24 @@ export const flexEngineRootElement = {
                 "margin-left": flexEngineStyleVarible.space(sz.mobileMarginLeft),
                 "margin-right": flexEngineStyleVarible.space(sz.mobileMarginRight)
             };
-        },      
+        },
 
-		settings: {
-			sortablePart: function(element) {
-				return element;
-			},
+        settings: {
+            sortablePart: function (element) {
+                return element;
+            },
             systemClass: true,
             allowedSortIn: true,
             hide: true,
             animation: 2
-		}
-	},
+        }
+    },
 
-	float: {
-		name: "Float Button",
-		className: "float",
-		alts: [],
-		icon: `
+    float: {
+        name: "Float Button",
+        className: "float",
+        alts: [],
+        icon: `
 					<svg xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 -960 960 960"
 						fill="currentColor"
@@ -18919,10 +18917,10 @@ export const flexEngineRootElement = {
                 type: "string/text",
             }
         ],
-		layoutQuery: [],
+        layoutQuery: [],
 
 
-		contentFunction: function(dataArray, documentHTML, node) {
+        contentFunction: function (dataArray, documentHTML, node) {
             const content = dataArray.content;
             const label = content.label || "";
 
@@ -18930,116 +18928,116 @@ export const flexEngineRootElement = {
             node.textContent = label;
         },
 
-		jsRuntime: {},
+        jsRuntime: {},
 
-		// debugger
-		cssStyles: [{
-			object: "@main",
-			info: [{
-				key: "width",
-				value: "100%"
-			}, {
-				key: "height",
-				value: "100%"
-			}]
-		}],
+        // debugger
+        cssStyles: [{
+            object: "@main",
+            info: [{
+                key: "width",
+                value: "100%"
+            }, {
+                key: "height",
+                value: "100%"
+            }]
+        }],
 
-		sizeQuery: [
-			{
-				name: "minHeight",
-				label: "Minimum Height",
-				type: "space",
-				defaultAsFull: false
-			},
+        sizeQuery: [
+            {
+                name: "minHeight",
+                label: "Minimum Height",
+                type: "space",
+                defaultAsFull: false
+            },
 
-			{
-				name: "minWidth",
-				label: "Minimum Width",
-				type: "space",
-				defaultAsFull: false
-			},
+            {
+                name: "minWidth",
+                label: "Minimum Width",
+                type: "space",
+                defaultAsFull: false
+            },
 
-			{
-				name: "floatOn",
-				label: "Float Button On",
-				type: "selection",
-				choice: [
-					{ label: "Top", value: 1 },
-					{ label: "Bottom", value: 2 },
-					{ label: "Left", value: 3 },
-					{ label: "Right", value: 4 },
-					{ label: "Top Left", value: 5 },
-					{ label: "Top Right", value: 6 },
-					{ label: "Bottom Left", value: 7 },
-					{ label: "Bottom Right", value: 8 }
-				],
-				default: 8
-			},
+            {
+                name: "floatOn",
+                label: "Float Button On",
+                type: "selection",
+                choice: [
+                    { label: "Top", value: 1 },
+                    { label: "Bottom", value: 2 },
+                    { label: "Left", value: 3 },
+                    { label: "Right", value: 4 },
+                    { label: "Top Left", value: 5 },
+                    { label: "Top Right", value: 6 },
+                    { label: "Bottom Left", value: 7 },
+                    { label: "Bottom Right", value: 8 }
+                ],
+                default: 8
+            },
 
-			{
-				name: "widthPadding",
-				label: "Width Padding",
-				type: "space",
-				defaultAsFull: false,
-				visibleIf: {
-					name: "floatOn",
-					value: [3, 4, 5, 6, 7, 8],
-				}
-			},
+            {
+                name: "widthPadding",
+                label: "Width Padding",
+                type: "space",
+                defaultAsFull: false,
+                visibleIf: {
+                    name: "floatOn",
+                    value: [3, 4, 5, 6, 7, 8],
+                }
+            },
 
-			{
-				name: "heightPadding",
-				label: "Height Padding",
-				type: "space",
-				defaultAsFull: false,
-				visibleIf: {
-					name: "floatOn",
-					value: [1, 2, 5, 6, 7, 8],
-				}
-			}
-		],
+            {
+                name: "heightPadding",
+                label: "Height Padding",
+                type: "space",
+                defaultAsFull: false,
+                visibleIf: {
+                    name: "floatOn",
+                    value: [1, 2, 5, 6, 7, 8],
+                }
+            }
+        ],
 
-		sizeDefault: (sz, isVertical) => {
-			const floatOn = sz.floatOn || 8
+        sizeDefault: (sz, isVertical) => {
+            const floatOn = sz.floatOn || 8
 
-			const isTop = [1, 5, 6].includes(floatOn)
-			const isBottom = [2, 7, 8].includes(floatOn)
-			const isLeft = [3, 5, 7].includes(floatOn)
-			const isRight = [4, 6, 8].includes(floatOn)
+            const isTop = [1, 5, 6].includes(floatOn)
+            const isBottom = [2, 7, 8].includes(floatOn)
+            const isLeft = [3, 5, 7].includes(floatOn)
+            const isRight = [4, 6, 8].includes(floatOn)
 
-			const widthPadding = flexEngineStyleVarible.space(sz.widthPadding)
-			const heightPadding = flexEngineStyleVarible.space(sz.heightPadding)
+            const widthPadding = flexEngineStyleVarible.space(sz.widthPadding)
+            const heightPadding = flexEngineStyleVarible.space(sz.heightPadding)
 
-			return {
-				"min-width": flexEngineStyleVarible.space(sz.minWidth),
-				"min-height": flexEngineStyleVarible.space(sz.minHeight),
+            return {
+                "min-width": flexEngineStyleVarible.space(sz.minWidth),
+                "min-height": flexEngineStyleVarible.space(sz.minHeight),
 
-				"position": "fixed",
+                "position": "fixed",
 
-				"top": isTop ? heightPadding : "auto",
-				"bottom": isBottom ? heightPadding : "auto",
-				"left": isLeft ? widthPadding : "auto",
-				"right": isRight ? widthPadding : "auto"
-			}
-		},
+                "top": isTop ? heightPadding : "auto",
+                "bottom": isBottom ? heightPadding : "auto",
+                "left": isLeft ? widthPadding : "auto",
+                "right": isRight ? widthPadding : "auto"
+            }
+        },
 
-		sizeMobile: (sz, isVertical) => {
-			return {}
-		},
-		
-		settings: {
-			systemClass: true,
-			allowedSortIn: false,
-			animation: 1,
-			hide: true
-		}
-	},
+        sizeMobile: (sz, isVertical) => {
+            return {}
+        },
+
+        settings: {
+            systemClass: true,
+            allowedSortIn: false,
+            animation: 1,
+            hide: true
+        }
+    },
 
     CTA: {
-    	name: "Call to Action Section",
-    	className: "cta",
-    	alts: ["Call to Action", "CTA"],
-    	icon: `
+        name: "Call to Action Section",
+        className: "cta",
+        alts: ["Call to Action", "CTA"],
+        icon: `
                     <svg xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 -960 960 960"
                         fill="currentColor"
@@ -19047,200 +19045,200 @@ export const flexEngineRootElement = {
                         <path d="M216-216v-144 16-4 132Zm-.3 72q-32.7 0-52.2-19.5T144-216v-144q0-33 19.5-52.5T216-432h528q33 0 52.5 19.5T816-360H216v144h396v72H215.7Zm.3-384q-33 0-52.5-19.5T144-600v-144q0-33 19.5-52.5T216-816h528q33 0 52.5 19.5T816-744v144q0 33-19.5 52.5T744-528H216Zm0-72h528v-144H216v144Zm0 0v-144 144ZM744-84v-60h-60v-72h60v-60h72v60h60v72h-60v60h-72Z"/>
                     </svg>
                 `,
-    	contentQuery: [{
-    		name: "@global",
-    		label: "Elements",
-    		type: "interactiveElements"
-    	}],
-    	layoutQuery: [{
-    		name: "spaceAcross",
-    		label: "Align it to...",
-    		type: "selection",
-    		choice: [{
-    			label: "Left",
-    			value: 1
-    		}, {
-    			label: "Center",
-    			value: 2
-    		}, {
-    			label: "Right",
-    			value: 3
-    		}, {
-    			label: "Stretch it",
-    			value: 4
-    		}],
-    		default: 1
-    	}, {
-    		name: "spaceAlong",
-    		label: "in Height, perfer...",
-    		type: "selection",
-    		choice: [{
-    			label: "Top",
-    			value: 1
-    		}, {
-    			label: "Center",
-    			value: 2
-    		}, {
-    			label: "Buttom",
-    			value: 3
-    		}],
-    		default: 1
-    	}, {
-    		name: "overflow",
-    		label: "Height Overflow Behavior",
-    		type: "selection",
-    		choice: [{
-    			label: "Scroll",
-    			value: 1
-    		}, {
-    			label: "Hidden",
-    			value: 2
-    		}, {
-    			label: "No Action",
-    			value: 3
-    		}],
-    		default: 3
-    	}, {
-    		name: "gap",
-    		label: "Gaps Length",
-    		type: "space"
-    	}, {
-    		name: "mobileGap",
-    		label: "Gap on Mobile",
-    		type: "space"
-    	}, {
-    		name: "mobileReverseDirection",
-    		label: "Reverse Direction on Mobile?",
-    		type: "boolean/checkmark",
-    		default: false
-    	}, {
-    		name: "displayType",
-    		label: "Maximum Width",
-    		type: "selection",
-    		choice: [{
-    			label: "Standard",
-    			value: 0
-    		}, {
-    			label: "Wide",
-    			value: 1
-    		}, {
-    			label: "Full",
-    			value: 2
-    		}],
-    		default: 0
-    	}],
-    	initQuery: [],
-    	initFunction: function(dataArray, element) {
-    		debugger; // in future we will add some default views
-    	},
-    	contentFunction: function(dataArray, documentHTML, node, createAnotherNode) {
-    		const layout = dataArray.layout;
-    		let cssOutput = "";
-    		let cssMobileOutput = "";
-    		// spaceAcross
-    		if (layout.spaceAcross) {
-    			const map = {
-    				1: "flex-start",
-    				2: "center",
-    				3: "flex-end",
-    				4: "stretch"
-    			};
-    			cssOutput += `justify-content:${map[layout.spaceAcross]};`;
-    		}
-    		// spaceAlong
-    		if (layout.spaceAlong) {
-    			const map = {
-    				1: "flex-start",
-    				2: "center",
-    				3: "flex-end"
-    			};
-    			cssOutput += `align-items:${map[layout.spaceAlong]};`;
-    		}
-    		// overflow
-    		if (layout.overflow) {
-    			const map = {
-    				1: "scroll",
-    				2: "hidden",
-    				3: null
-    			};
-    			if (map[layout.overflow]) {
-    				cssOutput += `overflow:${map[layout.overflow]};`;
-    			}
-    		}
-    		// gap
-    		if (layout.gap !== undefined) {
-    			const gapValue = flexEngineStyleVariable.space[layout.gap];
-    			cssOutput += `gap:${gapValue};`;
-    		}
-    		// mobile reverse direction
-    		if (layout.mobileReverseDirection) {
-    			cssMobileOutput += `flex-direction:column-reverse;`;
-    		}
-    		// mobile gap
-    		if (layout.mobileGap !== undefined) {
-    			const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
-    			cssMobileOutput += `gap:${gapValue};`;
-    		}
-    		// apply attributes
-    		const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at_gt__s_div";
-    		const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at_gt__s_div";
-    		node.setAttribute(prefix, cssOutput);
-    		node.setAttribute(prefixMobile, cssMobileOutput);
-    		let innerNode = documentHTML.createElement("div");
-    		if (layout.displayType === 0) {
-    			innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-standard`);
-    		} else if (layout.displayType === 1) {
-    			innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-wide`);
-    		} else {
-    			innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-full`);
-    		}
-    		// children
-    		if (Array.isArray(dataArray.context)) {
-    			dataArray.context.forEach(ctx => {
-    				const childNode = createAnotherNode(ctx, documentHTML, true);
-    				if (childNode) {
-    					innerNode.appendChild(childNode);
-    				}
-    			});
-    		}
-    		node.appendChild(innerNode);
-    	},
-    	jsRuntime: {},
+        contentQuery: [{
+            name: "@global",
+            label: "Elements",
+            type: "interactiveElements"
+        }],
+        layoutQuery: [{
+            name: "spaceAcross",
+            label: "Align it to...",
+            type: "selection",
+            choice: [{
+                label: "Left",
+                value: 1
+            }, {
+                label: "Center",
+                value: 2
+            }, {
+                label: "Right",
+                value: 3
+            }, {
+                label: "Stretch it",
+                value: 4
+            }],
+            default: 1
+        }, {
+            name: "spaceAlong",
+            label: "in Height, perfer...",
+            type: "selection",
+            choice: [{
+                label: "Top",
+                value: 1
+            }, {
+                label: "Center",
+                value: 2
+            }, {
+                label: "Buttom",
+                value: 3
+            }],
+            default: 1
+        }, {
+            name: "overflow",
+            label: "Height Overflow Behavior",
+            type: "selection",
+            choice: [{
+                label: "Scroll",
+                value: 1
+            }, {
+                label: "Hidden",
+                value: 2
+            }, {
+                label: "No Action",
+                value: 3
+            }],
+            default: 3
+        }, {
+            name: "gap",
+            label: "Gaps Length",
+            type: "space"
+        }, {
+            name: "mobileGap",
+            label: "Gap on Mobile",
+            type: "space"
+        }, {
+            name: "mobileReverseDirection",
+            label: "Reverse Direction on Mobile?",
+            type: "boolean/checkmark",
+            default: false
+        }, {
+            name: "displayType",
+            label: "Maximum Width",
+            type: "selection",
+            choice: [{
+                label: "Standard",
+                value: 0
+            }, {
+                label: "Wide",
+                value: 1
+            }, {
+                label: "Full",
+                value: 2
+            }],
+            default: 0
+        }],
+        initQuery: [],
+        initFunction: function (dataArray, element) {
+            debugger; // in future we will add some default views
+        },
+        contentFunction: function (dataArray, documentHTML, node, createAnotherNode) {
+            const layout = dataArray.layout;
+            let cssOutput = "";
+            let cssMobileOutput = "";
+            // spaceAcross
+            if (layout.spaceAcross) {
+                const map = {
+                    1: "flex-start",
+                    2: "center",
+                    3: "flex-end",
+                    4: "stretch"
+                };
+                cssOutput += `justify-content:${map[layout.spaceAcross]};`;
+            }
+            // spaceAlong
+            if (layout.spaceAlong) {
+                const map = {
+                    1: "flex-start",
+                    2: "center",
+                    3: "flex-end"
+                };
+                cssOutput += `align-items:${map[layout.spaceAlong]};`;
+            }
+            // overflow
+            if (layout.overflow) {
+                const map = {
+                    1: "scroll",
+                    2: "hidden",
+                    3: null
+                };
+                if (map[layout.overflow]) {
+                    cssOutput += `overflow:${map[layout.overflow]};`;
+                }
+            }
+            // gap
+            if (layout.gap !== undefined) {
+                const gapValue = flexEngineStyleVariable.space[layout.gap];
+                cssOutput += `gap:${gapValue};`;
+            }
+            // mobile reverse direction
+            if (layout.mobileReverseDirection) {
+                cssMobileOutput += `flex-direction:column-reverse;`;
+            }
+            // mobile gap
+            if (layout.mobileGap !== undefined) {
+                const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
+                cssMobileOutput += `gap:${gapValue};`;
+            }
+            // apply attributes
+            const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at_gt__s_div";
+            const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at_gt__s_div";
+            node.setAttribute(prefix, cssOutput);
+            node.setAttribute(prefixMobile, cssMobileOutput);
+            let innerNode = documentHTML.createElement("div");
+            if (layout.displayType === 0) {
+                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-standard`);
+            } else if (layout.displayType === 1) {
+                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-wide`);
+            } else {
+                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-full`);
+            }
+            // children
+            if (Array.isArray(dataArray.context)) {
+                dataArray.context.forEach(ctx => {
+                    const childNode = createAnotherNode(ctx, documentHTML, true);
+                    if (childNode) {
+                        innerNode.appendChild(childNode);
+                    }
+                });
+            }
+            node.appendChild(innerNode);
+        },
+        jsRuntime: {},
 
-    	cssStyles: [{
-    		object: "@context-full",
-    		info: [{
-    			key: "width",
-    			value: "100%"
-    		}, {
-    			key: "height",
-    			value: "100%"
-    		}]
-    	}, {
-    		object: "@context-wide",
-    		info: [{
-    			key: "width",
-    			value: "100%"
-    		}, {
-    			key: "height",
-    			value: "100%"
-    		}, {
-    			key: "max-width",
-    			value: "1600px"
-    		}]
-    	}, {
-    		object: "@context-standard",
-    		info: [{
-    			key: "width",
-    			value: "100%"
-    		}, {
-    			key: "height",
-    			value: "100%"
-    		}, {
-    			key: "max-width",
-    			value: "1200px"
-    		}]
-    	}],
+        cssStyles: [{
+            object: "@context-full",
+            info: [{
+                key: "width",
+                value: "100%"
+            }, {
+                key: "height",
+                value: "100%"
+            }]
+        }, {
+            object: "@context-wide",
+            info: [{
+                key: "width",
+                value: "100%"
+            }, {
+                key: "height",
+                value: "100%"
+            }, {
+                key: "max-width",
+                value: "1600px"
+            }]
+        }, {
+            object: "@context-standard",
+            info: [{
+                key: "width",
+                value: "100%"
+            }, {
+                key: "height",
+                value: "100%"
+            }, {
+                key: "max-width",
+                value: "1200px"
+            }]
+        }],
 
         sizeQuery: [
             {
@@ -19284,25 +19282,25 @@ export const flexEngineRootElement = {
                 "min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
             };
         },
-        
-    	settings: {
-    		sortablePart: function(element) {
-    			return element.firstElementChild;
-    		},
+
+        settings: {
+            sortablePart: function (element) {
+                return element.firstElementChild;
+            },
             systemClass: true,
             allowedSortIn: true,
             animation: 2,
             hide: true,
             noDelete: true,
             globalElement: true
-    	}
+        }
     },
 
     Footer: {
-    	name: "Footer",
-    	className: "footer",
-    	alts: [],
-    	icon: `
+        name: "Footer",
+        className: "footer",
+        alts: [],
+        icon: `
                     <svg xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 -960 960 960"
                         fill="currentColor"
@@ -19310,200 +19308,200 @@ export const flexEngineRootElement = {
                         <path d="M144-144v-72h672v72H144Zm72-144q-33 0-52.5-19.5T144-360v-384q0-33 19.5-52.5T216-816h528q33 0 52.5 19.5T816-744v384q0 33-19.5 52.5T744-288H216Zm0-72h528v-384H216v384Zm0 0v-384 384Z"/>
                     </svg>
                 `,
-    	contentQuery: [{
-    		name: "@global",
-    		label: "Elements",
-    		type: "interactiveElements"
-    	}],
-    	layoutQuery: [{
-    		name: "spaceAcross",
-    		label: "Align it to...",
-    		type: "selection",
-    		choice: [{
-    			label: "Left",
-    			value: 1
-    		}, {
-    			label: "Center",
-    			value: 2
-    		}, {
-    			label: "Right",
-    			value: 3
-    		}, {
-    			label: "Stretch it",
-    			value: 4
-    		}],
-    		default: 1
-    	}, {
-    		name: "spaceAlong",
-    		label: "in Height, perfer...",
-    		type: "selection",
-    		choice: [{
-    			label: "Top",
-    			value: 1
-    		}, {
-    			label: "Center",
-    			value: 2
-    		}, {
-    			label: "Buttom",
-    			value: 3
-    		}],
-    		default: 1
-    	}, {
-    		name: "overflow",
-    		label: "Height Overflow Behavior",
-    		type: "selection",
-    		choice: [{
-    			label: "Scroll",
-    			value: 1
-    		}, {
-    			label: "Hidden",
-    			value: 2
-    		}, {
-    			label: "No Action",
-    			value: 3
-    		}],
-    		default: 3
-    	}, {
-    		name: "gap",
-    		label: "Gaps Length",
-    		type: "space"
-    	}, {
-    		name: "mobileGap",
-    		label: "Gap on Mobile",
-    		type: "space"
-    	}, {
-    		name: "mobileReverseDirection",
-    		label: "Reverse Direction on Mobile?",
-    		type: "boolean/checkmark",
-    		default: false
-    	}, {
-    		name: "displayType",
-    		label: "Maximum Width",
-    		type: "selection",
-    		choice: [{
-    			label: "Standard",
-    			value: 0
-    		}, {
-    			label: "Wide",
-    			value: 1
-    		}, {
-    			label: "Full",
-    			value: 2
-    		}],
-    		default: 0
-    	}],
-    	initQuery: [],
-    	initFunction: function(dataArray, element) {
-    		debugger; // in future we will add some default views
-    	},
-    	contentFunction: function(dataArray, documentHTML, node, createAnotherNode) {
-    		const layout = dataArray.layout;
-    		let cssOutput = "";
-    		let cssMobileOutput = "";
-    		// spaceAcross
-    		if (layout.spaceAcross) {
-    			const map = {
-    				1: "flex-start",
-    				2: "center",
-    				3: "flex-end",
-    				4: "stretch"
-    			};
-    			cssOutput += `justify-content:${map[layout.spaceAcross]};`;
-    		}
-    		// spaceAlong
-    		if (layout.spaceAlong) {
-    			const map = {
-    				1: "flex-start",
-    				2: "center",
-    				3: "flex-end"
-    			};
-    			cssOutput += `align-items:${map[layout.spaceAlong]};`;
-    		}
-    		// overflow
-    		if (layout.overflow) {
-    			const map = {
-    				1: "scroll",
-    				2: "hidden",
-    				3: null
-    			};
-    			if (map[layout.overflow]) {
-    				cssOutput += `overflow:${map[layout.overflow]};`;
-    			}
-    		}
-    		// gap
-    		if (layout.gap !== undefined) {
-    			const gapValue = flexEngineStyleVariable.space[layout.gap];
-    			cssOutput += `gap:${gapValue};`;
-    		}
-    		// mobile reverse direction
-    		if (layout.mobileReverseDirection) {
-    			cssMobileOutput += `flex-direction:column-reverse;`;
-    		}
-    		// mobile gap
-    		if (layout.mobileGap !== undefined) {
-    			const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
-    			cssMobileOutput += `gap:${gapValue};`;
-    		}
-    		// apply attributes
-    		const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at_gt__s_div";
-    		const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at_gt__s_div";
-    		node.setAttribute(prefix, cssOutput);
-    		node.setAttribute(prefixMobile, cssMobileOutput);
-    		let innerNode = documentHTML.createElement("div");
-    		if (layout.displayType === 0) {
-    			innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-standard`);
-    		} else if (layout.displayType === 1) {
-    			innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-wide`);
-    		} else {
-    			innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-full`);
-    		}
-    		// children
-    		if (Array.isArray(dataArray.context)) {
-    			dataArray.context.forEach(ctx => {
-    				const childNode = createAnotherNode(ctx, documentHTML, true);
-    				if (childNode) {
-    					innerNode.appendChild(childNode);
-    				}
-    			});
-    		}
-    		node.appendChild(innerNode);
-    	},
-    	jsRuntime: {},
+        contentQuery: [{
+            name: "@global",
+            label: "Elements",
+            type: "interactiveElements"
+        }],
+        layoutQuery: [{
+            name: "spaceAcross",
+            label: "Align it to...",
+            type: "selection",
+            choice: [{
+                label: "Left",
+                value: 1
+            }, {
+                label: "Center",
+                value: 2
+            }, {
+                label: "Right",
+                value: 3
+            }, {
+                label: "Stretch it",
+                value: 4
+            }],
+            default: 1
+        }, {
+            name: "spaceAlong",
+            label: "in Height, perfer...",
+            type: "selection",
+            choice: [{
+                label: "Top",
+                value: 1
+            }, {
+                label: "Center",
+                value: 2
+            }, {
+                label: "Buttom",
+                value: 3
+            }],
+            default: 1
+        }, {
+            name: "overflow",
+            label: "Height Overflow Behavior",
+            type: "selection",
+            choice: [{
+                label: "Scroll",
+                value: 1
+            }, {
+                label: "Hidden",
+                value: 2
+            }, {
+                label: "No Action",
+                value: 3
+            }],
+            default: 3
+        }, {
+            name: "gap",
+            label: "Gaps Length",
+            type: "space"
+        }, {
+            name: "mobileGap",
+            label: "Gap on Mobile",
+            type: "space"
+        }, {
+            name: "mobileReverseDirection",
+            label: "Reverse Direction on Mobile?",
+            type: "boolean/checkmark",
+            default: false
+        }, {
+            name: "displayType",
+            label: "Maximum Width",
+            type: "selection",
+            choice: [{
+                label: "Standard",
+                value: 0
+            }, {
+                label: "Wide",
+                value: 1
+            }, {
+                label: "Full",
+                value: 2
+            }],
+            default: 0
+        }],
+        initQuery: [],
+        initFunction: function (dataArray, element) {
+            debugger; // in future we will add some default views
+        },
+        contentFunction: function (dataArray, documentHTML, node, createAnotherNode) {
+            const layout = dataArray.layout;
+            let cssOutput = "";
+            let cssMobileOutput = "";
+            // spaceAcross
+            if (layout.spaceAcross) {
+                const map = {
+                    1: "flex-start",
+                    2: "center",
+                    3: "flex-end",
+                    4: "stretch"
+                };
+                cssOutput += `justify-content:${map[layout.spaceAcross]};`;
+            }
+            // spaceAlong
+            if (layout.spaceAlong) {
+                const map = {
+                    1: "flex-start",
+                    2: "center",
+                    3: "flex-end"
+                };
+                cssOutput += `align-items:${map[layout.spaceAlong]};`;
+            }
+            // overflow
+            if (layout.overflow) {
+                const map = {
+                    1: "scroll",
+                    2: "hidden",
+                    3: null
+                };
+                if (map[layout.overflow]) {
+                    cssOutput += `overflow:${map[layout.overflow]};`;
+                }
+            }
+            // gap
+            if (layout.gap !== undefined) {
+                const gapValue = flexEngineStyleVariable.space[layout.gap];
+                cssOutput += `gap:${gapValue};`;
+            }
+            // mobile reverse direction
+            if (layout.mobileReverseDirection) {
+                cssMobileOutput += `flex-direction:column-reverse;`;
+            }
+            // mobile gap
+            if (layout.mobileGap !== undefined) {
+                const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
+                cssMobileOutput += `gap:${gapValue};`;
+            }
+            // apply attributes
+            const prefix = BUILDER_CONFIG.classPrefix + "styles-node-at_gt__s_div";
+            const prefixMobile = BUILDER_CONFIG.classPrefix + "styles-node-onMobile-at_gt__s_div";
+            node.setAttribute(prefix, cssOutput);
+            node.setAttribute(prefixMobile, cssMobileOutput);
+            let innerNode = documentHTML.createElement("div");
+            if (layout.displayType === 0) {
+                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-standard`);
+            } else if (layout.displayType === 1) {
+                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-wide`);
+            } else {
+                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-full`);
+            }
+            // children
+            if (Array.isArray(dataArray.context)) {
+                dataArray.context.forEach(ctx => {
+                    const childNode = createAnotherNode(ctx, documentHTML, true);
+                    if (childNode) {
+                        innerNode.appendChild(childNode);
+                    }
+                });
+            }
+            node.appendChild(innerNode);
+        },
+        jsRuntime: {},
 
-    	cssStyles: [{
-    		object: "@context-full",
-    		info: [{
-    			key: "width",
-    			value: "100%"
-    		}, {
-    			key: "height",
-    			value: "100%"
-    		}]
-    	}, {
-    		object: "@context-wide",
-    		info: [{
-    			key: "width",
-    			value: "100%"
-    		}, {
-    			key: "height",
-    			value: "100%"
-    		}, {
-    			key: "max-width",
-    			value: "1600px"
-    		}]
-    	}, {
-    		object: "@context-standard",
-    		info: [{
-    			key: "width",
-    			value: "100%"
-    		}, {
-    			key: "height",
-    			value: "100%"
-    		}, {
-    			key: "max-width",
-    			value: "1200px"
-    		}]
-    	}],
+        cssStyles: [{
+            object: "@context-full",
+            info: [{
+                key: "width",
+                value: "100%"
+            }, {
+                key: "height",
+                value: "100%"
+            }]
+        }, {
+            object: "@context-wide",
+            info: [{
+                key: "width",
+                value: "100%"
+            }, {
+                key: "height",
+                value: "100%"
+            }, {
+                key: "max-width",
+                value: "1600px"
+            }]
+        }, {
+            object: "@context-standard",
+            info: [{
+                key: "width",
+                value: "100%"
+            }, {
+                key: "height",
+                value: "100%"
+            }, {
+                key: "max-width",
+                value: "1200px"
+            }]
+        }],
 
         sizeQuery: [
             {
@@ -19547,11 +19545,11 @@ export const flexEngineRootElement = {
                 "min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
             };
         },
-        
-    	settings: {
-    		sortablePart: function(element) {
-    			return element.firstElementChild;
-    		},
+
+        settings: {
+            sortablePart: function (element) {
+                return element.firstElementChild;
+            },
             systemClass: true,
             allowedSortIn: true,
             hide: true,
@@ -19559,7 +19557,7 @@ export const flexEngineRootElement = {
             animation: 2,
             elementType: "footer",
             globalElement: true
-    	}
+        }
     },
 
     Header: {
@@ -19656,7 +19654,7 @@ export const flexEngineRootElement = {
                     value: true
                 }
             },
-            
+
             {
                 name: "secondaryButton.enable",
                 label: "Secondary Clickable",
@@ -19697,7 +19695,7 @@ export const flexEngineRootElement = {
                     value: true
                 }
             }
-        ],                
+        ],
 
         layoutQuery: [
             {
@@ -19835,7 +19833,7 @@ export const flexEngineRootElement = {
                 label: "Mobile Cover Header On Menu",
                 description: "Controls whether the mobile menu covers the mobile header when the menu opens. Menu modes 1-6 cause the menu to cover the header.",
                 type: "boolean/checkmark"
-            }, 
+            },
 
             {
                 name: "spaceBetween",
@@ -19980,7 +19978,7 @@ export const flexEngineRootElement = {
                     name: "desktopMenuMode",
                     value: (input) => input !== 0
                 }
-            }, 
+            },
 
             {
                 name: "mobileButonRound",
@@ -19996,16 +19994,16 @@ export const flexEngineRootElement = {
                 name: "stickyToBottom",
                 label: "Menu Sticky to bottom",
                 type: "boolean/checkmark"
-            }, 
-            
+            },
+
         ],
 
         initQuery: [],
-        initFunction: function(dataArray, element) {
+        initFunction: function (dataArray, element) {
             debugger; // in future we will add some default views
         },
 
-        contentFunction: function(dataArray, documentHTML, node, createAnotherNode) {
+        contentFunction: function (dataArray, documentHTML, node, createAnotherNode) {
             // Do a setup
             const content = dataArray.content || {};
             const layout = dataArray.layout || {};
@@ -20358,7 +20356,7 @@ export const flexEngineRootElement = {
         },
 
         jsRuntime: {
-            forEach: function(BUILDER_CONFIG) {
+            forEach: function (BUILDER_CONFIG) {
                 return `function startRuntime(element) {
                     if (element) {
                         const hamburger = element.querySelector(".${BUILDER_CONFIG.classPrefix}content-header-hamberger");
@@ -20563,7 +20561,7 @@ export const flexEngineRootElement = {
                         runMenuStyle();
                         window.addEventListener("resize", runMenuStyle);
                     }
-                }`                           
+                }`
             }
         },
 
@@ -21650,7 +21648,7 @@ export const flexEngineRootElement = {
                         "height": sz.fullHeight ? "100%" : "auto"
                     };
                 },
-                sizeMobile: (sz, isVertical) => {return {}}
+                sizeMobile: (sz, isVertical) => { return {} }
             },
 
             {
@@ -21673,9 +21671,9 @@ export const flexEngineRootElement = {
                         "height": sz.fullHeight ? "100%" : "auto"
                     };
                 },
-                sizeMobile: (sz, isVertical) => {return {}}
-            },   
-            
+                sizeMobile: (sz, isVertical) => { return {} }
+            },
+
             {
                 position: "@context-menustyleapply",
                 sizeQuery: [{
@@ -21731,8 +21729,8 @@ export const flexEngineRootElement = {
                         "overflow": "scroll"
                     };
                 },
-                sizeMobile: (sz, isVertical) => {return {}}
-            }            
+                sizeMobile: (sz, isVertical) => { return {} }
+            }
         ],
 
 
@@ -21849,11 +21847,11 @@ export const flexEngineRootElement = {
 
         initQuery: [],
 
-        initFunction: function(dataArray, element) {
+        initFunction: function (dataArray, element) {
             debugger; // in future we will add some default views
         },
 
-        contentFunction: function(
+        contentFunction: function (
             dataArray,
             documentHTML,
             node,
@@ -21898,7 +21896,7 @@ export const flexEngineRootElement = {
         },
 
         settings: {
-            sortablePart: function(element) {
+            sortablePart: function (element) {
                 return element.firstElementChild;
             },
 
@@ -21930,7 +21928,7 @@ debugger;
 /**
  * Main Function (RUN THIS!)
  */
-export const main = function(){
+export const main = function () {
     const flexEngineFileSystem = new FlexEngineFileSystem();
 };
 
