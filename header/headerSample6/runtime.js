@@ -289,5 +289,46 @@ function startRuntime(element) {
 			}
 		});
 		updateOnTop();
+
+		function applyMenuStyle(header) {
+		const targetClass = "site-content-header-menustyleapply";
+
+		const hasTargetMode = [
+			"site-content-header-menumode5",
+			"site-content-header-menumode6"
+		].some(className =>
+			header.matches(`.${className}`) ||
+			header.querySelector(`.${className}`)
+		);
+
+		if (!hasTargetMode) return;
+
+		const styleElement = [
+			...(header.matches(`.${targetClass}`) ? [header] : []),
+			...header.querySelectorAll(`.${targetClass}`)
+		][0];
+
+		if (!styleElement) return;
+
+		const isMobile = window.innerWidth <= 768;
+		const expectedTag = isMobile ? "NAV" : "UL";
+
+		if (styleElement.tagName === expectedTag) return;
+
+		styleElement.classList.remove(targetClass);
+
+		if (isMobile) {
+			header.querySelector("nav")?.classList.add(targetClass);
+		} else {
+			header.querySelector("nav ul")?.classList.add(targetClass);
+		}
+	}
+
+	function runMenuStyle() {
+		document.querySelectorAll("header").forEach(applyMenuStyle);
+	}
+
+	runMenuStyle();
+	window.addEventListener("resize", runMenuStyle);
 	}
 }
