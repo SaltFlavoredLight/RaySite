@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Generator Demo</title>
+
+    <link rel="stylesheet" href="test.css">
+
+    <!-- real Header CSS based on prefix: site- -->
+
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+
+    <header class="site-header" id="preview"></header>
+
+    <div class="demo-controls" hidden>
+        <button id="generateButton">
+            Generate Header
+        </button>
+    </div>
+
+    <p id="pre"></p>
+
+    <div style="height: 2000px"></div>
+
+    <!-- Payload -->
+    <script>
+        function createFlexEngineStyleVaribles() {
+            return {
+                space: (value) => value,
+                curve: (value) => value,
+                integer: (value) => value,
+                boolean: (value) => value,
+                string: (value) => value,
+                media: (value) => value
+            };
+        }
+
+        const flexEngineStyleVarible = createFlexEngineStyleVaribles();
+
+
+
+        const sampleData = {
+            content: {
+                "logo.type": "text",
+                "logo.text": "RaySite",
+
+                nav: [
+                    {
+                        name: "Home",
+                        children: [],
+                        url: "/"
+                    },
+                    {
+                        name: "All Product",
+                        children: [
+                            {
+                                name: "Website",
+                                children: [],
+                                url: "/products/website"
+                            },
+                            {
+                                name: "CMS",
+                                children: [],
+                                url: "/products/cms"
+                            },
+                            {
+                                name: "Notebook",
+                                children: [],
+                                url: "/products/notebook"
+                            },
+                            {
+                                name: "Member Management",
+                                children: [],
+                                url: "/products/member-management"
+                            }
+                        ],
+                        url: "/products"
+                    },
+                    {
+                        name: "Solution",
+                        children: [],
+                        url: "/solution"
+                    },
+                    {
+                        name: "Help?",
+                        children: [
+                            {
+                                name: "About Us",
+                                children: [],
+                                url: "/about-us"
+                            },
+                            {
+                                name: "History",
+                                children: [],
+                                url: "/about-us/history"
+                            },
+                            {
+                                name: "Blog",
+                                children: [],
+                                url: "/blog"
+                            },
+                            {
+                                name: "Devaloper's Docs",
+                                children: [],
+                                url: "/docs"
+                            }
+                        ],
+                        url: ""
+                    },
+                    {
+                        name: "About Us",
+                        url: "/about-us"
+                    }
+                ],
+
+                "primaryButton.enable": true,
+                "primaryButton.text": "Get Started",
+                "primaryButton.url": "/get-started",
+                "primaryButton.newPage": false,
+
+                "secondaryButton.enable": true,
+                "secondaryButton.text": "Log in",
+                "secondaryButton.url": "/login",
+                "secondaryButton.newPage": false
+            },
+
+            layout: {
+                desktopPosition: 3, 
+                mobileMenuPlace: "left", 
+                mobileLogoPosition: "center", 
+                desktopHeaderMaxInnerWidth: "1200px",
+                desktopHeaderMainGap: "24px",
+                mobileHeaderMainGap: "16px",
+                desktopHeaderSeparateBorderSpace: "1px",
+                desktopMenuMode: 5, // POINT - 0
+                spaceBetween: "3px", 
+                navMajorGap: "24px", 
+                navMinorGap: "8px", 
+                nestingSupport: 0, // POINT, OK in 0.0-6, 1.1-4, 4.1-4, 2.1-4, 3.1-4
+                transitionTime: 300, 
+                transitionCurve: "ease", 
+                mobileCtaType: 0,
+                hamAnimation: 1,
+                hamAnimationOnDesktop: false, 
+                mobileButonRound: "5px",
+                stickyToBottom: true 
+            }
+        };
+
+        const BUILDER_CONFIG = {
+            classPrefix: "site-"
+        }   
+    </script>
+
+    <!-- Runtime script -->
+    <script src="runtime.js"></script>
+   
+    <!-- Creating HTML! -->
+    <script src="creatingHeader.js"></script>
+
+
+    <!-- Run! -->
+    <script>
+        function updateHTML() {
+            const preview = document.getElementById(`preview`);
+            const pre = document.getElementById(`pre`);
+            pre.innerText = preview.innerHTML;
+        }
+
+
+        document.getElementById(`generateButton`).addEventListener("click", () => {
+            const preview = document.getElementById(`preview`);
+
+                createHeader(
+                    sampleData,
+                    document,
+                    preview,
+                    null
+                );
+
+                //updateHTML();
+
+                startRuntime(preview);
+        });
+
+        document.getElementById(`generateButton`).click();
+
+    </script>
+</body>
+</html>

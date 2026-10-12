@@ -1,0 +1,246 @@
+/* Nav layout */
+
+/* mode 0 */
+
+
+/* mode 1-6 */
+
+
+
+
+
+@media (max-width: 768px) {
+
+
+
+    .site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+    .site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1,
+    .site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion1 {
+        transform: translateX(-100%);
+    }
+
+    .ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion1 {
+        transform: translateX(0);
+    }
+
+    .site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+    .site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2,
+    .site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion2 {
+        clip-path: inset(0 100% 0 0);
+    }
+
+    .ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion2 {
+        clip-path: inset(0 0 0 0);
+    }
+
+    .site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+    .site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3,
+    .site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion3 {
+        transform: translateX(100%);
+    }
+
+    .ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion3 {
+        transform: translateX(0);
+    }
+
+    .site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+    .site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4,
+    .site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion4 {
+        clip-path: inset(0 0 0 100%);
+    }
+
+    .ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion4 {
+        clip-path: inset(0 0 0 0);
+    }
+
+    .site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+    .site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5,
+    .site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion5 {
+        transform: translateY(-100vh);
+    }
+
+    .ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion5 {
+        transform: translateY(0);
+    }
+
+    .site-content-header-menumode0 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+    .site-content-header-menumode5 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6,
+    .site-content-header-menumode6 .site-content-header-menu.site-content-header-mobileMenuAnimamtion6 {
+        clip-path: inset(0 0 100% 0);
+    }
+
+    .ismenuopen .site-content-header-menu.site-content-header-mobileMenuAnimamtion6 {
+        clip-path: inset(0 0 0 0);
+    }
+
+}
+
+
+
+
+@media (max-width: 768px) {
+
+}
+
+
+
+
+
+
+/* mode 0 */
+/* Main */
+
+
+/* mode 1-4 */
+/* Main */
+
+
+
+
+/* Nested in 1 or 4 or 5*/
+
+/* Nested in 2 and 3 ? */
+
+
+
+/* menu mode 5-6 */
+
+/* MOblie */
+@media (max-width: 768px) {
+
+    .site-content-header-menumode0 .site-content-header-menu>ul,
+    .site-content-header-menumode1 .site-content-header-menu>ul,
+    .site-content-header-menumode2 .site-content-header-menu>ul,
+    .site-content-header-menumode3 .site-content-header-menu>ul,
+    .site-content-header-menumode4 .site-content-header-menu>ul,
+    .site-content-header-menumode5 .site-content-header-menu>ul,
+    .site-content-header-menumode6 .site-content-header-menu>ul {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        justify-content: center;
+        align-items: left;
+        text-align: left;
+        width: 100%;
+        height: auto;
+    }
+
+    .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage {
+        position: static;
+    }
+
+    .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage>a {
+        height: auto;
+        margin-bottom: 0;
+    }
+
+    .site-content-header-menumode0 .site-content-header-menu .site-content-header-submenu {
+        position: static;
+        clip-path: none;
+        text-align: unset;
+        left: auto;
+        top: auto;
+    }
+
+    .site-content-header-menumode0 .site-content-header-menu .site-content-header-navpage:hover .site-content-header-submenu {
+        clip-path: none;
+    }
+
+
+    .site-content-header-menumode1 .site-content-header-menu .site-content-header-navpage,
+    .site-content-header-menumode2 .site-content-header-menu .site-content-header-navpage,
+    .site-content-header-menumode3 .site-content-header-menu .site-content-header-navpage,
+    .site-content-header-menumode4 .site-content-header-menu .site-content-header-navpage {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        gap: 0 var(--site-header-layout-navMinorGap);
+    }
+
+
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen,
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen {
+        gap: var(--site-header-layout-navMinorGap) var(--site-header-layout-navMinorGap);
+    }
+
+    .site-content-header-menumode5 .site-content-header-menu .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon,
+    .site-content-header-menumode6 .site-content-header-menu .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon,
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon,
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen>.site-content-header-menusubicon {
+        transform: rotate(90deg);
+    }
+
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-submenu,
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-submenu {
+        display: flex;
+        position: static;
+        flex-direction: column;
+        padding-top: var(--site-header-layout-navMinorGap);
+        gap: var(--site-header-layout-navMinorGap) 0;
+        padding-left: var(--site-header-layout-navMajorGap);
+        padding-right: var(--site-header-layout-navMajorGap);
+        width: 100%;
+        flex: 1 1 100%;
+
+        max-height: 0;
+        padding-top: 0;
+        transform: none;
+        clip-path: inset(0 0 100% 0);
+    }
+
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested2 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,
+    .site-content-header-menumode1 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,
+    .site-content-header-menumode2 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,
+    .site-content-header-menumode3 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu,
+    .site-content-header-menumode4 .site-content-header-menu.site-content-header-nested3 .site-content-header-navpage.issubmenuopen .site-content-header-submenu {
+        clip-path: inset(0 0 0 0);
+    }
+
+}
