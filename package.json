@@ -1,0 +1,35 @@
+{
+  "name": "raysite-website-builder-project",
+  "version": "0.9.0",
+  "description": "RaySite Website is a Project to bulit a Website Builder.",
+  "keywords": [
+    "RaySite",
+    "Website",
+    "Builder",
+    "Interactive"
+  ],
+  "homepage": "https://github.com/SaltFlavoredLight/RaySite#readme",
+  "bugs": {
+    "url": "https://github.com/SaltFlavoredLight/RaySite/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SaltFlavoredLight/RaySite.git"
+  },
+  "license": "Apache-2.0",
+  "author": "SaltFlavoredLight",
+  "type": "ES Modules",
+  "main": "src/index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "quill": "^2.0.3",
+    "quill-delta-to-html": "^0.12.1",
+    "sortablejs": "^1.15.7"
+  }
+}
