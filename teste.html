@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quill Delta to HTML Playground</title>
+
+  <!-- Quill CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"
+    rel="stylesheet"
+  >
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 250px;
+      box-sizing: border-box;
+      font: 14px/1.5 monospace;
+      padding: 12px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    #htmlOutput {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: #f4f4f4;
+      padding: 12px;
+      min-height: 100px;
+    }
+
+    #editor {
+      height: 250px;
+    }
+
+    button {
+      margin: 12px 0;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 700px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Quill Delta → HTML</h1>
+
+  <h2>1. Write your Delta JSON</h2>
+
+  <textarea id="deltaInput" spellcheck="false">{
+  "ops": [
+    {
+      "insert": "Hello World",
+      "attributes": { "header": 1 }
+    },
+    {
+      "insert": "This is "
+    },
+    {
+      "insert": "bold text",
+      "attributes": { "bold": true }
+    },
+    {
+      "insert": " and "
+    },
+    {
+      "insert": "italic text",
+      "attributes": { "italic": true }
+    },
+    {
+      "insert": ".\n"
+    },
+    {
+      "insert": "First item\n",
+      "attributes": { "list": "bullet" }
+    },
+    {
+      "insert": "Second item\n",
+      "attributes": { "list": "bullet" }
+    },
+    {
+      "insert": "Visit OpenAI",
+      "attributes": { "link": "https://openai.com" }
+    },
+    {
+      "insert": "\n"
+    }
+  ]
+}</textarea>
+
+  <button id="convertButton">Convert Delta to HTML</button>
+
+  <div class="layout">
+    <section>
+      <h2>2. Generated HTML</h2>
+      <pre id="htmlOutput"></pre>
+
+      <h2>3. HTML Preview</h2>
+      <div id="htmlPreview"></div>
+    </section>
+
+    <section>
+
+      <h2>4. Test with Quill</h2>
+      <div id="editor"></div>
+
+      <button id="updateDeltaButton">
+        Update Delta to Section 1
+      </button>
+
+      <button id="readButton">
+        Show Edited Delta
+      </button>
+
+      <pre id="editedDelta"></pre>
+
+    </section>
+
+  </div>
+
+  <!-- Quill -->
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+
+  <!-- Delta to HTML converter -->
+  <script src="https://cdn.jsdelivr.net/npm/quill-delta-to-html@0.12.1/dist/browser/QuillDeltaToHtmlConverter.bundle.js"></script>
+
+  <script>
+    const deltaInput = document.getElementById("deltaInput");
+    const htmlOutput = document.getElementById("htmlOutput");
+    const htmlPreview = document.getElementById("htmlPreview");
+    const editedDelta = document.getElementById("editedDelta");
+
+    // Initialize Quill editor.
+    const quill = new Quill("#editor", {
+      theme: "snow",
+      placeholder: "Converted HTML will appear here..."
+    });
+
+    function convertDelta() {
+      try {
+        const document = JSON.parse(deltaInput.value);
+
+        if (!Array.isArray(document.ops)) {
+          throw new Error('Expected a Delta object with an "ops" array.');
+        }
+
+        // Convert Delta operations into HTML.
+        const converter = new QuillDeltaToHtmlConverter(
+          document.ops,
+          {}
+        );
+
+        const html = converter.convert();
+
+        // Display the HTML source.
+        htmlOutput.textContent = html;
+
+        // Render the generated HTML.
+        htmlPreview.innerHTML = html;
+
+        // Import the generated HTML into Quill for editing/testing.
+        quill.clipboard.dangerouslyPasteHTML(html);
+
+        editedDelta.textContent = "";
+      } catch (error) {
+        htmlOutput.textContent = "Conversion error: " + error.message;
+        htmlPreview.innerHTML = "";
+        editedDelta.textContent = "";
+      }
+    }
+
+    document
+      .getElementById("convertButton")
+      .addEventListener("click", convertDelta);
+
+    // Read the Delta after editing in Quill.
+    document
+      .getElementById("readButton")
+      .addEventListener("click", () => {
+        editedDelta.textContent = JSON.stringify(
+          quill.getContents(),
+          null,
+          2
+        );
+      });
+
+    // Convert the initial sample on page load.
+    convertDelta();
+
+
+
+document
+  .getElementById("updateDeltaButton")
+  .addEventListener("click", () => {
+    // Get the current Delta from Quill.
+    const delta = quill.getContents();
+
+    // Update Section 1 with the edited Delta.
+    deltaInput.value = JSON.stringify(delta, null, 2);
+  });
+
+document
+  .getElementById("readButton")
+  .addEventListener("click", () => {
+    editedDelta.textContent = JSON.stringify(
+      quill.getContents(),
+      null,
+      2
+    );
+  });
+
+
+  </script>
+</body>
+</html>
