@@ -6,7 +6,7 @@ import JSZip from 'jszip';
 
 // Necessary for having a Quill Delta element
 import Quill from 'quill';
-import quillDeltaToHtml from 'quill-delta-to-html';
+import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 
 // And Sortable, another important part.
 import Sortable from 'sortablejs';
@@ -1374,7 +1374,7 @@ export class FlexEngineFileSystem {
     }
 };
 
-
+export const flexEngineFileSystem = new FlexEngineFileSystem();
 
 
 /**
@@ -18767,6 +18767,13 @@ export const flexEngineDefaultElements = {
 
                 cssStyles: [
                     {
+                        object: "@main",
+                        info: [
+                            { key: "width", value: "100%" },
+                            { key: "height", value: "100%" }
+                        ]
+                    },
+                    {
                         object: "@context-full",
                         info: [
                             { key: "width", value: "100%" },
@@ -19399,7 +19406,14 @@ export const flexEngineRootElement = {
         },
         jsRuntime: {},
 
-        cssStyles: [{
+        cssStyles: [
+                    {
+                        object: "@main",
+                        info: [
+                            { key: "width", value: "100%" },
+                            { key: "height", value: "100%" }
+                        ]
+                    },{
             object: "@context-full",
             info: [{
                 key: "width",
@@ -19663,7 +19677,14 @@ export const flexEngineRootElement = {
         },
         jsRuntime: {},
 
-        cssStyles: [{
+        cssStyles: [
+                    {
+                        object: "@main",
+                        info: [
+                            { key: "width", value: "100%" },
+                            { key: "height", value: "100%" }
+                        ]
+                    },{
             object: "@context-full",
             info: [{
                 key: "width",
@@ -20760,7 +20781,7 @@ export const flexEngineRootElement = {
                 }`
             }
         },
-
+        // debugger;
         cssStyles: [
             {
                 object: ".site-header",
@@ -22072,7 +22093,14 @@ export const flexEngineRootElement = {
 
         jsRuntime: {},
 
-        cssStyles: [{
+        cssStyles: [
+                    {
+                        object: "@main",
+                        info: [
+                            { key: "width", value: "100%" },
+                            { key: "height", value: "100%" }
+                        ]
+                    },{
             object: "@main",
             info: [{
                 key: "width",
@@ -22326,7 +22354,7 @@ const flexEngineFindInheritanceSources = function(dataObject) {
     return sourceList;
 };
 
-const flexEngineResolveInheritance = function( pageStructure, componentRegistry) {
+const flexEngineResolveInheritance = function(pageStructure, componentRegistry) {
     const REMOVE = Symbol("REMOVE");
     const resolvingSources = new Set();
     const activeObjects = new WeakSet();
@@ -22573,7 +22601,7 @@ const flexEngineResolveInheritance = function( pageStructure, componentRegistry)
  * Main Function (RUN THIS!)
  */
 export const main = function () {
-    const flexEngineFileSystem = new FlexEngineFileSystem();
+    
 };
 
 // Go RaySite!

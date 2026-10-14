@@ -37,22 +37,19 @@ const body = {
                 elementNumber: 4
             },
             {
-                name: "floatshell",
-                label: "floats",
-                type: "interactiveElements/noSortable",
-                allowedTypes: ["@root/float"],
+                name: "popupshell",
+                label: "Popups",
+                type: "interactiveElements/static",
+                allowedTypes: ["@root/popup"],
                 elementNumber: 5
             },
             {
-                name: "popup",
-                label: "popup",
-                type: "interactiveElements/static",
-                allowedTypes: ["@root/popup"],
+                name: "float",
+                label: "float",
+                type: "interactiveElements/noSortable",
+                allowedTypes: ["@root/float"],
                 elementNumber: 6
-            },
-
-            // Now is never weird again!
-
+            }
         ],
 
         layoutQuery: [],
@@ -69,7 +66,19 @@ const body = {
             node,
             createAnotherNode
         ) {
+            const headerDOM = createAnotherNode(dataArray.content.header, documentHTML, true);
+            const mainDOM = createAnotherNode(dataArray.content.main, documentHTML, true);
+            const ctaDOM = createAnotherNode(dataArray.content.cta, documentHTML, true);
+            const footerDOM = createAnotherNode(dataArray.content.footer, documentHTML, true);
+            const popupshellDOM = createAnotherNode(dataArray.content.popupshell, documentHTML, true);
+            const float = createAnotherNode(dataArray.content.float, documentHTML, true);
 
+            node.appendChild(headerDOM);
+            node.appendChild(mainDOM);
+            node.appendChild(ctaDOM);
+            node.appendChild(footerDOM);
+            node.appendChild(popupshellDOM);
+            node.appendChild(float);
         },
 
 
@@ -104,7 +113,9 @@ const body = {
             {
                 "object": "body",
                 "info": [
-                    { "key": "line-height", "value": "1" }
+                    { "key": "line-height", "value": "1" },
+                    { key: "width", value: "100%" },
+                    { key: "height", value: "100%" }
                 ]
             },
             {
