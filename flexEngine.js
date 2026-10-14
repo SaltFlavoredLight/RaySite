@@ -1407,6 +1407,12 @@ export const flexEngineDefaultVariables = {
         }
     },
 
+    staticElement: {
+        staticElement: {
+            system: true
+        }
+    },
+
     interactiveElements: {
         interactiveElements: {
             system: true
@@ -15973,7 +15979,7 @@ const flexEngineStylesToCss = (cssObject) => {
         .join("");
 };
 
-const flexEngineStylesResolveRegistry = (elementMode) => {
+export const flexEngineStylesResolveRegistry = (elementMode) => {
     const rawMode = String(elementMode || "");
     const separatorIndex = rawMode.indexOf("/");
     const category = separatorIndex === -1 ? rawMode : rawMode.substring(0, separatorIndex);
@@ -16398,12 +16404,201 @@ export const flexEngineDefaultElements = {
                 contentFunction: function (dataArray, documentHTML, node) {
                     const deltaOps = dataArray.content;
                     const converter = new QuillDeltaToHtmlConverter(deltaOps, {
-                        classPrefix: `${BUILDER_CONFIG.classPrefix}content-text`
+                        classPrefix: `${BUILDER_CONFIG.classPrefix}-text`
                     });
                     const html = converter.convert();
                     node.innerHTML = html;
                 },
-                cssStyles: [],
+
+                cssStyles: [
+                    {
+                        "object": "*",
+                        "info": [
+                            { "key": "all", "value": "unset" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-bg-blue",
+                        "info": [
+                            { "key": "background-color", "value": "#06c" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-bg-purple",
+                        "info": [
+                            { "key": "background-color", "value": "#93f" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-color-white",
+                        "info": [
+                            { "key": "color", "value": "#fff" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-color-red",
+                        "info": [
+                            { "key": "color", "value": "#e60000" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-color-orange",
+                        "info": [
+                            { "key": "color", "value": "#f90" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-color-yellow",
+                        "info": [
+                            { "key": "color", "value": "#ff0" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-color-green",
+                        "info": [
+                            { "key": "color", "value": "#008a00" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-color-blue",
+                        "info": [
+                            { "key": "color", "value": "#06c" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-color-purple",
+                        "info": [
+                            { "key": "color", "value": "#93f" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-size-small",
+                        "info": [
+                            { "key": "font-size", "value": ".75em" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-size-large",
+                        "info": [
+                            { "key": "font-size", "value": "1.5em" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-size-huge",
+                        "info": [
+                            { "key": "font-size", "value": "2.5em" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-direction-rtl",
+                        "info": [
+                            { "key": "direction", "value": "rtl" },
+                            { "key": "text-align", "value": "inherit" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-align-center",
+                        "info": [
+                            { "key": "text-align", "value": "center" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-align-justify",
+                        "info": [
+                            { "key": "text-align", "value": "justify" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-align-right",
+                        "info": [
+                            { "key": "text-align", "value": "right" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-ui",
+                        "info": [
+                            { "key": "position", "value": "absolute" }
+                        ]
+                    },
+                    {
+                        "object": "h1",
+                        "info": [
+                            { "key": "font-size", "value": "2em" }
+                        ]
+                    },
+                    {
+                        "object": "h2",
+                        "info": [
+                            { "key": "font-size", "value": "1.5em" }
+                        ]
+                    },
+                    {
+                        "object": "h3",
+                        "info": [
+                            { "key": "font-size", "value": "1.17em" }
+                        ]
+                    },
+                    {
+                        "object": "h4",
+                        "info": [
+                            { "key": "font-size", "value": "1em" }
+                        ]
+                    },
+                    {
+                        "object": "h5",
+                        "info": [
+                            { "key": "font-size", "value": ".83em" }
+                        ]
+                    },
+                    {
+                        "object": "h6",
+                        "info": [
+                            { "key": "font-size", "value": ".67em" }
+                        ]
+                    },
+                    {
+                        "object": "a",
+                        "info": [
+                            { "key": "text-decoration", "value": "underline" },
+                            { "key": "color", "value": "#06c" }
+                        ]
+                    },
+                    {
+                        "object": "blockquote",
+                        "info": [
+                            { "key": "border-left", "value": "4px solid #ccc" },
+                            { "key": "margin-bottom", "value": "5px" },
+                            { "key": "margin-top", "value": "5px" },
+                            { "key": "padding-left", "value": "16px" }
+                        ]
+                    },
+                    {
+                        "object": "code, .rs-text-code-block-container",
+                        "info": [
+                            { "key": "background-color", "value": "#f0f0f0" },
+                            { "key": "border-radius", "value": "3px" }
+                        ]
+                    },
+                    {
+                        "object": ".rs-text-code-block-container",
+                        "info": [
+                            { "key": "margin-bottom", "value": "5px" },
+                            { "key": "margin-top", "value": "5px" },
+                            { "key": "padding", "value": "5px 10px" },
+                            { "key": "background-color", "value": "#23241f" },
+                            { "key": "color", "value": "#f8f8f2" },
+                            { "key": "overflow", "value": "visible" }
+                        ]
+                    },
+                    {
+                        "object": "code",
+                        "info": [
+                            { "key": "font-size", "value": "85%" },
+                            { "key": "padding", "value": "2px 4px" }
+                        ]
+                    }
+                ],
+
                 jsRuntime: {},
 
                 settings: {}
@@ -18609,10 +18804,6 @@ export const flexEngineDefaultElements = {
             animation: 2,
             allowedSortTo: ["@root/main"]
         }
-    },
-
-    header: {
-
     }
 };
 
@@ -21922,6 +22113,453 @@ export const flexEngineRootElement = {
  * ------------------------------------------------------------------------------
  */
 debugger;
+
+
+/**
+ * ------------------------------------------------------------------------------
+ * HTML export Module
+ * 
+ * we will start to put the engine together!
+ * ------------------------------------------------------------------------------
+ * Share some infomation:
+ * 
+ * there have Basic and Full, since the engine here is unified.
+ * ------------------------------------------------------------------------------
+ */
+const flexEngineRegistryLookup = function (elementRegistry, categoryRegistry, propertyPath,
+    isUsable = value => value !== undefined && value !== null) {
+    const getValue = function (registry) {
+        return propertyPath.split(".").reduce(
+            (current, key) =>
+                current == null ? undefined : current[key],
+            registry
+        );
+    };
+
+    const elementValue = getValue(elementRegistry);
+
+    if (isUsable(elementValue)) {
+        return elementValue;
+    }
+
+    const categoryValue = getValue(categoryRegistry);
+
+    if (isUsable(categoryValue)) {
+        return categoryValue;
+    }
+
+    return undefined;
+};
+
+const flexEngineCreateNode = function (dataArray, documentHTML, parentVertical = true) {
+    // 1. Resolve the category and element registries.
+    const {
+        categoryRegistry,
+        elementRegistry
+    } = flexEngineStylesResolveRegistry(dataArray.type);
+
+    // 2. Resolve the default HTML element type.
+    const elementDefaultType = flexEngineRegistryLookup(
+        elementRegistry,
+        categoryRegistry,
+        "setting.elementType"
+    ) ?? "div";
+
+    // 3. Create the node.
+    const node = flexEngineCreateAction(
+        documentHTML,
+        dataArray.clickable,
+        elementDefaultType
+    );
+
+    // 4. Set identity and CSS classes.
+    node.id = dataArray.JSID;
+
+    node.classList.add(
+        `${BUILDER_CONFIG.classPrefix}${dataArray.type}`
+    );
+
+    node.classList.add(
+        `${BUILDER_CONFIG.classPrefix}${dataArray.id}`
+    );
+
+    // 5. Resolve popup settings. (disable them)
+    /*const popupSetting = flexEngineRegistryLookup(
+        elementRegistry,
+        categoryRegistry,
+        "setting.popupSetting"
+    );
+
+    const clickable = dataArray.clickable;
+
+    const isPopupAction =
+        clickable?.action?.mode === "openPopup" ||
+        clickable?.action?.mode === "closeThisPopup";
+
+    if (
+        popupSetting !== false &&
+        clickable?.enable === true &&
+        isPopupAction
+    ) {
+        node.classList.add(
+            `${BUILDER_CONFIG.classPrefix}popupTriggler`
+        );
+    }*/
+
+    // 6. Resolve the content renderer.
+    let contentFunction = flexEngineRegistryLookup(
+        elementRegistry,
+        categoryRegistry,
+        "contentFunction",
+        value => typeof value === "function"
+    );
+
+    // Missing content renderer: log the error and use an empty callback.
+    if (typeof contentFunction !== "function") {
+        console.error(
+            `FlexEngine: No valid contentFunction found for type "${dataArray.type}".`
+        );
+
+        contentFunction = function () { };
+    }
+
+    // 7. Render content.
+    // Pass this function itself as the fourth argument for child-node creation.
+    contentFunction(
+        dataArray,
+        documentHTML,
+        node,
+        flexEngineCreateNode
+    );
+
+    // 8. Apply styling using the actual element mode.
+    flexEngineStylingSystem(
+        dataArray,
+        node,
+        parentVertical,
+        dataArray.type
+    );
+
+    // 9. Resolve and execute the animation renderer.
+    const animationName = flexEngineRegistryLookup(
+        elementRegistry,
+        categoryRegistry,
+        "setting.animation"
+    );
+
+    if (animationName !== undefined && animationName !== null) {
+        const animationFunction =
+            flexEngineAnimation?.render?.[animationName];
+
+        if (typeof animationFunction === "function") {
+            animationFunction(dataArray, node);
+        } else {
+            console.error(
+                `FlexEngine: Animation renderer "${animationName}" not found for type "${dataArray.type}".`
+            );
+        }
+    }
+
+    // 10. Resolve and execute the transition renderer.
+    const transitionName = flexEngineRegistryLookup(
+        elementRegistry,
+        categoryRegistry,
+        "setting.transition"
+    );
+
+    if (transitionName !== undefined && transitionName !== null) {
+        const transitionFunction =
+            flexEngineTransition?.render?.[transitionName];
+
+        if (typeof transitionFunction === "function") {
+            transitionFunction(dataArray, node);
+        } else {
+            console.error(
+                `FlexEngine: Transition renderer "${transitionName}" not found for type "${dataArray.type}".`
+            );
+        }
+    }
+
+    // 11. Return the completed node.
+    return node;
+};
+
+// deal with inheritence problem
+const flexEngineFindInheritanceSources = function(dataObject) {
+    const sourceList = [];
+    const visited = new WeakSet();
+
+    const traverse = function(value) {
+        if (value === null || typeof value !== "object") {
+            return;
+        }
+
+        // Avoid infinite recursion if the object contains circular references.
+        if (visited.has(value)) {
+            return;
+        }
+
+        visited.add(value);
+
+        // Only inspect objects identified as inheritance nodes.
+        if (value.type === "@inherit/inherit") {
+            if (typeof value.source === "string") {
+                sourceList.push(value.source);
+            }
+        }
+
+        // Continue searching all nested objects and arrays.
+        for (const key of Object.keys(value)) {
+            traverse(value[key]);
+        }
+    };
+
+    traverse(dataObject);
+
+    return sourceList;
+};
+
+const flexEngineResolveInheritance = function( pageStructure, componentRegistry) {
+    const REMOVE = Symbol("REMOVE");
+    const resolvingSources = new Set();
+    const activeObjects = new WeakSet();
+
+    // Identify ordinary objects, excluding arrays and class instances.
+    const isPlainObject = function(value) {
+        if (value === null || typeof value !== "object") {
+            return false;
+        }
+
+        const prototype = Object.getPrototypeOf(value);
+
+        return prototype === Object.prototype || prototype === null;
+    };
+
+    // Clone arrays and plain objects without modifying the original data.
+    const cloneValue = function(value, seen = new WeakMap()) {
+        if (value === null || typeof value !== "object") {
+            return value;
+        }
+
+        if (!Array.isArray(value) && !isPlainObject(value)) {
+            return value;
+        }
+
+        if (seen.has(value)) {
+            return seen.get(value);
+        }
+
+        if (Array.isArray(value)) {
+            const result = [];
+            seen.set(value, result);
+
+            for (const item of value) {
+                result.push(cloneValue(item, seen));
+            }
+
+            return result;
+        }
+
+        const result = Object.create(Object.getPrototypeOf(value));
+        seen.set(value, result);
+
+        for (const key of Object.keys(value)) {
+            result[key] = cloneValue(value[key], seen);
+        }
+
+        return result;
+    };
+
+    // Deep-merge object overrides while preserving untouched properties.
+    // Arrays and primitive values are replaced rather than merged.
+    const mergeValues = function(base, override, memo = new WeakMap()) {
+        // An inheritance placeholder must replace the target object,
+        // rather than accidentally inheriting its previous properties.
+        if (
+            !isPlainObject(base) ||
+            !isPlainObject(override) ||
+            override.type === "@inherit/inherit"
+        ) {
+            return cloneValue(override);
+        }
+
+        let overrideMap = memo.get(base);
+
+        if (!overrideMap) {
+            overrideMap = new WeakMap();
+            memo.set(base, overrideMap);
+        } else if (overrideMap.has(override)) {
+            return overrideMap.get(override);
+        }
+
+        const result = Object.create(Object.getPrototypeOf(base));
+        overrideMap.set(override, result);
+
+        // Copy base properties, applying overrides at matching paths.
+        for (const key of Object.keys(base)) {
+            if (!Object.prototype.hasOwnProperty.call(override, key)) {
+                result[key] = cloneValue(base[key]);
+                continue;
+            }
+
+            const baseValue = base[key];
+            const overrideValue = override[key];
+
+            if (
+                isPlainObject(baseValue) &&
+                isPlainObject(overrideValue) &&
+                overrideValue.type !== "@inherit/inherit"
+            ) {
+                result[key] = mergeValues(baseValue, overrideValue, memo);
+            } else {
+                result[key] = cloneValue(overrideValue);
+            }
+        }
+
+        // Add properties that only exist in the override.
+        for (const key of Object.keys(override)) {
+            if (
+                !Object.prototype.hasOwnProperty.call(base, key)
+            ) {
+                result[key] = cloneValue(override[key]);
+            }
+        }
+
+        return result;
+    };
+
+    // Recursively resolve inheritance throughout the page.
+    const resolveTree = function(value) {
+        if (value === null || typeof value !== "object") {
+            return value;
+        }
+
+        if (!Array.isArray(value) && !isPlainObject(value)) {
+            return value;
+        }
+
+        // Prevent infinite recursion through circular object references.
+        if (activeObjects.has(value)) {
+            console.error(
+                "FlexEngine: Circular object reference detected; removing the circular branch."
+            );
+
+            return REMOVE;
+        }
+
+        activeObjects.add(value);
+
+        try {
+            // Arrays are traversed recursively, removing invalid elements.
+            if (Array.isArray(value)) {
+                const result = [];
+
+                for (const item of value) {
+                    const resolvedItem = resolveTree(item);
+
+                    if (resolvedItem !== REMOVE) {
+                        result.push(resolvedItem);
+                    }
+                }
+
+                return result;
+            }
+
+            // Detect an inheritance placeholder.
+            if (value.type === "@inherit/inherit") {
+                const source = value.source;
+
+                // Validate the requested component.
+                if (
+                    typeof source !== "string" ||
+                    !componentRegistry ||
+                    !Object.prototype.hasOwnProperty.call(
+                        componentRegistry,
+                        source
+                    ) ||
+                    !isPlainObject(componentRegistry[source])
+                ) {
+                    console.error(
+                        `FlexEngine: Inheritance source "${String(source)}" not found or invalid; removing this element.`
+                    );
+
+                    return REMOVE;
+                }
+
+                // Prevent inheritance cycles, such as A -> B -> A.
+                if (resolvingSources.has(source)) {
+                    console.error(
+                        `FlexEngine: Circular inheritance detected for source "${source}"; removing this element.`
+                    );
+
+                    return REMOVE;
+                }
+
+                // Everything except type and source becomes an override.
+                const overrides = Object.create(null);
+
+                for (const key of Object.keys(value)) {
+                    if (key !== "type" && key !== "source") {
+                        overrides[key] = value[key];
+                    }
+                }
+
+                // Clone the actual component and apply the overrides.
+                const mergedComponent = mergeValues(
+                    componentRegistry[source],
+                    overrides
+                );
+
+                resolvingSources.add(source);
+
+                let resolvedComponent;
+
+                try {
+                    // Resolve inheritance nested inside the component too.
+                    resolvedComponent = resolveTree(mergedComponent);
+                } finally {
+                    resolvingSources.delete(source);
+                }
+
+                if (
+                    resolvedComponent === REMOVE ||
+                    !isPlainObject(resolvedComponent)
+                ) {
+                    return REMOVE;
+                }
+
+                // Mark the final replacement.
+                resolvedComponent.inherited = true;
+
+                return resolvedComponent;
+            }
+
+            // Ordinary objects are traversed property by property.
+            const result = Object.create(Object.getPrototypeOf(value));
+
+            for (const key of Object.keys(value)) {
+                const resolvedValue = resolveTree(value[key]);
+
+                // Delete properties whose inheritance source is invalid.
+                if (resolvedValue !== REMOVE) {
+                    result[key] = resolvedValue;
+                }
+            }
+
+            return result;
+        } finally {
+            activeObjects.delete(value);
+        }
+    };
+
+    const result = resolveTree(pageStructure);
+
+    // A missing inheritance source at the root means there is no
+    // valid root element to return.
+    return result === REMOVE ? undefined : result;
+};
+
+
 
 
 /**
