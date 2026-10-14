@@ -37,8 +37,8 @@ const body = {
                 elementNumber: 4
             },
             {
-                name: "float",
-                label: "float",
+                name: "floatshell",
+                label: "floats",
                 type: "interactiveElements/noSortable",
                 allowedTypes: ["@root/float"],
                 elementNumber: 5
@@ -46,7 +46,7 @@ const body = {
             {
                 name: "popup",
                 label: "popup",
-                type: "interactiveElements/noSortable",
+                type: "interactiveElements/static",
                 allowedTypes: ["@root/popup"],
                 elementNumber: 6
             },
@@ -71,6 +71,9 @@ const body = {
         ) {
 
         },
+
+
+        //createAnotherNode(dataArray, documentHTML, true)
 
         // nothing we needed, meh........ Oh shoot, forgot some!
         jsRuntime: {},
@@ -135,9 +138,20 @@ const body = {
 
         settings: {
             elementPart: function (element) {
-                return {
-
-                }
+                return  {
+                    1: element.closest("header"),
+                    2: element.querySelector("main"),
+                    3: element.querySelector(
+                        `.${BUILDER_CONFIG.classPrefix}cta`
+                    ),
+                    4: element.querySelector("footer"),
+                    5: element.querySelector(
+                        `.${BUILDER_CONFIG.classPrefix}popupshell`
+                    ),
+                    6: element.querySelector(
+                        `.${BUILDER_CONFIG.classPrefix}float`
+                    ),
+                };
             },
 
             systemClass: true,
