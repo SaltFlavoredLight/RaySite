@@ -1,0 +1,131 @@
+
+.rs-text-bg-blue {
+    background-color: #06c;
+}
+
+.rs-text-bg-purple {
+    background-color: #93f;
+}
+
+.rs-text-color-white {
+    color: #fff;
+}
+
+.rs-text-color-red {
+    color: #e60000;
+}
+
+.rs-text-color-orange {
+    color: #f90;
+}
+
+.rs-text-color-yellow {
+    color: #ff0;
+}
+
+.rs-text-color-green {
+    color: #008a00;
+}
+
+.rs-text-color-blue {
+    color: #06c;
+}
+
+.rs-text-color-purple {
+    color: #93f;
+}
+
+.rs-text-size-small {
+    font-size: .75em;
+}
+
+.rs-text-size-large {
+    font-size: 1.5em;
+}
+
+.rs-text-size-huge {
+    font-size: 2.5em;
+}
+
+.rs-text-direction-rtl {
+    direction: rtl;
+    text-align: inherit;
+}
+
+.rs-text-align-center {
+    text-align: center;
+}
+
+.rs-text-align-justify {
+    text-align: justify;
+}
+
+.rs-text-align-right {
+    text-align: right;
+}
+
+.rs-text-ui {
+    position: absolute;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+h3 {
+    font-size: 1.17em;
+}
+
+h4 {
+    font-size: 1em;
+}
+
+h5 {
+    font-size: .83em;
+}
+
+h6 {
+    font-size: .67em;
+}
+
+a {
+    text-decoration: underline;
+}
+
+blockquote {
+    border-left: 4px solid #ccc;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding-left: 16px;
+}
+
+code,
+.rs-text-code-block-container {
+    background-color: #f0f0f0;
+    border-radius: 3px;
+}
+
+.rs-text-code-block-container {
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 5px 10px;
+}
+
+code {
+    font-size: 85%;
+    padding: 2px 4px;
+}
+
+.rs-text-code-block-container {
+    background-color: #23241f;
+    color: #f8f8f2;
+    overflow: visible;
+}
+
+a {
+    color: #06c;
+}
