@@ -18523,7 +18523,7 @@ export const flexEngineDefaultElements = {
                 cssStyles: [],
 
                 settings: {
-                    sortablePart: function (elemnent) {
+                    elementPart: function (elemnent) {
                         return {0: element};
                     }
                 }
@@ -18792,7 +18792,7 @@ export const flexEngineDefaultElements = {
                 ],
 
                 settings: {
-                    sortablePart: function (element) {
+                    elementPart: function (element) {
                         return {0: element.firstElementChild};
                     },
                     elementType: "section"
@@ -19082,7 +19082,7 @@ export const flexEngineRootElement = {
         },
 
         settings: {
-            sortablePart: function (element) {
+            elementPart: function (element) {
                 return {0: element};
             },
             systemClass: true,
@@ -19478,7 +19478,7 @@ export const flexEngineRootElement = {
         },
 
         settings: {
-            sortablePart: function (element) {
+            elementPart: function (element) {
                 return {0: element.firstElementChild};
             },
             systemClass: true,
@@ -19742,7 +19742,7 @@ export const flexEngineRootElement = {
         },
 
         settings: {
-            sortablePart: function (element) {
+            elementPart: function (element) {
                 return {0: element.firstElementChild};
             },
 
@@ -22093,7 +22093,7 @@ export const flexEngineRootElement = {
         },
 
         settings: {
-            sortablePart: function (element) {
+            elementPart: function (element) {
                 return { 0: element };
             },
 
