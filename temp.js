@@ -1,6 +1,6 @@
 const body = {
         name: "Page",
-        className: "html",
+        className: "RaySite",
         alts: [],
         icon: `
             <svg xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +134,11 @@ const body = {
         },
 
         settings: {
+            elementPart: function (element) {
+                return {
 
+                }
+            },
 
             systemClass: true,
             allowedSortIn: true,
@@ -144,6 +148,6 @@ const body = {
             noStyles: true,
             disableAction: true,
             elementType: "html",
-            skipClass: true
+            skipPrefix: true
         }
     }
