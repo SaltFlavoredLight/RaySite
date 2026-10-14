@@ -1,4 +1,4 @@
-const main = {
+const body = {
         name: "Page",
         className: "html",
         alts: [],
@@ -12,6 +12,46 @@ const main = {
         `,
 
         contentQuery: [
+            {
+                name: "header",
+                label: "Header",
+                type: "interactiveElements/static",
+                elementNumber: 1
+            },
+            {
+                name: "main",
+                label: "Main",
+                type: "interactiveElements/static",
+                elementNumber: 2
+            },
+            {
+                name: "cta",
+                label: "CTA",
+                type: "interactiveElements/static",
+                elementNumber: 3
+            },
+            {
+                name: "footer",
+                label: "Footer",
+                type: "interactiveElements/static",
+                elementNumber: 4
+            },
+            {
+                name: "float",
+                label: "float",
+                type: "interactiveElements/noSortable",
+                allowedTypes: ["@root/float"],
+                elementNumber: 5
+            },
+            {
+                name: "popup",
+                label: "popup",
+                type: "interactiveElements/noSortable",
+                allowedTypes: ["@root/popup"],
+                elementNumber: 6
+            },
+
+            // Now is never weird again!
 
         ],
 
@@ -29,6 +69,7 @@ const main = {
             node,
             createAnotherNode
         ) {
+
         },
 
         // nothing we needed, meh........ Oh shoot, forgot some!
@@ -71,6 +112,19 @@ const main = {
             }
         ],
 
+        styleQuery: {},
+
+        styleDefault: (sz, isVertical) => {
+            return {};
+        },
+
+
+        styleMobile: (sz, isVertical) => {
+            return {};
+        },
+
+        sizeQuery: [],
+
         sizeDefault: (sz, isVertical) => {
             return {};
         },
@@ -80,6 +134,8 @@ const main = {
         },
 
         settings: {
+
+
             systemClass: true,
             allowedSortIn: true,
             hide: true,
@@ -88,5 +144,6 @@ const main = {
             noStyles: true,
             disableAction: true,
             elementType: "html",
+            skipClass: true
         }
     }
