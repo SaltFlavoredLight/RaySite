@@ -1407,14 +1407,14 @@ export const flexEngineDefaultVariables = {
         }
     },
 
-    staticElement: {
-        staticElement: {
-            system: true
-        }
-    },
-
     interactiveElements: {
         interactiveElements: {
+            system: true
+        },
+        noSortable: {
+            system: true
+        },
+        static: {
             system: true
         }
     },
@@ -18351,7 +18351,8 @@ export const flexEngineDefaultElements = {
                     {
                         name: "@global",
                         label: "Elements",
-                        type: "interactiveElements"
+                        type: "interactiveElements",
+                        elementNumber: 0
                     }
                 ],
 
@@ -18523,7 +18524,7 @@ export const flexEngineDefaultElements = {
 
                 settings: {
                     sortablePart: function (elemnent) {
-                        return element;
+                        return {0: element};
                     }
                 }
             }
@@ -18601,7 +18602,8 @@ export const flexEngineDefaultElements = {
                     {
                         name: "@global",
                         label: "Elements",
-                        type: "interactiveElements"
+                        type: "interactiveElements",
+                        elementNumber: 0,
                     }
                 ],
 
@@ -18749,8 +18751,8 @@ export const flexEngineDefaultElements = {
                     }
 
                     // children
-                    if (Array.isArray(dataArray.context)) {
-                        dataArray.context.forEach(ctx => {
+                    if (Array.isArray(dataArray.content)) {
+                        dataArray.content.forEach(ctx => {
                             const childNode = createAnotherNode(ctx, documentHTML, true);
                             if (childNode) {
                                 innerNode.appendChild(childNode);
@@ -18791,7 +18793,7 @@ export const flexEngineDefaultElements = {
 
                 settings: {
                     sortablePart: function (element) {
-                        return element.firstElementChild;
+                        return {0: element.firstElementChild};
                     },
                     elementType: "section"
                 }
@@ -18825,7 +18827,8 @@ export const flexEngineRootElement = {
         contentQuery: [{
             name: "@global",
             label: "Elements",
-            type: "interactiveElements"
+            type: "interactiveElements",
+            elementNumber: 0
         }],
 
         layoutQuery: [{
@@ -18952,8 +18955,8 @@ export const flexEngineRootElement = {
             let innerNode = documentHTML.createElement("div");
             innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-popup`);
             // children
-            if (Array.isArray(dataArray.context)) {
-                dataArray.context.forEach(ctx => {
+            if (Array.isArray(dataArray.content)) {
+                dataArray.content.forEach(ctx => {
                     const childNode = createAnotherNode(ctx, documentHTML, true);
                     if (childNode) {
                         innerNode.appendChild(childNode);
@@ -19080,7 +19083,7 @@ export const flexEngineRootElement = {
 
         settings: {
             sortablePart: function (element) {
-                return element;
+                return {0: element};
             },
             systemClass: true,
             allowedSortIn: true,
@@ -19238,7 +19241,8 @@ export const flexEngineRootElement = {
         contentQuery: [{
             name: "@global",
             label: "Elements",
-            type: "interactiveElements"
+            type: "interactiveElements",
+            elementNumber: 0
         }],
         layoutQuery: [{
             name: "spaceAcross",
@@ -19383,8 +19387,8 @@ export const flexEngineRootElement = {
                 innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-full`);
             }
             // children
-            if (Array.isArray(dataArray.context)) {
-                dataArray.context.forEach(ctx => {
+            if (Array.isArray(dataArray.content)) {
+                dataArray.content.forEach(ctx => {
                     const childNode = createAnotherNode(ctx, documentHTML, true);
                     if (childNode) {
                         innerNode.appendChild(childNode);
@@ -19475,7 +19479,7 @@ export const flexEngineRootElement = {
 
         settings: {
             sortablePart: function (element) {
-                return element.firstElementChild;
+                return {0: element.firstElementChild};
             },
             systemClass: true,
             allowedSortIn: true,
@@ -19501,7 +19505,8 @@ export const flexEngineRootElement = {
         contentQuery: [{
             name: "@global",
             label: "Elements",
-            type: "interactiveElements"
+            type: "interactiveElements",
+            elementNumber: 0
         }],
         layoutQuery: [{
             name: "spaceAcross",
@@ -19646,8 +19651,8 @@ export const flexEngineRootElement = {
                 innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-full`);
             }
             // children
-            if (Array.isArray(dataArray.context)) {
-                dataArray.context.forEach(ctx => {
+            if (Array.isArray(dataArray.content)) {
+                dataArray.content.forEach(ctx => {
                     const childNode = createAnotherNode(ctx, documentHTML, true);
                     if (childNode) {
                         innerNode.appendChild(childNode);
@@ -19738,8 +19743,9 @@ export const flexEngineRootElement = {
 
         settings: {
             sortablePart: function (element) {
-                return element.firstElementChild;
+                return {0: element.firstElementChild};
             },
+
             systemClass: true,
             allowedSortIn: true,
             hide: true,
@@ -22030,7 +22036,8 @@ export const flexEngineRootElement = {
         contentQuery: [{
             name: "@global",
             label: "Elements",
-            type: "interactiveElements"
+            type: "interactiveElements",
+            elementNumber: 0,
         }],
 
         layoutQuery: [],
@@ -22048,8 +22055,8 @@ export const flexEngineRootElement = {
             createAnotherNode
         ) {
             // children
-            if (Array.isArray(dataArray.context)) {
-                dataArray.context.forEach(ctx => {
+            if (Array.isArray(dataArray.content)) {
+                dataArray.content.forEach(ctx => {
                     const childNode = createAnotherNode(
                         ctx,
                         documentHTML,
@@ -22087,7 +22094,7 @@ export const flexEngineRootElement = {
 
         settings: {
             sortablePart: function (element) {
-                return element.firstElementChild;
+                return { 0: element };
             },
 
             systemClass: true,
