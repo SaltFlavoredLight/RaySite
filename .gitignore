@@ -1,7 +1,3 @@
-# ==========================================
-# 1. Environment Secrets & Credentials
-# ==========================================
-# NEVER commit raw passwords, API keys, or secret tokens
 .env
 .env.local
 .env.*.local
@@ -9,35 +5,26 @@
 *.key
 *.secret
 
-# ==========================================
-# 2. Operating System Files
-# ==========================================
-# macOS
+
 .DS_Store
 .AppleDouble
 .LSOverride
 ._*
 
-# Windows
 Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
 Desktop.ini
 
-# Linux
 .fuse_hidden*
 .directory
 .Trash-*
 *.bak
 
-# ==========================================
-# 4. Package Managers & Dependencies
-# ==========================================
-# Node.js
+
 node_modules/
 jspm_packages/
 
-# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -46,17 +33,11 @@ env/
 venv/
 ENV/
 
-# PHP / Composer
 vendor/
 
-# Ruby / Bundler
 .bundle/
 vendor/bundle/
 
-# ==========================================
-# 5. Build, Cache, and Log Outputs
-# ==========================================
-# Build outputs
 dist/
 build/
 out/
@@ -66,16 +47,13 @@ target/
 *.so
 *.dylib
 
-# Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Crash reports
 hs_err_pid*
 replay_pid*
 
-# Local test coverage reports
 coverage/
 .nyc_output/
