@@ -1,16 +1,15 @@
 // Flex Engine!
 'use strict';
 
-// need Flies
-import { openDB } from 'https://cdn.jsdelivr.net/npm/idb@8/+esm';
-import JSZip from 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm';
+import { openDB } from 'idb';
+import JSZip from 'jszip';
 
-// Nesserary for have a Quill delta element
-import quill from 'https://cdn.jsdelivr.net/npm/quill@2.0.3/+esm';
-import quillDeltaToHtml from 'https://cdn.jsdelivr.net/npm/quill-delta-to-html@0.12.1/+esm';
+// Necessary for having a Quill Delta element
+import Quill from 'quill';
+import quillDeltaToHtml from 'quill-delta-to-html';
 
 // And Sortable, another important part.
-import Sortable from 'https://cdn.jsdelivr.net/npm/sortablejs/+esm';
+import Sortable from 'sortablejs';
 
 
 // Builder Configs
