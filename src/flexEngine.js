@@ -20784,7 +20784,7 @@ export const flexEngineRootElement = {
         // debugger;
         cssStyles: [
             {
-                object: ".site-header",
+                object: "@main",
                 info: [
                     { "key": "width", "value": "100%" },
                     { "key": "max-width", "value": "100vw" },
@@ -20794,14 +20794,14 @@ export const flexEngineRootElement = {
                 ]
             },
             {
-                object: ".site-header.sticky",
+                object: "@main.sticky",
                 info: [
                     { "key": "position", "value": "sticky" },
                     { "key": "top", "value": "0" }
                 ]
             },
             {
-                object: ".site-header",
+                object: "@main",
                 break: 768,
                 info: [
                     { "key": "position", "value": "sticky" },
@@ -20809,7 +20809,7 @@ export const flexEngineRootElement = {
                 ]
             },
             {
-                object: ".site-header a",
+                object: "a",
                 info: [
                     { "key": "text-decoration", "value": "none" },
                     { "key": "color", "value": "unset" }
