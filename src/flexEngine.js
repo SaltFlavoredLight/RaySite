@@ -55,6 +55,22 @@ const flexEngineCheckContext = function (contextSetting, label) {
     return list.includes(label);
 };
 
+// For extraction
+function extractHTMLString(dom) {
+    if (!(dom instanceof Document)) {
+        throw new TypeError("Expected a DOM Document.");
+    }
+
+    const doctype = dom.doctype
+        ? new XMLSerializer().serializeToString(dom.doctype)
+        : "";
+
+    return (
+        (doctype ? doctype + "\n" : "") +
+        dom.documentElement.outerHTML
+    );
+}
+
 /**
  * ------------------------------------------------------------------------------ 
  * LEGACY MODULE
