@@ -23016,11 +23016,11 @@ export const flexEngineResolveInheritance = function(pageStructure, componentReg
  */
 
 //Render HTML.
-const flexEngineRenderDOM = function(dataArray, mainArray, componentRegistr, document) {
+const flexEngineRenderDOM = function(dataArray, mainArray, componentRegistry, document) {
     // Dynamically create an empty DOM document setting the title
     let documentHTML;
     
-    if (!document) {
+    if (!document || (document = null)) {
         documentHTML = document.implementation.createHTMLDocument(dataArray.title + " - " + mainArray.name);
     } else {
         documentHTML = document;
@@ -23038,9 +23038,43 @@ const flexEngineRenderDOM = function(dataArray, mainArray, componentRegistr, doc
     return documentHTML; // that's DOM for right now!
 };
 
+//Render HTML w/ given infomation. AYNSC
+const flexEngineRenderDOMPage = async function(url, doc = null, inHTML = false) {
+    // step 1: get URL.
+    const dataArray = await flexEngineFileSystem.readPage(url);
+    
+    // step 2: try get requirements
+    const req = flexEngineFindInheritanceSources(dataArray);
+
+    // step 3: fetch them all
+    const readyRequest = [];
+    req.forEach((quest) => {
+        readyRequest.appendChild(flexEngineFileSystem.readComponent(quest));
+    });
+
+    const results = Promise.all(readyRequest);
+
+    const componets = {};
+
+    results.forEach((result, index) => {
+        componets[req[index]] = result;
+    });
+
+    // step 4: get main array
+    const mainArray = flexEngineFileSystem.readMain();
+
+    const documentHTML = flexEngineRenderDOM(dataArray, mainArray, componets, null)
+
+    if (inHTML) {
+        debugger;
+        return documentHTML;
+    } else {
+        return documentHTML;
+    }
+};
+
 // Now is the correct Web Server, that return a responce as a responce object. we will bandle it to Web Builder Soon later.
 const webServer = function(url) {
-    
 };
 
 
