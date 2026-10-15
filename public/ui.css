@@ -1,0 +1,449 @@
+/* #region Theme */
+:root {
+    /* Core Theme Colors */
+    --ui-theme-white-1: #ffffff;
+    --ui-theme-white-2: #f7f4f4;
+    --ui-theme-white-3: #c7c7c7;
+    --ui-theme-white-4: #a6a6a6;
+
+    --ui-theme-light-1: #bc8d8d;
+
+    --ui-theme-main-1: #8b2525;
+    --ui-theme-main-2: #9d2d2d;
+    --ui-theme-main-3: #520c0c;
+
+    --ui-theme-black: #1B1717;
+    --ui-theme-shine: gold;
+
+    --ui-space-1: 4px;
+    /* mini */
+    --ui-space-2: 8px;
+    /* small */
+    --ui-space-m: 12px;
+    --ui-space-3: 16px;
+    /* medium */
+    --ui-space-4: 30px;
+    /* large */
+    --ui-space-5: 36px;
+    /* extra large */
+    --ui-space-6: 48px;
+    /* ultra large */
+    --ui-space-7: 67px;
+    --ui-glass-effect-range: var(--ui-space-2);
+
+    --ui-font-heading: 'Cardo', serif;
+    --ui-font-text: 'Roboto', sans-serif;
+    --ui-font-details: 'Cardo', serif;
+    --ui-text-size: 14px;
+
+    --ui-border-default: 1px solid var(--ui-theme-white-3);
+
+    --ui-transition-shape: ease-in-out;
+    --ui-transition-default: 0.25s;
+
+
+    /* Start with settings */
+    --ui-layout-left: 52px;
+    --ui-layout-right: 300px;
+}
+
+/* Green Theme */
+.raysiteUI-green {
+    --ui-theme-main-1: #0A5F38;
+    --ui-theme-main-2: #20b46f;
+    --ui-theme-main-3: #05512d;
+
+    --ui-theme-light-1: #80baab;
+
+    --ui-theme-white-1: #ffffff;
+    --ui-theme-white-2: #f0fdf1;
+
+    --ui-theme-black: #0F1A12;
+    --ui-theme-shine: gold;
+}
+
+/* Purple / Grape Flower Theme */
+.raysiteUI-purple {
+    --ui-theme-main-1: #4B1A6A;
+    --ui-theme-main-2: #8a31b7;
+    --ui-theme-main-3: #3b0f53;
+
+    --ui-theme-light-1: #a480ba;
+
+    --ui-theme-white-1: #ffffff;
+    --ui-theme-white-2: #fbf1f9;
+
+    --ui-theme-black: #1A0F1F;
+    --ui-theme-shine: gold;
+}
+
+/* #endregion */
+
+/* #region UI CSS System reset */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+strike,
+sub,
+sup,
+tt,
+var,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    font-size: 100%;
+    font: inherit;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol,
+ul {
+    list-style: none;
+}
+
+/* #endregion */
+
+.rsapp {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    max-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+
+    position: relative;
+
+    color: var(--ui-theme-black);
+    background: var(--ui-theme-white-2);
+}
+
+.rsapp h1 {
+    font-size: calc(var(--ui-space-4) - var(--ui-space-1));
+    margin: 0;
+    padding: 0;
+}
+
+.rsapp-redtext {
+    color: var(--ui-theme-main-3)
+}
+
+/* #region Navbar */
+.rsapp-navbar {
+    width: 100%;
+    height: var(--ui-space-4);
+    flex: 0 0 var(--ui-space-4);
+    display: flex;
+    gap: var(--ui-space-m);
+}
+
+.rsapp-navbar__left {
+    flex: 0 0 250px;
+    text-align: left;
+    align-items: stretch;
+    display: flex;
+    justify-content: flex-start;
+    gap: var(--ui-space-m)
+}
+
+
+.rsapp-navbar__center {
+    flex: 1 1 100%;
+    text-align: center;
+    align-items: stretch;
+    display: flex;
+    justify-content: center;
+    gap: var(--ui-space-m)
+}
+
+.rsapp-navbar__right {
+    flex: 0 0 250px;
+    text-align: right;
+    align-items: stretch;
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--ui-space-m)
+}
+
+/* #endregion */
+
+/* #region Toolbar */
+.rsapp-toolbar {
+    width: 100%;
+    height: var(--ui-space-7);
+    flex: 0 0 var(--ui-space-7);
+    display: flex;
+
+    flex-direction: column;
+}
+
+.rsapp-toolbar__controls {
+    width: 100%;
+    height: var(--ui-space-6);
+    flex: 0 0 var(--ui-space-6);
+    display: flex;
+
+    gap: var(--ui-space-m)
+}
+
+.rsapp-toolbar__status {
+    flex: 1 1 100%;
+    width: 100%;
+    display: flex;
+    background: var(--ui-theme-main-3);
+    color: var(--ui-theme-white-1);
+}
+
+.rsapp-toolbar__left {
+    flex: 0 0 250px;
+    text-align: left;
+    align-items: stretch;
+    display: flex;
+    justify-content: flex-start;
+    gap: var(--ui-space-m)
+}
+
+
+.rsapp-toolbar__center {
+    flex: 1 1 100%;
+    text-align: center;
+    align-items: stretch;
+    display: flex;
+    justify-content: center;
+    gap: var(--ui-space-m)
+}
+
+.rsapp-toolbar__right {
+    flex: 0 0 250px;
+    text-align: right;
+    align-items: stretch;
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--ui-space-m)
+}
+
+/* #endregion */
+
+
+/* #region Menu*/
+.rsapp-navbar-menu {
+    width: var(--ui-space-4);
+    height: var(--ui-space-4);
+
+    padding: 0;
+    border: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+
+    background: transparent;
+
+    cursor: pointer;
+}
+
+.rsapp-navbar-menu span {
+    display: block;
+
+    width: 30px;
+    height: 3px;
+
+    background: currentColor;
+    border-radius: 999px;
+}
+
+.rsapp-navbar-menu.open>span:nth-child(1) {
+    transform:
+        translateY(10px) rotate(135deg);
+}
+
+.rsapp-navbar-menu.open>span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+
+.rsapp-navbar-menu.open>span:nth-child(3) {
+    transform:
+        translateY(-10px) rotate(-135deg);
+}
+
+/* #endregion */
+
+.rsapp-canvas {
+    width: 100%;
+    flex: 1 1;
+}
