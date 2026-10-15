@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>RaySIte the Website Builder</title>
+    <title>RaySite the Website Builder</title>
 
     <meta name="description" content="RaySite is a free website builder based on SSG technology.">
     <meta name="keywords" content="Website, SSG, relative">
@@ -20,7 +20,53 @@
         <script type="module" src="/src/app.js"></script>
         <script defer src="/src/ui.js"></script>
 </head>
-<body>
-    
+<body class="rsapp">
+        <span hidden>
+            This is RaySite.
+        </span>
+
+        <header class="rsapp-navbar">
+            <div class="rsapp-navbar__left">
+                <div class="rsapp-navbar-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <h1>Ray<span class="rsapp-redtext">Site</span></h1>
+                <span>Assests</span>
+            </div>
+            <div class="rsapp-navbar__center">
+                Switch Page
+            </div>
+            <div class="rsapp-navbar__right">
+                Publish
+            </div>
+        </header>
+        <iframe id="canva" class="rsapp-canvas" src="https://www.example.com"></iframe>
+        <section class="rsapp-toolbar">
+            <div class="rsapp-toolbar__controls">
+                <div class="rsapp-toolbar__left">
+                    Add Elements | Move
+                </div>
+                <div class="rsapp-toolbar__center">
+                    Edit Styles
+                </div>
+                <div class="rsapp-toolbar__right">
+                    Page Setting
+                </div>
+            </div>
+            <div class="rsapp-toolbar__status">
+                <div class="rsapp-toolbar__left">
+                    
+                </div>
+                <div class="rsapp-toolbar__center">
+                    <span>RaySite | V1.0.0 | Github | Credits</span>
+                </div>
+                <div class="rsapp-toolbar__right">
+                </div>
+            </div>
+        </section>
+
+        <div class="rsapp-popup" hidden></div>
 </body>
 </html>
