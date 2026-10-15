@@ -16137,6 +16137,62 @@ const flexEngineStylesBuildClassName = (prefix, appearanceName, position, stateN
     return `${prefix}-styles-${cleanAppearance}${stateSuffix}${targetSuffix}`;
 };
 
+/*
+Sample:
+debugger;
+const elementMode = "content/card";
+
+const BUILDER_CONFIG = {
+	classPrefix: "fx"
+};
+const flexEngineDefaultElements = {
+	content: {
+		styleDefault: (style) => ({
+			color: style.color
+		}),
+		styleMobile: (style) => ({
+			color: style.color
+		}),
+		sizeDefault: (size, isVertical) => ({
+			width: isVertical ? "100%" : size.width,
+			height: size.height
+		}),
+		sizeMobile: (size) => ({
+			width: "100%",
+			height: size.height
+		}),
+		card: {
+			styleDefault: (style) => ({
+				color: style.color,
+				"background-color": style.background,
+				"border-radius": style.radius,
+				padding: style.padding
+			}),
+			styleMobile: (style) => ({
+				color: style.color,
+				"background-color": style.background,
+				padding: style.padding,
+				"font-size": style.fontSize
+			}),
+			extras: [{
+				position: "2_1",
+				styleDefault: (style) => ({
+					color: style.color,
+					"font-size": style.fontSize,
+					"font-weight": style.fontWeight
+				}),
+				sizeDefault: (size) => ({
+					width: size.width,
+					height: size.height
+				})
+			}, {
+				position: "3"
+			}]
+		}
+	}
+};
+*/
+
 export const flexEngineStylingSystem = function (dataArray, node, isVertical, elementMode) {
     if (!node || !dataArray || typeof dataArray !== "object") {
         return;
@@ -16264,6 +16320,8 @@ export const flexEngineStylingSystem = function (dataArray, node, isVertical, el
         }
     );
 };
+
+
 
 
 /**
@@ -23016,11 +23074,11 @@ export const flexEngineResolveInheritance = function(pageStructure, componentReg
  */
 
 //Render HTML.
-const flexEngineRenderDOM = function(dataArray, mainArray, componentRegistr, document) {
+const flexEngineRenderDOM = function(dataArray, mainArray, componentRegistry, document) {
     // Dynamically create an empty DOM document setting the title
     let documentHTML;
     
-    if (!document) {
+    if (!document || (document = null)) {
         documentHTML = document.implementation.createHTMLDocument(dataArray.title + " - " + mainArray.name);
     } else {
         documentHTML = document;
@@ -23038,9 +23096,43 @@ const flexEngineRenderDOM = function(dataArray, mainArray, componentRegistr, doc
     return documentHTML; // that's DOM for right now!
 };
 
+//Render HTML w/ given infomation. AYNSC
+const flexEngineRenderDOMPage = async function(url, doc = null, inHTML = false) {
+    // step 1: get URL.
+    const dataArray = await flexEngineFileSystem.readPage(url);
+    
+    // step 2: try get requirements
+    const req = flexEngineFindInheritanceSources(dataArray);
+
+    // step 3: fetch them all
+    const readyRequest = [];
+    req.forEach((quest) => {
+        readyRequest.appendChild(flexEngineFileSystem.readComponent(quest));
+    });
+
+    const results = Promise.all(readyRequest);
+
+    const componets = {};
+
+    results.forEach((result, index) => {
+        componets[req[index]] = result;
+    });
+
+    // step 4: get main array
+    const mainArray = flexEngineFileSystem.readMain();
+
+    const documentHTML = flexEngineRenderDOM(dataArray, mainArray, componets, null)
+
+    if (inHTML) {
+        debugger;
+        return documentHTML;
+    } else {
+        return documentHTML;
+    }
+};
+
 // Now is the correct Web Server, that return a responce as a responce object. we will bandle it to Web Builder Soon later.
 const webServer = function(url) {
-    
 };
 
 
