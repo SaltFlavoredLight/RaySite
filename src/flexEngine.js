@@ -175,7 +175,7 @@ const flexEngineStyleVarible = {
     },
 
     // for Head only
-    absMedia: function (mediaObj, mainArray, selfSlug) {
+    absMedia: function (mediaObj, mainArray) {
         if (!mediaObj || !mediaObj.mode) return '';
 
         switch (mediaObj.mode) {
@@ -183,7 +183,7 @@ const flexEngineStyleVarible = {
 
                 const prefix = BUILDER_CONFIG.classPrefix;
 
-                const absoluteDomainEnable = (selfSlug !== null && mainArray.domain !== null && selfSlug !== "" && mainArray.domain !== "");
+                const absoluteDomainEnable = (BUILDER_CONFIG.classPrefix !== null && mainArray.domain !== null && BUILDER_CONFIG.classPrefix !== "" && mainArray.domain !== "");
                 const absoluteDomain = (absoluteDomainEnable) ? `https://${mainArray.domain}` : "/";
 
                 // Constructing: prefix/assets/folder/name
@@ -16268,6 +16268,199 @@ export const flexEngineStylingSystem = function (dataArray, node, isVertical, el
 
 /**
  * ------------------------------------------------------------------------------
+ * HTML Header Query and exports
+ * 
+ * This will be trigglered by an Export, and more!
+ * ------------------------------------------------------------------------------
+ */
+const pageArrayQuery = [
+        {
+            name: "title",
+            label: "Page Title",
+            type: "string/text"
+        },
+        {
+            name: "description",
+            label: "Page Description",
+            type: "string/text"
+        },
+        {
+            name: "coverIMG",
+            label: "Cover Image",
+            type: "media/img"
+        }
+    ];
+
+const mainArrayQuery =  [
+        {
+            name: "name",
+            label: "Website Name",
+            type: "string/text"
+        },
+        {
+            name: "domain",
+            label: "Website Domain",
+            type: "string/text"
+        },
+        {
+            name: "websiteKeywords",
+            label: "Website Keywords",
+            type: "list"
+        },
+        {
+            name: "icon",
+            label: "Website Icon",
+            type: "media/img"
+        }
+    ];
+
+const flexEngineRenderHTMLHeader = function(documentHTML, dataArray, mainArray) {
+
+	// environment check
+	const absoluteDomainEnable =
+		(BUILDER_CONFIG.classPrefix !== null && mainArray.domain !== null &&
+			BUILDER_CONFIG.classPrefix !== "" && mainArray.domain !== "");
+
+	const absoluteURL = absoluteDomainEnable ?
+		`https://${mainArray.domain}${BUILDER_CONFIG.classPrefix}` :
+		null;
+
+	// charset
+	const metaCharset = documentHTML.createElement('meta');
+	metaCharset.setAttribute('charset', 'UTF-8');
+	documentHTML.head.appendChild(metaCharset);
+
+	// viewport
+	const metaViewport = documentHTML.createElement('meta');
+	metaViewport.setAttribute('name', 'viewport');
+	metaViewport.setAttribute('content', 'width=device-width, initial-scale=1');
+	documentHTML.head.appendChild(metaViewport);
+
+	// description
+	const metaDesc = documentHTML.createElement('meta');
+	metaDesc.setAttribute('name', 'description');
+	metaDesc.setAttribute('content', dataArray.description);
+	documentHTML.head.appendChild(metaDesc);
+
+	// keywords
+	const metaKeywords = documentHTML.createElement('meta');
+	metaKeywords.setAttribute('name', 'keywords');
+	metaKeywords.setAttribute('content', mainArray.websiteKeywords.join(', '));
+	documentHTML.head.appendChild(metaKeywords);
+
+	// canonical
+	if (absoluteDomainEnable) {
+		const linkCanonical = documentHTML.createElement('link');
+		linkCanonical.setAttribute('rel', 'canonical');
+		linkCanonical.setAttribute('href', absoluteURL);
+		documentHTML.head.appendChild(linkCanonical);
+	}
+
+	// OG tags
+	const ogTitle = documentHTML.createElement('meta');
+	ogTitle.setAttribute('property', 'og:title');
+	ogTitle.setAttribute('content', `${dataArray.title} - ${mainArray.name}`);
+	documentHTML.head.appendChild(ogTitle);
+
+	const ogDesc = documentHTML.createElement('meta');
+	ogDesc.setAttribute('property', 'og:description');
+	ogDesc.setAttribute('content', dataArray.description);
+	documentHTML.head.appendChild(ogDesc);
+
+	const ogType = documentHTML.createElement('meta');
+	ogType.setAttribute('property', 'og:type');
+	ogType.setAttribute('content', 'website');
+	documentHTML.head.appendChild(ogType);
+
+	if (absoluteDomainEnable) {
+		const ogUrl = documentHTML.createElement('meta');
+		ogUrl.setAttribute('property', 'og:url');
+		ogUrl.setAttribute('content', absoluteURL);
+		documentHTML.head.appendChild(ogUrl);
+
+		// OPTIONAL: OG image (now using absMedia)
+		if (dataArray.coverIMG) {
+			const ogImg = documentHTML.createElement('meta');
+			ogImg.setAttribute('property', 'og:image');
+			ogImg.setAttribute(
+				'content',
+				flexEngineStyleVarible.absMedia(dataArray.coverIMG, mainArray, BUILDER_CONFIG.classPrefix)
+			);
+			documentHTML.head.appendChild(ogImg);
+		}
+	}
+
+	const ogSite = documentHTML.createElement('meta');
+	ogSite.setAttribute('property', 'og:site_name');
+	ogSite.setAttribute('content', mainArray.name);
+	documentHTML.head.appendChild(ogSite);
+
+	// Twitter
+	const twCard = documentHTML.createElement('meta');
+	twCard.setAttribute('name', 'twitter:card');
+	twCard.setAttribute('content', 'summary_large_image');
+	documentHTML.head.appendChild(twCard);
+
+	const twTitle = documentHTML.createElement('meta');
+	twTitle.setAttribute('name', 'twitter:title');
+	twTitle.setAttribute('content', `${dataArray.title} - ${mainArray.name}`);
+	documentHTML.head.appendChild(twTitle);
+
+	const twDesc = documentHTML.createElement('meta');
+	twDesc.setAttribute('name', 'twitter:description');
+	twDesc.setAttribute('content', dataArray.description);
+	documentHTML.head.appendChild(twDesc);
+
+	if (absoluteDomainEnable && dataArray.coverIMG) {
+		const twImg = documentHTML.createElement('meta');
+		twImg.setAttribute('name', 'twitter:image');
+		twImg.setAttribute(
+			'content',
+			flexEngineStyleVarible.absMedia(dataArray.coverIMG, mainArray, BUILDER_CONFIG.classPrefix)
+		);
+		documentHTML.head.appendChild(twImg);
+	}
+
+	// Favicon (now using absMedia)
+	if (mainArray.icon) {
+		const icon = documentHTML.createElement('link');
+		icon.setAttribute('rel', 'icon');
+		icon.setAttribute(
+			'href',
+			flexEngineStyleVarible.absMedia(mainArray.icon, mainArray, BUILDER_CONFIG.classPrefix)
+		);
+		documentHTML.head.appendChild(icon);
+
+		const appleIcon = documentHTML.createElement('link');
+		appleIcon.setAttribute('rel', 'apple-touch-icon');
+		appleIcon.setAttribute(
+			'href',
+			flexEngineStyleVarible.absMedia(mainArray.icon, mainArray, BUILDER_CONFIG.classPrefix)
+		);
+		documentHTML.head.appendChild(appleIcon);
+	}
+
+	// CSS imports (now using absMedia)
+	const cssList = [
+		`${BUILDER_CONFIG.classPrefix}assets/styles/main.css`,
+		`${BUILDER_CONFIG.classPrefix}assets/styles/theme.css`,
+		`${BUILDER_CONFIG.classPrefix}assets/styles/animation.css`
+	];
+
+	cssList.forEach(path => {
+		const link = documentHTML.createElement('link');
+		link.setAttribute('rel', 'stylesheet');
+		link.setAttribute(
+			'href',
+			flexEngineStyleVarible.absMedia(path, mainArray, BUILDER_CONFIG.classPrefix)
+		);
+		documentHTML.head.appendChild(link);
+	});
+};
+
+
+/**
+ * ------------------------------------------------------------------------------
  * Element Registery
  * 
  * Main Registery that control all of the elements. @root being treat differently.
@@ -22323,20 +22516,6 @@ export const flexEngineRootElement = {
 
 /**
  * ------------------------------------------------------------------------------
- * Registery Summit!
- * 
- * we will start to put the engine together!
- * ------------------------------------------------------------------------------
- * Share some infomation:
- * 
- * If needed, we will make it an export default!
- * ------------------------------------------------------------------------------
- */
-debugger;
-
-
-/**
- * ------------------------------------------------------------------------------
  * HTML export Module
  * 
  * we will start to put the engine together!
@@ -22373,7 +22552,7 @@ const flexEngineRegistryLookup = function (elementRegistry, categoryRegistry, pr
     return undefined;
 };
 
-const flexEngineCreateNode = function (dataArray, documentHTML, parentVertical = true) {
+export const flexEngineCreateNode = function (dataArray, documentHTML, parentVertical = true) {
     // 1. Resolve the category and element registries.
     const {
         categoryRegistry,
@@ -22507,7 +22686,52 @@ const flexEngineCreateNode = function (dataArray, documentHTML, parentVertical =
 };
 
 // deal with inheritence problem
-const flexEngineFindInheritanceSources = function(dataObject) {
+/*
+const componentRegistry = {
+    button: {
+        type: "button",
+        text: "Click Me",
+        style: {
+            color: "blue",
+            fontSize: 16
+        }
+    }
+};
+
+const pageStructure = {
+    type: "container",
+    children: [
+        {
+            type: "@inherit/inherit",
+            source: "button"
+        }
+    ]
+};
+
+const result = flexEngineResolveInheritance(
+    pageStructure,
+    componentRegistry
+);
+
+
+result is:
+{
+  "type": "container",
+  "children": [
+    {
+      "type": "button",
+      "text": "Click Me",
+      "style": {
+        "color": "blue",
+        "fontSize": 16
+      },
+      "inherited": "inherit",
+      "source": "button"
+    }
+  ]
+}
+*/
+export const flexEngineFindInheritanceSources = function(dataObject) {
     const sourceList = [];
     const visited = new WeakSet();
 
@@ -22541,7 +22765,7 @@ const flexEngineFindInheritanceSources = function(dataObject) {
     return sourceList;
 };
 
-const flexEngineResolveInheritance = function(pageStructure, componentRegistry) {
+export const flexEngineResolveInheritance = function(pageStructure, componentRegistry) {
     const REMOVE = Symbol("REMOVE");
     const resolvingSources = new Set();
     const activeObjects = new WeakSet();
@@ -22751,7 +22975,8 @@ const flexEngineResolveInheritance = function(pageStructure, componentRegistry) 
                 }
 
                 // Mark the final replacement.
-                resolvedComponent.inherited = true;
+                resolvedComponent.inherited = "inherit";
+                resolvedComponent.source = source;
 
                 return resolvedComponent;
             }
@@ -22779,6 +23004,43 @@ const flexEngineResolveInheritance = function(pageStructure, componentRegistry) 
     // A missing inheritance source at the root means there is no
     // valid root element to return.
     return result === REMOVE ? undefined : result;
+};
+
+
+/**
+ * ------------------------------------------------------------------------------
+ * HTML HTML Webpage and Final Module.
+ * 
+ * This will be trigglered by an Export, and more!
+ * ------------------------------------------------------------------------------
+ */
+
+//Render HTML.
+const flexEngineRenderDOM = function(dataArray, mainArray, componentRegistr, document) {
+    // Dynamically create an empty DOM document setting the title
+    let documentHTML;
+    
+    if (!document) {
+        documentHTML = document.implementation.createHTMLDocument(dataArray.title + " - " + mainArray.name);
+    } else {
+        documentHTML = document;
+    }
+
+    const newDataArray = flexEngineResolveInheritance(dataArray, componentRegistry);
+
+    // <head></head> config initialization
+    flexEngineRenderHTMLHeader(documentHTML, newDataArray, mainArray, BUILDER_CONFIG.classPrefix);
+
+    // this, just create new body and replace it, Remember we use nesting!
+    const newBody = flexEngineCreateNode(newDataArray.body, documentHTML, true);
+    document.body.replaceWith(newBody);
+
+    return documentHTML; // that's DOM for right now!
+};
+
+// Now is the correct Web Server, that return a responce as a responce object. we will bandle it to Web Builder Soon later.
+const webServer = function(url) {
+    
 };
 
 
