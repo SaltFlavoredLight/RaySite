@@ -48,7 +48,7 @@
 }
 
 /* Green Theme */
-.raysiteUI-green {
+.rstheme-green {
     --ui-theme-main-1: #0A5F38;
     --ui-theme-main-2: #20b46f;
     --ui-theme-main-3: #05512d;
@@ -63,7 +63,7 @@
 }
 
 /* Purple / Grape Flower Theme */
-.raysiteUI-purple {
+.rstheme-purple {
     --ui-theme-main-1: #4B1A6A;
     --ui-theme-main-2: #8a31b7;
     --ui-theme-main-3: #3b0f53;
@@ -297,7 +297,7 @@ ul {
 }
 
 .rsapp-redtext {
-    color: var(--ui-theme-main-3)
+    color: var(--ui-theme-main-1)
 }
 
 /* #region Navbar */
@@ -362,7 +362,7 @@ ul {
     flex: 1 1 100%;
     width: 100%;
     display: flex;
-    background: var(--ui-theme-main-3);
+    background: var(--ui-theme-main-1);
     color: var(--ui-theme-white-1);
 }
 
