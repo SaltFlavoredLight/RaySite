@@ -1,0 +1,813 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theme JSON to CSS Studio</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1020;
+      --panel: #131b2e;
+      --border: #29354c;
+      --text: #e5eaf5;
+      --muted: #91a0ba;
+      --accent: #818cf8;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    .app {
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    header { margin-bottom: 28px; }
+
+    header h1 {
+      font-size: clamp(26px, 4vw, 38px);
+      letter-spacing: -1px;
+      margin: 0 0 6px;
+    }
+
+    header p, .muted {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 18px;
+      min-width: 0;
+    }
+
+    h2 {
+      margin: 0 0 6px;
+      font-size: 17px;
+    }
+
+    .description {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0 0 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input, textarea {
+      display: block;
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0a1020;
+      color: var(--text);
+      padding: 11px 12px;
+      font: inherit;
+      outline: none;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+    }
+
+    textarea {
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    #jsonInput, #cssOutput {
+      font: 12px/1.7 ui-monospace, SFMono-Regular, Consolas, monospace;
+      tab-size: 2;
+      white-space: pre;
+    }
+
+    #jsonInput { min-height: 580px; }
+    #cssOutput { min-height: 350px; }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+    }
+
+    button {
+      cursor: pointer;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #202b43;
+      color: var(--text);
+      padding: 9px 13px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    button:hover { filter: brightness(1.15); }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0b1020;
+    }
+
+    .status {
+      font-size: 12px;
+      color: var(--muted);
+      overflow-wrap: anywhere;
+      min-height: 20px;
+      margin-top: 8px;
+    }
+
+    .status.error { color: #f87171; }
+
+    code, .token {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .token {
+      display: inline-block;
+      padding: 3px 7px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-size: 12px;
+      background: #0a1020;
+    }
+
+    .preview {
+      padding: clamp(18px, 3vw, 34px);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #111827;
+      color: #e5e7eb;
+      overflow-wrap: anywhere;
+    }
+
+    .preview .eyebrow {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #94a3b8;
+      margin-bottom: 20px;
+    }
+
+    .preview h1 { margin: 0 0 18px; }
+    .preview h2 { margin: 28px 0 10px; }
+    .preview h3 { margin: 24px 0 8px; }
+
+    .preview p {
+      line-height: 1.9;
+      margin: 0 0 15px;
+    }
+
+    .preview .caption {
+      border-top: 1px solid #334155;
+      padding-top: 14px;
+      margin-top: 24px;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 800px) {
+      body { padding: 14px; }
+      .workspace { grid-template-columns: 1fr; }
+      #jsonInput { min-height: 420px; }
+    }
+
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr; }
+      .panel { padding: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header>
+      <h1>Theme JSON → CSS</h1>
+      <p>
+        Edit your theme configuration, generate scoped CSS,
+        and preview your typography.
+      </p>
+    </header>
+
+    <section class="panel">
+      <h2>01. Theme settings</h2>
+      <p class="description">
+        These values are supplied separately from themeJSON.
+      </p>
+
+      <div class="grid">
+        <div>
+          <label for="themeName">themeName</label>
+          <input id="themeName" value="midnight">
+        </div>
+        <div>
+          <label for="classPrefix">BUILDER_CONFIG.classPrefix</label>
+          <input id="classPrefix" value="builder-">
+        </div>
+      </div>
+
+      <p class="muted">
+        Example selector:
+        <span class="token" id="selectorExample">
+          .builder-midnight .h1
+        </span>
+      </p>
+    </section>
+
+    <div class="workspace">
+      <section class="panel">
+        <h2>02. Theme JSON</h2>
+        <p class="description">
+          Edit the JSON directly. Click Generate CSS to apply your changes.
+        </p>
+
+        <textarea id="jsonInput" spellcheck="false"
+          aria-label="Theme JSON editor"></textarea>
+
+        <div class="actions">
+          <button class="primary" id="generateBtn">Generate CSS</button>
+          <button id="formatBtn">Format JSON</button>
+          <button id="resetBtn">Reset sample</button>
+        </div>
+
+        <div id="jsonStatus" class="status" role="status"></div>
+      </section>
+
+      <section class="panel">
+        <h2>03. Generated CSS</h2>
+        <p class="description">
+          This is the actual CSS string returned by the transformation function.
+        </p>
+
+        <textarea id="cssOutput" readonly
+          spellcheck="false"
+          aria-label="Generated CSS output"></textarea>
+
+        <div class="actions">
+          <button class="primary" id="copyBtn">Copy CSS</button>
+          <button id="downloadBtn">Download CSS</button>
+        </div>
+
+        <div id="cssStatus" class="status" role="status"></div>
+      </section>
+    </div>
+
+    <section class="panel">
+      <h2>04. Typography preview</h2>
+      <p class="description">
+        A sample editorial passage to test headings, body text, colors,
+        and font settings from your theme.
+      </p>
+
+      <article class="preview" id="preview">
+        <div class="eyebrow">FIELD NOTES / DESIGN & CULTURE</div>
+
+        <h1 class="h1">A slower way to see the world.</h1>
+
+        <p class="normal">
+          In a culture that measures every moment by what it produces,
+          paying attention becomes its own kind of rebellion. The world
+          has never been short of extraordinary things. We have simply
+          become very good at looking past them.
+        </p>
+
+        <h2 class="h2">The value of noticing</h2>
+
+        <p class="normal2">
+          Notice how the morning light changes the color of an ordinary
+          wall. Listen to the pause between two sentences. Ask one more
+          question before deciding that you already understand.
+          These small acts of attention do not demand more hours from
+          the day; they ask us to inhabit the hours we already have.
+        </p>
+
+        <h3 class="h3">Make room for the unexpected</h3>
+
+        <p class="normal">
+          Good ideas often arrive when the mind is not being hurried
+          toward an answer. Give yourself room to explore without a
+          destination, to make something without an audience, and to
+          change your mind when the evidence changes.
+        </p>
+
+        <p class="caption">
+          DESIGN NOTES — THOUGHTFUL TYPOGRAPHY. INTENTIONAL SPACE.
+          A THEME THAT SERVES THE STORY.
+        </p>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const BUILDER_CONFIG = {
+      classPrefix: "builder-"
+    };
+
+    const SAMPLE_THEME = {
+      color: {
+        primaryColor: "#A5B4FC",
+        secondaryColor: "#94A3B8",
+        accentColor: "#FBBF24",
+        secondaryAccentColor: "#C4B5FD",
+        neutralTextColor: "#E2E8F0",
+        neutralBackgroundColor: "#111827",
+        costomColor1: "#1E293B",
+        costomColor2: "#334155",
+        costomColor3: "#64748B",
+        costomColor4: "#F8FAFC"
+      },
+
+      fonts: [
+        { type: "system", name: "Inter" },
+        { type: "googleFonts", name: "DM Sans" },
+        { type: "googleFonts", name: "Playfair Display" }
+      ],
+
+      typography: {
+        normal: {
+          font: ["Inter", "sans-serif"],
+          size: 15,
+          letterSpacing: 0,
+          boldness: 400,
+          color: "#CBD5E1",
+          allCaps: false,
+          align: null,
+          costomStyle: ""
+        },
+        normal2: {
+          font: ["DM Sans", "sans-serif"],
+          size: 14,
+          letterSpacing: 0.1,
+          boldness: 400,
+          color: "#94A3B8",
+          allCaps: false,
+          align: null,
+          costomStyle: ""
+        },
+        h1: {
+          font: ["Playfair Display", "serif"],
+          size: 38,
+          letterSpacing: -1.1,
+          boldness: 700,
+          color: "#F8FAFC",
+          allCaps: false,
+          align: null,
+          costomStyle: "line-height: 1.12;"
+        },
+        h2: {
+          font: ["Inter", "sans-serif"],
+          size: 23,
+          letterSpacing: -0.4,
+          boldness: 650,
+          color: "#A5B4FC",
+          allCaps: false,
+          align: null,
+          costomStyle: "line-height: 1.3;"
+        },
+        h3: {
+          font: ["Inter", "sans-serif"],
+          size: 17,
+          letterSpacing: 0,
+          boldness: 600,
+          color: "#FBBF24",
+          allCaps: false,
+          align: null,
+          costomStyle: ""
+        },
+        h4: {
+          font: ["Inter", "sans-serif"],
+          size: 14,
+          letterSpacing: 0.4,
+          boldness: 600,
+          color: "#C4B5FD",
+          allCaps: false,
+          align: null,
+          costomStyle: ""
+        },
+        small: {
+          font: ["Inter", "sans-serif"],
+          size: 12,
+          letterSpacing: 0.3,
+          boldness: 500,
+          color: "#94A3B8",
+          allCaps: false,
+          align: null,
+          costomStyle: ""
+        }
+      },
+
+      spacing: {
+        section: 32,
+        blockgap: 16,
+        tiny: 4,
+        small: 8,
+        mSmall: 12,
+        medium: 16,
+        large: 24,
+        extraLarge: 40,
+        bradiusLarge: 16,
+        bradiusMedium: 10,
+        bradiusSmall: 6
+      },
+
+      animation: {
+        timing: 250,
+        delayTime: 0,
+        animationCurve: "ease-in-out",
+        animation: "fade"
+      },
+
+      transition: {
+        timing: 200,
+        delay: 0,
+        animationCurve: "ease"
+      },
+
+      costomVaibles: {
+        varibles: "--surface-raised: #1E293B;",
+        varibles2: "--content-width: 1200px;",
+        varibles3: "--reading-measure: 68ch;"
+      }
+    };
+
+    // ORIGINAL TRANSFORMATION FUNCTION
+    function themeJSONToCSS(themeJSON, themeName, BUILDER_CONFIG) {
+      const rules = [];
+      const variables = [];
+
+      const prefix = BUILDER_CONFIG.classPrefix;
+      const themeSelector = `.${prefix}${themeName}`;
+
+      function kebabCase(str) {
+        return str.replace(/[A-Z]/g, c => `-${c.toLowerCase()}`);
+      }
+
+      function cssValue(value) {
+        if (value === null || value === undefined) return "";
+
+        if (typeof value === "boolean") {
+          return value ? "true" : "false";
+        }
+
+        if (Array.isArray(value)) {
+          return value.join(", ");
+        }
+
+        return String(value).trim();
+      }
+
+      // Convert configuration properties to CSS variables.
+      function addVariables(obj, path = []) {
+        if (!obj || typeof obj !== "object") return;
+
+        for (const [key, value] of Object.entries(obj)) {
+          if (key === "typography") continue;
+
+          const nextPath = [...path, key];
+
+          if (value && typeof value === "object") {
+            addVariables(value, nextPath);
+          } else if (value !== null && value !== undefined) {
+            const name = nextPath.map(kebabCase).join("-");
+            variables.push(`  --${name}: ${cssValue(value)};`);
+          }
+        }
+      }
+
+      // Convert typography settings to scoped CSS rules.
+      function addTypography(typography = {}) {
+        const propertyMap = {
+          font: "font-family",
+          size: "font-size",
+          letterSpacing: "letter-spacing",
+          boldness: "font-weight",
+          color: "color",
+          allCaps: "text-transform",
+          align: "text-align"
+        };
+
+        for (const [name, settings] of Object.entries(typography)) {
+          if (!settings || typeof settings !== "object") continue;
+
+          const declarations = [];
+
+          for (const [key, value] of Object.entries(settings)) {
+            if (key === "costomStyle") {
+              if (typeof value === "string" && value.trim()) {
+                declarations.push(`  ${value.trim()}`);
+              }
+              continue;
+            }
+
+            const property = propertyMap[key];
+            if (!property || value === null || value === undefined) {
+              continue;
+            }
+
+            let result = value;
+
+            if (key === "font") {
+              result = (Array.isArray(value) ? value : [value])
+                .map(font => {
+                  const fontName = String(font);
+                  return /^[a-z-]+$/i.test(fontName) &&
+                    ["sans-serif", "serif", "monospace", "cursive", "fantasy"]
+                      .includes(fontName)
+                    ? fontName
+                    : `"${fontName.replace(/"/g, '\\"')}"`;
+                })
+                .join(", ");
+            } else if (key === "allCaps") {
+              result = value ? "uppercase" : "none";
+            }
+
+            if (
+              typeof result === "number" &&
+              ["font-size", "letter-spacing"].includes(property)
+            ) {
+              result = `${result}px`;
+            }
+
+            declarations.push(`  ${property}: ${cssValue(result)};`);
+          }
+
+          if (declarations.length) {
+            rules.push(
+              `${themeSelector} .${name} {\n` +
+              `${declarations.join("\n")}\n}`
+            );
+          }
+        }
+      }
+
+      addVariables(themeJSON);
+      addTypography(themeJSON.typography);
+
+      const output = [];
+
+      if (variables.length) {
+        output.push(
+          `${themeSelector} {\n${variables.join("\n")}\n}`
+        );
+      }
+
+      output.push(...rules);
+
+      return output.join("\n\n");
+    }
+
+    // --------------------------------------------------
+    // Demo integration: editor, preview, copy, download.
+    // --------------------------------------------------
+
+    const $ = id => document.getElementById(id);
+
+    $("jsonInput").value = JSON.stringify(SAMPLE_THEME, null, 2);
+
+    function setStatus(id, message, error = false) {
+      $(id).textContent = message;
+      $(id).classList.toggle("error", error);
+    }
+
+    function updateSelector() {
+      const themeName = $("themeName").value.trim();
+      const prefix = $("classPrefix").value.trim();
+
+      $("selectorExample").textContent =
+        `.${prefix}${themeName} .h1`;
+    }
+
+    function applyPreview(config, css) {
+      let style = document.getElementById("generatedThemeStyle");
+
+      if (!style) {
+        style = document.createElement("style");
+        style.id = "generatedThemeStyle";
+        document.head.appendChild(style);
+      }
+
+      // Apply the actual generated CSS to the preview.
+      style.textContent = css;
+
+      const preview = $("preview");
+      const themeName = $("themeName").value.trim();
+      const prefix = $("classPrefix").value.trim();
+
+      preview.className = "preview";
+      preview.classList.add(prefix + themeName);
+
+      const colors = config.color || {};
+
+      preview.style.background =
+        colors.neutralBackgroundColor || "";
+      preview.style.color = colors.neutralTextColor || "";
+
+      // Use typography.normal for the article's inherited body text.
+      const normal = config.typography?.normal;
+
+      if (normal) {
+        if (normal.font) {
+          preview.style.fontFamily = Array.isArray(normal.font)
+            ? normal.font.map(font =>
+                ["serif", "sans-serif", "monospace", "cursive", "fantasy"]
+                  .includes(font)
+                  ? font
+                  : `"${font}"`
+              ).join(", ")
+            : normal.font;
+        }
+
+        if (normal.size != null) {
+          preview.style.fontSize =
+            typeof normal.size === "number"
+              ? `${normal.size}px`
+              : normal.size;
+        }
+
+        if (normal.color) preview.style.color = normal.color;
+
+        if (normal.boldness != null) {
+          preview.style.fontWeight = normal.boldness;
+        }
+      }
+    }
+
+    function generateCSS() {
+      try {
+        const themeJSON = JSON.parse($("jsonInput").value);
+        const themeName = $("themeName").value.trim();
+
+        BUILDER_CONFIG.classPrefix = $("classPrefix").value.trim();
+
+        if (!themeJSON || typeof themeJSON !== "object" ||
+            Array.isArray(themeJSON)) {
+          throw new Error("The root JSON value must be an object.");
+        }
+
+        if (!/^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(themeName)) {
+          throw new Error(
+            "themeName must be a valid CSS class-name token."
+          );
+        }
+
+        if (BUILDER_CONFIG.classPrefix &&
+            !/^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(
+              BUILDER_CONFIG.classPrefix
+            )) {
+          throw new Error(
+            "classPrefix must be a valid CSS class-name prefix."
+          );
+        }
+
+        if (themeJSON.typography != null &&
+            (typeof themeJSON.typography !== "object" ||
+             Array.isArray(themeJSON.typography))) {
+          throw new Error("typography must be an object.");
+        }
+
+        const css = themeJSONToCSS(
+          themeJSON,
+          themeName,
+          BUILDER_CONFIG
+        );
+
+        $("cssOutput").value = css;
+
+        applyPreview(themeJSON, css);
+        updateSelector();
+
+        setStatus(
+          "jsonStatus",
+          "Valid JSON · CSS generated successfully."
+        );
+
+        setStatus(
+          "cssStatus",
+          `Generated ${css.length} characters of CSS.`
+        );
+      } catch (error) {
+        setStatus("jsonStatus", error.message, true);
+        setStatus(
+          "cssStatus",
+          "Fix the input error and generate again.",
+          true
+        );
+      }
+    }
+
+    $("generateBtn").addEventListener("click", generateCSS);
+
+    $("formatBtn").addEventListener("click", () => {
+      try {
+        const parsed = JSON.parse($("jsonInput").value);
+        $("jsonInput").value = JSON.stringify(parsed, null, 2);
+        setStatus("jsonStatus", "JSON formatted successfully.");
+      } catch (error) {
+        setStatus("jsonStatus", error.message, true);
+      }
+    });
+
+    $("resetBtn").addEventListener("click", () => {
+      $("jsonInput").value = JSON.stringify(SAMPLE_THEME, null, 2);
+      $("themeName").value = "midnight";
+      $("classPrefix").value = "builder-";
+      generateCSS();
+    });
+
+    $("themeName").addEventListener("input", updateSelector);
+    $("classPrefix").addEventListener("input", updateSelector);
+
+    $("jsonInput").addEventListener("input", () => {
+      setStatus(
+        "jsonStatus",
+        "JSON changed. Generate CSS to apply your edits."
+      );
+    });
+
+    $("copyBtn").addEventListener("click", async () => {
+      const css = $("cssOutput").value;
+
+      if (!css) {
+        setStatus("cssStatus", "Generate CSS first.", true);
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(css);
+        setStatus("cssStatus", "CSS copied to clipboard.");
+      } catch {
+        $("cssOutput").focus();
+        $("cssOutput").select();
+
+        const copied = document.execCommand("copy");
+
+        setStatus(
+          "cssStatus",
+          copied
+            ? "CSS copied to clipboard."
+            : "Select the CSS text and copy it manually.",
+          !copied
+        );
+      }
+    });
+
+    $("downloadBtn").addEventListener("click", () => {
+      const css = $("cssOutput").value;
+
+      if (!css) {
+        setStatus("cssStatus", "Generate CSS first.", true);
+        return;
+      }
+
+      const themeName = $("themeName").value.trim() || "theme";
+      const blob = new Blob([css], { type: "text/css;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = `${themeName}.css`;
+      link.click();
+
+      URL.revokeObjectURL(url);
+    });
+
+    updateSelector();
+    generateCSS();
+  </script>
+</body>
+</html>

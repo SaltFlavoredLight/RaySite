@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>15 Animations — RS System</title>
+
+  <style>
+    /* ================================================
+   GLOBAL SETTINGS
+================================================ */
+    :root {
+      --ease: cubic-bezier(.25, .8, .25, 1);
+      --time: .7s;
+    }
+
+    /* ================================================
+   BASE: JS DISABLED
+   Content stays visible without animation.
+================================================ */
+    [class^="rs-"],
+    [class*=" rs-"] {
+      opacity: 1;
+      transform: none;
+      clip-path: none;
+    }
+
+    /* ================================================
+   ANIMATION DEFINITIONS
+================================================ */
+    @keyframes rs-appear {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-fade {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-fly-in {
+      from {
+        transform: translateY(60px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-grow-turn {
+      from {
+        transform: scale(.3) rotate(-25deg);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-zoom {
+      from {
+        transform: scale(.4);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-basic-zoom {
+      from {
+        transform: scale(.85);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-rise-up {
+      from {
+        transform: translateY(25px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-stretch {
+      from {
+        transform: scaleX(.1);
+        opacity: 0;
+      }
+
+      to {
+        transform: scaleX(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-wipe {
+      from {
+        clip-path: inset(0 100% 0 0);
+        opacity: 0;
+      }
+
+      to {
+        clip-path: inset(0 0 0 0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-peek-in {
+      from {
+        transform: translateX(-40px);
+        clip-path: inset(0 100% 0 0);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        clip-path: inset(0 0 0 0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-box {
+      from {
+        clip-path: inset(50% 50% 50% 50%);
+        opacity: 0;
+      }
+
+      to {
+        clip-path: inset(0 0 0 0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-expand {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-tumble {
+      from {
+        transform: translate(-40px, -40px) rotate(-120deg);
+        opacity: 0;
+      }
+
+      to {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-rotate {
+      from {
+        transform: translateY(50%) rotate(180deg);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rs-slide-rotate {
+      from {
+        transform: translateY(100px) rotate(180deg);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    /* ================================================
+   JS-ENABLED MODE
+   Hide only RS animation elements until activated.
+================================================ */
+    html.js-enabled [class^="rs-"],
+    html.js-enabled [class*=" rs-"] {
+      opacity: 0;
+    }
+
+    /* ================================================
+   ACTIVE ANIMATIONS
+   Shared activation class: rs-sa
+================================================ */
+
+    /* 1. Appear — instant */
+    html.js-enabled .rs-appear.rs-sa {
+      opacity: 1;
+    }
+
+    /* 2. Fade */
+    html.js-enabled .rs-fade.rs-sa {
+      animation: rs-fade var(--time) var(--ease) both;
+    }
+
+    /* 3. Fly In */
+    html.js-enabled .rs-fly-in.rs-sa {
+      animation: rs-fly-in var(--time) var(--ease) both;
+    }
+
+    /* 4. Grow & Turn */
+    html.js-enabled .rs-grow-turn.rs-sa {
+      animation: rs-grow-turn var(--time) var(--ease) both;
+    }
+
+    /* 5. Zoom */
+    html.js-enabled .rs-zoom.rs-sa {
+      animation: rs-zoom var(--time) var(--ease) both;
+    }
+
+    /* 6. Basic Zoom */
+    html.js-enabled .rs-basic-zoom.rs-sa {
+      animation: rs-basic-zoom var(--time) var(--ease) both;
+    }
+
+    /* 7. Rise Up */
+    html.js-enabled .rs-rise-up.rs-sa {
+      animation: rs-rise-up var(--time) var(--ease) both;
+    }
+
+    /* 8. Stretch */
+    html.js-enabled .rs-stretch.rs-sa {
+      transform-origin: left;
+      animation: rs-stretch var(--time) var(--ease) both;
+    }
+
+    /* 9. Wipe */
+    html.js-enabled .rs-wipe.rs-sa {
+      animation: rs-wipe var(--time) var(--ease) both;
+    }
+
+    /* 10. Peek In */
+    html.js-enabled .rs-peek-in.rs-sa {
+      animation: rs-peek-in var(--time) var(--ease) both;
+    }
+
+    /* 11. Box */
+    html.js-enabled .rs-box.rs-sa {
+      animation: rs-box var(--time) var(--ease) both;
+    }
+
+    /* 12. Expand */
+    html.js-enabled .rs-expand.rs-sa {
+      animation: rs-expand var(--time) var(--ease) both;
+    }
+
+    /* 13. Tumble */
+    html.js-enabled .rs-tumble.rs-sa {
+      transform-origin: top left;
+      animation: rs-tumble var(--time) var(--ease) both;
+    }
+
+    /* 14. Rotate */
+    html.js-enabled .rs-rotate.rs-sa {
+      animation: rs-rotate var(--time) var(--ease) both;
+    }
+
+    /* 15. Slide Rotate */
+    html.js-enabled .rs-slide-rotate.rs-sa {
+      animation: rs-slide-rotate var(--time) var(--ease) both;
+    }
+
+    /* ================================================
+   DEMO STYLING
+================================================ */
+    body {
+      margin: 0;
+      padding: 32px;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-bottom: 16px;
+      border: 0;
+      border-radius: 6px;
+      background: #222;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #444;
+    }
+
+    [class^="rs-"],
+    [class*=" rs-"] {
+      box-sizing: border-box;
+      width: min(100%, 300px);
+      min-height: 65px;
+      padding: 20px;
+      margin: 20px 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgb(0 0 0 / 10%);
+    }
+
+    /* Reduced-motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      :root {
+        --time: 0s;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <button id="toggleBtn" type="button" aria-pressed="false">
+    Toggle Animation Mode
+  </button>
+
+  <div class="rs-appear">1. Appear</div>
+  <div class="rs-fade">2. Fade</div>
+  <div class="rs-fly-in">3. Fly In</div>
+  <div class="rs-grow-turn">4. Grow &amp; Turn</div>
+  <div class="rs-zoom">5. Zoom</div>
+  <div class="rs-basic-zoom">6. Basic Zoom</div>
+  <div class="rs-rise-up">7. Rise Up</div>
+  <div class="rs-stretch">8. Stretch</div>
+  <div class="rs-wipe">9. Wipe</div>
+  <div class="rs-peek-in">10. Peek In</div>
+  <div class="rs-box">11. Box</div>
+  <div class="rs-expand">12. Expand</div>
+  <div class="rs-tumble">13. Tumble</div>
+  <div class="rs-rotate">14. Rotate</div>
+  <div class="rs-slide-rotate">15. Slide Rotate</div>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+
+      try {
+        const btn = document.getElementById("toggleBtn");
+        const elements = document.querySelectorAll(
+          '[class^="rs-"], [class*=" rs-"]'
+        );
+
+        if (!btn || elements.length !== 15) return;
+
+        let active = false;
+
+        btn.addEventListener("click", () => {
+          active = !active;
+
+          elements.forEach(el => {
+            el.classList.toggle("rs-sa", active);
+          });
+
+          btn.setAttribute("aria-pressed", String(active));
+        });
+
+        /* Enable animation mode only after setup succeeds. */
+        root.classList.add("js-enabled");
+
+      } catch (error) {
+        root.classList.remove("js-enabled");
+
+        document.querySelectorAll(".rs-sa").forEach(el => {
+          el.classList.remove("rs-sa");
+        });
+      }
+    })();
+  </script>
+
+</body>
+
+</html>
