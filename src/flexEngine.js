@@ -20,7 +20,7 @@ export const BUILDER_CONFIG = {
 };
 
 
-
+// #region Web Tools
 /**
  * ------------------------------------------------------------------------------
  * Web Tools (Helper Functions)
@@ -70,7 +70,9 @@ function extractHTMLString(dom) {
         dom.documentElement.outerHTML
     );
 }
+// #endregion
 
+// #region LEGACY MODULE
 /**
  * ------------------------------------------------------------------------------ 
  * LEGACY MODULE
@@ -235,8 +237,9 @@ const flexEngineStyleVarible = {
         return presetMap[key] || `cubic-bezier(${key})`;
     },
 };
+// #endregion
 
-
+// #region AlphaEscape System
 /**
  * ------------------------------------------------------------------------------
  * AlphaEscape System
@@ -247,7 +250,6 @@ const flexEngineStyleVarible = {
  * Last Update: 1.0.0
  * ------------------------------------------------------------------------------
  */
-
 
 // default mapping
 const specialCharacters = {
@@ -448,10 +450,9 @@ export function fromAlphaEscape(string) {
         }
     );
 }
+// #endregion
 
-
-
-
+// #region Cubic Bezier Editor
 /**
  * ------------------------------------------------------------------------------
  * Cubic Bezier Editor
@@ -949,10 +950,9 @@ export class CubicBezierEditor {
         this._redraw();
     }
 }
+// #endregion
 
-
-
-
+// #region Flie System for Website
 /**
  * ------------------------------------------------------------------------------
  * Flie System for Website
@@ -1391,8 +1391,9 @@ export class FlexEngineFileSystem {
 };
 
 export const flexEngineFileSystem = new FlexEngineFileSystem();
+// #endregion
 
-
+// #region Input Registery
 /**
  * ------------------------------------------------------------------------------
  * Input Registery
@@ -1410,7 +1411,6 @@ export const flexEngineFileSystem = new FlexEngineFileSystem();
  * visibleIf is mean when name visibleIf.name match any of the node in string (wither string or array), otherwise, visibleIf.otherwise will use that value
  * ------------------------------------------------------------------------------
  */
-
 
 // Input Registery
 export const flexEngineDefaultVariables = {
@@ -13706,8 +13706,9 @@ export const flexEngineDefaultVariables = {
         }
     }
 };
+// #endregion
 
-
+// #region Property Manager
 /**
  * ------------------------------------------------------------------------------
  * Property Manager
@@ -13720,8 +13721,6 @@ export const flexEngineDefaultVariables = {
  * selfQuery, allQuery, render: [0, 1, 2, 3] and internal stuff.
  * ------------------------------------------------------------------------------
  */
-
-
 
 // Animation Registery
 export const flexEngineDefaultAnimation = {
@@ -14313,7 +14312,6 @@ export const flexEngineDefaultAnimation = {
         setting: {}
     }
 };
-
 
 // Animation
 export const flexEngineAnimation = {
@@ -15047,7 +15045,6 @@ export const flexEngineAnimation = {
     }
 };
 
-
 // Trans. System
 export const flexEngineTransition = {
     name: "transition",
@@ -15667,7 +15664,6 @@ export const flexEngineTransition = {
     }
 };
 
-
 // Action System, that's too Strange so we cannot count.
 export const flexEngineActionQuery = [
     {
@@ -15783,8 +15779,9 @@ export const flexEngineCreateAction = function (documentHTML, clickable, nodeSty
     }
     return node;
 };
+// #endregion
 
-
+// #region Styler Manager
 /**
  * ------------------------------------------------------------------------------
  * Styler Manager
@@ -15998,17 +15995,24 @@ const flexEngineStylesToCss = (cssObject) => {
 export const flexEngineStylesResolveRegistry = (elementMode) => {
     const rawMode = String(elementMode || "");
     const separatorIndex = rawMode.indexOf("/");
-    const category = separatorIndex === -1 ? rawMode : rawMode.substring(0, separatorIndex);
-    const element = separatorIndex === -1 ? "" : rawMode.substring(separatorIndex + 1);
+    const category = separatorIndex === -1
+        ? rawMode
+        : rawMode.substring(0, separatorIndex);
+    const element = separatorIndex === -1
+        ? ""
+        : rawMode.substring(separatorIndex + 1);
     const isRoot = category === "@root";
 
     const categoryRegistry = isRoot
         ? (flexEngineRootElement || {})
         : (flexEngineDefaultElements?.[category] || {});
 
+    const elementsRegistry = categoryRegistry?.elements || {};
+
     const elementRegistry =
-        categoryRegistry?.[element] && typeof categoryRegistry[element] === "object"
-            ? categoryRegistry[element]
+        elementsRegistry?.[element] &&
+            typeof elementsRegistry[element] === "object"
+            ? elementsRegistry[element]
             : {};
 
     return {
@@ -16159,53 +16163,53 @@ debugger;
 const elementMode = "content/card";
 
 const BUILDER_CONFIG = {
-	classPrefix: "fx"
+    classPrefix: "fx"
 };
 const flexEngineDefaultElements = {
-	content: {
-		styleDefault: (style) => ({
-			color: style.color
-		}),
-		styleMobile: (style) => ({
-			color: style.color
-		}),
-		sizeDefault: (size, isVertical) => ({
-			width: isVertical ? "100%" : size.width,
-			height: size.height
-		}),
-		sizeMobile: (size) => ({
-			width: "100%",
-			height: size.height
-		}),
-		card: {
-			styleDefault: (style) => ({
-				color: style.color,
-				"background-color": style.background,
-				"border-radius": style.radius,
-				padding: style.padding
-			}),
-			styleMobile: (style) => ({
-				color: style.color,
-				"background-color": style.background,
-				padding: style.padding,
-				"font-size": style.fontSize
-			}),
-			extras: [{
-				position: "2_1",
-				styleDefault: (style) => ({
-					color: style.color,
-					"font-size": style.fontSize,
-					"font-weight": style.fontWeight
-				}),
-				sizeDefault: (size) => ({
-					width: size.width,
-					height: size.height
-				})
-			}, {
-				position: "3"
-			}]
-		}
-	}
+    content: {
+        styleDefault: (style) => ({
+            color: style.color
+        }),
+        styleMobile: (style) => ({
+            color: style.color
+        }),
+        sizeDefault: (size, isVertical) => ({
+            width: isVertical ? "100%" : size.width,
+            height: size.height
+        }),
+        sizeMobile: (size) => ({
+            width: "100%",
+            height: size.height
+        }),
+        card: {
+            styleDefault: (style) => ({
+                color: style.color,
+                "background-color": style.background,
+                "border-radius": style.radius,
+                padding: style.padding
+            }),
+            styleMobile: (style) => ({
+                color: style.color,
+                "background-color": style.background,
+                padding: style.padding,
+                "font-size": style.fontSize
+            }),
+            extras: [{
+                position: "2_1",
+                styleDefault: (style) => ({
+                    color: style.color,
+                    "font-size": style.fontSize,
+                    "font-weight": style.fontWeight
+                }),
+                sizeDefault: (size) => ({
+                    width: size.width,
+                    height: size.height
+                })
+            }, {
+                position: "3"
+            }]
+        }
+    }
 };
 */
 
@@ -16336,10 +16340,9 @@ export const flexEngineStylingSystem = function (dataArray, node, isVertical, el
         }
     );
 };
+// #endregion
 
-
-
-
+// #region HTML <Header>
 /**
  * ------------------------------------------------------------------------------
  * HTML Header Query and exports
@@ -16347,192 +16350,194 @@ export const flexEngineStylingSystem = function (dataArray, node, isVertical, el
  * This will be trigglered by an Export, and more!
  * ------------------------------------------------------------------------------
  */
+
 const pageArrayQuery = [
-        {
-            name: "title",
-            label: "Page Title",
-            type: "string/text"
-        },
-        {
-            name: "description",
-            label: "Page Description",
-            type: "string/text"
-        },
-        {
-            name: "coverIMG",
-            label: "Cover Image",
-            type: "media/img"
+    {
+        name: "title",
+        label: "Page Title",
+        type: "string/text"
+    },
+    {
+        name: "description",
+        label: "Page Description",
+        type: "string/text"
+    },
+    {
+        name: "coverIMG",
+        label: "Cover Image",
+        type: "media/img"
+    }
+];
+
+const mainArrayQuery = [
+    {
+        name: "name",
+        label: "Website Name",
+        type: "string/text"
+    },
+    {
+        name: "domain",
+        label: "Website Domain",
+        type: "string/text"
+    },
+    {
+        name: "websiteKeywords",
+        label: "Website Keywords",
+        type: "list"
+    },
+    {
+        name: "icon",
+        label: "Website Icon",
+        type: "media/img"
+    }
+];
+
+const flexEngineRenderHTMLHeader = function (documentHTML, dataArray, mainArray) {
+
+    // environment check
+    const absoluteDomainEnable =
+        (BUILDER_CONFIG.classPrefix !== null && mainArray.domain !== null &&
+            BUILDER_CONFIG.classPrefix !== "" && mainArray.domain !== "");
+
+    const absoluteURL = absoluteDomainEnable ?
+        `https://${mainArray.domain}${BUILDER_CONFIG.classPrefix}` :
+        null;
+
+    // charset
+    const metaCharset = documentHTML.createElement('meta');
+    metaCharset.setAttribute('charset', 'UTF-8');
+    documentHTML.head.appendChild(metaCharset);
+
+    // viewport
+    const metaViewport = documentHTML.createElement('meta');
+    metaViewport.setAttribute('name', 'viewport');
+    metaViewport.setAttribute('content', 'width=device-width, initial-scale=1');
+    documentHTML.head.appendChild(metaViewport);
+
+    // description
+    const metaDesc = documentHTML.createElement('meta');
+    metaDesc.setAttribute('name', 'description');
+    metaDesc.setAttribute('content', dataArray.description);
+    documentHTML.head.appendChild(metaDesc);
+
+    // keywords
+    const metaKeywords = documentHTML.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    metaKeywords.setAttribute('content', mainArray.websiteKeywords.join(', '));
+    documentHTML.head.appendChild(metaKeywords);
+
+    // canonical
+    if (absoluteDomainEnable) {
+        const linkCanonical = documentHTML.createElement('link');
+        linkCanonical.setAttribute('rel', 'canonical');
+        linkCanonical.setAttribute('href', absoluteURL);
+        documentHTML.head.appendChild(linkCanonical);
+    }
+
+    // OG tags
+    const ogTitle = documentHTML.createElement('meta');
+    ogTitle.setAttribute('property', 'og:title');
+    ogTitle.setAttribute('content', `${dataArray.title} - ${mainArray.name}`);
+    documentHTML.head.appendChild(ogTitle);
+
+    const ogDesc = documentHTML.createElement('meta');
+    ogDesc.setAttribute('property', 'og:description');
+    ogDesc.setAttribute('content', dataArray.description);
+    documentHTML.head.appendChild(ogDesc);
+
+    const ogType = documentHTML.createElement('meta');
+    ogType.setAttribute('property', 'og:type');
+    ogType.setAttribute('content', 'website');
+    documentHTML.head.appendChild(ogType);
+
+    if (absoluteDomainEnable) {
+        const ogUrl = documentHTML.createElement('meta');
+        ogUrl.setAttribute('property', 'og:url');
+        ogUrl.setAttribute('content', absoluteURL);
+        documentHTML.head.appendChild(ogUrl);
+
+        // OPTIONAL: OG image (now using absMedia)
+        if (dataArray.coverIMG) {
+            const ogImg = documentHTML.createElement('meta');
+            ogImg.setAttribute('property', 'og:image');
+            ogImg.setAttribute(
+                'content',
+                flexEngineStyleVarible.absMedia(dataArray.coverIMG, mainArray, BUILDER_CONFIG.classPrefix)
+            );
+            documentHTML.head.appendChild(ogImg);
         }
+    }
+
+    const ogSite = documentHTML.createElement('meta');
+    ogSite.setAttribute('property', 'og:site_name');
+    ogSite.setAttribute('content', mainArray.name);
+    documentHTML.head.appendChild(ogSite);
+
+    // Twitter
+    const twCard = documentHTML.createElement('meta');
+    twCard.setAttribute('name', 'twitter:card');
+    twCard.setAttribute('content', 'summary_large_image');
+    documentHTML.head.appendChild(twCard);
+
+    const twTitle = documentHTML.createElement('meta');
+    twTitle.setAttribute('name', 'twitter:title');
+    twTitle.setAttribute('content', `${dataArray.title} - ${mainArray.name}`);
+    documentHTML.head.appendChild(twTitle);
+
+    const twDesc = documentHTML.createElement('meta');
+    twDesc.setAttribute('name', 'twitter:description');
+    twDesc.setAttribute('content', dataArray.description);
+    documentHTML.head.appendChild(twDesc);
+
+    if (absoluteDomainEnable && dataArray.coverIMG) {
+        const twImg = documentHTML.createElement('meta');
+        twImg.setAttribute('name', 'twitter:image');
+        twImg.setAttribute(
+            'content',
+            flexEngineStyleVarible.absMedia(dataArray.coverIMG, mainArray, BUILDER_CONFIG.classPrefix)
+        );
+        documentHTML.head.appendChild(twImg);
+    }
+
+    // Favicon (now using absMedia)
+    if (mainArray.icon) {
+        const icon = documentHTML.createElement('link');
+        icon.setAttribute('rel', 'icon');
+        icon.setAttribute(
+            'href',
+            flexEngineStyleVarible.absMedia(mainArray.icon, mainArray, BUILDER_CONFIG.classPrefix)
+        );
+        documentHTML.head.appendChild(icon);
+
+        const appleIcon = documentHTML.createElement('link');
+        appleIcon.setAttribute('rel', 'apple-touch-icon');
+        appleIcon.setAttribute(
+            'href',
+            flexEngineStyleVarible.absMedia(mainArray.icon, mainArray, BUILDER_CONFIG.classPrefix)
+        );
+        documentHTML.head.appendChild(appleIcon);
+    }
+
+    // CSS imports (now using absMedia)
+    const cssList = [
+        `${BUILDER_CONFIG.classPrefix}assets/styles/main.css`,
+        `${BUILDER_CONFIG.classPrefix}assets/styles/theme.css`,
+        `${BUILDER_CONFIG.classPrefix}assets/styles/animation.css`
     ];
 
-const mainArrayQuery =  [
-        {
-            name: "name",
-            label: "Website Name",
-            type: "string/text"
-        },
-        {
-            name: "domain",
-            label: "Website Domain",
-            type: "string/text"
-        },
-        {
-            name: "websiteKeywords",
-            label: "Website Keywords",
-            type: "list"
-        },
-        {
-            name: "icon",
-            label: "Website Icon",
-            type: "media/img"
-        }
-    ];
-
-const flexEngineRenderHTMLHeader = function(documentHTML, dataArray, mainArray) {
-
-	// environment check
-	const absoluteDomainEnable =
-		(BUILDER_CONFIG.classPrefix !== null && mainArray.domain !== null &&
-			BUILDER_CONFIG.classPrefix !== "" && mainArray.domain !== "");
-
-	const absoluteURL = absoluteDomainEnable ?
-		`https://${mainArray.domain}${BUILDER_CONFIG.classPrefix}` :
-		null;
-
-	// charset
-	const metaCharset = documentHTML.createElement('meta');
-	metaCharset.setAttribute('charset', 'UTF-8');
-	documentHTML.head.appendChild(metaCharset);
-
-	// viewport
-	const metaViewport = documentHTML.createElement('meta');
-	metaViewport.setAttribute('name', 'viewport');
-	metaViewport.setAttribute('content', 'width=device-width, initial-scale=1');
-	documentHTML.head.appendChild(metaViewport);
-
-	// description
-	const metaDesc = documentHTML.createElement('meta');
-	metaDesc.setAttribute('name', 'description');
-	metaDesc.setAttribute('content', dataArray.description);
-	documentHTML.head.appendChild(metaDesc);
-
-	// keywords
-	const metaKeywords = documentHTML.createElement('meta');
-	metaKeywords.setAttribute('name', 'keywords');
-	metaKeywords.setAttribute('content', mainArray.websiteKeywords.join(', '));
-	documentHTML.head.appendChild(metaKeywords);
-
-	// canonical
-	if (absoluteDomainEnable) {
-		const linkCanonical = documentHTML.createElement('link');
-		linkCanonical.setAttribute('rel', 'canonical');
-		linkCanonical.setAttribute('href', absoluteURL);
-		documentHTML.head.appendChild(linkCanonical);
-	}
-
-	// OG tags
-	const ogTitle = documentHTML.createElement('meta');
-	ogTitle.setAttribute('property', 'og:title');
-	ogTitle.setAttribute('content', `${dataArray.title} - ${mainArray.name}`);
-	documentHTML.head.appendChild(ogTitle);
-
-	const ogDesc = documentHTML.createElement('meta');
-	ogDesc.setAttribute('property', 'og:description');
-	ogDesc.setAttribute('content', dataArray.description);
-	documentHTML.head.appendChild(ogDesc);
-
-	const ogType = documentHTML.createElement('meta');
-	ogType.setAttribute('property', 'og:type');
-	ogType.setAttribute('content', 'website');
-	documentHTML.head.appendChild(ogType);
-
-	if (absoluteDomainEnable) {
-		const ogUrl = documentHTML.createElement('meta');
-		ogUrl.setAttribute('property', 'og:url');
-		ogUrl.setAttribute('content', absoluteURL);
-		documentHTML.head.appendChild(ogUrl);
-
-		// OPTIONAL: OG image (now using absMedia)
-		if (dataArray.coverIMG) {
-			const ogImg = documentHTML.createElement('meta');
-			ogImg.setAttribute('property', 'og:image');
-			ogImg.setAttribute(
-				'content',
-				flexEngineStyleVarible.absMedia(dataArray.coverIMG, mainArray, BUILDER_CONFIG.classPrefix)
-			);
-			documentHTML.head.appendChild(ogImg);
-		}
-	}
-
-	const ogSite = documentHTML.createElement('meta');
-	ogSite.setAttribute('property', 'og:site_name');
-	ogSite.setAttribute('content', mainArray.name);
-	documentHTML.head.appendChild(ogSite);
-
-	// Twitter
-	const twCard = documentHTML.createElement('meta');
-	twCard.setAttribute('name', 'twitter:card');
-	twCard.setAttribute('content', 'summary_large_image');
-	documentHTML.head.appendChild(twCard);
-
-	const twTitle = documentHTML.createElement('meta');
-	twTitle.setAttribute('name', 'twitter:title');
-	twTitle.setAttribute('content', `${dataArray.title} - ${mainArray.name}`);
-	documentHTML.head.appendChild(twTitle);
-
-	const twDesc = documentHTML.createElement('meta');
-	twDesc.setAttribute('name', 'twitter:description');
-	twDesc.setAttribute('content', dataArray.description);
-	documentHTML.head.appendChild(twDesc);
-
-	if (absoluteDomainEnable && dataArray.coverIMG) {
-		const twImg = documentHTML.createElement('meta');
-		twImg.setAttribute('name', 'twitter:image');
-		twImg.setAttribute(
-			'content',
-			flexEngineStyleVarible.absMedia(dataArray.coverIMG, mainArray, BUILDER_CONFIG.classPrefix)
-		);
-		documentHTML.head.appendChild(twImg);
-	}
-
-	// Favicon (now using absMedia)
-	if (mainArray.icon) {
-		const icon = documentHTML.createElement('link');
-		icon.setAttribute('rel', 'icon');
-		icon.setAttribute(
-			'href',
-			flexEngineStyleVarible.absMedia(mainArray.icon, mainArray, BUILDER_CONFIG.classPrefix)
-		);
-		documentHTML.head.appendChild(icon);
-
-		const appleIcon = documentHTML.createElement('link');
-		appleIcon.setAttribute('rel', 'apple-touch-icon');
-		appleIcon.setAttribute(
-			'href',
-			flexEngineStyleVarible.absMedia(mainArray.icon, mainArray, BUILDER_CONFIG.classPrefix)
-		);
-		documentHTML.head.appendChild(appleIcon);
-	}
-
-	// CSS imports (now using absMedia)
-	const cssList = [
-		`${BUILDER_CONFIG.classPrefix}assets/styles/main.css`,
-		`${BUILDER_CONFIG.classPrefix}assets/styles/theme.css`,
-		`${BUILDER_CONFIG.classPrefix}assets/styles/animation.css`
-	];
-
-	cssList.forEach(path => {
-		const link = documentHTML.createElement('link');
-		link.setAttribute('rel', 'stylesheet');
-		link.setAttribute(
-			'href',
-			flexEngineStyleVarible.absMedia(path, mainArray, BUILDER_CONFIG.classPrefix)
-		);
-		documentHTML.head.appendChild(link);
-	});
+    cssList.forEach(path => {
+        const link = documentHTML.createElement('link');
+        link.setAttribute('rel', 'stylesheet');
+        link.setAttribute(
+            'href',
+            flexEngineStyleVarible.absMedia(path, mainArray, BUILDER_CONFIG.classPrefix)
+        );
+        documentHTML.head.appendChild(link);
+    });
 };
+// #endregion
 
-
+// #region Element Registery
 /**
  * ------------------------------------------------------------------------------
  * Element Registery
@@ -16552,7 +16557,6 @@ const flexEngineRenderHTMLHeader = function(documentHTML, dataArray, mainArray) 
  * You can override the class by simply using the same name field in element.
  * ------------------------------------------------------------------------------
  */
-
 
 debugger; // FLAG for future change - flexEngineDefaultElements need to shift to new StyleVarible, 
 // for safety, keep the original ones, but we will delete soon after.
@@ -18791,7 +18795,7 @@ export const flexEngineDefaultElements = {
 
                 settings: {
                     elementPart: function (elemnent) {
-                        return {0: element};
+                        return { 0: element };
                     }
                 }
             }
@@ -19067,7 +19071,7 @@ export const flexEngineDefaultElements = {
 
                 settings: {
                     elementPart: function (element) {
-                        return {0: element.firstElementChild};
+                        return { 0: element.firstElementChild };
                     },
                     elementType: "section"
                 }
@@ -19357,7 +19361,7 @@ export const flexEngineRootElement = {
 
         settings: {
             elementPart: function (element) {
-                return {0: element};
+                return { 0: element };
             },
             systemClass: true,
             allowedSortIn: true,
@@ -19674,46 +19678,46 @@ export const flexEngineRootElement = {
         jsRuntime: {},
 
         cssStyles: [
-                    {
-                        object: "@main",
-                        info: [
-                            { key: "width", value: "100%" },
-                            { key: "height", value: "100%" }
-                        ]
-                    },{
-            object: "@context-full",
-            info: [{
-                key: "width",
-                value: "100%"
+            {
+                object: "@main",
+                info: [
+                    { key: "width", value: "100%" },
+                    { key: "height", value: "100%" }
+                ]
             }, {
-                key: "height",
-                value: "100%"
-            }]
-        }, {
-            object: "@context-wide",
-            info: [{
-                key: "width",
-                value: "100%"
+                object: "@context-full",
+                info: [{
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "height",
+                    value: "100%"
+                }]
             }, {
-                key: "height",
-                value: "100%"
+                object: "@context-wide",
+                info: [{
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "height",
+                    value: "100%"
+                }, {
+                    key: "max-width",
+                    value: "1600px"
+                }]
             }, {
-                key: "max-width",
-                value: "1600px"
-            }]
-        }, {
-            object: "@context-standard",
-            info: [{
-                key: "width",
-                value: "100%"
-            }, {
-                key: "height",
-                value: "100%"
-            }, {
-                key: "max-width",
-                value: "1200px"
-            }]
-        }],
+                object: "@context-standard",
+                info: [{
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "height",
+                    value: "100%"
+                }, {
+                    key: "max-width",
+                    value: "1200px"
+                }]
+            }],
 
         sizeQuery: [
             {
@@ -19760,7 +19764,7 @@ export const flexEngineRootElement = {
 
         settings: {
             elementPart: function (element) {
-                return {0: element.firstElementChild};
+                return { 0: element.firstElementChild };
             },
             systemClass: true,
             allowedSortIn: true,
@@ -19945,46 +19949,46 @@ export const flexEngineRootElement = {
         jsRuntime: {},
 
         cssStyles: [
-                    {
-                        object: "@main",
-                        info: [
-                            { key: "width", value: "100%" },
-                            { key: "height", value: "100%" }
-                        ]
-                    },{
-            object: "@context-full",
-            info: [{
-                key: "width",
-                value: "100%"
+            {
+                object: "@main",
+                info: [
+                    { key: "width", value: "100%" },
+                    { key: "height", value: "100%" }
+                ]
             }, {
-                key: "height",
-                value: "100%"
-            }]
-        }, {
-            object: "@context-wide",
-            info: [{
-                key: "width",
-                value: "100%"
+                object: "@context-full",
+                info: [{
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "height",
+                    value: "100%"
+                }]
             }, {
-                key: "height",
-                value: "100%"
+                object: "@context-wide",
+                info: [{
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "height",
+                    value: "100%"
+                }, {
+                    key: "max-width",
+                    value: "1600px"
+                }]
             }, {
-                key: "max-width",
-                value: "1600px"
-            }]
-        }, {
-            object: "@context-standard",
-            info: [{
-                key: "width",
-                value: "100%"
-            }, {
-                key: "height",
-                value: "100%"
-            }, {
-                key: "max-width",
-                value: "1200px"
-            }]
-        }],
+                object: "@context-standard",
+                info: [{
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "height",
+                    value: "100%"
+                }, {
+                    key: "max-width",
+                    value: "1200px"
+                }]
+            }],
 
         sizeQuery: [
             {
@@ -20031,7 +20035,7 @@ export const flexEngineRootElement = {
 
         settings: {
             elementPart: function (element) {
-                return {0: element.firstElementChild};
+                return { 0: element.firstElementChild };
             },
 
             systemClass: true,
@@ -22361,23 +22365,23 @@ export const flexEngineRootElement = {
         jsRuntime: {},
 
         cssStyles: [
-                    {
-                        object: "@main",
-                        info: [
-                            { key: "width", value: "100%" },
-                            { key: "height", value: "100%" }
-                        ]
-                    },{
-            object: "@main",
-            info: [{
-                key: "width",
-                value: "100%"
+            {
+                object: "@main",
+                info: [
+                    { key: "width", value: "100%" },
+                    { key: "height", value: "100%" }
+                ]
             }, {
-                key: "height",
-                value: "auto"
+                object: "@main",
+                info: [{
+                    key: "width",
+                    value: "100%"
+                }, {
+                    key: "height",
+                    value: "auto"
+                }],
+                sizeQuery: []
             }],
-            sizeQuery: []
-        }],
 
         sizeDefault: (sz, isVertical) => {
             return {};
@@ -22559,7 +22563,7 @@ export const flexEngineRootElement = {
 
         settings: {
             elementPart: function (element) {
-                return  {
+                return {
                     1: element.closest("header"),
                     2: element.querySelector("main"),
                     3: element.querySelector(
@@ -22587,7 +22591,687 @@ export const flexEngineRootElement = {
         }
     }
 };
+// #endregion
 
+// #region JS Modules
+/**
+* ------------------------------------------------------------------------------
+* JS Modules
+* 
+* This will provide correct JS DOM.
+* ------------------------------------------------------------------------------
+*/
+
+function collectSourceRequirements() {
+    const sourceRequirements = [];
+    const visited = new WeakSet();
+
+    function scan(value) {
+        // Stop if this is not an object or was already visited.
+        if (
+            value === null ||
+            typeof value !== "object" ||
+            visited.has(value)
+        ) {
+            return;
+        }
+
+        visited.add(value);
+
+        // Inspect every element in this level's elements array.
+        if (Array.isArray(value.elements)) {
+            for (const element of value.elements) {
+                const sourceRequirement =
+                    element?.jsRuntime?.sourceRequirement;
+
+                if (sourceRequirement !== undefined) {
+                    sourceRequirements.push(sourceRequirement);
+                }
+            }
+        }
+
+        // Recursively inspect nested objects.
+        for (const child of Object.values(value)) {
+            scan(child);
+        }
+    }
+
+    // Collect requirements from the default elements.
+    scan(flexEngineDefaultElements?.firstLevel);
+
+    // Collect the root element's requirements.
+    const rootRequirements =
+        flexEngineRootElement?.element?.jsRuntime?.sourceRequiements ?? [];
+
+    if (Array.isArray(rootRequirements)) {
+        sourceRequirements.push(...rootRequirements);
+    }
+
+    return sourceRequirements;
+};
+
+function generateForEachRuntimeCode() {
+    const snippets = [];
+
+    const processedElements = new WeakSet();
+    const visitedDefaultCategories = new WeakSet();
+    const visitedRootObjects = new WeakSet();
+
+    function isObject(value) {
+        return value !== null && typeof value === "object";
+    }
+
+    function indent(code, spaces) {
+        const padding = " ".repeat(spaces);
+
+        return code
+            .split("\n")
+            .map(line => line ? padding + line : line)
+            .join("\n");
+    }
+
+    function processElement(element) {
+        if (!isObject(element) || processedElements.has(element)) {
+            return;
+        }
+
+        processedElements.add(element);
+
+        const runtime = element.jsRuntime;
+
+        // Skip elements without a valid handler.
+        if (typeof runtime?.forEach !== "function") {
+            return;
+        }
+
+        // Generate the JavaScript body using BUILDER_CONFIG.
+        let generatedBody;
+
+        try {
+            generatedBody = runtime.forEach(BUILDER_CONFIG);
+        } catch (error) {
+            console.error(
+                "Failed to generate JavaScript for element:",
+                element,
+                error
+            );
+            return;
+        }
+
+        // Skip missing, non-string, or blank results.
+        if (
+            typeof generatedBody !== "string" ||
+            generatedBody.trim() === ""
+        ) {
+            return;
+        }
+
+        // Get the element's CSS class.
+        if (
+            typeof element.className !== "string" ||
+            element.className.trim() === ""
+        ) {
+            return;
+        }
+
+        const classPrefix =
+            typeof BUILDER_CONFIG?.classPrefix === "string"
+                ? BUILDER_CONFIG.classPrefix
+                : "";
+
+        const elementClass =
+            `${classPrefix}${element.className}`.trim();
+
+        if (!elementClass) {
+            return;
+        }
+
+        // Ensure the selector starts with a dot.
+        const selector = elementClass.startsWith(".")
+            ? elementClass
+            : `.${elementClass}`;
+
+        // Build the querySelectorAll + forEach snippet.
+        snippets.push(
+            `document.querySelectorAll(${JSON.stringify(selector)}).forEach((element) => {\n` +
+            `${indent(generatedBody.trim(), 4)}\n` +
+            `});`
+        );
+    }
+
+    // Scan categories under flexEngineDefaultElements.firstLevel.
+    function scanDefaultCategories(category) {
+        if (
+            !isObject(category) ||
+            visitedDefaultCategories.has(category)
+        ) {
+            return;
+        }
+
+        visitedDefaultCategories.add(category);
+
+        // Process elements belonging to this category.
+        if (Array.isArray(category.elements)) {
+            for (const element of category.elements) {
+                processElement(element);
+            }
+        }
+
+        // Recursively search nested categories.
+        for (const [key, child] of Object.entries(category)) {
+            if (key === "elements" || key === "jsRuntime") {
+                continue;
+            }
+
+            scanDefaultCategories(child);
+        }
+    }
+
+    // Treat flexEngineRootElement as a category whose descendants
+    // may themselves be elements.
+    function scanRootCategory(value, isRoot = false) {
+        if (
+            !isObject(value) ||
+            visitedRootObjects.has(value)
+        ) {
+            return;
+        }
+
+        visitedRootObjects.add(value);
+
+        // The root object is a category, not an element.
+        if (!isRoot) {
+            processElement(value);
+        }
+
+        for (const [key, child] of Object.entries(value)) {
+            // Do not traverse runtime metadata as category contents.
+            if (key === "jsRuntime") {
+                continue;
+            }
+
+            scanRootCategory(child);
+        }
+    }
+
+    // Collect default-element snippets first.
+    scanDefaultCategories(flexEngineDefaultElements?.firstLevel);
+
+    // Then collect root-element snippets.
+    scanRootCategory(flexEngineRootElement, true);
+
+    // Return an empty string when nothing was generated.
+    if (snippets.length === 0) {
+        return "";
+    }
+
+    const combinedSnippets = snippets
+        .map(snippet => indent(snippet, 4))
+        .join("\n\n");
+
+    // Return code that runs when the DOM is ready.
+    return `(function () {
+    const run = () => {
+${combinedSnippets}
+    };
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", run, { once: true });
+    } else {
+        run();
+    }
+})();`;
+};
+
+function appendSourceRequirementsToDocument(sourceRequirements, DocumentHTML) {
+    if (
+        !Array.isArray(sourceRequirements) ||
+        !DocumentHTML?.createElement
+    ) {
+        return;
+    }
+
+    const target = DocumentHTML.head ?? DocumentHTML.documentElement;
+
+    if (!target) return;
+
+    for (const requirement of sourceRequirements) {
+        // Ignore ES modules.
+        if (!requirement || requirement.ESM === true) {
+            continue;
+        }
+
+        // Only support source types 0 and 1.
+        if (requirement.source !== 0 && requirement.source !== 1) {
+            continue;
+        }
+
+        if (typeof requirement.script !== "string") {
+            continue;
+        }
+
+        const scriptTag = DocumentHTML.createElement("script");
+
+        // Add defer only when requested.
+        if (requirement.defer === true) {
+            scriptTag.defer = true;
+        }
+
+        // Ignore missing integrity values and "none".
+        const integrity = requirement.integrity;
+
+        if (
+            typeof integrity === "string" &&
+            integrity.trim() !== "" &&
+            integrity.toLowerCase() !== "none"
+        ) {
+            scriptTag.integrity = integrity;
+
+            // Enable CORS for external scripts using Subresource Integrity.
+            if (requirement.source === 1) {
+                scriptTag.crossOrigin = "anonymous";
+            }
+        }
+
+        if (requirement.source === 0) {
+            // Inline JavaScript.
+            scriptTag.textContent = requirement.script;
+        } else {
+            // External JavaScript.
+            scriptTag.src = requirement.script;
+        }
+
+        // Append directly to the document's <head>.
+        target.appendChild(scriptTag);
+    }
+};
+// #endregion
+
+// #region CSS modules
+function jsToCss(jsObj, namespace = "") {
+    const items = Array.isArray(jsObj) ? jsObj : [jsObj];
+    const output = [];
+    let mediaBreak = null;
+    let mediaRules = [];
+
+    function splitSelectors(selector) {
+        const parts = [];
+        let start = 0;
+        let parentheses = 0;
+        let brackets = 0;
+        let quote = "";
+        let escaped = false;
+
+        for (let i = 0; i < selector.length; i++) {
+            const char = selector[i];
+
+            if (escaped) {
+                escaped = false;
+                continue;
+            }
+
+            if (char === "\\") {
+                escaped = true;
+                continue;
+            }
+
+            if (quote) {
+                if (char === quote) quote = "";
+                continue;
+            }
+
+            if (char === '"' || char === "'") {
+                quote = char;
+                continue;
+            }
+
+            if (char === "(") parentheses++;
+            else if (char === ")") parentheses--;
+            else if (char === "[") brackets++;
+            else if (char === "]") brackets--;
+
+            if (char === "," && parentheses === 0 && brackets === 0) {
+                parts.push(selector.slice(start, i).trim());
+                start = i + 1;
+            }
+        }
+
+        parts.push(selector.slice(start).trim());
+        return parts;
+    }
+
+    function applyNamespace(selector) {
+        if (!namespace.trim()) return selector;
+
+        return splitSelectors(selector)
+            .map(part => `${namespace.trim()} ${part}`)
+            .join(", ");
+    }
+
+    function flushMedia() {
+        if (mediaRules.length === 0) return;
+
+        output.push(
+            `@media (max-width: ${mediaBreak}px){${mediaRules.join("")}}`
+        );
+
+        mediaRules = [];
+        mediaBreak = null;
+    }
+
+    items.forEach((item, index) => {
+        if (!item || typeof item.object !== "string") {
+            throw new Error(
+                `Item ${index + 1}: missing or invalid "object" property.`
+            );
+        }
+
+        if (!Array.isArray(item.info)) {
+            throw new Error(
+                `Item ${index + 1}: "info" must be an array.`
+            );
+        }
+
+        if (
+            item.break !== undefined &&
+            item.break !== null &&
+            (typeof item.break !== "number" ||
+                !Number.isFinite(item.break) ||
+                item.break < 0)
+        ) {
+            throw new Error(
+                `Item ${index + 1}: "break" must be a non-negative number.`
+            );
+        }
+
+        const selector = applyNamespace(item.object);
+
+        const declarations = item.info.map(({ key, value }, propertyIndex) => {
+            if (
+                typeof key !== "string" ||
+                value === undefined ||
+                value === null
+            ) {
+                throw new Error(
+                    `Item ${index + 1}, property ${propertyIndex + 1}: invalid key or value.`
+                );
+            }
+
+            return `${key}:${value}`;
+        }).join(";");
+
+        const rule = `${selector}{${declarations}}`;
+        const hasBreak = item.break !== undefined && item.break !== null;
+
+        if (!hasBreak) {
+            flushMedia();
+            output.push(rule);
+            return;
+        }
+
+        if (mediaRules.length > 0 && mediaBreak !== item.break) {
+            flushMedia();
+        }
+
+        mediaBreak = item.break;
+        mediaRules.push(rule);
+    });
+
+    flushMedia();
+
+    return output.join("\n");
+}
+
+function generateCombinedCss() {
+    const cssStrings = [];
+    const classPrefix = BUILDER_CONFIG.classPrefix ?? "";
+
+    // Process flexEngineDefaultElements.
+    for (const group of flexEngineDefaultElements ?? []) {
+        for (const element of group?.elements ?? []) {
+            if (!element || typeof element.className !== "string") {
+                continue;
+            }
+
+            const cssStyles = element.cssStyles;
+
+            if (!Array.isArray(cssStyles) || cssStyles.length === 0) {
+                continue;
+            }
+
+            const namespace = classPrefix + element.className;
+            const css = jsToCss(cssStyles, namespace);
+
+            if (typeof css === "string" && css.length > 0) {
+                cssStrings.push(css);
+            }
+        }
+    }
+
+    // Process flexEngineRootElement directly.
+    for (const element of flexEngineRootElement ?? []) {
+        if (!element || typeof element.className !== "string") {
+            continue;
+        }
+
+        const cssStyles = element.cssStyles;
+
+        if (!Array.isArray(cssStyles) || cssStyles.length === 0) {
+            continue;
+        }
+
+        const namespace = classPrefix + element.className;
+        const css = jsToCss(cssStyles, namespace);
+
+        if (typeof css === "string" && css.length > 0) {
+            cssStrings.push(css);
+        }
+    }
+
+    // Combine all generated CSS into one string.
+    return cssStrings.join("\n\n");
+}
+
+function generateAnimationCss() {
+    const cssStrings = [];
+
+    for (const animation of Object.values(
+        flexEngineDefaultAnimation ?? {}
+    )) {
+        if (
+            !animation ||
+            typeof animation.name !== "string" ||
+            !animation.name.trim() ||
+            typeof animation.cssRawCode !== "string" ||
+            !animation.cssRawCode.trim()
+        ) {
+            continue;
+        }
+
+        const name = animation.name.trim();
+        const cssRawCode = animation.cssRawCode.trim();
+
+        cssStrings.push(
+            `@keyframes ${name} {\n${cssRawCode}\n}`
+        );
+    }
+
+    return cssStrings.join("\n\n");
+}
+
+// Export all generated animation definitions.
+export const combinedCSS = generateCombinedCss();
+export const animationCss = generateAnimationCss();
+
+function themeJSONToCSS(themeJSON, themeName) {
+    const rules = [];
+    const variables = [];
+
+    const prefix = BUILDER_CONFIG.classPrefix;
+    const themeSelector = `.${prefix}${themeName}`;
+
+    function kebabCase(str) {
+        return str.replace(/[A-Z]/g, c => `-${c.toLowerCase()}`);
+    }
+
+    function cssValue(value) {
+        if (value === null || value === undefined) return "";
+
+        if (typeof value === "boolean") {
+            return value ? "true" : "false";
+        }
+
+        if (Array.isArray(value)) {
+            return value.join(", ");
+        }
+
+        return String(value).trim();
+    }
+
+    // Convert configuration properties to CSS variables.
+    function addVariables(obj, path = []) {
+        if (!obj || typeof obj !== "object") return;
+
+        for (const [key, value] of Object.entries(obj)) {
+            if (key === "typography") continue;
+
+            const nextPath = [...path, key];
+
+            if (value && typeof value === "object") {
+                addVariables(value, nextPath);
+            } else if (value !== null && value !== undefined) {
+                const name = nextPath.map(kebabCase).join("-");
+                variables.push(`  --${name}: ${cssValue(value)};`);
+            }
+        }
+    }
+
+    // Convert typography settings to scoped CSS rules.
+    function addTypography(typography = {}) {
+        const propertyMap = {
+            font: "font-family",
+            size: "font-size",
+            letterSpacing: "letter-spacing",
+            boldness: "font-weight",
+            color: "color",
+            allCaps: "text-transform",
+            align: "text-align"
+        };
+
+        for (const [name, settings] of Object.entries(typography)) {
+            if (!settings || typeof settings !== "object") continue;
+
+            const declarations = [];
+
+            for (const [key, value] of Object.entries(settings)) {
+                if (key === "costomStyle") {
+                    if (typeof value === "string" && value.trim()) {
+                        declarations.push(`  ${value.trim()}`);
+                    }
+                    continue;
+                }
+
+                const property = propertyMap[key];
+                if (!property || value === null || value === undefined) {
+                    continue;
+                }
+
+                let result = value;
+
+                if (key === "font") {
+                    result = (Array.isArray(value) ? value : [value])
+                        .map(font => {
+                            const fontName = String(font);
+                            return /^[a-z-]+$/i.test(fontName) &&
+                                ["sans-serif", "serif", "monospace", "cursive", "fantasy"]
+                                    .includes(fontName)
+                                ? fontName
+                                : `"${fontName.replace(/"/g, '\\"')}"`;
+                        })
+                        .join(", ");
+                } else if (key === "allCaps") {
+                    result = value ? "uppercase" : "none";
+                }
+
+                if (
+                    typeof result === "number" &&
+                    ["font-size", "letter-spacing"].includes(property)
+                ) {
+                    result = `${result}px`;
+                }
+
+                declarations.push(`  ${property}: ${cssValue(result)};`);
+            }
+
+            if (declarations.length) {
+                rules.push(
+                    `${themeSelector} .${name} {\n` +
+                    `${declarations.join("\n")}\n}`
+                );
+            }
+        }
+    }
+
+    addVariables(themeJSON);
+    addTypography(themeJSON.typography);
+
+    const output = [];
+
+    if (variables.length) {
+        output.push(
+            `${themeSelector} {\n${variables.join("\n")}\n}`
+        );
+    }
+
+    output.push(...rules);
+
+    return output.join("\n\n");
+}
+
+function getAllThemesCSS() {
+  const themes = flexEngineFileSystem.listTheme().data || [];
+
+  const cssStrings = themes.map(theme => {
+    const themeName =
+      typeof theme === "string" ? theme : theme.name;
+
+    const themeJSON = flexEngineFileSystem.readTheme(themeName).data;
+
+    return themeJSONToCSS(themeJSON, themeName, CONFIG);
+  });
+
+  return cssStrings.join("\n\n");
+}
+
+
+function transformCSSAnimation(root) {
+  const prefix = `${BUILDER_CONFIG.classPrefix}animation-`;
+
+  const elements = root.querySelectorAll("*");
+
+  for (const element of elements) {
+    for (const attribute of Array.from(element.attributes)) {
+      if (attribute.name.startsWith(prefix)) {
+        element.removeAttribute(attribute.name);
+      }
+    }
+  }
+
+  // Also process root itself if it is an Element.
+  if (root.nodeType === 1) {
+    for (const attribute of Array.from(root.attributes)) {
+      if (attribute.name.startsWith(prefix)) {
+        root.removeAttribute(attribute.name);
+      }
+    }
+  }
+
+  debugger; // disabled for right now.
+}
+
+// #endregion
+
+// #region HTML export
 /**
  * ------------------------------------------------------------------------------
  * HTML export Module
@@ -22805,11 +23489,11 @@ result is:
   ]
 }
 */
-export const flexEngineFindInheritanceSources = function(dataObject) {
+export const flexEngineFindInheritanceSources = function (dataObject) {
     const sourceList = [];
     const visited = new WeakSet();
 
-    const traverse = function(value) {
+    const traverse = function (value) {
         if (value === null || typeof value !== "object") {
             return;
         }
@@ -22839,13 +23523,13 @@ export const flexEngineFindInheritanceSources = function(dataObject) {
     return sourceList;
 };
 
-export const flexEngineResolveInheritance = function(pageStructure, componentRegistry) {
+export const flexEngineResolveInheritance = function (pageStructure, componentRegistry) {
     const REMOVE = Symbol("REMOVE");
     const resolvingSources = new Set();
     const activeObjects = new WeakSet();
 
     // Identify ordinary objects, excluding arrays and class instances.
-    const isPlainObject = function(value) {
+    const isPlainObject = function (value) {
         if (value === null || typeof value !== "object") {
             return false;
         }
@@ -22856,7 +23540,7 @@ export const flexEngineResolveInheritance = function(pageStructure, componentReg
     };
 
     // Clone arrays and plain objects without modifying the original data.
-    const cloneValue = function(value, seen = new WeakMap()) {
+    const cloneValue = function (value, seen = new WeakMap()) {
         if (value === null || typeof value !== "object") {
             return value;
         }
@@ -22892,7 +23576,7 @@ export const flexEngineResolveInheritance = function(pageStructure, componentReg
 
     // Deep-merge object overrides while preserving untouched properties.
     // Arrays and primitive values are replaced rather than merged.
-    const mergeValues = function(base, override, memo = new WeakMap()) {
+    const mergeValues = function (base, override, memo = new WeakMap()) {
         // An inheritance placeholder must replace the target object,
         // rather than accidentally inheriting its previous properties.
         if (
@@ -22949,7 +23633,7 @@ export const flexEngineResolveInheritance = function(pageStructure, componentReg
     };
 
     // Recursively resolve inheritance throughout the page.
-    const resolveTree = function(value) {
+    const resolveTree = function (value) {
         if (value === null || typeof value !== "object") {
             return value;
         }
@@ -23080,24 +23764,497 @@ export const flexEngineResolveInheritance = function(pageStructure, componentReg
     return result === REMOVE ? undefined : result;
 };
 
+// Final process that make it seperate from HTML and CSS
+export function extractBuilderStyles(dom) {
+    if (!dom || typeof dom.nodeType !== "number") {
+        throw new TypeError(
+            "Expected a Document, Element, or DocumentFragment."
+        );
+    }
 
-/**
- * ------------------------------------------------------------------------------
- * HTML HTML Webpage and Final Module.
- * 
- * This will be trigglered by an Export, and more!
- * ------------------------------------------------------------------------------
- */
+    const config = BUILDER_CONFIG;
+    const classPrefix = config?.classPrefix;
+    const alphaEscape = toAlphaEscape;
+
+    if (
+        typeof classPrefix !== "string" ||
+        !classPrefix.length
+    ) {
+        throw new Error(
+            "BUILDER_CONFIG.classPrefix must be a non-empty string."
+        );
+    }
+
+    const stylePrefix = classPrefix + "styles-";
+    const stylePrefixLower = stylePrefix.toLowerCase();
+
+    const documentNode =
+        dom.nodeType === 9 ? dom : dom.ownerDocument;
+
+    const root =
+        dom.nodeType === 9
+            ? dom.body || dom.documentElement
+            : dom;
+
+    if (!root || typeof root.querySelectorAll !== "function") {
+        throw new TypeError(
+            "The supplied DOM must support querySelectorAll()."
+        );
+    }
+
+    function escapeRegex(value) {
+        return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    function escapeCssIdentifier(value) {
+        const css =
+            documentNode?.defaultView?.CSS ??
+            globalThis.CSS;
+
+        if (typeof css?.escape === "function") {
+            return css.escape(String(value));
+        }
+
+        const input = String(value);
+        let output = "";
+
+        for (let i = 0; i < input.length; i++) {
+            const character = input[i];
+            const code = input.codePointAt(i);
+
+            if (code === 0) {
+                output += "\uFFFD";
+                continue;
+            }
+
+            if (
+                (code >= 1 && code <= 31) ||
+                code === 127 ||
+                (i === 0 && /[0-9]/.test(character)) ||
+                (
+                    i === 1 &&
+                    input[0] === "-" &&
+                    /[0-9]/.test(character)
+                )
+            ) {
+                output += "\\" + code.toString(16) + " ";
+            } else if (
+                /[a-zA-Z0-9_-]/.test(character) ||
+                code >= 128
+            ) {
+                output += character;
+            } else {
+                output += "\\" + character;
+            }
+
+            if (code > 0xFFFF) {
+                i++;
+            }
+        }
+
+        return output;
+    }
+
+    const numericClassPattern = new RegExp(
+        "^" + escapeRegex(classPrefix) + "\\d+$"
+    );
+
+    /*
+     * Collect the root and every descendant.
+     */
+
+    const elements = [];
+
+    if (root.nodeType === 1) {
+        elements.push(root);
+    }
+
+    elements.push(...root.querySelectorAll("*"));
+
+    /*
+     * Count classes across the owner document and supplied subtree.
+     */
+
+    const allClassElements = new Set();
+
+    if (documentNode?.querySelectorAll) {
+        for (const element of documentNode.querySelectorAll("[class]")) {
+            allClassElements.add(element);
+        }
+    }
+
+    for (const element of elements) {
+        if (element.hasAttribute("class")) {
+            allClassElements.add(element);
+        }
+    }
+
+    const usedClasses = new Set();
+    const classUseCount = new Map();
+
+    for (const element of allClassElements) {
+        for (const className of element.classList) {
+            usedClasses.add(className);
+
+            classUseCount.set(
+                className,
+                (classUseCount.get(className) || 0) + 1
+            );
+        }
+    }
+
+    /*
+     * Generate a unique nine-digit numeric class.
+     */
+
+    function generateNumericClass() {
+        for (let attempt = 0; attempt < 10000; attempt++) {
+            const number =
+                Math.floor(Math.random() * 900000000) + 100000000;
+
+            const className = classPrefix + number;
+
+            if (!usedClasses.has(className)) {
+                usedClasses.add(className);
+                return className;
+            }
+        }
+
+        throw new Error(
+            "Unable to generate a unique nine-digit class."
+        );
+    }
+
+    /*
+     * Parse supported style attributes.
+     */
+
+    function parseStyleAttribute(attributeName) {
+        let remainder = attributeName.slice(stylePrefix.length);
+
+        let hasAtSelector = false;
+        let encodedSelector = "";
+
+        const atIndex = remainder.toLowerCase().lastIndexOf("-at");
+
+        if (atIndex !== -1) {
+            hasAtSelector = true;
+            encodedSelector = remainder.slice(atIndex + 3);
+            remainder = remainder.slice(0, atIndex);
+
+            if (!encodedSelector) {
+                throw new Error(
+                    "Missing selector in \"" + attributeName + "\"."
+                );
+            }
+        }
+
+        const modifierMatch = remainder.match(
+            /-(onhovermobile|onmobilehover|onhover|onmobile)$/i
+        );
+
+        let hover = false;
+        let mobile = false;
+
+        if (modifierMatch) {
+            remainder = remainder.slice(0, modifierMatch.index);
+
+            const modifier = modifierMatch[1].toLowerCase();
+
+            if (modifier === "onhover") {
+                hover = true;
+            } else if (modifier === "onmobile") {
+                mobile = true;
+            } else {
+                hover = true;
+                mobile = true;
+            }
+        }
+
+        const target = remainder;
+
+        if (!target) {
+            throw new Error(
+                "Missing target in \"" + attributeName + "\"."
+            );
+        }
+
+        let decodedSelector = "";
+
+        if (hasAtSelector) {
+            if (typeof alphaEscape !== "function") {
+                throw new Error(
+                    "toAlphaEscape must be available for -at selectors."
+                );
+            }
+
+            decodedSelector = String(
+                alphaEscape(encodedSelector)
+            ).trim();
+
+            if (!decodedSelector) {
+                throw new Error(
+                    "The decoded selector in \"" +
+                    attributeName +
+                    "\" is empty."
+                );
+            }
+        }
+
+        return {
+            target: target,
+            hover: hover,
+            mobile: mobile,
+            hasAtSelector: hasAtSelector,
+            decodedSelector: decodedSelector
+        };
+    }
+
+    /*
+     * FIRST PASS:
+     * Discover styled elements and assign unique CSS scopes.
+     *
+     * Reuse an existing numeric class only if it occurs on
+     * exactly one element in the document. Otherwise generate
+     * a new class without removing any original classes.
+     */
+
+    const styledElements = [];
+    const claimedScopeClasses = new Set();
+
+    for (const element of elements) {
+        const styleAttributes = Array.from(
+            element.attributes
+        ).filter(function (attribute) {
+            return attribute.name.toLowerCase().startsWith(
+                stylePrefixLower
+            );
+        });
+
+        if (!styleAttributes.length) {
+            continue;
+        }
+
+        const numericClasses = Array.from(
+            element.classList
+        ).filter(function (className) {
+            return numericClassPattern.test(className);
+        });
+
+        let scopeClass = numericClasses.find(function (className) {
+            return (
+                classUseCount.get(className) === 1 &&
+                !claimedScopeClasses.has(className)
+            );
+        });
+
+        if (!scopeClass) {
+            scopeClass = generateNumericClass();
+            element.classList.add(scopeClass);
+
+            classUseCount.set(scopeClass, 1);
+        }
+
+        claimedScopeClasses.add(scopeClass);
+
+        styledElements.push({
+            element: element,
+            styleAttributes: styleAttributes,
+            scopeClass: scopeClass
+        });
+    }
+
+    /*
+     * SECOND PASS:
+     * Generate CSS rules.
+     */
+
+    const ruleMap = new Map();
+
+    function addRule(selector, mobile, declarations) {
+        const key = JSON.stringify([selector, mobile]);
+
+        if (!ruleMap.has(key)) {
+            ruleMap.set(key, {
+                selector: selector,
+                mobile: mobile,
+                declarations: []
+            });
+        }
+
+        ruleMap.get(key).declarations.push(declarations);
+    }
+
+    function normalizeDeclarations(value) {
+        const declarations = String(value ?? "").trim();
+
+        if (!declarations) {
+            return "";
+        }
+
+        return declarations.endsWith(";")
+            ? declarations
+            : declarations + ";";
+    }
+
+    for (const info of styledElements) {
+        const element = info.element;
+        const styleAttributes = info.styleAttributes;
+        const scopeClass = info.scopeClass;
+
+        const scopeSelector =
+            "." + escapeCssIdentifier(scopeClass);
+
+        const tagName = element.tagName.toLowerCase();
+
+        for (const attribute of styleAttributes) {
+            const parsed = parseStyleAttribute(attribute.name);
+
+            const declarations = normalizeDeclarations(
+                attribute.value
+            );
+
+            if (declarations) {
+                const target = parsed.target.toLowerCase();
+
+                const isDefaultTarget =
+                    target === "default" ||
+                    target === "base" ||
+                    target === "node";
+
+                let selector;
+
+                if (isDefaultTarget) {
+                    selector = scopeSelector;
+                } else {
+                    selector =
+                        tagName +
+                        scopeSelector +
+                        "." +
+                        escapeCssIdentifier(parsed.target);
+                }
+
+                if (parsed.hover) {
+                    selector += ":hover";
+                }
+
+                if (parsed.hasAtSelector) {
+                    selector += " " + parsed.decodedSelector;
+                }
+
+                addRule(
+                    selector,
+                    parsed.mobile,
+                    declarations
+                );
+            }
+
+            element.removeAttribute(attribute.name);
+        }
+    }
+
+    /*
+     * Render CSS rules.
+     */
+
+    function renderRule(rule, indentation) {
+        indentation = indentation || "";
+
+        const innerIndent = indentation + "  ";
+
+        const declarationText = rule.declarations
+            .map(function (declaration) {
+                return declaration
+                    .split(/\r?\n/)
+                    .map(function (line) {
+                        return innerIndent + line.trim();
+                    })
+                    .join("\n");
+            })
+            .join("\n");
+
+        return (
+            indentation + rule.selector + " {\n" +
+            declarationText + "\n" +
+            indentation + "}"
+        );
+    }
+
+    const allRules = Array.from(ruleMap.values());
+
+    const desktopRules = allRules.filter(function (rule) {
+        return !rule.mobile;
+    });
+
+    const mobileRules = allRules.filter(function (rule) {
+        return rule.mobile;
+    });
+
+    const cssParts = [];
+
+    if (desktopRules.length) {
+        cssParts.push(
+            desktopRules
+                .map(function (rule) {
+                    return renderRule(rule, "");
+                })
+                .join("\n\n")
+        );
+    }
+
+    if (mobileRules.length) {
+        const mobileCSS = mobileRules
+            .map(function (rule) {
+                return renderRule(rule, "  ");
+            })
+            .join("\n\n");
+
+        cssParts.push(
+            "@media (max-width: 768px) {\n" +
+            mobileCSS + "\n" +
+            "}"
+        );
+    }
+
+    const css = cssParts.join("\n\n");
+
+    /*
+     * Serialize the resulting HTML.
+     */
+
+    let html;
+
+    if (dom.nodeType === 9) {
+        const doctype = dom.doctype
+            ? "<!DOCTYPE " + dom.doctype.name + ">"
+            : "";
+
+        html =
+            (doctype ? doctype + "\n" : "") +
+            (dom.documentElement?.outerHTML ?? "");
+    } else if (dom.nodeType === 1) {
+        html = dom.outerHTML;
+    } else {
+        const container = documentNode.createElement("div");
+        container.appendChild(dom.cloneNode(true));
+        html = container.innerHTML;
+    }
+
+    return [
+        html,
+        css
+    ];
+}
 
 //Render HTML.
-const flexEngineRenderDOM = function(dataArray, mainArray, componentRegistry, document) {
+const flexEngineRenderDOM = function (dataArray, mainArray, componentRegistry, documentInput) {
     // Dynamically create an empty DOM document setting the title
     let documentHTML;
-    
-    if (!document || (document = null)) {
+
+    if (!documentInput || (documentInput = null)) {
         documentHTML = document.implementation.createHTMLDocument(dataArray.title + " - " + mainArray.name);
     } else {
-        documentHTML = document;
+        documentHTML = documentInput;
     }
 
     const newDataArray = flexEngineResolveInheritance(dataArray, componentRegistry);
@@ -23105,18 +24262,31 @@ const flexEngineRenderDOM = function(dataArray, mainArray, componentRegistry, do
     // <head></head> config initialization
     flexEngineRenderHTMLHeader(documentHTML, newDataArray, mainArray, BUILDER_CONFIG.classPrefix);
 
+    const themeName = dataArray.theme;
+
+    if (typeof themeName === "string" && themeName) {
+        documentHTML.body.classList.add(`${BUILDER_CONFIG.classPrefix}${themeName}`);
+    }
+
     // this, just create new body and replace it, Remember we use nesting!
     const newBody = flexEngineCreateNode(newDataArray.body, documentHTML, true);
     document.body.replaceWith(newBody);
+
+    // Then, JS part and CSS part
+    appendSourceRequirementsToDocument(collectSourceRequirements(), documentHTML);
+
+    const script = documentHTML.createElement("script");
+    script.src = `/${BUILDER_CONFIG.classPrefix}assets/script/global.js`;
+    documentHTML.head.appendChild(script);
 
     return documentHTML; // that's DOM for right now!
 };
 
 //Render HTML w/ given infomation. AYNSC
-const flexEngineRenderDOMPage = async function(url, doc = null, inHTML = false) {
+const flexEngineRenderDOMPage = async function (url, doc = null, inHTML = false) {
     // step 1: get URL.
     const dataArray = await flexEngineFileSystem.readPage(url);
-    
+
     // step 2: try get requirements
     const req = flexEngineFindInheritanceSources(dataArray);
 
@@ -23139,26 +24309,615 @@ const flexEngineRenderDOMPage = async function(url, doc = null, inHTML = false) 
 
     const documentHTML = flexEngineRenderDOM(dataArray, mainArray, componets, null)
 
+    // step 5: add Script
+
     if (inHTML) {
-        debugger;
-        return documentHTML;
+        const pagePath = url.pathname.replace(/\//g, "_");
+
+        transformCSSAnimation(documentHTML);
+
+        const link = documentHTML.createElement("link");
+        link.rel = "stylesheet";
+        link.href = `${BUILDER_CONFIG.classPrefix}assets/styles/${pagePath}`;
+
+        documentHTML.head.appendChild(link);
+
+        return extractBuilderStyles(documentHTML);
     } else {
         return documentHTML;
     }
 };
+// #endregion
+
+// #region Sim Server
+/**
+ * ------------------------------------------------------------------------------
+ * Sim Server
+ *
+ * Sim Router, Route everything!
+ * ------------------------------------------------------------------------------
+ * Usage:
+ * 1, app.get(), app.post(), app.put(), app.delete()
+ * 2, for those 4, use app.METHOD(priorty, path, handler)
+ * 3, Priorty is a number, more higher = run first
+ * 4, Path is a path, use "*" for one non empty segment, "**"" for mutiple
+ * 5, handler receive req, and return the responce
+ * 6, use app.fetch once complete.
+ * ------------------------------------------------------------------------------
+ */
+
+function normalizePath(path) {
+    if (typeof path !== "string" || !path.startsWith("/")) {
+        throw new TypeError("Route paths must start with '/'");
+    }
+
+    const directoryPattern = path === "*/";
+    const exactOnly = path.length > 1 && path.endsWith("/")
+        && !directoryPattern;
+
+    const normalizedPath = path === "/"
+        ? "/"
+        : path.replace(/\/+$/, "") || "/";
+
+    return {
+        path: normalizedPath,
+        exactOnly,
+        directoryPattern,
+        hasWildcard: /[*]/.test(normalizedPath)
+    };
+}
+
+function getSegments(path) {
+    return path === "/" ? [] : path.slice(1).split("/");
+}
+
+// Supports:
+// *       = any characters within one segment
+// **      = zero or more path segments
+// *.css   = suffix matching within a filename segment
+// user-*  = prefix matching within a segment
+function matchSegment(pattern, actual) {
+    if (pattern === "**") {
+        return true;
+    }
+
+    const escaped = pattern
+        .replace(/[.+?^${}()|[\]\\]/g, "\\$&")
+        .replace(/\*/g, ".*");
+
+    return new RegExp(`^${escaped}$`).test(actual);
+}
+
+function matchesSegments(pattern, actual, pi = 0, ai = 0) {
+    if (pi === pattern.length) {
+        return ai === actual.length;
+    }
+
+    if (pattern[pi] === "**") {
+        if (pi === pattern.length - 1) {
+            return true;
+        }
+
+        for (let i = ai; i <= actual.length; i++) {
+            if (matchesSegments(pattern, actual, pi + 1, i)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    if (ai >= actual.length) {
+        return false;
+    }
+
+    if (!matchSegment(pattern[pi], actual[ai])) {
+        return false;
+    }
+
+    return matchesSegments(pattern, actual, pi + 1, ai + 1);
+}
+
+export class SimServer {
+    constructor() {
+        this.routes = [];
+        this.registrationOrder = 0;
+    }
+
+    // Generic registration method.
+    route(method, priority, path, handler) {
+        method = String(method).toUpperCase();
+
+        if (!Number.isFinite(priority)) {
+            throw new TypeError("Route priority must be a finite number");
+        }
+
+        if (typeof handler !== "function") {
+            throw new TypeError("Route handler must be a function");
+        }
+
+        const normalized = normalizePath(path);
+
+        this.routes.push({
+            method,
+            priority,
+            path: normalized.path,
+            exactOnly: normalized.exactOnly,
+            directoryPattern: normalized.directoryPattern,
+            hasWildcard: normalized.hasWildcard,
+            segments: getSegments(normalized.path),
+            handler,
+            order: this.registrationOrder++
+        });
+
+        return this;
+    }
+
+    get(priority, path, handler) {
+        return this.route("GET", priority, path, handler);
+    }
+
+    post(priority, path, handler) {
+        return this.route("POST", priority, path, handler);
+    }
+
+    put(priority, path, handler) {
+        return this.route("PUT", priority, path, handler);
+    }
+
+    delete(priority, path, handler) {
+        return this.route("DELETE", priority, path, handler);
+    }
+
+    // Find the highest-priority route matching the request.
+    findRoute(method, actualSegments, pathname) {
+        let best = null;
+
+        for (const route of this.routes) {
+            if (route.method !== method) {
+                continue;
+            }
+
+            let matches = false;
+
+            // */ matches directory-style URLs ending in "/".
+            if (route.directoryPattern) {
+                matches = pathname.endsWith("/");
+            }
+
+            // *.css matches CSS filenames at any directory depth.
+            else if (route.path === "*.css") {
+                const filename = actualSegments.at(-1) ?? "";
+                matches = filename.endsWith(".css") && filename.length > 4;
+            }
+
+            else {
+                const prefixRoute =
+                    !route.exactOnly && !route.hasWildcard;
+
+                if (route.exactOnly &&
+                    route.segments.length !== actualSegments.length) {
+                    continue;
+                }
+
+                if (prefixRoute &&
+                    route.segments.length > actualSegments.length) {
+                    continue;
+                }
+
+                if (prefixRoute) {
+                    matches = route.segments.every(
+                        (segment, index) => segment === actualSegments[index]
+                    );
+                } else {
+                    matches = matchesSegments(route.segments, actualSegments);
+                }
+            }
+
+            if (!matches) {
+                continue;
+            }
+
+            if (best === null || route.priority > best.priority) {
+                best = route;
+            }
+        }
+
+        return best;
+    }
+
+    // Find the registered 404.html handler.
+    findNotFoundRoute() {
+        let best = null;
+
+        for (const route of this.routes) {
+            if (route.method !== "GET" || route.path !== "/404.html") {
+                continue;
+            }
+
+            if (best === null || route.priority > best.priority) {
+                best = route;
+            }
+        }
+
+        return best;
+    }
+
+    async runHandler(route, req) {
+        const response = await route.handler(req);
+
+        if (!(response instanceof Response)) {
+            throw new TypeError(
+                `Handler for ${route.method} ${route.path} must return a Response`
+            );
+        }
+
+        return response;
+    }
+
+    // Ensure HEAD responses never contain a body.
+    finishResponse(response, req, statusOverride = null) {
+        const status = statusOverride ?? response.status;
+
+        if (req.method !== "HEAD" && statusOverride === null) {
+            return response;
+        }
+
+        return new Response(
+            req.method === "HEAD" ? null : response.body,
+            {
+                status,
+                statusText:
+                    status === 404 ? "Not Found" : response.statusText,
+                headers: response.headers
+            }
+        );
+    }
+
+    // Main entry point: pass a Request, receive a Response.
+    async fetch(req) {
+        if (!(req instanceof Request)) {
+            throw new TypeError("server.fetch() requires a Request object");
+        }
+
+        try {
+            const url = new URL(req.url);
+            const actualSegments = getSegments(
+                url.pathname === "/"
+                    ? "/"
+                    : url.pathname.replace(/\/+$/, "")
+            );
+
+            const route = this.findRoute(
+                req.method,
+                actualSegments,
+                url.pathname
+            );
+
+            if (route) {
+                const response = await this.runHandler(route, req);
+                return this.finishResponse(response, req);
+            }
+
+            // 2. No match: execute the special 404.html handler.
+            const notFoundRoute = this.findNotFoundRoute();
+
+            if (notFoundRoute) {
+                const response = await this.runHandler(notFoundRoute, req);
+
+                return this.finishResponse(response, req, 404);
+            }
+
+            // 3. No route and no custom 404 page.
+            return new Response(
+                req.method === "HEAD" ? null : "Not Found",
+                {
+                    status: 404,
+                    headers: {
+                        "Content-Type": "text/plain; charset=utf-8",
+                        "Cache-Control": "no-store"
+                    }
+                }
+            );
+        } catch (error) {
+            // Handler errors or invalid handler results become HTTP 500.
+            return new Response(
+                JSON.stringify({
+                    error: "Simulator handler failed",
+                    detail: String(error)
+                }),
+                {
+                    status: 500,
+                    headers: {
+                        "Content-Type": "application/json; charset=utf-8",
+                        "Cache-Control": "no-store"
+                    }
+                }
+            );
+        }
+    }
+}
+// #endregion
+
+// #region Web Servers
+/**
+ * ------------------------------------------------------------------------------
+ * Web Servers
+ *
+ * This will guided to create a Web Server for the website, use simliation. also website export module
+ * ------------------------------------------------------------------------------
+ */
+
 
 // Now is the correct Web Server, that return a responce as a responce object. we will bandle it to Web Builder Soon later.
-const webServer = function(url) {
+// Now is the correct Web Server, that returns a Response object.
+// We will bundle it to Web Builder soon later.
+const createWebServer = function () {
+    const app = new SimServer();
+
+    function notFound() {
+        return new Response("Not Found", {
+            status: 404,
+            headers: {
+                "Content-Type": "text/plain; charset=utf-8",
+                "Cache-Control": "no-store"
+            }
+        });
+    }
+
+    async function handleOr404(handler, req) {
+        try {
+            const response = await handler(req);
+
+            if (!(response instanceof Response) || response.status >= 400) {
+                return notFound();
+            }
+
+            return response;
+        } catch {
+            return notFound();
+        }
+    }
+
+    function getPath(req) {
+        return decodeURIComponent(new URL(req.url).pathname);
+    }
+
+    function getAssetName(req, directory) {
+        const pathname = getPath(req);
+        const prefix = `/${BUILDER_CONFIG}assets/${directory}/`;
+
+        if (!pathname.startsWith(prefix)) {
+            throw new Error("Invalid asset path");
+        }
+
+        const name = pathname.slice(prefix.length);
+
+        if (
+            !name ||
+            name.split("/").some(part =>
+                !part || part === "." || part === ".."
+            )
+        ) {
+            throw new Error("Invalid asset name");
+        }
+
+        return name;
+    }
+
+    function getMimeType(filename, category) {
+        const extension = filename.split(".").pop().toLowerCase();
+
+        const types = {
+            img: {
+                png: "image/png",
+                jpg: "image/jpeg",
+                jpeg: "image/jpeg",
+                gif: "image/gif",
+                webp: "image/webp",
+                svg: "image/svg+xml",
+                ico: "image/x-icon",
+                avif: "image/avif",
+                bmp: "image/bmp"
+            },
+            audio: {
+                mp3: "audio/mpeg",
+                wav: "audio/wav",
+                ogg: "audio/ogg",
+                m4a: "audio/mp4",
+                aac: "audio/aac",
+                flac: "audio/flac",
+                opus: "audio/opus",
+                webm: "audio/webm"
+            },
+            video: {
+                mp4: "video/mp4",
+                webm: "video/webm",
+                ogv: "video/ogg",
+                mov: "video/quicktime",
+                m4v: "video/x-m4v",
+                mkv: "video/x-matroska",
+                avi: "video/x-msvideo",
+                mpeg: "video/mpeg"
+            }
+        };
+
+        return types[category]?.[extension]
+            ?? "application/octet-stream";
+    }
+
+    async function serveAsset(req, category) {
+        const name = getAssetName(req, category);
+
+        const result = await flexEngineFileSystem.readAsset(
+            `${category}/${name}`
+        );
+
+        if (!result || result.code === 1 || result.data == null) {
+            return notFound();
+        }
+
+        const data = result.data;
+
+        if (
+            !(
+                typeof data === "string" ||
+                data instanceof Blob ||
+                data instanceof ArrayBuffer ||
+                ArrayBuffer.isView(data)
+            )
+        ) {
+            throw new TypeError("Unsupported asset data format");
+        }
+
+        return new Response(data, {
+            status: 200,
+            headers: {
+                "Content-Type": getMimeType(name, category),
+                "Cache-Control": "no-store"
+            }
+        });
+    }
+
+    // Priority 6 — Images
+    app.get(6, `/${BUILDER_CONFIG}assets/img/**`, req =>
+        handleOr404(req => serveAsset(req, "img"), req)
+    );
+
+    // Priority 5 — Audio
+    app.get(5, `/${BUILDER_CONFIG}assets/audio/**`, req =>
+        handleOr404(req => serveAsset(req, "audio"), req)
+    );
+
+    // Priority 4 — Video
+    app.get(4, `/${BUILDER_CONFIG}assets/video/**`, req =>
+        handleOr404(req => serveAsset(req, "video"), req)
+    );
+
+    // Priority 3 — Scripts
+    app.get(3, `/${BUILDER_CONFIG}assets/script/**`, req =>
+        handleOr404(async req => {
+            const name = getAssetName(req, "script");
+
+            if (name !== "main.js" && name !== "global.js") {
+                return notFound();
+            }
+
+            const code = await generateForEachRuntimeCode();
+
+            if (typeof code !== "string") {
+                return notFound();
+            }
+
+            return new Response(code, {
+                status: 200,
+                headers: {
+                    "Content-Type": "application/javascript; charset=utf-8",
+                    "Cache-Control": "no-store"
+                }
+            });
+        }, req)
+    );
+
+    // Priority 2 — Stylesheets
+    app.get(2, `/${BUILDER_CONFIG}assets/styles/**`, req =>
+        handleOr404(async req => {
+            const name = getAssetName(req, "styles");
+            let css;
+
+            if (name === "main.css" || name === "global.css") {
+                css = combinedCSS;
+            } else if (name === "animation.css") {
+                css = animationCss;
+            } else if (name === "theme.css") {
+                css = await getAllThemesCSS();
+            } else {
+                const themeURL = `/${name.replace(/_/g, "/")}`;
+
+                const result = await flexEngineRenderDOMPage(
+                    themeURL,
+                    null,
+                    true
+                );
+
+                if (!Array.isArray(result) || typeof result[1] !== "string") {
+                    return notFound();
+                }
+
+                css = result[1];
+            }
+
+            if (typeof css !== "string") {
+                return notFound();
+            }
+
+            return new Response(css, {
+                status: 200,
+                headers: {
+                    "Content-Type": "text/css; charset=utf-8",
+                    "Cache-Control": "no-store"
+                }
+            });
+        }, req)
+    );
+
+    // Priority 1 — Catch-all
+    app.get(1, "/**", req =>
+        handleOr404(async req => {
+            const url = getPath(req);
+
+            const result = await flexEngineRenderDOMPage(
+                url,
+                null,
+                true
+            );
+
+            if (!Array.isArray(result) || typeof result[0] !== "string") {
+                return notFound();
+            }
+
+            let html = result[0];
+
+            if (!/<html\b/i.test(html)) {
+                return notFound();
+            }
+
+            html = html.replace(/<html\b([^>]*)>/i, (match, attributes) => {
+                if (/\bx-config-ready\s*=/i.test(attributes)) {
+                    return match.replace(
+                        /\bx-config-ready\s*=\s*(["']).*?\1/i,
+                        'x-config-ready="true"'
+                    );
+                }
+
+                return `<html${attributes} x-config-ready="true">`;
+            });
+
+            return new Response(html, {
+                status: 200,
+                headers: {
+                    "Content-Type": "text/html; charset=utf-8",
+                    "Cache-Control": "no-store",
+                    "x-config-ready": "true"
+                }
+            });
+        }, req)
+    );
+
+    return app;
 };
 
-
+export const webServer = createWebServer;
+// #endregion
 
 
 /**
  * Main Function (RUN THIS!)
  */
+
+
 export const main = function () {
-    
+
 };
 
 // Go RaySite!
