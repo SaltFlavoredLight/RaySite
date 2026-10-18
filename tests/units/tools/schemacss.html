@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,19 +34,19 @@
             color: #d00;
         }
 
-        
-#namespaceInput {
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px;
-    margin: 12px 0 20px;
-    font-family: monospace;
-    font-size: 14px;
-}
 
+        #namespaceInput {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            margin: 12px 0 20px;
+            font-family: monospace;
+            font-size: 14px;
+        }
     </style>
 </head>
+
 <body>
     <h1>JSON to CSS Generator</h1>
 
@@ -77,8 +77,8 @@
     }
 ]</textarea>
 
-<label for="namespaceInput">Namespace (optional)</label>
-<input id="namespaceInput" type="text" placeholder="e.g. .card">
+    <label for="namespaceInput">Namespace (optional)</label>
+    <input id="namespaceInput" type="text" placeholder="e.g. .card">
 
     <button id="generateButton" type="button">Generate CSS</button>
 
@@ -92,139 +92,139 @@
 
 
 
-function jsToCss(jsObj, namespace = "") {
-    const items = Array.isArray(jsObj) ? jsObj : [jsObj];
-    const output = [];
-    let mediaBreak = null;
-    let mediaRules = [];
+        function jsToCss(jsObj, namespace = "") {
+            const items = Array.isArray(jsObj) ? jsObj : [jsObj];
+            const output = [];
+            let mediaBreak = null;
+            let mediaRules = [];
 
-    function splitSelectors(selector) {
-        const parts = [];
-        let start = 0;
-        let parentheses = 0;
-        let brackets = 0;
-        let quote = "";
-        let escaped = false;
+            function splitSelectors(selector) {
+                const parts = [];
+                let start = 0;
+                let parentheses = 0;
+                let brackets = 0;
+                let quote = "";
+                let escaped = false;
 
-        for (let i = 0; i < selector.length; i++) {
-            const char = selector[i];
+                for (let i = 0; i < selector.length; i++) {
+                    const char = selector[i];
 
-            if (escaped) {
-                escaped = false;
-                continue;
+                    if (escaped) {
+                        escaped = false;
+                        continue;
+                    }
+
+                    if (char === "\\") {
+                        escaped = true;
+                        continue;
+                    }
+
+                    if (quote) {
+                        if (char === quote) quote = "";
+                        continue;
+                    }
+
+                    if (char === '"' || char === "'") {
+                        quote = char;
+                        continue;
+                    }
+
+                    if (char === "(") parentheses++;
+                    else if (char === ")") parentheses--;
+                    else if (char === "[") brackets++;
+                    else if (char === "]") brackets--;
+
+                    if (char === "," && parentheses === 0 && brackets === 0) {
+                        parts.push(selector.slice(start, i).trim());
+                        start = i + 1;
+                    }
+                }
+
+                parts.push(selector.slice(start).trim());
+                return parts;
             }
 
-            if (char === "\\") {
-                escaped = true;
-                continue;
+            function applyNamespace(selector) {
+                if (!namespace.trim()) return selector;
+
+                return splitSelectors(selector)
+                    .map(part => `${namespace.trim()} ${part}`)
+                    .join(", ");
             }
 
-            if (quote) {
-                if (char === quote) quote = "";
-                continue;
-            }
+            function flushMedia() {
+                if (mediaRules.length === 0) return;
 
-            if (char === '"' || char === "'") {
-                quote = char;
-                continue;
-            }
-
-            if (char === "(") parentheses++;
-            else if (char === ")") parentheses--;
-            else if (char === "[") brackets++;
-            else if (char === "]") brackets--;
-
-            if (char === "," && parentheses === 0 && brackets === 0) {
-                parts.push(selector.slice(start, i).trim());
-                start = i + 1;
-            }
-        }
-
-        parts.push(selector.slice(start).trim());
-        return parts;
-    }
-
-    function applyNamespace(selector) {
-        if (!namespace.trim()) return selector;
-
-        return splitSelectors(selector)
-            .map(part => `${namespace.trim()} ${part}`)
-            .join(", ");
-    }
-
-    function flushMedia() {
-        if (mediaRules.length === 0) return;
-
-        output.push(
-            `@media (max-width: ${mediaBreak}px){${mediaRules.join("")}}`
-        );
-
-        mediaRules = [];
-        mediaBreak = null;
-    }
-
-    items.forEach((item, index) => {
-        if (!item || typeof item.object !== "string") {
-            throw new Error(
-                `Item ${index + 1}: missing or invalid "object" property.`
-            );
-        }
-
-        if (!Array.isArray(item.info)) {
-            throw new Error(
-                `Item ${index + 1}: "info" must be an array.`
-            );
-        }
-
-        if (
-            item.break !== undefined &&
-            item.break !== null &&
-            (typeof item.break !== "number" ||
-             !Number.isFinite(item.break) ||
-             item.break < 0)
-        ) {
-            throw new Error(
-                `Item ${index + 1}: "break" must be a non-negative number.`
-            );
-        }
-
-        const selector = applyNamespace(item.object);
-
-        const declarations = item.info.map(({ key, value }, propertyIndex) => {
-            if (
-                typeof key !== "string" ||
-                value === undefined ||
-                value === null
-            ) {
-                throw new Error(
-                    `Item ${index + 1}, property ${propertyIndex + 1}: invalid key or value.`
+                output.push(
+                    `@media (max-width: ${mediaBreak}px){${mediaRules.join("")}}`
                 );
+
+                mediaRules = [];
+                mediaBreak = null;
             }
 
-            return `${key}:${value}`;
-        }).join(";");
+            items.forEach((item, index) => {
+                if (!item || typeof item.object !== "string") {
+                    throw new Error(
+                        `Item ${index + 1}: missing or invalid "object" property.`
+                    );
+                }
 
-        const rule = `${selector}{${declarations}}`;
-        const hasBreak = item.break !== undefined && item.break !== null;
+                if (!Array.isArray(item.info)) {
+                    throw new Error(
+                        `Item ${index + 1}: "info" must be an array.`
+                    );
+                }
 
-        if (!hasBreak) {
+                if (
+                    item.break !== undefined &&
+                    item.break !== null &&
+                    (typeof item.break !== "number" ||
+                        !Number.isFinite(item.break) ||
+                        item.break < 0)
+                ) {
+                    throw new Error(
+                        `Item ${index + 1}: "break" must be a non-negative number.`
+                    );
+                }
+
+                const selector = applyNamespace(item.object);
+
+                const declarations = item.info.map(({ key, value }, propertyIndex) => {
+                    if (
+                        typeof key !== "string" ||
+                        value === undefined ||
+                        value === null
+                    ) {
+                        throw new Error(
+                            `Item ${index + 1}, property ${propertyIndex + 1}: invalid key or value.`
+                        );
+                    }
+
+                    return `${key}:${value}`;
+                }).join(";");
+
+                const rule = `${selector}{${declarations}}`;
+                const hasBreak = item.break !== undefined && item.break !== null;
+
+                if (!hasBreak) {
+                    flushMedia();
+                    output.push(rule);
+                    return;
+                }
+
+                if (mediaRules.length > 0 && mediaBreak !== item.break) {
+                    flushMedia();
+                }
+
+                mediaBreak = item.break;
+                mediaRules.push(rule);
+            });
+
             flushMedia();
-            output.push(rule);
-            return;
+
+            return output.join("\n");
         }
-
-        if (mediaRules.length > 0 && mediaBreak !== item.break) {
-            flushMedia();
-        }
-
-        mediaBreak = item.break;
-        mediaRules.push(rule);
-    });
-
-    flushMedia();
-
-    return output.join("\n");
-}
 
 
 
@@ -236,22 +236,23 @@ function jsToCss(jsObj, namespace = "") {
         const errorOutput = document.getElementById("error");
 
 
-const namespaceInput = document.getElementById("namespaceInput");
+        const namespaceInput = document.getElementById("namespaceInput");
 
-generateButton.addEventListener("click", () => {
-    try {
-        const jsObj = JSON.parse(jsonInput.value);
-        const css = jsToCss(jsObj, namespaceInput.value);
+        generateButton.addEventListener("click", () => {
+            try {
+                const jsObj = JSON.parse(jsonInput.value);
+                const css = jsToCss(jsObj, namespaceInput.value);
 
-        cssOutput.value = css;
-        errorOutput.textContent = "";
-    } catch (error) {
-        errorOutput.textContent = "Error: " + error.message;
-    }
-});
+                cssOutput.value = css;
+                errorOutput.textContent = "";
+            } catch (error) {
+                errorOutput.textContent = "Error: " + error.message;
+            }
+        });
 
-generateButton.click();
+        generateButton.click();
 
     </script>
 </body>
+
 </html>

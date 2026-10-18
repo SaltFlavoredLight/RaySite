@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Builder Style Extraction Tester</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            background: #f4f6fa;
+            color: #202431;
+            font-family: system-ui, Arial, sans-serif;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            margin-top: 28px;
+            font-size: 18px;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 290px;
+            padding: 16px;
+            border: 1px solid #cbd1dc;
+            border-radius: 8px;
+            background: white;
+            color: #202431;
+            font: 13px/1.6 monospace;
+            resize: vertical;
+            tab-size: 2;
+        }
+
+        pre {
+            width: 100%;
+            min-height: 70px;
+            padding: 16px;
+            overflow: auto;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+            border: 1px solid #cbd1dc;
+            border-radius: 8px;
+            background: white;
+            font: 13px/1.6 monospace;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: 0;
+            border-radius: 6px;
+            background: #245edb;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button.secondary {
+            background: #555e70;
+        }
+
+        button:hover {
+            filter: brightness(0.93);
+        }
+
+        .status {
+            padding: 10px 12px;
+            border-radius: 6px;
+            background: #e9edf5;
+            overflow-wrap: anywhere;
+        }
+
+        .hint {
+            color: #596174;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>Builder Style Extraction Tester</h1>
+
+        <p>
+            Edit the source HTML, click Run extraction, and inspect the
+            resulting HTML and CSS. Each run starts from the source editor,
+            so previous runs will not modify your original sample.
+        </p>
+
+        <h2>1. Editable source HTML</h2>
+
+        <p class="hint">
+            You can edit the HTML below, including its classes and
+            x-styles-* attributes. You may enter a body fragment or
+            a complete HTML document.
+        </p>
+
+        <textarea id="source-input" spellcheck="false"><button
+  class="x-111111111 x-222222222"
+  x-styles-default="color: red; padding: 4px;"
+  x-styles-base-onHover="color: white; background: black;"
+  x-styles-node-onMobile-atspan="font-size: 12px;"
+>
+  <span>Save</span>
+</button>
+
+<a x-styles-link-onHover="text-decoration: underline;">Open</a>
+
+<!-- Collision test: both elements share x-777777777 -->
+<div
+  class="x-777777777 x-777777778"
+  x-styles-default="border: 1px solid red;"
+>
+  First element
+</div>
+
+<div
+  class="x-777777777 x-777777779"
+  x-styles-default="border: 1px solid blue;"
+>
+  Second element
+</div></textarea>
+
+        <div class="controls">
+            <button id="run-button">Run extraction</button>
+            <button id="reset-button" class="secondary">Reset example</button>
+            <button id="clear-button" class="secondary">Clear results</button>
+        </div>
+
+        <p id="status" class="status" role="status">
+            Ready.
+        </p>
+
+        <h2>2. Resulting HTML</h2>
+        <pre id="html-output">Run the extraction to see the result.</pre>
+
+        <h2>3. Extracted CSS</h2>
+        <pre id="css-output">Run the extraction to see the result.</pre>
+    </main>
+
+<script>
+    /*
+     * DEMO CONFIGURATION
+     */
+
+    window.BUILDER_CONFIG ??= {
+        classPrefix: "x-"
+    };
+
+    window.toAlphaEscape ??= function (value) {
+        return value;
+    };
+
+    /*
+     * FUNCTION: extractBuilderStyles(dom)
+     */
+
+    function extractBuilderStyles(dom) {
+        if (!dom || typeof dom.nodeType !== "number") {
+            throw new TypeError(
+                "Expected a Document, Element, or DocumentFragment."
+            );
+        }
+
+        const config = BUILDER_CONFIG;
+        const classPrefix = config?.classPrefix;
+        const alphaEscape = toAlphaEscape;
+
+        if (
+            typeof classPrefix !== "string" ||
+            !classPrefix.length
+        ) {
+            throw new Error(
+                "BUILDER_CONFIG.classPrefix must be a non-empty string."
+            );
+        }
+
+        const stylePrefix = classPrefix + "styles-";
+        const stylePrefixLower = stylePrefix.toLowerCase();
+
+        const documentNode =
+            dom.nodeType === 9 ? dom : dom.ownerDocument;
+
+        const root =
+            dom.nodeType === 9
+                ? dom.body || dom.documentElement
+                : dom;
+
+        if (!root || typeof root.querySelectorAll !== "function") {
+            throw new TypeError(
+                "The supplied DOM must support querySelectorAll()."
+            );
+        }
+
+        function escapeRegex(value) {
+            return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        }
+
+        function escapeCssIdentifier(value) {
+            const css =
+                documentNode?.defaultView?.CSS ??
+                globalThis.CSS;
+
+            if (typeof css?.escape === "function") {
+                return css.escape(String(value));
+            }
+
+            const input = String(value);
+            let output = "";
+
+            for (let i = 0; i < input.length; i++) {
+                const character = input[i];
+                const code = input.codePointAt(i);
+
+                if (code === 0) {
+                    output += "\uFFFD";
+                    continue;
+                }
+
+                if (
+                    (code >= 1 && code <= 31) ||
+                    code === 127 ||
+                    (i === 0 && /[0-9]/.test(character)) ||
+                    (
+                        i === 1 &&
+                        input[0] === "-" &&
+                        /[0-9]/.test(character)
+                    )
+                ) {
+                    output += "\\" + code.toString(16) + " ";
+                } else if (
+                    /[a-zA-Z0-9_-]/.test(character) ||
+                    code >= 128
+                ) {
+                    output += character;
+                } else {
+                    output += "\\" + character;
+                }
+
+                if (code > 0xFFFF) {
+                    i++;
+                }
+            }
+
+            return output;
+        }
+
+        const numericClassPattern = new RegExp(
+            "^" + escapeRegex(classPrefix) + "\\d+$"
+        );
+
+        /*
+         * Collect the root and every descendant.
+         */
+
+        const elements = [];
+
+        if (root.nodeType === 1) {
+            elements.push(root);
+        }
+
+        elements.push(...root.querySelectorAll("*"));
+
+        /*
+         * Count classes across the owner document and supplied subtree.
+         */
+
+        const allClassElements = new Set();
+
+        if (documentNode?.querySelectorAll) {
+            for (const element of documentNode.querySelectorAll("[class]")) {
+                allClassElements.add(element);
+            }
+        }
+
+        for (const element of elements) {
+            if (element.hasAttribute("class")) {
+                allClassElements.add(element);
+            }
+        }
+
+        const usedClasses = new Set();
+        const classUseCount = new Map();
+
+        for (const element of allClassElements) {
+            for (const className of element.classList) {
+                usedClasses.add(className);
+
+                classUseCount.set(
+                    className,
+                    (classUseCount.get(className) || 0) + 1
+                );
+            }
+        }
+
+        /*
+         * Generate a unique nine-digit numeric class.
+         */
+
+        function generateNumericClass() {
+            for (let attempt = 0; attempt < 10000; attempt++) {
+                const number =
+                    Math.floor(Math.random() * 900000000) + 100000000;
+
+                const className = classPrefix + number;
+
+                if (!usedClasses.has(className)) {
+                    usedClasses.add(className);
+                    return className;
+                }
+            }
+
+            throw new Error(
+                "Unable to generate a unique nine-digit class."
+            );
+        }
+
+        /*
+         * Parse supported style attributes.
+         */
+
+        function parseStyleAttribute(attributeName) {
+            let remainder = attributeName.slice(stylePrefix.length);
+
+            let hasAtSelector = false;
+            let encodedSelector = "";
+
+            const atIndex = remainder.toLowerCase().lastIndexOf("-at");
+
+            if (atIndex !== -1) {
+                hasAtSelector = true;
+                encodedSelector = remainder.slice(atIndex + 3);
+                remainder = remainder.slice(0, atIndex);
+
+                if (!encodedSelector) {
+                    throw new Error(
+                        "Missing selector in \"" + attributeName + "\"."
+                    );
+                }
+            }
+
+            const modifierMatch = remainder.match(
+                /-(onhovermobile|onmobilehover|onhover|onmobile)$/i
+            );
+
+            let hover = false;
+            let mobile = false;
+
+            if (modifierMatch) {
+                remainder = remainder.slice(0, modifierMatch.index);
+
+                const modifier = modifierMatch[1].toLowerCase();
+
+                if (modifier === "onhover") {
+                    hover = true;
+                } else if (modifier === "onmobile") {
+                    mobile = true;
+                } else {
+                    hover = true;
+                    mobile = true;
+                }
+            }
+
+            const target = remainder;
+
+            if (!target) {
+                throw new Error(
+                    "Missing target in \"" + attributeName + "\"."
+                );
+            }
+
+            let decodedSelector = "";
+
+            if (hasAtSelector) {
+                if (typeof alphaEscape !== "function") {
+                    throw new Error(
+                        "toAlphaEscape must be available for -at selectors."
+                    );
+                }
+
+                decodedSelector = String(
+                    alphaEscape(encodedSelector)
+                ).trim();
+
+                if (!decodedSelector) {
+                    throw new Error(
+                        "The decoded selector in \"" +
+                        attributeName +
+                        "\" is empty."
+                    );
+                }
+            }
+
+            return {
+                target: target,
+                hover: hover,
+                mobile: mobile,
+                hasAtSelector: hasAtSelector,
+                decodedSelector: decodedSelector
+            };
+        }
+
+        /*
+         * FIRST PASS:
+         * Discover styled elements and assign unique CSS scopes.
+         *
+         * Reuse an existing numeric class only if it occurs on
+         * exactly one element in the document. Otherwise generate
+         * a new class without removing any original classes.
+         */
+
+        const styledElements = [];
+        const claimedScopeClasses = new Set();
+
+        for (const element of elements) {
+            const styleAttributes = Array.from(
+                element.attributes
+            ).filter(function (attribute) {
+                return attribute.name.toLowerCase().startsWith(
+                    stylePrefixLower
+                );
+            });
+
+            if (!styleAttributes.length) {
+                continue;
+            }
+
+            const numericClasses = Array.from(
+                element.classList
+            ).filter(function (className) {
+                return numericClassPattern.test(className);
+            });
+
+            let scopeClass = numericClasses.find(function (className) {
+                return (
+                    classUseCount.get(className) === 1 &&
+                    !claimedScopeClasses.has(className)
+                );
+            });
+
+            if (!scopeClass) {
+                scopeClass = generateNumericClass();
+                element.classList.add(scopeClass);
+
+                classUseCount.set(scopeClass, 1);
+            }
+
+            claimedScopeClasses.add(scopeClass);
+
+            styledElements.push({
+                element: element,
+                styleAttributes: styleAttributes,
+                scopeClass: scopeClass
+            });
+        }
+
+        /*
+         * SECOND PASS:
+         * Generate CSS rules.
+         */
+
+        const ruleMap = new Map();
+
+        function addRule(selector, mobile, declarations) {
+            const key = JSON.stringify([selector, mobile]);
+
+            if (!ruleMap.has(key)) {
+                ruleMap.set(key, {
+                    selector: selector,
+                    mobile: mobile,
+                    declarations: []
+                });
+            }
+
+            ruleMap.get(key).declarations.push(declarations);
+        }
+
+        function normalizeDeclarations(value) {
+            const declarations = String(value ?? "").trim();
+
+            if (!declarations) {
+                return "";
+            }
+
+            return declarations.endsWith(";")
+                ? declarations
+                : declarations + ";";
+        }
+
+        for (const info of styledElements) {
+            const element = info.element;
+            const styleAttributes = info.styleAttributes;
+            const scopeClass = info.scopeClass;
+
+            const scopeSelector =
+                "." + escapeCssIdentifier(scopeClass);
+
+            const tagName = element.tagName.toLowerCase();
+
+            for (const attribute of styleAttributes) {
+                const parsed = parseStyleAttribute(attribute.name);
+
+                const declarations = normalizeDeclarations(
+                    attribute.value
+                );
+
+                if (declarations) {
+                    const target = parsed.target.toLowerCase();
+
+                    const isDefaultTarget =
+                        target === "default" ||
+                        target === "base" ||
+                        target === "node";
+
+                    let selector;
+
+                    if (isDefaultTarget) {
+                        selector = scopeSelector;
+                    } else {
+                        selector =
+                            tagName +
+                            scopeSelector +
+                            "." +
+                            escapeCssIdentifier(parsed.target);
+                    }
+
+                    if (parsed.hover) {
+                        selector += ":hover";
+                    }
+
+                    if (parsed.hasAtSelector) {
+                        selector += " " + parsed.decodedSelector;
+                    }
+
+                    addRule(
+                        selector,
+                        parsed.mobile,
+                        declarations
+                    );
+                }
+
+                element.removeAttribute(attribute.name);
+            }
+        }
+
+        /*
+         * Render CSS rules.
+         */
+
+        function renderRule(rule, indentation) {
+            indentation = indentation || "";
+
+            const innerIndent = indentation + "  ";
+
+            const declarationText = rule.declarations
+                .map(function (declaration) {
+                    return declaration
+                        .split(/\r?\n/)
+                        .map(function (line) {
+                            return innerIndent + line.trim();
+                        })
+                        .join("\n");
+                })
+                .join("\n");
+
+            return (
+                indentation + rule.selector + " {\n" +
+                declarationText + "\n" +
+                indentation + "}"
+            );
+        }
+
+        const allRules = Array.from(ruleMap.values());
+
+        const desktopRules = allRules.filter(function (rule) {
+            return !rule.mobile;
+        });
+
+        const mobileRules = allRules.filter(function (rule) {
+            return rule.mobile;
+        });
+
+        const cssParts = [];
+
+        if (desktopRules.length) {
+            cssParts.push(
+                desktopRules
+                    .map(function (rule) {
+                        return renderRule(rule, "");
+                    })
+                    .join("\n\n")
+            );
+        }
+
+        if (mobileRules.length) {
+            const mobileCSS = mobileRules
+                .map(function (rule) {
+                    return renderRule(rule, "  ");
+                })
+                .join("\n\n");
+
+            cssParts.push(
+                "@media (max-width: 768px) {\n" +
+                mobileCSS + "\n" +
+                "}"
+            );
+        }
+
+        const css = cssParts.join("\n\n");
+
+        /*
+         * Serialize the resulting HTML.
+         */
+
+        let html;
+
+        if (dom.nodeType === 9) {
+            const doctype = dom.doctype
+                ? "<!DOCTYPE " + dom.doctype.name + ">"
+                : "";
+
+            html =
+                (doctype ? doctype + "\n" : "") +
+                (dom.documentElement?.outerHTML ?? "");
+        } else if (dom.nodeType === 1) {
+            html = dom.outerHTML;
+        } else {
+            const container = documentNode.createElement("div");
+            container.appendChild(dom.cloneNode(true));
+            html = container.innerHTML;
+        }
+
+        return {
+            html: html,
+            css: css
+        };
+    }
+
+    /*
+     * DEMO CONTROLS
+     */
+
+    const sourceInput = document.getElementById("source-input");
+    const htmlOutput = document.getElementById("html-output");
+    const cssOutput = document.getElementById("css-output");
+    const statusOutput = document.getElementById("status");
+
+    const originalSource = sourceInput.value;
+
+    function runDemo() {
+        try {
+            const input = sourceInput.value.trim();
+
+            const isFullDocument =
+                /<!doctype\s+html|<html(?:\s|>)/i.test(input);
+
+            const completeHTML = isFullDocument
+                ? input
+                : (
+                    "<!DOCTYPE html>\n" +
+                    "<html>\n" +
+                    "<head><meta charset=\"utf-8\"></head>\n" +
+                    "<body>\n" +
+                    input +
+                    "\n</body>\n" +
+                    "</html>"
+                );
+
+            const parsedDocument = new DOMParser().parseFromString(
+                completeHTML,
+                "text/html"
+            );
+
+            const result = extractBuilderStyles(parsedDocument);
+
+            htmlOutput.textContent = result.html;
+
+            cssOutput.textContent =
+                result.css || "/* No CSS rules extracted. */";
+
+            statusOutput.textContent =
+                "Extraction completed. Numeric scope collisions were checked.";
+        } catch (error) {
+            statusOutput.textContent =
+                "Error: " + error.message;
+
+            htmlOutput.textContent = "Extraction failed.";
+            cssOutput.textContent = "No CSS result available.";
+
+            console.error(error);
+        }
+    }
+
+    document.getElementById("run-button").addEventListener(
+        "click",
+        runDemo
+    );
+
+    document.getElementById("reset-button").addEventListener(
+        "click",
+        function () {
+            sourceInput.value = originalSource;
+            runDemo();
+        }
+    );
+
+    document.getElementById("clear-button").addEventListener(
+        "click",
+        function () {
+            htmlOutput.textContent = "";
+            cssOutput.textContent = "";
+            statusOutput.textContent = "Results cleared.";
+        }
+    );
+
+    runDemo();
+</script>
+</body>
+
+</html>
