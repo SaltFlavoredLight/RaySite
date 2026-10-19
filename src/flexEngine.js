@@ -1008,14 +1008,41 @@ class openDBFlieMaagement {
 
     async register() {
         return this._execute(async () => {
-            this.db = await openDB(this.dbName, 1, {
+            console.log("[ZipContainer] Opening database:", this.dbName);
+
+            const db = await openDB(this.dbName, 1, {
                 upgrade: (db) => {
                     if (!db.objectStoreNames.contains(this.storeName)) {
                         db.createObjectStore(this.storeName);
+                        console.log(
+                            "[ZipContainer] Created object store:",
+                            this.storeName
+                        );
                     }
                 },
             });
-            return { message: "Database registered and connected successfully." };
+
+            if (!db) {
+                throw new Error("openDB() returned no database instance.");
+            }
+
+            if (!db.objectStoreNames.contains(this.storeName)) {
+                throw new Error(
+                    `Object store "${this.storeName}" does not exist.`
+                );
+            }
+
+            this.db = db;
+
+            console.log("[ZipContainer] Database ready:", {
+                name: this.db.name,
+                storeName: this.storeName,
+                stores: Array.from(this.db.objectStoreNames),
+            });
+
+            return {
+                message: "Database registered and connected successfully."
+            };
         });
     }
 
@@ -1500,7 +1527,7 @@ export const flexEngineDefaultVariables = {
                 }
             },
 
-            render: function (dataArray, elementSetting, elementSetting) {
+            render: function (dataArray, elementSetting) {
                 return dataArray; // Good, since it is just Number.
             }
         },
@@ -23027,8 +23054,16 @@ function generateCombinedCss() {
     const classPrefix = BUILDER_CONFIG.classPrefix ?? "";
 
     // Process flexEngineDefaultElements.
-    for (const group of flexEngineDefaultElements ?? []) {
-        for (const element of group?.elements ?? []) {
+    const defaultGroups = Array.isArray(flexEngineDefaultElements)
+        ? flexEngineDefaultElements
+        : [];
+
+    for (const group of defaultGroups) {
+        const elements = Array.isArray(group?.elements)
+            ? group.elements
+            : [];
+
+        for (const element of elements) {
             if (!element || typeof element.className !== "string") {
                 continue;
             }
@@ -23049,7 +23084,11 @@ function generateCombinedCss() {
     }
 
     // Process flexEngineRootElement directly.
-    for (const element of flexEngineRootElement ?? []) {
+    const rootElements = Array.isArray(flexEngineRootElement)
+        ? flexEngineRootElement
+        : [];
+
+    for (const element of rootElements) {
         if (!element || typeof element.className !== "string") {
             continue;
         }
@@ -23229,44 +23268,44 @@ function themeJSONToCSS(themeJSON, themeName) {
 }
 
 function getAllThemesCSS() {
-  const themes = flexEngineFileSystem.listTheme().data || [];
+    const themes = flexEngineFileSystem.listTheme().data || [];
 
-  const cssStrings = themes.map(theme => {
-    const themeName =
-      typeof theme === "string" ? theme : theme.name;
+    const cssStrings = themes.map(theme => {
+        const themeName =
+            typeof theme === "string" ? theme : theme.name;
 
-    const themeJSON = flexEngineFileSystem.readTheme(themeName).data;
+        const themeJSON = flexEngineFileSystem.readTheme(themeName).data;
 
-    return themeJSONToCSS(themeJSON, themeName, CONFIG);
-  });
+        return themeJSONToCSS(themeJSON, themeName, CONFIG);
+    });
 
-  return cssStrings.join("\n\n");
+    return cssStrings.join("\n\n");
 }
 
 
 function transformCSSAnimation(root) {
-  const prefix = `${BUILDER_CONFIG.classPrefix}animation-`;
+    const prefix = `${BUILDER_CONFIG.classPrefix}animation-`;
 
-  const elements = root.querySelectorAll("*");
+    const elements = root.querySelectorAll("*");
 
-  for (const element of elements) {
-    for (const attribute of Array.from(element.attributes)) {
-      if (attribute.name.startsWith(prefix)) {
-        element.removeAttribute(attribute.name);
-      }
+    for (const element of elements) {
+        for (const attribute of Array.from(element.attributes)) {
+            if (attribute.name.startsWith(prefix)) {
+                element.removeAttribute(attribute.name);
+            }
+        }
     }
-  }
 
-  // Also process root itself if it is an Element.
-  if (root.nodeType === 1) {
-    for (const attribute of Array.from(root.attributes)) {
-      if (attribute.name.startsWith(prefix)) {
-        root.removeAttribute(attribute.name);
-      }
+    // Also process root itself if it is an Element.
+    if (root.nodeType === 1) {
+        for (const attribute of Array.from(root.attributes)) {
+            if (attribute.name.startsWith(prefix)) {
+                root.removeAttribute(attribute.name);
+            }
+        }
     }
-  }
 
-  debugger; // disabled for right now.
+    debugger; // disabled for right now.
 }
 
 // #endregion
@@ -24878,21 +24917,6 @@ const createWebServer = function () {
 
             let html = result[0];
 
-            if (!/<html\b/i.test(html)) {
-                return notFound();
-            }
-
-            html = html.replace(/<html\b([^>]*)>/i, (match, attributes) => {
-                if (/\bx-config-ready\s*=/i.test(attributes)) {
-                    return match.replace(
-                        /\bx-config-ready\s*=\s*(["']).*?\1/i,
-                        'x-config-ready="true"'
-                    );
-                }
-
-                return `<html${attributes} x-config-ready="true">`;
-            });
-
             return new Response(html, {
                 status: 200,
                 headers: {
@@ -24909,16 +24933,3 @@ const createWebServer = function () {
 
 export const webServer = createWebServer;
 // #endregion
-
-
-/**
- * Main Function (RUN THIS!)
- */
-
-
-export const main = function () {
-
-};
-
-// Go RaySite!
-main();
