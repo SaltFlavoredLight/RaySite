@@ -1,0 +1,311 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RaySite Hook Demo</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 24px;
+            background: #15171c;
+            color: #f5f5f5;
+            font: 15px Arial, sans-serif;
+        }
+
+        h1, h2 {
+            margin-top: 0;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 24px;
+            max-width: 850px;
+            margin: auto;
+        }
+
+        button {
+            padding: 12px;
+            border: 1px solid #414654;
+            border-radius: 8px;
+            background: #252934;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #363d4c;
+        }
+
+        button[aria-expanded="true"] {
+            border-color: #8da2ff;
+            background: #303b5b;
+        }
+
+        nav {
+            display: grid;
+            align-content: start;
+            gap: 8px;
+        }
+
+        .panel {
+            padding: 20px;
+            margin-bottom: 12px;
+            border: 1px solid #414654;
+            border-radius: 10px;
+            background: #20232b;
+        }
+
+        .panel.opened {
+            border-color: #72d6a0;
+        }
+
+        .panel.closed {
+            display: none;
+        }
+
+        .status {
+            color: #72d6a0;
+            font-size: 12px;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .log {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #0c0d10;
+            color: #a6e9c1;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 550px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>RaySite Hook Demo</h1>
+    <p>Only one panel per group can be open at a time.</p>
+
+    <div class="layout">
+        <nav>
+            <h2>Left panel</h2>
+
+            <button data-hook-triggler="lpanel-assets"
+                    aria-expanded="true">
+                Assets
+            </button>
+
+            <button data-hook-triggler="lpanel-pages"
+                    aria-expanded="false">
+                Pages
+            </button>
+
+            <button data-hook-triggler="lpanel-layers"
+                    aria-expanded="false">
+                Layers
+            </button>
+
+            <h2>Right panel</h2>
+
+            <button data-hook-triggler="rpanel-inspector"
+                    aria-expanded="false">
+                Inspector
+            </button>
+
+            <button data-hook-triggler="rpanel-design"
+                    aria-expanded="false">
+                Design
+            </button>
+        </nav>
+
+        <main>
+            <section class="panel opened"
+                     data-hook-react="lpanel-assets">
+                <div class="status">OPENED</div>
+                <h2>Assets</h2>
+                <p>Your images, icons, and uploaded files.</p>
+
+                <button data-hook-close="lpanel-assets">Close</button>
+            </section>
+
+            <section class="panel closed"
+                     data-hook-react="lpanel-pages">
+                <div class="status">CLOSED</div>
+                <h2>Pages</h2>
+                <p>Manage your website pages.</p>
+
+                <button data-hook-close="lpanel-pages">Close</button>
+            </section>
+
+            <section class="panel closed"
+                     data-hook-react="lpanel-layers">
+                <div class="status">CLOSED</div>
+                <h2>Layers</h2>
+                <p>Manage elements in your layout.</p>
+
+                <button data-hook-close="lpanel-layers">Close</button>
+            </section>
+
+            <section class="panel closed"
+                     data-hook-react="rpanel-inspector">
+                <div class="status">CLOSED</div>
+                <h2>Inspector</h2>
+                <p>Inspect the selected element.</p>
+
+                <button data-hook-close="rpanel-inspector">Close</button>
+            </section>
+
+            <section class="panel closed"
+                     data-hook-react="rpanel-design">
+                <div class="status">CLOSED</div>
+                <h2>Design</h2>
+                <p>Change colors, borders, and spacing.</p>
+
+                <button data-hook-close="rpanel-design">Close</button>
+            </section>
+
+            <div class="actions">
+                <button data-hook-open="lpanel-assets">Open Assets</button>
+                <button data-hook-open="rpanel-design">Open Design</button>
+            </div>
+
+            <div class="log" id="log">Ready.</div>
+        </main>
+    </div>
+
+    <script>
+        // Find a panel by its exact hook name.
+        function getPanel(name) {
+            return document.querySelector(
+                '[data-hook-react="' + name + '"]'
+            );
+        }
+
+        // Change a panel's state.
+        function setPanel(name, shouldOpen) {
+            const panel = getPanel(name);
+
+            if (!panel) {
+                console.warn("No panel found for:", name);
+                return;
+            }
+
+            // Group name is the part before the first hyphen.
+            const separator = name.indexOf("-");
+            const group = separator > 0
+                ? name.slice(0, separator)
+                : null;
+
+            // Opening a grouped panel closes the other panels
+            // with the same prefix.
+            if (shouldOpen && group) {
+                document.querySelectorAll("[data-hook-react]")
+                    .forEach(other => {
+                        const otherName =
+                            other.getAttribute("data-hook-react");
+
+                        const otherSeparator = otherName.indexOf("-");
+                        const otherGroup = otherSeparator > 0
+                            ? otherName.slice(0, otherSeparator)
+                            : null;
+
+                        if (otherGroup === group) {
+                            closePanel(otherName);
+                        }
+                    });
+            }
+
+            panel.classList.toggle("opened", shouldOpen);
+            panel.classList.toggle("closed", !shouldOpen);
+
+            const status = panel.querySelector(".status");
+            if (status) {
+                status.textContent = shouldOpen ? "OPENED" : "CLOSED";
+            }
+
+            // Keep matching controls in sync.
+            document.querySelectorAll("button").forEach(button => {
+                const buttonName =
+                    button.getAttribute("data-hook-triggler") ||
+                    button.getAttribute("data-hook-open") ||
+                    button.getAttribute("data-hook-close");
+
+                if (buttonName === name) {
+                    button.setAttribute(
+                        "aria-expanded",
+                        String(shouldOpen)
+                    );
+                }
+            });
+
+            document.querySelector("#log").textContent =
+                name + (shouldOpen ? " opened" : " closed");
+        }
+
+        function closePanel(name) {
+            const panel = getPanel(name);
+            if (!panel) return;
+
+            panel.classList.remove("opened");
+            panel.classList.add("closed");
+
+            const status = panel.querySelector(".status");
+            if (status) status.textContent = "CLOSED";
+
+            document.querySelectorAll("button").forEach(button => {
+                const buttonName =
+                    button.getAttribute("data-hook-triggler") ||
+                    button.getAttribute("data-hook-open") ||
+                    button.getAttribute("data-hook-close");
+
+                if (buttonName === name) {
+                    button.setAttribute("aria-expanded", "false");
+                }
+            });
+        }
+
+        // One click listener handles all three hook attributes.
+        document.addEventListener("click", function (event) {
+            const button = event.target.closest("button");
+            if (!button) return;
+
+            const closeName = button.getAttribute("data-hook-close");
+            const openName = button.getAttribute("data-hook-open");
+            const toggleName = button.getAttribute("data-hook-triggler");
+
+            if (closeName) {
+                setPanel(closeName, false);
+            } else if (openName) {
+                setPanel(openName, true);
+            } else if (toggleName) {
+                const panel = getPanel(toggleName);
+
+                if (panel) {
+                    setPanel(
+                        toggleName,
+                        !panel.classList.contains("opened")
+                    );
+                }
+            }
+        });
+    </script>
+</body>
+</html>
