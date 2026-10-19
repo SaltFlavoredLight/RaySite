@@ -24322,7 +24322,7 @@ const flexEngineRenderDOM = function (dataArray, mainArray, componentRegistry, d
 };
 
 //Render HTML w/ given infomation. AYNSC
-const flexEngineRenderDOMPage = async function (url, doc = null, inHTML = false) {
+const flexEngineRenderPage = async function (url, doc = null, inHTML = false) {
     // step 1: get URL.
     const dataArray = await flexEngineFileSystem.readPage(url);
 
@@ -24873,7 +24873,7 @@ const createWebServer = function () {
             } else {
                 const themeURL = `/${name.replace(/_/g, "/")}`;
 
-                const result = await flexEngineRenderDOMPage(
+                const result = await flexEngineRenderPage(
                     themeURL,
                     null,
                     true
@@ -24905,7 +24905,7 @@ const createWebServer = function () {
         handleOr404(async req => {
             const url = getPath(req);
 
-            const result = await flexEngineRenderDOMPage(
+            const result = await flexEngineRenderPage(
                 url,
                 null,
                 true
