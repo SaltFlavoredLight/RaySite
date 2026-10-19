@@ -823,27 +823,193 @@ ul {
 }
 /* #endregion */
 
-/* #region */
+/* #region Popup */
 .rsapp-relative {
     position: relative;
 }
 
+/* =========================
+   1. LEFT — CLIP
+   ========================= */
+.rsapp-popuppanel--left {
+    position: absolute;
+    right: 100%;
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--ui-theme-white-1);
+    visibility: hidden;
+    pointer-events: none;
+    clip-path: inset(0 100% 0 0);
+    z-index: 100;
+}
+
+.rsapp-popuppanel--left.opened {
+    visibility: visible;
+    pointer-events: auto;
+    clip-path: inset(0);
+}
+
+/* =========================
+   2. RIGHT — CLIP
+   ========================= */
+.rsapp-popuppanel--right {
+    position: absolute;
+    left: 100%;
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--ui-theme-white-1);
+    visibility: hidden;
+    pointer-events: none;
+    clip-path: inset(0 0 0 100%);
+    z-index: 100;
+}
+
+.rsapp-popuppanel--right.opened {
+    visibility: visible;
+    pointer-events: auto;
+    clip-path: inset(0);
+}
+
+/* =========================
+   3. TOP — CLIP
+   ========================= */
 .rsapp-popuppanel--top {
     position: absolute;
-    width: 100%;
-    opacity: 0;
-    top: 0;
+    bottom: 100%;
     left: 0;
-    z-index: -1;
-    pointer-events: none;
-    transform: translateY(0);
+    width: 100%;
+    box-sizing: border-box;
     background: var(--ui-theme-white-1);
+    visibility: hidden;
+    pointer-events: none;
+    clip-path: inset(100% 0 0 0);
+    z-index: 100;
 }
 
 .rsapp-popuppanel--top.opened {
-    pointer-events: inherit;
-    opacity: 1;
-    transform: translateY(-100%);
-    z-index: 2;
-
+    visibility: visible;
+    pointer-events: auto;
+    clip-path: inset(0);
 }
+
+/* =========================
+   4. BOTTOM — CLIP
+   ========================= */
+.rsapp-popuppanel--bottom {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--ui-theme-white-1);
+    visibility: hidden;
+    pointer-events: none;
+    clip-path: inset(0 0 100% 0);
+    z-index: 100;
+}
+
+.rsapp-popuppanel--bottom.opened {
+    visibility: visible;
+    pointer-events: auto;
+    clip-path: inset(0);
+}
+
+/* =========================
+   5. LEFT — TRANSFORM
+   ========================= */
+.rsapp-popuppanel--left-transform {
+    position: absolute;
+    right: 100%;
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--ui-theme-white-1);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(0);
+    z-index: 100;
+}
+
+.rsapp-popuppanel--left-transform.opened {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-100%);
+}
+
+/* =========================
+   6. RIGHT — TRANSFORM
+   ========================= */
+.rsapp-popuppanel--right-transform {
+    position: absolute;
+    left: 100%;
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--ui-theme-white-1);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(0);
+    z-index: 100;
+}
+
+.rsapp-popuppanel--right-transform.opened {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(100%);
+}
+
+/* =========================
+   7. TOP — TRANSFORM
+   ========================= */
+.rsapp-popuppanel--top-transform {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--ui-theme-white-1);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(0);
+    z-index: 100;
+}
+
+.rsapp-popuppanel--top-transform.opened {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(-100%);
+}
+
+/* =========================
+   8. BOTTOM — TRANSFORM
+   ========================= */
+.rsapp-popuppanel--bottom-transform {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--ui-theme-white-1);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(0);
+    z-index: 100;
+}
+
+.rsapp-popuppanel--bottom-transform.opened {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(100%);
+}
+
+/* #endregion */
