@@ -1,13 +1,9 @@
-import Quill from "quill";
-import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
-import Sortable from "sortablejs";
 
 import { flexEngineFileSystem } from "./flexEngine.js";
 
 
-export async function initProject() {
-
-    // Step 1: Initialize main project metadata
+async function initProject() {
+    // Step 1: Initialize main project metadata.
     const mainData = `{
         "version": "0.9.0",
         "type": "website",
@@ -17,10 +13,7 @@ export async function initProject() {
         "domain": "example.com"
     }`;
 
-    await flexEngineFileSystem.updateMain(mainData);
-
-
-    // Step 2: Initialize the default theme
+    // Step 2: Initialize the default theme.
     const themeData = `{
         "color": {
             "primaryColor": "#8F2338",
@@ -35,18 +28,9 @@ export async function initProject() {
             "customColor4": "#57202B"
         },
         "fonts": [
-            {
-                "type": "system",
-                "name": "Inter"
-            },
-            {
-                "type": "googleFonts",
-                "name": "DM Sans"
-            },
-            {
-                "type": "googleFonts",
-                "name": "Cormorant Garamond"
-            }
+            { "type": "system", "name": "Inter" },
+            { "type": "googleFonts", "name": "DM Sans" },
+            { "type": "googleFonts", "name": "Cormorant Garamond" }
         ],
         "typography": {
             "normal": {
@@ -159,10 +143,7 @@ export async function initProject() {
         }
     }`;
 
-    await flexEngineFileSystem.updateTheme("default", themeData);
-
-
-    // Step 3: Initialize the home page
+    // Step 3: Initialize the home page.
     const pageData = `{
         "title": "Welcome",
         "description": "This is a Home Page",
@@ -191,27 +172,97 @@ export async function initProject() {
         }
     }`;
 
-    await flexEngineFileSystem.updatePage("/", pageData);
-
-
-    // Step 4: Initialize the three components with empty JSON data
+    // Step 4: Initialize empty component data.
     const emptyComponentData = "{}";
 
-    debugger;
+    // Step 5: Write all starter files.
+    const operations = [
+        [
+            "main metadata",
+            () => flexEngineFileSystem.updateMain(mainData)
+        ],
+        [
+            "default theme",
+            () => flexEngineFileSystem.updateTheme("default", themeData)
+        ],
+        [
+            "home page",
+            () => flexEngineFileSystem.updatePage("/", pageData)
+        ],
+        [
+            "header component",
+            () => flexEngineFileSystem.updateComponent(
+                "header",
+                emptyComponentData
+            )
+        ],
+        [
+            "CTA component",
+            () => flexEngineFileSystem.updateComponent(
+                "cta",
+                emptyComponentData
+            )
+        ],
+        [
+            "footer component",
+            () => flexEngineFileSystem.updateComponent(
+                "footer",
+                emptyComponentData
+            )
+        ]
+    ];
 
-    await flexEngineFileSystem.updateComponent(
-        "header",
-        emptyComponentData
-    );
+    for (const [name, operation] of operations) {
+        const result = await operation();
 
-    await flexEngineFileSystem.updateComponent(
-        "cta",
-        emptyComponentData
-    );
+        if (!result || result.code === 1) {
+            throw new Error(
+                `Failed to initialize ${name}: ${
+                    result?.error || "Unknown storage error"
+                }`
+            );
+        }
 
-    await flexEngineFileSystem.updateComponent(
-        "footer",
-        emptyComponentData
-    );
-
+        console.log(`[RaySite] Initialized ${name}`);
+    }
 }
+
+export async function initFiles() {
+    // Step 1: Initialize the database.
+    const initResult = await flexEngineFileSystem.init();
+
+    console.log("[RaySite] Filesystem init result:", initResult);
+
+    if (!initResult || initResult.code === 1) {
+        throw new Error(
+            initResult?.error || "Filesystem initialization failed."
+        );
+    }
+
+    // Step 2: Check whether pages already exist.
+    const pagesResult = await flexEngineFileSystem.listPages();
+
+    console.log("[RaySite] Pages result:", pagesResult);
+
+    if (!pagesResult || pagesResult.code === 1) {
+        throw new Error(
+            pagesResult?.error || "Failed to list pages."
+        );
+    }
+
+    const pages = pagesResult.data;
+
+    // Step 3: Initialize the starter project only when needed.
+    if (!Array.isArray(pages) || pages.length === 0) {
+        console.log("[RaySite] No pages found; creating starter project.");
+
+        await initProject();
+
+        console.log("[RaySite] Starter project created.");
+    } else {
+        console.log("[RaySite] Existing pages found:", pages.length);
+    }
+
+    console.log("[RaySite] File initialization complete.");
+}
+

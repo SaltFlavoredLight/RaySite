@@ -1,61 +1,30 @@
 
 import { flexEngineFileSystem } from "./flexEngine.js";
-import { initProject } from "./app.js";
+
+import { initFiles } from "./init.js";
+
+
+function initCurrent() {
+    globalThis.Current = {
+        pageURL: "/",
+        page: null,
+        object: null,
+        elementID: null
+    };
+
+    console.log("[RaySite] Global Current initialized:", Current);
+}
+
 
 async function initialize() {
     try {
-        // #region Init database and project 
-        // Step 1: Initialize the database FIRST.
-        const initResult = await flexEngineFileSystem.init();
+        // Program 1: Initialize database and project files.
+        await initFiles();
 
-        console.log("[RaySite] Filesystem init result:", initResult);
+        // Program 2: Set up global application variables.
+        initCurrent();
 
-        if (initResult.code === 1) {
-            throw new Error(
-                initResult.error || "Filesystem initialization failed."
-            );
-        }
-
-        // Step 2: Only check pages after the database is initialized.
-        const result = await flexEngineFileSystem.listPages();
-
-        console.log("[RaySite] Pages result:", result);
-
-        if (result.code === 1) {
-            throw new Error(
-                result.error || "Failed to list pages."
-            );
-        }
-
-        const pages = result.data;
-
-        // Step 3: Create the default project if no pages exist.
-        if (!Array.isArray(pages) || pages.length === 0) {
-            console.log("[RaySite] No pages found; calling initProject()");
-
-            await initProject();
-
-            console.log("[RaySite] initProject() completed");
-        } else {
-            console.log("[RaySite] Pages already exist:", pages.length);
-        }
-
-
-        // #endregion
-
-        /* #region global current state */
-
-        globalThis.Current = {
-            pageURL: "/",
-            page: null,
-            object: null,
-            elementID: null
-        };
-
-        /* #endregion global current state */
-
-
-
+        console.log("[RaySite] Startup complete:", Current);
     } catch (error) {
         console.error("[RaySite] Initialization failed:", error);
     } finally {
