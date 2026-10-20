@@ -216,25 +216,34 @@ const flexEngineStyleVarible = {
     },
 
     curve: function (curveObj) {
-        // Return CSS variable if set to theme mode
-        if (Array.isArray(coords) && coords.length === 1 && coords[0] === 'theme') {
-            const prefix = (typeof BUILDER_CONFIG !== 'undefined' && BUILDER_CONFIG.classPrefix)
-                ? BUILDER_CONFIG.classPrefix
-                : 'default';
+        const coords = curveObj?.coords;
+
+        if (Array.isArray(coords) &&
+            coords.length === 1 &&
+            coords[0] === "theme") {
+            const prefix =
+                typeof BUILDER_CONFIG !== "undefined" &&
+                BUILDER_CONFIG.classPrefix
+                    ? BUILDER_CONFIG.classPrefix
+                    : "default";
+
             return `var(--${prefix}-animation-animationCurve)`;
         }
 
         const presetMap = {
-            '0,0,1,1': 'linear',
-            '0.25,0.1,0.25,1': 'ease',
-            '0.42,0,1,1': 'ease-in',
-            '0,0,0.58,1': 'ease-out',
-            '0.42,0,0.58,1': 'ease-in-out'
+            "0,0,1,1": "linear",
+            "0.25,0.1,0.25,1": "ease",
+            "0.42,0,1,1": "ease-in",
+            "0,0,0.58,1": "ease-out",
+            "0.42,0,0.58,1": "ease-in-out"
         };
 
-        const key = Array.isArray(coords) ? coords.join(',') : '';
+        const key = Array.isArray(coords) ? coords.join(",") : "";
 
-        return presetMap[key] || `cubic-bezier(${key})`;
+        return presetMap[key] ||
+            (coords?.length === 4
+                ? `cubic-bezier(${key})`
+                : "ease");
     },
 };
 // #endregion
@@ -6304,7 +6313,7 @@ export const flexEngineDefaultVariables = {
                     circle.style.width = "100%";
                     circle.style.height = "100%";
                     circle.style.borderRadius = "50%";
-                    circle.style.background = this.render(data);
+                    circle.style.background = this.renderUI(data);
 
                     this.previewElement.appendChild(circle);
                 }
@@ -15648,7 +15657,7 @@ export const flexEngineTransition = {
 
         try {
             curve =
-                flexEngineDefaultVaribles
+                flexEngineDefaultVariables
                     .curve
                     .curve
                     .render(
@@ -16022,25 +16031,39 @@ const flexEngineStylesToCss = (cssObject) => {
 export const flexEngineStylesResolveRegistry = (elementMode) => {
     const rawMode = String(elementMode || "");
     const separatorIndex = rawMode.indexOf("/");
+
     const category = separatorIndex === -1
         ? rawMode
         : rawMode.substring(0, separatorIndex);
+
     const element = separatorIndex === -1
         ? ""
         : rawMode.substring(separatorIndex + 1);
+
     const isRoot = category === "@root";
 
     const categoryRegistry = isRoot
         ? (flexEngineRootElement || {})
         : (flexEngineDefaultElements?.[category] || {});
 
-    const elementsRegistry = categoryRegistry?.elements || {};
+    const elementsRegistry = isRoot
+        ? categoryRegistry
+        : (categoryRegistry?.elements || {});
 
-    const elementRegistry =
-        elementsRegistry?.[element] &&
+    // Root types use className as the identifier.
+    const elementRegistry = isRoot
+        ? Object.values(elementsRegistry).find(
+            entry =>
+                entry &&
+                typeof entry === "object" &&
+                entry.className === element
+        ) || {}
+        : (
+            elementsRegistry[element] &&
             typeof elementsRegistry[element] === "object"
-            ? elementsRegistry[element]
-            : {};
+                ? elementsRegistry[element]
+                : {}
+        );
 
     return {
         categoryRegistry,
@@ -16419,149 +16442,294 @@ const mainArrayQuery = [
     }
 ];
 
-const flexEngineRenderHTMLHeader = function (documentHTML, dataArray, mainArray) {
 
-    // environment check
-    const absoluteDomainEnable =
-        (BUILDER_CONFIG.classPrefix !== null && mainArray.domain !== null &&
-            BUILDER_CONFIG.classPrefix !== "" && mainArray.domain !== "");
-
-    const absoluteURL = absoluteDomainEnable ?
-        `https://${mainArray.domain}${BUILDER_CONFIG.classPrefix}` :
-        null;
-
-    // charset
-    const metaCharset = documentHTML.createElement('meta');
-    metaCharset.setAttribute('charset', 'UTF-8');
-    documentHTML.head.appendChild(metaCharset);
-
-    // viewport
-    const metaViewport = documentHTML.createElement('meta');
-    metaViewport.setAttribute('name', 'viewport');
-    metaViewport.setAttribute('content', 'width=device-width, initial-scale=1');
-    documentHTML.head.appendChild(metaViewport);
-
-    // description
-    const metaDesc = documentHTML.createElement('meta');
-    metaDesc.setAttribute('name', 'description');
-    metaDesc.setAttribute('content', dataArray.description);
-    documentHTML.head.appendChild(metaDesc);
-
-    // keywords
-    const metaKeywords = documentHTML.createElement('meta');
-    metaKeywords.setAttribute('name', 'keywords');
-    metaKeywords.setAttribute('content', mainArray.websiteKeywords.join(', '));
-    documentHTML.head.appendChild(metaKeywords);
-
-    // canonical
-    if (absoluteDomainEnable) {
-        const linkCanonical = documentHTML.createElement('link');
-        linkCanonical.setAttribute('rel', 'canonical');
-        linkCanonical.setAttribute('href', absoluteURL);
-        documentHTML.head.appendChild(linkCanonical);
+const flexEngineRenderHTMLHeader = function (
+    documentHTML,
+    dataArray = {},
+    mainArray = {}
+) {
+    // 1. Validate the document.
+    if (
+        !documentHTML?.head ||
+        typeof documentHTML.createElement !== "function"
+    ) {
+        throw new TypeError(
+            "documentHTML must be a DOM Document with a head element."
+        );
     }
 
-    // OG tags
-    const ogTitle = documentHTML.createElement('meta');
-    ogTitle.setAttribute('property', 'og:title');
-    ogTitle.setAttribute('content', `${dataArray.title} - ${mainArray.name}`);
-    documentHTML.head.appendChild(ogTitle);
+    // 2. Safe object fallbacks.
+    if (!dataArray || typeof dataArray !== "object") {
+        dataArray = {};
+    }
 
-    const ogDesc = documentHTML.createElement('meta');
-    ogDesc.setAttribute('property', 'og:description');
-    ogDesc.setAttribute('content', dataArray.description);
-    documentHTML.head.appendChild(ogDesc);
+    if (!mainArray || typeof mainArray !== "object") {
+        mainArray = {};
+    }
 
-    const ogType = documentHTML.createElement('meta');
-    ogType.setAttribute('property', 'og:type');
-    ogType.setAttribute('content', 'website');
-    documentHTML.head.appendChild(ogType);
+    const config =
+        typeof BUILDER_CONFIG === "object" && BUILDER_CONFIG !== null
+            ? BUILDER_CONFIG
+            : {};
 
-    if (absoluteDomainEnable) {
-        const ogUrl = documentHTML.createElement('meta');
-        ogUrl.setAttribute('property', 'og:url');
-        ogUrl.setAttribute('content', absoluteURL);
-        documentHTML.head.appendChild(ogUrl);
+    const classPrefix =
+        typeof config.classPrefix === "string"
+            ? config.classPrefix.trim()
+            : "";
 
-        // OPTIONAL: OG image (now using absMedia)
-        if (dataArray.coverIMG) {
-            const ogImg = documentHTML.createElement('meta');
-            ogImg.setAttribute('property', 'og:image');
-            ogImg.setAttribute(
-                'content',
-                flexEngineStyleVarible.absMedia(dataArray.coverIMG, mainArray, BUILDER_CONFIG.classPrefix)
+    const domain =
+        typeof mainArray.domain === "string"
+            ? mainArray.domain.trim()
+            : "";
+
+    const title =
+        typeof dataArray.title === "string" && dataArray.title.trim()
+            ? dataArray.title.trim()
+            : "Untitled Page";
+
+    const description =
+        typeof dataArray.description === "string"
+            ? dataArray.description.trim()
+            : "";
+
+    const keywords = Array.isArray(mainArray.websiteKeywords)
+        ? mainArray.websiteKeywords.filter(
+            value => typeof value === "string" && value.trim()
+        )
+        : [];
+
+    const coverIMG =
+        typeof dataArray.coverIMG === "string" &&
+        dataArray.coverIMG.trim()
+            ? dataArray.coverIMG.trim()
+            : "";
+
+    const doNotIndex = dataArray.doNotIndex === true;
+
+    // 3. URL helpers.
+    const getAbsoluteURL = (path) => {
+        if (typeof path !== "string" || !path.trim()) {
+            return "";
+        }
+
+        try {
+            if (/^https?:\/\//i.test(path)) {
+                return new URL(path).href;
+            }
+
+            if (!domain) {
+                return new URL(
+                    path,
+                    documentHTML.baseURI || "https://example.invalid/"
+                ).href;
+            }
+
+            const normalizedDomain = /^https?:\/\//i.test(domain)
+                ? domain
+                : `https://${domain}`;
+
+            const base = new URL(normalizedDomain);
+            const prefix = classPrefix
+                ? `${classPrefix.replace(/^\/+|\/+$/g, "")}/`
+                : "";
+
+            return new URL(
+                `${prefix}${path.replace(/^\/+/, "")}`,
+                base.href.endsWith("/")
+                    ? base.href
+                    : `${base.href}/`
+            ).href;
+        } catch (error) {
+            console.warn(
+                "[FlexEngine] Invalid metadata URL:",
+                path,
+                error
             );
-            documentHTML.head.appendChild(ogImg);
+            return "";
+        }
+    };
+
+    // 4. Metadata helper: update an existing tag or create it.
+    const setMeta = (attribute, key, content) => {
+        if (content === undefined || content === null) {
+            content = "";
+        }
+
+        const selector =
+            attribute === "property"
+                ? `meta[property="${key}"]`
+                : `meta[name="${key}"]`;
+
+        let element = documentHTML.head.querySelector(selector);
+
+        if (!element) {
+            element = documentHTML.createElement("meta");
+            element.setAttribute(attribute, key);
+            documentHTML.head.appendChild(element);
+        }
+
+        element.setAttribute("content", String(content));
+        return element;
+    };
+
+    const setLink = (rel, href, id = "") => {
+        if (!href) return null;
+
+        let element = id
+            ? documentHTML.head.querySelector(`#${id}`)
+            : documentHTML.head.querySelector(
+                `link[rel="${rel}"]`
+            );
+
+        if (!element) {
+            element = documentHTML.createElement("link");
+            element.setAttribute("rel", rel);
+
+            if (id) {
+                element.id = id;
+            }
+
+            documentHTML.head.appendChild(element);
+        }
+
+        element.setAttribute("href", href);
+        return element;
+    };
+
+    // 5. Document title.
+    documentHTML.title = title;
+
+    // 6. Charset.
+    let metaCharset =
+        documentHTML.head.querySelector('meta[charset]');
+
+    if (!metaCharset) {
+        metaCharset = documentHTML.createElement("meta");
+        documentHTML.head.prepend(metaCharset);
+    }
+
+    metaCharset.setAttribute("charset", "UTF-8");
+
+    // 7. Viewport.
+    setMeta(
+        "name",
+        "viewport",
+        "width=device-width, initial-scale=1"
+    );
+
+    // 8. Description and keywords.
+    setMeta("name", "description", description);
+    setMeta("name", "keywords", keywords.join(", "));
+
+    // 9. Robots / search indexing.
+    setMeta(
+        "name",
+        "robots",
+        doNotIndex ? "noindex, nofollow" : "index, follow"
+    );
+
+    // 10. Canonical URL.
+    if (domain) {
+        const pagePath =
+            typeof dataArray.path === "string"
+                ? dataArray.path
+                : documentHTML.location?.pathname || "/";
+
+        const canonicalURL = getAbsoluteURL(pagePath);
+
+        if (canonicalURL) {
+            setLink("canonical", canonicalURL);
         }
     }
 
-    const ogSite = documentHTML.createElement('meta');
-    ogSite.setAttribute('property', 'og:site_name');
-    ogSite.setAttribute('content', mainArray.name);
-    documentHTML.head.appendChild(ogSite);
+    // 11. Open Graph metadata.
+    setMeta("property", "og:type", "website");
+    setMeta("property", "og:title", title);
+    setMeta("property", "og:description", description);
 
-    // Twitter
-    const twCard = documentHTML.createElement('meta');
-    twCard.setAttribute('name', 'twitter:card');
-    twCard.setAttribute('content', 'summary_large_image');
-    documentHTML.head.appendChild(twCard);
+    if (domain) {
+        const pagePath =
+            typeof dataArray.path === "string"
+                ? dataArray.path
+                : documentHTML.location?.pathname || "/";
 
-    const twTitle = documentHTML.createElement('meta');
-    twTitle.setAttribute('name', 'twitter:title');
-    twTitle.setAttribute('content', `${dataArray.title} - ${mainArray.name}`);
-    documentHTML.head.appendChild(twTitle);
+        const pageURL = getAbsoluteURL(pagePath);
 
-    const twDesc = documentHTML.createElement('meta');
-    twDesc.setAttribute('name', 'twitter:description');
-    twDesc.setAttribute('content', dataArray.description);
-    documentHTML.head.appendChild(twDesc);
-
-    if (absoluteDomainEnable && dataArray.coverIMG) {
-        const twImg = documentHTML.createElement('meta');
-        twImg.setAttribute('name', 'twitter:image');
-        twImg.setAttribute(
-            'content',
-            flexEngineStyleVarible.absMedia(dataArray.coverIMG, mainArray, BUILDER_CONFIG.classPrefix)
-        );
-        documentHTML.head.appendChild(twImg);
+        if (pageURL) {
+            setMeta("property", "og:url", pageURL);
+        }
     }
 
-    // Favicon (now using absMedia)
-    if (mainArray.icon) {
-        const icon = documentHTML.createElement('link');
-        icon.setAttribute('rel', 'icon');
-        icon.setAttribute(
-            'href',
-            flexEngineStyleVarible.absMedia(mainArray.icon, mainArray, BUILDER_CONFIG.classPrefix)
-        );
-        documentHTML.head.appendChild(icon);
+    if (coverIMG) {
+        const imageURL = getAbsoluteURL(coverIMG);
 
-        const appleIcon = documentHTML.createElement('link');
-        appleIcon.setAttribute('rel', 'apple-touch-icon');
-        appleIcon.setAttribute(
-            'href',
-            flexEngineStyleVarible.absMedia(mainArray.icon, mainArray, BUILDER_CONFIG.classPrefix)
-        );
-        documentHTML.head.appendChild(appleIcon);
+        if (imageURL) {
+            setMeta("property", "og:image", imageURL);
+        }
     }
 
-    // CSS imports (now using absMedia)
+    // 12. Twitter metadata.
+    setMeta(
+        "name",
+        "twitter:card",
+        coverIMG ? "summary_large_image" : "summary"
+    );
+
+    setMeta("name", "twitter:title", title);
+    setMeta("name", "twitter:description", description);
+
+    if (coverIMG) {
+        const imageURL = getAbsoluteURL(coverIMG);
+
+        if (imageURL) {
+            setMeta("name", "twitter:image", imageURL);
+        }
+    }
+
+    // 13. Favicon.
+    const faviconPath =
+        typeof mainArray.favicon === "string"
+            ? mainArray.favicon.trim()
+            : "";
+
+    if (faviconPath) {
+        const faviconURL = getAbsoluteURL(faviconPath);
+
+        if (faviconURL) {
+            setLink("icon", faviconURL);
+        }
+    }
+
+    // 14. CSS imports.
     const cssList = [
-        `${BUILDER_CONFIG.classPrefix}assets/styles/main.css`,
-        `${BUILDER_CONFIG.classPrefix}assets/styles/theme.css`,
-        `${BUILDER_CONFIG.classPrefix}assets/styles/animation.css`
+        "assets/styles/main.css",
+        "assets/styles/theme.css",
+        "assets/styles/animation.css"
     ];
 
     cssList.forEach(path => {
-        const link = documentHTML.createElement('link');
-        link.setAttribute('rel', 'stylesheet');
-        link.setAttribute(
-            'href',
-            flexEngineStyleVarible.absMedia(path, mainArray, BUILDER_CONFIG.classPrefix)
-        );
-        documentHTML.head.appendChild(link);
+        const href = getAbsoluteURL(path);
+        if (!href) return;
+
+        const id = `rs-css-${path
+            .replace(/[^a-z0-9]+/gi, "-")
+            .replace(/^-|-$/g, "")}`;
+
+        let link = documentHTML.head.querySelector(`#${id}`);
+
+        if (!link) {
+            link = documentHTML.createElement("link");
+            link.id = id;
+            link.rel = "stylesheet";
+            link.href = href;
+            documentHTML.head.appendChild(link);
+        }
     });
+
+    // 15. Return the document for optional chaining.
+    return documentHTML;
 };
+
 // #endregion
 
 // #region Element Registery
@@ -18822,7 +18990,7 @@ export const flexEngineDefaultElements = {
 
                 settings: {
                     elementPart: function (elemnent) {
-                        return { 0: element };
+                        return { 0: elemnent };
                     }
                 }
             }
@@ -19016,7 +19184,7 @@ export const flexEngineDefaultElements = {
 
                     // gap
                     if (layout.gap !== undefined) {
-                        const gapValue = flexEngineStyleVariable.space[layout.gap];
+                        const gapValue = flexEngineStyleVarible.space[layout.gap];
                         cssOutput += `gap:${gapValue};`;
                     }
 
@@ -19027,7 +19195,7 @@ export const flexEngineDefaultElements = {
 
                     // mobile gap
                     if (layout.mobileGap !== undefined) {
-                        const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
+                        const gapValue = flexEngineStyleVarible.space[layout.mobileGap];
                         cssMobileOutput += `gap:${gapValue};`;
                     }
 
@@ -19240,7 +19408,7 @@ export const flexEngineRootElement = {
             }
             // gap
             if (layout.gap !== undefined) {
-                const gapValue = flexEngineStyleVariable.space[layout.gap];
+                const gapValue = flexEngineStyleVarible.space[layout.gap];
                 cssOutput += `gap:${gapValue};`;
             }
             // mobile reverse direction
@@ -19249,7 +19417,7 @@ export const flexEngineRootElement = {
             }
             // mobile gap
             if (layout.mobileGap !== undefined) {
-                const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
+                const gapValue = flexEngineStyleVarible.space[layout.mobileGap];
                 cssMobileOutput += `gap:${gapValue};`;
             }
             // apply attributes
@@ -19666,7 +19834,7 @@ export const flexEngineRootElement = {
             }
             // gap
             if (layout.gap !== undefined) {
-                const gapValue = flexEngineStyleVariable.space[layout.gap];
+                const gapValue = flexEngineStyleVarible.space[layout.gap];
                 cssOutput += `gap:${gapValue};`;
             }
             // mobile reverse direction
@@ -19675,7 +19843,7 @@ export const flexEngineRootElement = {
             }
             // mobile gap
             if (layout.mobileGap !== undefined) {
-                const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
+                const gapValue = flexEngineStyleVarible.space[layout.mobileGap];
                 cssMobileOutput += `gap:${gapValue};`;
             }
             // apply attributes
@@ -19937,7 +20105,7 @@ export const flexEngineRootElement = {
             }
             // gap
             if (layout.gap !== undefined) {
-                const gapValue = flexEngineStyleVariable.space[layout.gap];
+                const gapValue = flexEngineStyleVarible.space[layout.gap];
                 cssOutput += `gap:${gapValue};`;
             }
             // mobile reverse direction
@@ -19946,7 +20114,7 @@ export const flexEngineRootElement = {
             }
             // mobile gap
             if (layout.mobileGap !== undefined) {
-                const gapValue = flexEngineStyleVariable.space[layout.mobileGap];
+                const gapValue = flexEngineStyleVarible.space[layout.mobileGap];
                 cssMobileOutput += `gap:${gapValue};`;
             }
             // apply attributes
@@ -23268,7 +23436,7 @@ function themeJSONToCSS(themeJSON, themeName) {
 }
 
 function getAllThemesCSS() {
-    const themes = flexEngineFileSystem.listTheme().data || [];
+    const themes = flexEngineFileSystem.listThemes().data || [];
 
     const cssStrings = themes.map(theme => {
         const themeName =
@@ -23324,23 +23492,33 @@ function transformCSSAnimation(root) {
  */
 
 // start with a helper function.
-const flexEngineRegistryLookup = function (elementRegistry, categoryRegistry, propertyPath,
-    isUsable = value => value !== undefined && value !== null) {
-    const getValue = function (registry) {
-        return propertyPath.split(".").reduce(
+const flexEngineRegistryLookup = function (
+    elementRegistry,
+    categoryRegistry,
+    propertyPath,
+    isUsable = value => value !== undefined && value !== null,
+    isRoot = false
+) {
+    const getValue = function (registry, path) {
+        return path.split(".").reduce(
             (current, key) =>
                 current == null ? undefined : current[key],
             registry
         );
     };
 
-    const elementValue = getValue(elementRegistry);
+    // @root stores elements directly, without an "elements" level.
+    const elementPath = isRoot
+        ? propertyPath.replace(/^elements\./, "")
+        : propertyPath;
+
+    const elementValue = getValue(elementRegistry, elementPath);
 
     if (isUsable(elementValue)) {
         return elementValue;
     }
 
-    const categoryValue = getValue(categoryRegistry);
+    const categoryValue = getValue(categoryRegistry, propertyPath);
 
     if (isUsable(categoryValue)) {
         return categoryValue;
@@ -23349,7 +23527,11 @@ const flexEngineRegistryLookup = function (elementRegistry, categoryRegistry, pr
     return undefined;
 };
 
+
 export const flexEngineCreateNode = function (dataArray, documentHTML, parentVertical = true) {
+
+    console.log(dataArray);
+
     // 1. Resolve the category and element registries.
     const {
         categoryRegistry,
@@ -23363,6 +23545,9 @@ export const flexEngineCreateNode = function (dataArray, documentHTML, parentVer
         "setting.elementType"
     ) ?? "div";
 
+
+    console.log(elementDefaultType);
+
     // 3. Create the node.
     const node = flexEngineCreateAction(
         documentHTML,
@@ -23374,7 +23559,7 @@ export const flexEngineCreateNode = function (dataArray, documentHTML, parentVer
     node.id = dataArray.JSID;
 
     node.classList.add(
-        `${BUILDER_CONFIG.classPrefix}${dataArray.type}`
+        `${BUILDER_CONFIG.classPrefix}${dataArray.type.split("/").pop()}`
     );
 
     node.classList.add(
@@ -24286,72 +24471,152 @@ export function extractBuilderStyles(dom) {
 }
 
 //Render HTML.
-const flexEngineRenderDOM = function (dataArray, mainArray, componentRegistry, documentInput) {
-    // Dynamically create an empty DOM document setting the title
+const flexEngineRenderDOM = function (
+    dataArray,
+    mainArray,
+    componentRegistry,
+    documentInput
+) {
+    // Step 1: Select or create the target document.
     let documentHTML;
 
-    if (!documentInput || (documentInput = null)) {
-        documentHTML = document.implementation.createHTMLDocument(dataArray.title + " - " + mainArray.name);
+    if (!documentInput) {
+        documentHTML = document.implementation.createHTMLDocument(
+            dataArray.title + " - " + mainArray.name
+        );
     } else {
         documentHTML = documentInput;
     }
 
-    const newDataArray = flexEngineResolveInheritance(dataArray, componentRegistry);
+    // Step 2: Resolve inherited components.
+    const newDataArray = flexEngineResolveInheritance(
+        dataArray,
+        componentRegistry
+    );
 
-    // <head></head> config initialization
-    flexEngineRenderHTMLHeader(documentHTML, newDataArray, mainArray, BUILDER_CONFIG.classPrefix);
+    // Step 3: Initialize the document head.
+    flexEngineRenderHTMLHeader(
+        documentHTML,
+        newDataArray,
+        mainArray,
+        BUILDER_CONFIG.classPrefix
+    );
 
+    // Step 4: Apply the page theme.
     const themeName = dataArray.theme;
 
     if (typeof themeName === "string" && themeName) {
-        documentHTML.body.classList.add(`${BUILDER_CONFIG.classPrefix}${themeName}`);
+        documentHTML.body.classList.add(
+            `${BUILDER_CONFIG.classPrefix}${themeName}`
+        );
     }
 
-    // this, just create new body and replace it, Remember we use nesting!
-    const newBody = flexEngineCreateNode(newDataArray.body, documentHTML, true);
-    document.body.replaceWith(newBody);
+    // Step 5: Render the page body into the target document.
+    const newBody = flexEngineCreateNode(
+        newDataArray.body,
+        documentHTML,
+        true
+    );
 
-    // Then, JS part and CSS part
-    appendSourceRequirementsToDocument(collectSourceRequirements(), documentHTML);
+    documentHTML.body.replaceWith(newBody);
 
+    // Step 6: Append global source requirements.
+    appendSourceRequirementsToDocument(
+        collectSourceRequirements(),
+        documentHTML
+    );
+
+    // Step 7: Append the global script.
     const script = documentHTML.createElement("script");
     script.src = `/${BUILDER_CONFIG.classPrefix}assets/script/global.js`;
+
     documentHTML.head.appendChild(script);
 
-    return documentHTML; // that's DOM for right now!
+    return documentHTML;
 };
 
 //Render HTML w/ given infomation. AYNSC
-const flexEngineRenderPage = async function (url, doc = null, inHTML = false) {
-    // step 1: get URL.
-    const dataArray = await flexEngineFileSystem.readPage(url);
 
-    // step 2: try get requirements
+function flexEngineUnwrapResult(result, label) {
+    if (!result || result.code === 1) {
+        throw new Error(
+            `Failed to read ${label}: ${result?.error || "Unknown error"}`
+        );
+    }
+
+    let data = result.data;
+
+    if (typeof data === "string") {
+        data = JSON.parse(data);
+    }
+
+    if (data === undefined || data === null) {
+        throw new Error(`${label} returned no data.`);
+    }
+
+    return data;
+}
+
+
+export const flexEngineRenderPage = async function (
+    url,
+    doc = null,
+    inHTML = false
+) {
+    // Step 1: Read and parse the page JSON.
+    const pageResult = await flexEngineFileSystem.readPage(url);
+    const dataArray = flexEngineUnwrapResult(pageResult, "page");
+
+    // Step 2: Find inheritance requirements.
     const req = flexEngineFindInheritanceSources(dataArray);
 
-    // step 3: fetch them all
-    const readyRequest = [];
-    req.forEach((quest) => {
-        readyRequest.appendChild(flexEngineFileSystem.readComponent(quest));
-    });
+    // Step 3: Fetch and parse all required components.
+    const readyRequest = req.map((source) =>
+        flexEngineFileSystem.readComponent(source)
+    );
 
-    const results = Promise.all(readyRequest);
-
-    const componets = {};
+    const results = await Promise.all(readyRequest);
+    const components = {};
 
     results.forEach((result, index) => {
-        componets[req[index]] = result;
+        components[req[index]] = flexEngineUnwrapResult(
+            result,
+            `component "${req[index]}"`
+        );
     });
 
-    // step 4: get main array
-    const mainArray = flexEngineFileSystem.readMain();
+    // Step 4: Read and parse main metadata.
+    const mainResult = await flexEngineFileSystem.readMain();
+    const mainArray = flexEngineUnwrapResult(
+        mainResult,
+        "main metadata"
+    );
 
-    const documentHTML = flexEngineRenderDOM(dataArray, mainArray, componets, null)
+    // Step 5: Resolve inheritance before rendering.
+    const resolvedPage = flexEngineResolveInheritance(
+        dataArray,
+        components
+    );
 
-    // step 5: add Script
+    if (!resolvedPage) {
+        throw new Error("Page inheritance resolution failed.");
+    }
 
+    // Step 6: Render the already-resolved page.
+    // Pass an empty registry so inheritance is not resolved twice.
+    const documentHTML = flexEngineRenderDOM(
+        resolvedPage,
+        mainArray,
+        {},
+        doc
+    );
+
+    // Step 7: Handle HTML extraction when requested.
     if (inHTML) {
-        const pagePath = url.pathname.replace(/\//g, "_");
+        const pagePath = new URL(
+            url,
+            window.location.origin
+        ).pathname.replace(/\//g, "_");
 
         transformCSSAnimation(documentHTML);
 
@@ -24362,10 +24627,11 @@ const flexEngineRenderPage = async function (url, doc = null, inHTML = false) {
         documentHTML.head.appendChild(link);
 
         return extractBuilderStyles(documentHTML);
-    } else {
-        return documentHTML;
     }
+
+    return documentHTML;
 };
+
 // #endregion
 
 // #region Sim Server
@@ -24678,7 +24944,8 @@ export class SimServer {
 }
 // #endregion
 
-// #region Web Servers
+// #region Web 
+
 /**
  * ------------------------------------------------------------------------------
  * Web Servers
@@ -24691,7 +24958,7 @@ export class SimServer {
 // Now is the correct Web Server, that return a responce as a responce object. we will bandle it to Web Builder Soon later.
 // Now is the correct Web Server, that returns a Response object.
 // We will bundle it to Web Builder soon later.
-const createWebServer = function () {
+export const createWebServer = function () {
     const app = new SimServer();
 
     function notFound() {
@@ -24931,5 +25198,46 @@ const createWebServer = function () {
     return app;
 };
 
-export const webServer = createWebServer;
+export const webServer = createWebServer();
 // #endregion
+
+
+// Stuff
+navigator.serviceWorker?.addEventListener("message", async event => {
+    if (event.data?.type !== "SERVER_FETCH") return;
+
+    const port = event.ports[0];
+    if (!port) return;
+
+    try {
+        const {
+            url,
+            method,
+            headers,
+            body
+        } = event.data;
+
+        const request = new Request(url, {
+            method,
+            headers,
+            body: body ?? undefined
+        });
+
+        const response = await webServer.fetch(request);
+        const responseBody = await response.arrayBuffer();
+
+        port.postMessage({
+            status: response.status,
+            statusText: response.statusText,
+            headers: [...response.headers],
+            body: responseBody
+        }, [responseBody]);
+    } catch (error) {
+        port.postMessage({
+            status: 500,
+            statusText: "Internal Server Error",
+            headers: [["Content-Type", "text/plain; charset=utf-8"]],
+            body: new TextEncoder().encode(String(error)).buffer
+        });
+    }
+});
