@@ -144,36 +144,141 @@ async function initProject() {
     }`;
 
     // Step 3: Initialize the home page.
-    const pageData = `{
-        "title": "Welcome",
-        "description": "This is a Home Page",
-        "coverIMG": null,
-        "importence": 1,
-        "doNotIndex": false,
-        "type": "webpage",
-        "theme": "default",
-        "body": {
-            "header": {
-                "type": "@inherit/inherit",
-                "source": "header"
-            },
-            "main": {
-                "type": "@root/main",
-                "content": {}
-            },
-            "cta": {
-                "type": "@inherit/inherit",
-                "source": "cta"
-            },
-            "footer": {
-                "type": "@inherit/inherit",
-                "source": "footer"
+const px = value => ({ mode: "px", value });
+
+const makeAppearance = (size = {}) => ({
+    default: {
+        base: {
+            default: {
+                style: {
+                    textColor: {
+                        mode: "basic",
+                        color: "#222222"
+                    },
+                    background: {
+                        mode: "basic",
+                        color: "transparent"
+                    },
+                    borderMode: "none"
+                },
+                size
             }
         }
-    }`;
+    }
+});
 
-    // Step 4: Initialize empty component data.
-    const emptyComponentData = "{}";
+const sectionLayout = {
+    spaceAcross: 1,
+    spaceAlong: 1,
+    overflow: 3,
+    gap: { mode: "none" },
+    mobileGap: { mode: "none" },
+    mobileReverseDirection: false,
+    displayType: 0
+};
+
+const sectionAppearance = () => makeAppearance({
+    height: { mode: "auto" },
+    alongGrow: false,
+    alongShrink: false,
+    mobileMinHeight: { mode: "auto" }
+});
+
+// Page
+const pageData = JSON.stringify({
+    title: "Welcome",
+    description: "This is a Home Page",
+    coverIMG: null,
+    importence: 1,
+    doNotIndex: false,
+    type: "webpage",
+    theme: "default",
+    body: {
+        type: "@root/RaySite",
+        content: {
+            header: {
+                type: "@inherit/inherit",
+                source: "header"
+            },
+            main: {
+                type: "@root/main",
+                content: [],
+                layout: {},
+                appearance: makeAppearance()
+            },
+            cta: {
+                type: "@inherit/inherit",
+                source: "cta"
+            },
+            footer: {
+                type: "@inherit/inherit",
+                source: "footer"
+            }
+        },
+        layout: {},
+        appearance: makeAppearance()
+    }
+}, null, 2);
+
+// Reusable components
+const componentData = {
+    header: JSON.stringify({
+        type: "@root/header",
+        content: {
+            "logo.type": "text",
+            "logo.text": "RaySite",
+            nav: [
+                { name: "Home", url: "/" },
+                { name: "About", url: "/about" }
+            ],
+            "primaryButton.enable": true,
+            "primaryButton.text": "Get Started",
+            "primaryButton.url": "/",
+            "primaryButton.newPage": false,
+            "secondaryButton.enable": false
+        },
+        layout: {
+            desktopPosition: 1,
+            mobileMenuPlace: "right",
+            desktopHeaderMaxInnerWidth: px(1200),
+            desktopHeaderMainGap: px(24),
+            mobileHeaderMainGap: px(16),
+            desktopHeaderSeparateBorderSpace: px(0),
+            desktopMenuMode: 0,
+            desktopCoverHeaderOnMenu: false,
+            mobileCoverHeaderOnMenu: false,
+            spaceBetween: px(16),
+            navMajorGap: px(16),
+            navMinorGap: px(8),
+            nestingSupport: 0,
+            transitionTime: 200,
+            transitionCurve: {
+                coords: [0.25, 0.1, 0.25, 1]
+            },
+            mobileCtaType: 0,
+            mobileLogoPosition: "left",
+            hamAnimation: 1,
+            hamAnimationOnDesktop: false,
+            mobileButonRound: { mode: "none" },
+            stickyToBottom: false
+        },
+        appearance: makeAppearance()
+    }),
+
+    cta: JSON.stringify({
+        type: "@root/cta",
+        content: [],
+        layout: { ...sectionLayout },
+        appearance: sectionAppearance()
+    }),
+
+    footer: JSON.stringify({
+        type: "@root/footer",
+        content: [],
+        layout: { ...sectionLayout },
+        appearance: sectionAppearance()
+    })
+};
 
     // Step 5: Write all starter files.
     const operations = [
@@ -193,21 +298,21 @@ async function initProject() {
             "header component",
             () => flexEngineFileSystem.updateComponent(
                 "header",
-                emptyComponentData
+                componentData.header
             )
         ],
         [
             "CTA component",
             () => flexEngineFileSystem.updateComponent(
                 "cta",
-                emptyComponentData
+                componentData.cta
             )
         ],
         [
             "footer component",
             () => flexEngineFileSystem.updateComponent(
                 "footer",
-                emptyComponentData
+                componentData.footer
             )
         ]
     ];
@@ -217,8 +322,7 @@ async function initProject() {
 
         if (!result || result.code === 1) {
             throw new Error(
-                `Failed to initialize ${name}: ${
-                    result?.error || "Unknown storage error"
+                `Failed to initialize ${name}: ${result?.error || "Unknown storage error"
                 }`
             );
         }
