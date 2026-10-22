@@ -194,6 +194,7 @@ const pageData = JSON.stringify({
     type: "webpage",
     theme: "default",
     body: {
+        id: 0,
         type: "@root/RaySite",
         content: {
             header: {
@@ -223,6 +224,7 @@ const pageData = JSON.stringify({
 // Reusable components
 const componentData = {
     header: JSON.stringify({
+        id: 237473628,
         type: "@root/header",
         content: {
             "logo.type": "text",
@@ -266,6 +268,7 @@ const componentData = {
     }),
 
     cta: JSON.stringify({
+        id: 11,
         type: "@root/cta",
         content: [],
         layout: { ...sectionLayout },
@@ -273,6 +276,7 @@ const componentData = {
     }),
 
     footer: JSON.stringify({
+        id: 22,
         type: "@root/footer",
         content: [],
         layout: { ...sectionLayout },
