@@ -6,7 +6,16 @@ import {
 import { initFiles } from "./init.js";
 import { canvas } from "./element.js";
 
+function waitForCanvasLoad() {
+    if (canvas.contentDocument?.readyState === "complete") {
+        return Promise.resolve();
+    }
 
+    return new Promise((resolve, reject) => {
+        canvas.addEventListener("load", resolve, { once: true });
+        canvas.addEventListener("error", reject, { once: true });
+    });
+}
 
 
 function initCurrent() {
@@ -22,6 +31,10 @@ function initCurrent() {
 
 async function switchPage(url) {
     try {
+
+        await waitForCanvasLoad();
+
+
         // Program 1: Save the current page to its existing route.
         if (Current.page && Object.keys(Current.page).length > 0) {
             const pageJSON = JSON.stringify(Current.page);
@@ -65,28 +78,54 @@ async function initConnection() {
         throw new Error("Service Workers are not supported");
     }
 
-await navigator.serviceWorker.register("/ws.js", {
-    type: "module"
-});
+    // 1. Register the service worker
+    const registration = await navigator.serviceWorker.register("/ws.js", {
+        type: "module",
+        scope: "/"
+    });
 
+    // 2. Wait until the service worker is ready
     await navigator.serviceWorker.ready;
 
+    // 3. THE CATCH: If this initial load wasn't controlled, reload once 
+    // so the active service worker intercepts everything from the start.
     if (!navigator.serviceWorker.controller) {
-        await new Promise(resolve => {
-            navigator.serviceWorker.addEventListener(
-                "controllerchange",
-                resolve,
-                { once: true }
-            );
-        });
+        console.log("[RaySite] Service Worker active. Reloading to take full control...");
+        window.location.reload();
+        // Return a pending promise to halt further execution during reload
+        return new Promise(() => {});
     }
 
-    navigator.serviceWorker.controller.postMessage({
-        type: "REGISTER_ENGINE"
+    // 4. Once controlled, establish your MessageChannel connection
+    const channel = new MessageChannel();
+
+    const registered = new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+            channel.port1.close();
+            reject(new Error("Engine registration timed out"));
+        }, 5000);
+
+        channel.port1.onmessage = ({ data }) => {
+            clearTimeout(timeout);
+            channel.port1.close();
+
+            if (data?.type === "ENGINE_REGISTERED") {
+                resolve();
+            } else {
+                reject(new Error("Unexpected registration response"));
+            }
+        };
     });
+
+    navigator.serviceWorker.controller.postMessage(
+        { type: "REGISTER_ENGINE" },
+        [channel.port2]
+    );
+
+    await registered;
+    console.log("[RaySite] Engine registered successfully");
 }
 
-initConnection().catch(console.error);
 
 async function initialize() {
     try {
@@ -96,11 +135,8 @@ async function initialize() {
         // Program 2: Set up global application variables.
         initCurrent();
 
-        initConnection();
-
-
+        await initConnection();
         await switchPage("/");
-
 
 
         console.log("[RaySite] Startup complete:", Current);
@@ -110,6 +146,7 @@ async function initialize() {
         document
             .querySelector(".rsapp-loading-cover")
             ?.classList.add("rsapp-loading-cover--hidden");
+
     }
 }
 
