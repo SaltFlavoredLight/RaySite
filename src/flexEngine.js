@@ -16151,7 +16151,7 @@ const flexEngineStylesNormalizeExtras = (extras) => {
     return normalized;
 };
 
-const flexEngineStylesProcessState = (tateData, stateName, processorRegistry, isVertical) => {
+const flexEngineStylesProcessState = (stateData, stateName, processorRegistry, isVertical) => {
     if (!stateData || typeof stateData !== "object") {
         return null;
     }
@@ -16512,41 +16512,7 @@ const flexEngineRenderHTMLHeader = function (
             return "";
         }
 
-        try {
-            if (/^https?:\/\//i.test(path)) {
-                return new URL(path).href;
-            }
-
-            if (!domain) {
-                return new URL(
-                    path,
-                    documentHTML.baseURI || "https://example.invalid/"
-                ).href;
-            }
-
-            const normalizedDomain = /^https?:\/\//i.test(domain)
-                ? domain
-                : `https://${domain}`;
-
-            const base = new URL(normalizedDomain);
-            const prefix = classPrefix
-                ? `${classPrefix.replace(/^\/+|\/+$/g, "")}/`
-                : "";
-
-            return new URL(
-                `${prefix}${path.replace(/^\/+/, "")}`,
-                base.href.endsWith("/")
-                    ? base.href
-                    : `${base.href}/`
-            ).href;
-        } catch (error) {
-            console.warn(
-                "[FlexEngine] Invalid metadata URL:",
-                path,
-                error
-            );
-            return "";
-        }
+        return domain + "/" + path
     };
 
     // 4. Metadata helper: update an existing tag or create it.
@@ -16702,13 +16668,13 @@ const flexEngineRenderHTMLHeader = function (
 
     // 14. CSS imports.
     const cssList = [
-        "assets/styles/main.css",
-        "assets/styles/theme.css",
-        "assets/styles/animation.css"
+        "/rs-assets/styles/main.css",
+        "/rs-assets/styles/theme.css",
+        "/rs-assets/styles/animation.css"
     ];
 
     cssList.forEach(path => {
-        const href = getAbsoluteURL(path);
+        const href = path;
         if (!href) return;
 
         const id = `rs-css-${path
@@ -25199,6 +25165,7 @@ export const createWebServer = function () {
 };
 
 export const webServer = createWebServer();
+export const simServer = webServer;
 // #endregion
 
 
@@ -25210,12 +25177,7 @@ navigator.serviceWorker?.addEventListener("message", async event => {
     if (!port) return;
 
     try {
-        const {
-            url,
-            method,
-            headers,
-            body
-        } = event.data;
+        const { url, method, headers, body } = event.data;
 
         const request = new Request(url, {
             method,
@@ -25223,7 +25185,7 @@ navigator.serviceWorker?.addEventListener("message", async event => {
             body: body ?? undefined
         });
 
-        const response = await webServer.fetch(request);
+        const response = await simServer.fetch(request);
         const responseBody = await response.arrayBuffer();
 
         port.postMessage({
@@ -25234,10 +25196,8 @@ navigator.serviceWorker?.addEventListener("message", async event => {
         }, [responseBody]);
     } catch (error) {
         port.postMessage({
-            status: 500,
-            statusText: "Internal Server Error",
-            headers: [["Content-Type", "text/plain; charset=utf-8"]],
-            body: new TextEncoder().encode(String(error)).buffer
+            type: "ENGINE_ERROR",
+            error: String(error)
         });
     }
 });
