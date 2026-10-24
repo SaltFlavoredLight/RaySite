@@ -79,13 +79,16 @@ async function initConnection() {
     }
 
     // 1. Register the service worker
-    const registration = await navigator.serviceWorker.register("/ws.js", {
+    const registration = await navigator.serviceWorker.register("/sw.js", {
         type: "module",
         scope: "/"
     });
 
+
+    debugger;
     // 2. Wait until the service worker is ready
-    await navigator.serviceWorker.ready;
+    await navigator.serviceWorker.ready; // wait for await.
+    debugger;
 
     // 3. THE CATCH: If this initial load wasn't controlled, reload once 
     // so the active service worker intercepts everything from the start.
