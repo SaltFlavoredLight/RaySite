@@ -16719,7 +16719,7 @@ const flexEngineRenderHTMLHeader = function (
  * ------------------------------------------------------------------------------
  */
 
-debugger; // FLAG for future change - flexEngineDefaultElements need to shift to new StyleVarible, 
+// debugger; // FLAG for future change - flexEngineDefaultElements need to shift to new StyleVarible, 
 // for safety, keep the original ones, but we will delete soon after.
 // defaults elements
 export const flexEngineDefaultElements = {
@@ -25170,34 +25170,31 @@ export const simServer = webServer;
 
 
 // Stuff
-navigator.serviceWorker?.addEventListener("message", async event => {
-    if (event.data?.type !== "SERVER_FETCH") return;
+navigator.serviceWorker?.addEventListener("message", async event => { 
+  if (event.data?.type !== "SERVER_FETCH") return; 
+  const port = event.ports[0]; 
+  if (!port) return; 
 
-    const port = event.ports[0];
-    if (!port) return;
+  try { 
+    let { url, method, headers, body } = event.data; 
 
-    try {
-        const { url, method, headers, body } = event.data;
-
-        const request = new Request(url, {
-            method,
-            headers,
-            body: body ?? undefined
-        });
-
-        const response = await simServer.fetch(request);
-        const responseBody = await response.arrayBuffer();
-
-        port.postMessage({
-            status: response.status,
-            statusText: response.statusText,
-            headers: [...response.headers],
-            body: responseBody
-        }, [responseBody]);
-    } catch (error) {
-        port.postMessage({
-            type: "ENGINE_ERROR",
-            error: String(error)
-        });
+    // Rewrite the URL to route /rs-preview/ requests to /
+    if (url.includes("/rs-preview/")) {
+      url = url.replace("/rs-preview/", "/");
     }
+
+    const request = new Request(url, { method, headers, body: body ?? undefined }); 
+    const response = await simServer.fetch(request); 
+    const responseBody = await response.arrayBuffer(); 
+
+    port.postMessage({ 
+      status: response.status, 
+      statusText: response.statusText, 
+      headers: [...response.headers], 
+      body: responseBody 
+    }, [responseBody]); 
+
+  } catch (error) { 
+    port.postMessage({ type: "ENGINE_ERROR", error: String(error) }); 
+  } 
 });
