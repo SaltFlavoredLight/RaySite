@@ -11,16 +11,21 @@ const PROXY_TIMEOUT_MS = 15000;
 const engineClients = new Set();
 let engineClientId = null;
 
-// Requests that should remain under Vite/browser control.
+// Requests that should remain under Vite/browser control (Builder app files)
 const BYPASS_PATHS = new Set([
-    "/ws.js",
-    "/src/main.js"
+    "/",              // Main builder entry point
+    "/index.html",    // Main HTML
+    "/ws.js",         // Service worker itself
+    "/src/main.js"    // Main entry script
+    // Add any other root builder files here if necessary
 ]);
 
 const BYPASS_PREFIXES = [
     "/@vite/",
     "/@id/",
-    "/@fs/"
+    "/@fs/",
+    "/src/",          // Your builder source files
+    "/node_modules/"  // If applicable
 ];
 
 // ============================================================
@@ -167,44 +172,37 @@ self.addEventListener("message", event => {
 // ============================================================
 // Fetch interception
 // ============================================================
-
 self.addEventListener("fetch", event => {
     const request = event.request;
     const url = new URL(request.url);
-    const clientId = event.clientId;
 
-    log("Fetch observed", describeRequest(request, clientId));
-
-    // Leave cross-origin requests to the browser.
+    // 1. Leave cross-origin requests to the browser
     if (url.origin !== self.location.origin) {
-        log("Bypass: cross-origin", url.href);
         return;
     }
 
-    // Leave Vite and application bootstrap requests alone.
-    if (
-        BYPASS_PATHS.has(url.pathname) ||
-        BYPASS_PREFIXES.some(prefix =>
-            url.pathname.startsWith(prefix)
-        )
-    ) {
-        log("Bypass: development/bootstrap path", url.pathname);
+    // 2. ONLY bypass Vite's internal development assets and the main builder entry point.
+    // Do NOT bypass virtual site requests.
+    const isBuilderCore = 
+        url.pathname === "/" ||
+        url.pathname === "/index.html" ||
+        url.pathname === "/ws.js" ||
+        BYPASS_PREFIXES.some(prefix => url.pathname.startsWith(prefix));
+
+    if (isBuilderCore) {
+        log("Bypass: Builder core asset", url.pathname);
         return;
     }
 
-    // Only proxy requests when a parent engine is registered.
+    // 3. Ensure a registered engine exists before proxying
     if (!engineClientId || !engineClients.has(engineClientId)) {
-        log("Bypass: no registered engine", {
-            clientId,
-            engineClientId
-        });
+        log("Bypass: no registered engine for request", url.pathname);
         return;
     }
 
-    // A client ID identifies the requesting page/frame, not the engine.
-    // The proxy target is the separately registered parent engine.
+    // 4. Proxy everything else (all /rs-preview/ routes and sub-assets) to the engine
     event.respondWith(
-        proxyToEngine(request, engineClientId, clientId)
+        proxyToEngine(request, engineClientId, event.clientId)
     );
 });
 
