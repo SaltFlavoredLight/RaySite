@@ -1,4 +1,3 @@
-
 /* public/ws.js */
 
 // ============================================================
@@ -10,23 +9,6 @@ const PROXY_TIMEOUT_MS = 15000;
 
 const engineClients = new Set();
 let engineClientId = null;
-
-// Requests that should remain under Vite/browser control (Builder app files)
-const BYPASS_PATHS = new Set([
-    "/",              // Main builder entry point
-    "/index.html",    // Main HTML
-    "/ws.js",         // Service worker itself
-    "/src/main.js"    // Main entry script
-    // Add any other root builder files here if necessary
-]);
-
-const BYPASS_PREFIXES = [
-    "/@vite/",
-    "/@id/",
-    "/@fs/",
-    "/src/",          // Your builder source files
-    "/node_modules/"  // If applicable
-];
 
 // ============================================================
 // Debugging helpers
@@ -87,13 +69,11 @@ async function getClientInfo(clientId) {
 
 self.addEventListener("install", event => {
     log("Installing Service Worker");
-
     event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", event => {
     log("Activating Service Worker");
-
     event.waitUntil((async () => {
         await self.clients.claim();
         log("Activated; clients claimed");
@@ -101,20 +81,21 @@ self.addEventListener("activate", event => {
 });
 
 // ============================================================
-// Engine registration
+// Engine registration (Consolidated)
 // ============================================================
 
 self.addEventListener("message", event => {
     const data = event.data;
 
     if (data?.type === "REGISTER_ENGINE") {
+        log("REGISTER_ENGINE received from client:", event.source?.id);
+
         if (!event.source?.id) {
             warn("REGISTER_ENGINE rejected: source has no client ID");
             return;
         }
 
         const clientId = event.source.id;
-
         engineClients.add(clientId);
         engineClientId = clientId;
 
@@ -124,7 +105,6 @@ self.addEventListener("message", event => {
         });
 
         const port = event.ports?.[0];
-
         port?.postMessage({
             type: "ENGINE_REGISTERED",
             clientId
@@ -148,7 +128,7 @@ self.addEventListener("message", event => {
             });
         })());
 
-        return;
+        return; 
     }
 
     if (data?.type === "WS_DEBUG_UNREGISTER_ENGINE") {
@@ -172,35 +152,38 @@ self.addEventListener("message", event => {
 // ============================================================
 // Fetch interception
 // ============================================================
+
 self.addEventListener("fetch", event => {
     const request = event.request;
     const url = new URL(request.url);
 
-    // 1. Leave cross-origin requests to the browser
+    // 1. Leave cross-origin requests alone
     if (url.origin !== self.location.origin) {
         return;
     }
 
-    // 2. ONLY bypass Vite's internal development assets and the main builder entry point.
-    // Do NOT bypass virtual site requests.
-    const isBuilderCore = 
-        url.pathname === "/" ||
-        url.pathname === "/index.html" ||
-        url.pathname === "/ws.js" ||
-        BYPASS_PREFIXES.some(prefix => url.pathname.startsWith(prefix));
+    // 2. STRICTLY DEFINE WHAT TO BYPASS (Do not touch these)
+    const isBypassed = 
+        url.pathname === "/sw.js" ||
+        url.pathname.startsWith("/rs-preview/") || 
+        url.pathname.startsWith("/@vite/") ||
+        url.pathname.startsWith("/@id/") ||
+        url.pathname.startsWith("/@fs/") ||
+        url.pathname.startsWith("/src/") ||
+        url.pathname.startsWith("/node_modules/");
 
-    if (isBuilderCore) {
-        log("Bypass: Builder core asset", url.pathname);
+    if (isBypassed) {
+        log("Bypass: Builder core / Vite asset", url.pathname);
         return;
     }
 
-    // 3. Ensure a registered engine exists before proxying
+    // 3. Ensure a registered engine is available before proxying
     if (!engineClientId || !engineClients.has(engineClientId)) {
         log("Bypass: no registered engine for request", url.pathname);
         return;
     }
 
-    // 4. Proxy everything else (all /rs-preview/ routes and sub-assets) to the engine
+    // 4. INTERCEPT EVERYTHING ELSE and send to engine
     event.respondWith(
         proxyToEngine(request, engineClientId, event.clientId)
     );
@@ -226,8 +209,6 @@ async function proxyToEngine(request, targetEngineId, requesterId) {
             url: request.url
         });
 
-        // Do not silently retry through native fetch: that could
-        // hide routing bugs or cause unexpected network requests.
         return new Response("Registered FlexEngine client is unavailable", {
             status: 502,
             headers: {
@@ -371,7 +352,6 @@ async function proxyToEngine(request, targetEngineId, requesterId) {
             }, [channel.port2]);
         } catch (err) {
             error("Failed to send request to engine", err);
-
             channel.port2.close();
 
             finish(new Response(String(err), {
@@ -385,41 +365,6 @@ async function proxyToEngine(request, targetEngineId, requesterId) {
     });
 }
 
-// ============================================================
-// Cleanup stale engine registrations
-// ============================================================
-
 self.addEventListener("messageerror", event => {
     error("Service Worker received an unreadable message", event);
-});
-
-self.addEventListener("periodicsync", () => {
-    // Intentionally unused. Engine cleanup is performed lazily
-    // when a request finds that the registered client is missing.
-});
-
-
-
-self.addEventListener("message", event => {
-    const data = event.data;
-
-    if (data?.type === "REGISTER_ENGINE") {
-        log("REGISTER_ENGINE received from client:", event.source?.id); // Add this log
-
-        if (!event.source?.id) {
-            warn("REGISTER_ENGINE rejected: source has no client ID");
-            return;
-        }
-
-        const clientId = event.source.id;
-        engineClients.add(clientId);
-        engineClientId = clientId;
-
-        const port = event.ports?.[0];
-        port?.postMessage({
-            type: "ENGINE_REGISTERED",
-            clientId
-        });
-        return;
-    }
 });

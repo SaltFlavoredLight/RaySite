@@ -25168,33 +25168,58 @@ export const webServer = createWebServer();
 export const simServer = webServer;
 // #endregion
 
-
-// Stuff
 navigator.serviceWorker?.addEventListener("message", async event => { 
-  if (event.data?.type !== "SERVER_FETCH") return; 
-  const port = event.ports[0]; 
-  if (!port) return; 
+    if (event.data?.type !== "SERVER_FETCH") return; 
+    const port = event.ports[0]; 
+    if (!port) return; 
 
-  try { 
-    let { url, method, headers, body } = event.data; 
+    try { 
+        let { url, method, headers, body } = event.data; 
 
-    // Rewrite the URL to route /rs-preview/ requests to /
-    if (url.includes("/rs-preview/")) {
-      url = url.replace("/rs-preview/", "/");
-    }
+        const urlObj = new URL(url);
+        if (urlObj.pathname.startsWith("/rs-preview/")) {
+            urlObj.pathname = urlObj.pathname.replace("/rs-preview/", "/");
+        }
 
-    const request = new Request(url, { method, headers, body: body ?? undefined }); 
-    const response = await simServer.fetch(request); 
-    const responseBody = await response.arrayBuffer(); 
+        const request = new Request(urlObj.toString(), { 
+            method, 
+            headers, 
+            body: body ?? undefined 
+        }); 
 
-    port.postMessage({ 
-      status: response.status, 
-      statusText: response.statusText, 
-      headers: [...response.headers], 
-      body: responseBody 
-    }, [responseBody]); 
+        const response = await simServer.fetch(request); 
 
-  } catch (error) { 
-    port.postMessage({ type: "ENGINE_ERROR", error: String(error) }); 
-  } 
+        // GUARD: Prevent HTML fallbacks from being served to asset requests
+        const pathname = urlObj.pathname;
+        const isAssetRequest = /\.(css|js|png|jpg|jpeg|svg|json|ico)$/i.test(pathname);
+
+        if (isAssetRequest && response.status === 200) {
+            const contentType = response.headers.get("content-type") || "";
+            if (contentType.includes("text/html") || !contentType) {
+                const errorBody = new TextEncoder().encode("Asset not found in virtual filesystem");
+                port.postMessage({ 
+                    status: 404, 
+                    statusText: "Not Found", 
+                    headers: [["Content-Type", "text/plain; charset=utf-8"]], 
+                    body: errorBody 
+                }, [errorBody.buffer]);
+                return;
+            }
+        }
+
+        const responseBody = await response.arrayBuffer(); 
+
+        // Clone the buffer so the original remains intact for future fetches/reloads
+        const clonedBody = responseBody.slice(0);
+
+        port.postMessage({ 
+            status: response.status, 
+            statusText: response.statusText, 
+            headers: [...response.headers], 
+            body: clonedBody 
+        }, [clonedBody]); 
+
+    } catch (error) { 
+        port.postMessage({ type: "ENGINE_ERROR", error: String(error) }); 
+    } 
 });
