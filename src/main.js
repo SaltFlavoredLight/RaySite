@@ -85,7 +85,6 @@ async function initConnection() {
     });
 
 
-    debugger;
     // 2. Wait until the service worker is ready
     await navigator.serviceWorker.ready; // wait for await.
     debugger;
@@ -136,7 +135,7 @@ async function initialize() {
         await initFiles();
 
         // Program 2: Set up global application variables.
-        initCurrent();
+        await initCurrent();
 
         await initConnection();
         await switchPage("/");
