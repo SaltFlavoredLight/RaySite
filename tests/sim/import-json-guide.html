@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FlexEngine JSON Import Guide</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0B090A;
+            --surface: #161A1D;
+            --text: #F5F3F4;
+            --muted: #B1A7A6;
+            --accent: #EF233C;
+            --accent-strong: #D90429;
+            --line: rgba(245, 243, 244, 0.14);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: clamp(1rem, 4vw, 4rem);
+            background:
+                radial-gradient(circle at 85% 0%, rgba(217, 4, 41, 0.16), transparent 34rem),
+                var(--bg);
+            color: var(--text);
+            font: 16px/1.6 Inter, ui-sans-serif, system-ui, sans-serif;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            margin: 0 0 0.5rem;
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            max-width: 12ch;
+            margin: 0;
+            font-size: clamp(2.5rem, 7vw, 5.2rem);
+            line-height: 0.98;
+            letter-spacing: -0.06em;
+        }
+
+        .intro {
+            max-width: 62ch;
+            margin: 1.25rem 0 2rem;
+            color: var(--muted);
+        }
+
+        button {
+            padding: 0.8rem 1.1rem;
+            border: 1px solid var(--accent-strong);
+            border-radius: 999px;
+            background: var(--accent-strong);
+            color: white;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:hover { background: var(--accent); }
+        button:focus-visible { outline: 3px solid rgba(239, 35, 60, 0.45); outline-offset: 3px; }
+        button:disabled { cursor: wait; opacity: 0.6; }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        pre {
+            overflow: auto;
+            padding: 1rem;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            white-space: pre-wrap;
+        }
+
+        #status { color: var(--muted); }
+        .panel { margin-top: 1rem; }
+        summary { cursor: pointer; color: var(--text); font-weight: 700; }
+
+        iframe {
+            width: 100%;
+            min-height: 760px;
+            margin-top: 1rem;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--bg);
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <p class="eyebrow">RaySite · simulation</p>
+        <h1>JSON that renders like a real site.</h1>
+        <p class="intro">
+            Import every JSON resource listed in the test-resource manifest,
+            validate the native FlexEngine nodes, and render all four portfolio
+            pages with their shared Header, CTA, and Footer.
+        </p>
+        <div class="actions">
+            <button id="run" type="button">Import JSON and render /about</button>
+            <button data-route="/" data-expected="Featured Work" type="button">Home</button>
+            <button data-route="/about" data-expected="I make useful things feel" type="button">About</button>
+            <button data-route="/work" data-expected="Fieldnotes" type="button">Work</button>
+            <button data-route="/contact" data-expected="Let’s make something" type="button">Contact</button>
+        </div>
+        <pre id="status" class="panel" aria-live="polite">Ready.</pre>
+        <details class="panel">
+            <summary>Imported JSON resources</summary>
+            <pre id="imported-json"></pre>
+        </details>
+        <iframe id="about-preview" title="Rendered RaySite About page"></iframe>
+    </main>
+    <script type="module">
+        import {
+            animationCss,
+            combinedCSS,
+            flexEngineFileSystem,
+            flexEngineRenderPage,
+            flexEngineServers
+        } from "/src/flexEngine.js";
+        import { initFiles } from "/src/filerename.js";
+
+        const status = document.querySelector("#status");
+        const importedJSON = document.querySelector("#imported-json");
+        const preview = document.querySelector("#about-preview");
+        const runButton = document.querySelector("#run");
+        const routeButtons = Array.from(document.querySelectorAll("[data-route]"));
+
+        function setRouteButtonsDisabled(disabled) {
+            routeButtons.forEach(button => {
+                button.disabled = disabled;
+            });
+        }
+
+        function assertSuccessful(result, label) {
+            if (!result || result.code === 1) {
+                throw new Error(
+                    `Failed to import ${label}: ${result?.error || "Unknown storage error"}`
+                );
+            }
+        }
+
+        function collectNativeNodeIssues(node, path, issues) {
+            if (!node || typeof node !== "object") return;
+
+            if (Array.isArray(node)) {
+                node.forEach((child, index) =>
+                    collectNativeNodeIssues(child, `${path}[${index}]`, issues)
+                );
+                return;
+            }
+
+            if (node.type === "@inherit/inherit") {
+                if (typeof node.source !== "string" || !node.source.trim()) {
+                    issues.push(`${path} has no inherited component source`);
+                }
+                return;
+            }
+
+            if (
+                typeof node.type === "string" &&
+                (node.type.startsWith("@root/") || node.type.includes("/"))
+            ) {
+                if (node.type === "media/html") {
+                    issues.push(`${path} uses a raw HTML module`);
+                }
+
+                for (const field of ["layout", "appearance", "animation"]) {
+                    if (
+                        !node[field] ||
+                        typeof node[field] !== "object" ||
+                        Array.isArray(node[field])
+                    ) {
+                        issues.push(`${path} is missing its ${field} object`);
+                    }
+                }
+            }
+
+            if (node.content && typeof node.content === "object") {
+                collectNativeNodeIssues(node.content, `${path}.content`, issues);
+            }
+        }
+
+        async function readRenderResource(path) {
+            const response = await flexEngineServers.render.fetch(
+                new Request(new URL(path, location.origin))
+            );
+            if (!response.ok) {
+                throw new Error(
+                    `Could not load RenderServer resource ${path}: ${response.status}`
+                );
+            }
+            return response.text();
+        }
+
+        async function importManifestResources() {
+            const manifestResponse = await fetch(
+                "/tests/unit/test-resource/manifest.json"
+            );
+            if (!manifestResponse.ok) {
+                throw new Error("Could not load the simulation manifest.");
+            }
+
+            const manifest = await manifestResponse.json();
+            for (const resource of manifest.resources) {
+                const response = await fetch(
+                    `/tests/unit/test-resource/${resource.file}`
+                );
+                if (!response.ok) {
+                    throw new Error(
+                        `Could not load simulation resource ${resource.file}.`
+                    );
+                }
+
+                const data = await response.json();
+                let result;
+                if (resource.type === "main") {
+                    result = await flexEngineFileSystem.updateMain(data);
+                } else if (resource.type === "theme") {
+                    result = await flexEngineFileSystem.updateTheme(resource.name, data);
+                } else if (resource.type === "component") {
+                    result = await flexEngineFileSystem.updateComponent(resource.name, data);
+                } else if (resource.type === "page") {
+                    result = await flexEngineFileSystem.updatePage(resource.route, data);
+                }
+
+                assertSuccessful(result, resource.file);
+            }
+        }
+
+        async function registerEngine() {
+            const registration = await navigator.serviceWorker.register(
+                "/sw.js",
+                { type: "module", scope: "/" }
+            );
+
+            await navigator.serviceWorker.ready;
+
+            let controller = navigator.serviceWorker.controller;
+            if (!controller) {
+                controller = await new Promise((resolve, reject) => {
+                    const timeout = setTimeout(() => {
+                        navigator.serviceWorker.removeEventListener(
+                            "controllerchange",
+                            onChange
+                        );
+                        reject(new Error(
+                            "Service Worker did not control the guide page."
+                        ));
+                    }, 5000);
+
+                    function onChange() {
+                        controller = navigator.serviceWorker.controller;
+                        if (!controller) return;
+
+                        clearTimeout(timeout);
+                        navigator.serviceWorker.removeEventListener(
+                            "controllerchange",
+                            onChange
+                        );
+                        resolve(controller);
+                    }
+
+                    navigator.serviceWorker.addEventListener(
+                        "controllerchange",
+                        onChange
+                    );
+                });
+            }
+
+            const channel = new MessageChannel();
+            await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    channel.port1.close();
+                    reject(new Error(
+                        "Service Worker engine registration timed out."
+                    ));
+                }, 5000);
+
+                channel.port1.onmessage = ({ data }) => {
+                    clearTimeout(timeout);
+                    channel.port1.close();
+
+                    if (data?.type !== "ENGINE_REGISTERED") {
+                        reject(new Error(
+                            data?.error || "Engine registration failed."
+                        ));
+                        return;
+                    }
+
+                    resolve();
+                };
+
+                controller.postMessage(
+                    { type: "REGISTER_ENGINE" },
+                    [channel.port2]
+                );
+            });
+
+            return registration;
+        }
+
+        async function renderRoute(route, expectedText) {
+            const serverResponse = await flexEngineServers.render.fetch(
+                new Request(new URL(route, location.origin))
+            );
+            if (!serverResponse.ok) {
+                throw new Error(
+                    `RenderServer returned ${serverResponse.status} for ${route}.`
+                );
+            }
+            const serverDocument = new DOMParser().parseFromString(
+                await serverResponse.text(),
+                "text/html"
+            );
+            if (
+                !serverDocument.querySelector("header") ||
+                !serverDocument.querySelector("footer") ||
+                !serverDocument.body.textContent.includes(expectedText) ||
+                !serverDocument.querySelector("#rs-render-element-styles")
+            ) {
+                throw new Error(
+                    `RenderServer did not return the complete styled ${route} page.`
+                );
+            }
+
+            const [renderedHTML, renderedCSS] = await flexEngineRenderPage(
+                route,
+                null,
+                true,
+                {
+                    includePageStylesheet: false,
+                    preserveRuntimeAttributes: true
+                }
+            );
+            const renderDocument = new DOMParser().parseFromString(
+                renderedHTML,
+                "text/html"
+            );
+
+            if (
+                !renderDocument.querySelector("header") ||
+                !renderDocument.querySelector("footer") ||
+                !renderDocument.body.textContent.includes(expectedText) ||
+                renderDocument.querySelector(".rs-html") ||
+                !renderDocument.querySelector(".rs-heading") ||
+                !renderDocument.querySelector(".rs-text") ||
+                !renderDocument.querySelector(".rs-button") ||
+                !renderDocument.querySelector(".rs-section") ||
+                !renderDocument.querySelector(".rs-div") ||
+                Array.from(
+                    renderDocument.querySelectorAll(".rs-heading")
+                ).some(heading => !heading.textContent.trim()) ||
+                !renderDocument.body.classList.contains("rs-default")
+            ) {
+                throw new Error(
+                    `The rendered ${route} page is missing native FlexEngine content, theme, Header, or Footer.`
+                );
+            }
+
+            const [themeCSS, globalScript, renderStylesScript] =
+                await Promise.all([
+                    readRenderResource("/rs-assets/styles/theme.css"),
+                    readRenderResource("/rs-assets/script/global.js"),
+                    readRenderResource("/rs-assets/script/renderStyles.js")
+                ]);
+
+            renderDocument.head
+                .querySelectorAll('link[rel="stylesheet"], script')
+                .forEach(resource => resource.remove());
+            const style = renderDocument.createElement("style");
+            style.textContent = [
+                combinedCSS,
+                themeCSS,
+                animationCss,
+                renderedCSS
+            ].filter(Boolean).join("\n");
+            renderDocument.head.appendChild(style);
+
+            for (const scriptText of [globalScript, renderStylesScript]) {
+                const script = renderDocument.createElement("script");
+                script.textContent = scriptText;
+                renderDocument.head.appendChild(script);
+            }
+
+            const previewLoad = new Promise((resolve, reject) => {
+                preview.addEventListener("load", resolve, { once: true });
+                preview.addEventListener("error", reject, { once: true });
+            });
+            preview.srcdoc =
+                "<!doctype html>\n" +
+                renderDocument.documentElement.outerHTML;
+            await previewLoad;
+
+            const previewDocument = preview.contentDocument;
+            const heroHeading = previewDocument.querySelector(
+                ".rs-heading h1"
+            );
+            const standardSection = previewDocument.querySelector(
+                ".rs-section > .rs-context-section-standard"
+            );
+            const constrainedWrappers = Array.from(
+                previewDocument.querySelectorAll(
+                    ".rs-section > .rs-context-section-standard, " +
+                    ".rs-cta > .rs-context-cta-standard, " +
+                    ".rs-footer > .rs-context-footer-standard"
+                )
+            );
+            if (
+                !heroHeading ||
+                previewDocument.defaultView
+                    .getComputedStyle(heroHeading)
+                    .fontSize !== "52px"
+            ) {
+                throw new Error(
+                    `The ${route} page is missing its theme typography.`
+                );
+            }
+            if (
+                !standardSection ||
+                previewDocument.defaultView
+                    .getComputedStyle(standardSection)
+                    .maxWidth !== "1200px"
+            ) {
+                throw new Error(
+                    `The ${route} page is missing its 1200px standard section layout.`
+                );
+            }
+            if (
+                constrainedWrappers.length < 3 ||
+                constrainedWrappers.some(
+                    wrapper =>
+                        previewDocument.defaultView
+                            .getComputedStyle(wrapper)
+                            .maxWidth !== "1200px"
+                )
+            ) {
+                throw new Error(
+                    `The ${route} page is missing its standard-width Section, CTA, or Footer layout.`
+                );
+            }
+        }
+
+        async function runGuide() {
+            runButton.disabled = true;
+            setRouteButtonsDisabled(true);
+            status.textContent = "Importing simulation JSON…";
+
+            try {
+                await initFiles();
+                await importManifestResources();
+                await registerEngine();
+
+                const [
+                    pageResult,
+                    homeResult,
+                    workResult,
+                    contactResult,
+                    notFoundResult,
+                    mainResult,
+                    themeResult,
+                    headerResult,
+                    ctaResult,
+                    footerResult
+                ] = await Promise.all([
+                    flexEngineFileSystem.readPage("/about"),
+                    flexEngineFileSystem.readPage("/"),
+                    flexEngineFileSystem.readPage("/work"),
+                    flexEngineFileSystem.readPage("/contact"),
+                    flexEngineFileSystem.readPage("404"),
+                    flexEngineFileSystem.readMain(),
+                    flexEngineFileSystem.readTheme("default"),
+                    flexEngineFileSystem.readComponent("header"),
+                    flexEngineFileSystem.readComponent("cta"),
+                    flexEngineFileSystem.readComponent("footer")
+                ]);
+                const resources = [
+                    ["pages/_about.json", pageResult],
+                    ["pages/_.json", homeResult],
+                    ["pages/_work.json", workResult],
+                    ["pages/_contact.json", contactResult],
+                    ["pages/404.json", notFoundResult],
+                    ["main.json", mainResult],
+                    ["themes/default.json", themeResult],
+                    ["componets/header.json", headerResult],
+                    ["componets/cta.json", ctaResult],
+                    ["componets/footer.json", footerResult]
+                ];
+
+                for (const [name, result] of resources) {
+                    assertSuccessful(result, name);
+
+                    if (name.startsWith("pages/") || name.startsWith("componets/")) {
+                        const issues = [];
+                        collectNativeNodeIssues(
+                            name.startsWith("pages/") ? result.data.body : result.data,
+                            name,
+                            issues
+                        );
+                        if (issues.length) {
+                            throw new Error(
+                                `Invalid native FlexEngine resource:\n${issues.join("\n")}`
+                            );
+                        }
+                    }
+                }
+
+                const [notFoundHTML] = await flexEngineRenderPage(
+                    "404",
+                    null,
+                    true,
+                    {
+                        includePageStylesheet: false,
+                        preserveRuntimeAttributes: true
+                    }
+                );
+                const notFoundDocument = new DOMParser().parseFromString(
+                    notFoundHTML,
+                    "text/html"
+                );
+                if (
+                    !notFoundDocument.body.textContent.includes(
+                        "That page isn't here."
+                    ) ||
+                    !notFoundDocument.querySelector("header") ||
+                    !notFoundDocument.querySelector("footer") ||
+                    !notFoundDocument.querySelector(".rs-heading") ||
+                    notFoundDocument.querySelector(".rs-html")
+                ) {
+                    throw new Error(
+                        "The native FlexEngine 404 page did not render correctly."
+                    );
+                }
+
+                importedJSON.textContent = JSON.stringify(
+                    Object.fromEntries(
+                        resources.map(([name, result]) => [name, result.data])
+                    ),
+                    null,
+                    2
+                );
+
+                await renderRoute("/about", "I make useful things feel");
+                await renderRoute("/", "Featured Work");
+                await renderRoute("/work", "Fieldnotes");
+                await renderRoute("/contact", "Let’s make something");
+
+                status.textContent =
+                    `PASS: native FlexEngine pages /, /about, /work, /contact, and 404 rendered with shared components, theme, and runtime; ${resources.length} resources verified.`;
+            } catch (error) {
+                status.textContent = `FAIL: ${error.stack || error}`;
+                console.error(error);
+            } finally {
+                runButton.disabled = false;
+                setRouteButtonsDisabled(false);
+            }
+        }
+
+        async function renderSelectedRoute(route, expectedText) {
+            runButton.disabled = true;
+            setRouteButtonsDisabled(true);
+            status.textContent = `Rendering ${route}…`;
+
+            try {
+                await initFiles();
+                await importManifestResources();
+                await renderRoute(route, expectedText);
+                status.textContent =
+                    `PASS: ${route} rendered with native FlexEngine elements, theme, Header, and Footer.`;
+            } catch (error) {
+                status.textContent = `FAIL: ${error.stack || error}`;
+                console.error(error);
+            } finally {
+                runButton.disabled = false;
+                setRouteButtonsDisabled(false);
+            }
+        }
+
+        runButton.addEventListener("click", runGuide);
+        routeButtons.forEach(button => {
+            button.addEventListener("click", () =>
+                renderSelectedRoute(button.dataset.route, button.dataset.expected)
+            );
+        });
+    </script>
+</body>
+</html>

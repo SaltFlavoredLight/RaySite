@@ -1,4 +1,4 @@
-
+/*
 import { flexEngineFileSystem } from "./flexEngine.js";
 
 
@@ -374,3 +374,109 @@ export async function initFiles() {
     console.log("[RaySite] File initialization complete.");
 }
 
+*/
+import { flexEngineFileSystem } from "./flexEngine.js";
+import manifest from "../tests/sim/test-resource/manifest.json";
+import main from "../tests/sim/test-resource/main.json";
+import theme from "../tests/sim/test-resource/themes/default.json";
+import header from "../tests/sim/test-resource/componets/header.json";
+import cta from "../tests/sim/test-resource/componets/cta.json";
+import footer from "../tests/sim/test-resource/componets/footer.json";
+import homePage from "../tests/sim/test-resource/pages/_.json";
+import aboutPage from "../tests/sim/test-resource/pages/_about.json";
+import workPage from "../tests/sim/test-resource/pages/_work.json";
+import contactPage from "../tests/sim/test-resource/pages/_contact.json";
+import notFoundPage from "../tests/sim/test-resource/pages/404.json";
+
+const embeddedResources = {
+    "main.json": main,
+    "themes/default.json": theme,
+    "componets/header.json": header,
+    "componets/cta.json": cta,
+    "componets/footer.json": footer,
+    "pages/_.json": homePage,
+    "pages/_about.json": aboutPage,
+    "pages/_work.json": workPage,
+    "pages/_contact.json": contactPage,
+    "pages/404.json": notFoundPage
+};
+
+async function initializeStarterProject() {
+    for (const resource of manifest.resources) {
+        const data = embeddedResources[resource.file];
+
+        if (!data) {
+            throw new Error(
+                `Embedded project resource is missing: ${resource.file}`
+            );
+        }
+
+        let result;
+
+        if (resource.type === "main") {
+            result = await flexEngineFileSystem.updateMain(data);
+        } else if (resource.type === "theme") {
+            result = await flexEngineFileSystem.updateTheme(
+                resource.name,
+                data
+            );
+        } else if (resource.type === "component") {
+            result = await flexEngineFileSystem.updateComponent(
+                resource.name,
+                data
+            );
+        } else if (resource.type === "page") {
+            result = await flexEngineFileSystem.updatePage(
+                resource.route,
+                data
+            );
+        } else {
+            throw new Error(
+                `Unsupported embedded resource type: ${resource.type}`
+            );
+        }
+
+        if (!result || result.code === 1) {
+            throw new Error(
+                `Failed to initialize ${resource.file}: ${
+                    result?.error || "Unknown storage error"
+                }`
+            );
+        }
+
+        console.log(`[RaySite] Initialized ${resource.file}`);
+    }
+}
+
+export async function initFiles() {
+    const initResult = await flexEngineFileSystem.init();
+
+    if (!initResult || initResult.code === 1) {
+        throw new Error(
+            initResult?.error || "Filesystem initialization failed."
+        );
+    }
+
+    const pagesResult = await flexEngineFileSystem.listPages();
+
+    if (!pagesResult || pagesResult.code === 1) {
+        throw new Error(
+            pagesResult?.error || "Failed to list pages."
+        );
+    }
+
+    const pages = pagesResult.data;
+
+    if (!Array.isArray(pages) || pages.length === 0) {
+        console.log("[RaySite] No pages found; creating starter project.");
+        await initializeStarterProject();
+        console.log("[RaySite] Starter project created.");
+    } else {
+        console.log(
+            "[RaySite] Existing pages found:",
+            pages.length
+        );
+    }
+
+    console.log("[RaySite] File initialization complete.");
+}
