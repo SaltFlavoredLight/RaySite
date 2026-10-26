@@ -48,7 +48,7 @@
             ],
             "layout": { "spaceAcross": 1, "spaceAlong": 2, "overflow": 3, "gap": { "mode": "px", "value": 22 }, "mobileGap": { "mode": "px", "value": 18 }, "mobileReverseDirection": false, "displayType": 0 },
             "appearance": {
-              "default": { "base": { "default": { "style": { "textColor": { "mode": "basic", "color": "#25312B" }, "background": { "mode": "basic", "color": "#F5F3ED" }, "paddingTop": { "mode": "px", "value": 112 }, "paddingBottom": { "mode": "px", "value": 128 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } }
+              "default": { "base": { "default": { "style": { "textColor": { "mode": "basic", "color": "#25312B" }, "background": { "mode": "basic", "color": "#F5F3ED" }, "paddingTop": { "mode": "px", "value": 112 }, "paddingBottom": { "mode": "px", "value": 128 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } }
             },
             "animation": {}
           },
@@ -65,7 +65,7 @@
                   { "id": 4114, "type": "basic/text", "content": [{ "insert": "A note with a little context is perfect. No polished brief needed." }], "layout": {}, "appearance": {}, "animation": {} }
                 ],
                 "layout": { "direction": 2, "gapY": { "mode": "px", "value": 10 } },
-                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#EAEDE6" }, "paddingTop": { "mode": "px", "value": 24 }, "paddingBottom": { "mode": "px", "value": 24 }, "paddingLeft": { "mode": "px", "value": 24 }, "paddingRight": { "mode": "px", "value": 24 }, "borderMode": "none", "borderRadius": 16 }, "size": { "height": { "mode": "auto" } } } } } },
+                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#EAEDE6" }, "paddingTop": { "mode": "px", "value": 24 }, "paddingBottom": { "mode": "px", "value": 24 }, "paddingLeft": { "mode": "px", "value": 24 }, "paddingRight": { "mode": "px", "value": 24 }, "borderMode": "none", "borderRadius": 16 }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } } },
                 "animation": {}
               },
               {
@@ -76,12 +76,12 @@
                   { "id": 4117, "type": "basic/text", "content": [{ "insert": "We’ll talk about goals, people, timing, and what a good outcome looks like." }], "layout": {}, "appearance": {}, "animation": {} }
                 ],
                 "layout": { "direction": 2, "gapY": { "mode": "px", "value": 10 } },
-                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#E9DCCB" }, "paddingTop": { "mode": "px", "value": 24 }, "paddingBottom": { "mode": "px", "value": 24 }, "paddingLeft": { "mode": "px", "value": 24 }, "paddingRight": { "mode": "px", "value": 24 }, "borderMode": "none", "borderRadius": 16 }, "size": { "height": { "mode": "auto" } } } } } },
+                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#E9DCCB" }, "paddingTop": { "mode": "px", "value": 24 }, "paddingBottom": { "mode": "px", "value": 24 }, "paddingLeft": { "mode": "px", "value": 24 }, "paddingRight": { "mode": "px", "value": 24 }, "borderMode": "none", "borderRadius": 16 }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } } },
                 "animation": {}
               }
             ],
             "layout": { "direction": 1, "wrap": 2, "spaceAcross": 4, "spaceAlong": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 18 }, "gapY": { "mode": "px", "value": 18 }, "stackAtMobile": true, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 16 } },
-            "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#FFFFFF" }, "paddingTop": { "mode": "px", "value": 42 }, "paddingBottom": { "mode": "px", "value": 78 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } } },
+            "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#FFFFFF" }, "paddingTop": { "mode": "px", "value": 42 }, "paddingBottom": { "mode": "px", "value": 78 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } } },
             "animation": {}
           }
         ],

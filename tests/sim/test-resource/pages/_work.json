@@ -25,7 +25,7 @@
               { "id": 3104, "type": "basic/text", "content": [{ "insert": "A few collaborations and experiments where thoughtful design met practical technology." }], "layout": {}, "appearance": {}, "animation": {} }
             ],
             "layout": { "spaceAcross": 1, "spaceAlong": 1, "overflow": 3, "gap": { "mode": "px", "value": 20 }, "mobileGap": { "mode": "px", "value": 16 }, "mobileReverseDirection": false, "displayType": 0 },
-            "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#F5F3ED" }, "paddingTop": { "mode": "px", "value": 82 }, "paddingBottom": { "mode": "px", "value": 64 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } } },
+            "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#F5F3ED" }, "paddingTop": { "mode": "px", "value": 82 }, "paddingBottom": { "mode": "px", "value": 64 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } } },
             "animation": {}
           },
           {
@@ -42,7 +42,7 @@
                   { "id": 3115, "type": "basic/text", "content": [{ "insert": "PRODUCT STRATEGY  ·  UX/UI  ·  FRONT-END" }], "layout": {}, "appearance": {}, "animation": {} }
                 ],
                 "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 14 }, "gapY": { "mode": "px", "value": 14 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 12 } },
-                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#EAEDE6" }, "paddingTop": { "mode": "px", "value": 34 }, "paddingBottom": { "mode": "px", "value": 34 }, "paddingLeft": { "mode": "px", "value": 34 }, "paddingRight": { "mode": "px", "value": 34 }, "borderMode": "none", "borderRadius": 20 }, "size": { "height": { "mode": "auto" } } } } } },
+                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#EAEDE6" }, "paddingTop": { "mode": "px", "value": 34 }, "paddingBottom": { "mode": "px", "value": 34 }, "paddingLeft": { "mode": "px", "value": 34 }, "paddingRight": { "mode": "px", "value": 34 }, "borderMode": "none", "borderRadius": 20 }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } } },
                 "animation": {}
               },
               {
@@ -55,7 +55,7 @@
                   { "id": 3120, "type": "basic/text", "content": [{ "insert": "BRAND IDENTITY  ·  ART DIRECTION  ·  WEB DESIGN" }], "layout": {}, "appearance": {}, "animation": {} }
                 ],
                 "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 14 }, "gapY": { "mode": "px", "value": 14 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 12 } },
-                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#E9DCCB" }, "paddingTop": { "mode": "px", "value": 34 }, "paddingBottom": { "mode": "px", "value": 34 }, "paddingLeft": { "mode": "px", "value": 34 }, "paddingRight": { "mode": "px", "value": 34 }, "borderMode": "none", "borderRadius": 20 }, "size": { "height": { "mode": "auto" } } } } } },
+                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#E9DCCB" }, "paddingTop": { "mode": "px", "value": 34 }, "paddingBottom": { "mode": "px", "value": 34 }, "paddingLeft": { "mode": "px", "value": 34 }, "paddingRight": { "mode": "px", "value": 34 }, "borderMode": "none", "borderRadius": 20 }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } } },
                 "animation": {}
               },
               {
@@ -68,12 +68,12 @@
                   { "id": 3125, "type": "basic/text", "content": [{ "insert": "CONCEPT  ·  INTERACTION DESIGN  ·  PROTOTYPING" }], "layout": {}, "appearance": {}, "animation": {} }
                 ],
                 "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 14 }, "gapY": { "mode": "px", "value": 14 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 12 } },
-                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#DCE5DD" }, "paddingTop": { "mode": "px", "value": 34 }, "paddingBottom": { "mode": "px", "value": 34 }, "paddingLeft": { "mode": "px", "value": 34 }, "paddingRight": { "mode": "px", "value": 34 }, "borderMode": "none", "borderRadius": 20 }, "size": { "height": { "mode": "auto" } } } } } },
+                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#DCE5DD" }, "paddingTop": { "mode": "px", "value": 34 }, "paddingBottom": { "mode": "px", "value": 34 }, "paddingLeft": { "mode": "px", "value": 34 }, "paddingRight": { "mode": "px", "value": 34 }, "borderMode": "none", "borderRadius": 20 }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } } },
                 "animation": {}
               }
             ],
             "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 4, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 18 }, "gapY": { "mode": "px", "value": 18 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 16 } },
-            "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#FFFFFF" }, "paddingTop": { "mode": "px", "value": 10 }, "paddingBottom": { "mode": "px", "value": 84 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } } },
+            "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#FFFFFF" }, "paddingTop": { "mode": "px", "value": 10 }, "paddingBottom": { "mode": "px", "value": 84 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } } },
             "animation": {}
           }
         ],

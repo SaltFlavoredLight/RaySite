@@ -26,7 +26,7 @@
               { "id": 5105, "type": "basic/button", "content": { "label": "Back to the homepage" }, "clickable": { "enable": true, "action": { "mode": "a", "url": "/", "newPage": false } }, "layout": {}, "appearance": {}, "animation": {} }
             ],
             "layout": { "spaceAcross": 1, "spaceAlong": 2, "overflow": 3, "gap": { "mode": "px", "value": 20 }, "mobileGap": { "mode": "px", "value": 16 }, "mobileReverseDirection": false, "displayType": 0 },
-            "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#F5F3ED" }, "paddingTop": { "mode": "px", "value": 120 }, "paddingBottom": { "mode": "px", "value": 130 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } } },
+            "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#F5F3ED" }, "paddingTop": { "mode": "px", "value": 120 }, "paddingBottom": { "mode": "px", "value": 130 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } } },
             "animation": {}
           }
         ],
