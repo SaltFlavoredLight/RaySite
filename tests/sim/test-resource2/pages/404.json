@@ -1,0 +1,161 @@
+{
+  "title": "Page Not Found | Ray",
+  "description": "The page you were looking for could not be found.",
+  "coverIMG": null,
+  "importence": 0,
+  "doNotIndex": true,
+  "type": "webpage",
+  "theme": "default",
+  "body": {
+    "id": 0,
+    "type": "@root/RaySite",
+    "content": {
+      "header": {
+        "type": "@inherit/inherit",
+        "source": "header"
+      },
+      "main": {
+        "id": 1300,
+        "type": "@root/main",
+        "content": [
+          {
+            "id": 1301,
+            "type": "section/section",
+            "content": [
+              {
+                "id": 1302,
+                "type": "basic/text",
+                "content": [
+                  {
+                    "insert": "404",
+                    "attributes": {
+                      "bold": true,
+                      "color": "#EF233C"
+                    }
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1303,
+                "type": "basic/heading",
+                "content": [
+                  {
+                      "insert": "That page isn't here."
+                  },
+                  {
+                      "insert": "\n",
+                      "attributes": {
+                      "header": 1
+                      }
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1304,
+                "type": "basic/text",
+                "content": [
+                  {
+                    "insert": "The link may be outdated, or the page may have moved."
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1305,
+                "type": "basic/button",
+                "content": {
+                  "label": "Back to home"
+                },
+                "clickable": {
+                  "enable": true,
+                  "action": {
+                    "mode": "a",
+                    "url": "/",
+                    "newPage": false
+                  }
+                },
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              }
+            ],
+            "layout": {
+              "spaceAcross": 1,
+              "spaceAlong": 2,
+              "overflow": 3,
+              "displayType": 0
+            },
+            "appearance": {
+              "default": {
+                "base": {
+                  "default": {
+                    "style": {
+                      "textColor": {
+                        "mode": "basic",
+                        "color": "#F5F3F4"
+                      },
+                      "background": {
+                        "mode": "basic",
+                        "color": "#0B090A"
+                      },
+                      "paddingTop": {
+                        "mode": "px",
+                        "value": 96
+                      },
+                      "paddingBottom": {
+                        "mode": "px",
+                        "value": 96
+                      },
+                      "paddingLeft": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "paddingRight": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "borderMode": "none"
+                    },
+                    "size": {
+                      "height": {
+                        "mode": "auto"
+                      },
+                      "alongGrow": false,
+                      "alongShrink": false,
+                      "mobileMinHeight": {
+                        "mode": "auto"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "animation": {}
+          }
+        ],
+        "layout": {},
+        "appearance": {},
+        "animation": {}
+      },
+      "cta": {
+        "type": "@inherit/inherit",
+        "source": "cta"
+      },
+      "footer": {
+        "type": "@inherit/inherit",
+        "source": "footer"
+      }
+    },
+    "layout": {},
+    "appearance": {},
+    "animation": {}
+  }
+}

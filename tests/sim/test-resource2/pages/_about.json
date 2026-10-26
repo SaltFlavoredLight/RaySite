@@ -1,0 +1,621 @@
+{
+  "title": "About Ray | Creative Developer & Designer",
+  "description": "Learn about Ray's approach to thoughtful, accessible digital products and creative technology.",
+  "coverIMG": null,
+  "importence": 2,
+  "doNotIndex": false,
+  "type": "webpage",
+  "theme": "default",
+  "body": {
+    "id": 0,
+    "type": "@root/RaySite",
+    "content": {
+      "header": {
+        "type": "@inherit/inherit",
+        "source": "header"
+      },
+      "main": {
+        "id": 1200,
+        "type": "@root/main",
+        "content": [
+          {
+            "id": 1201,
+            "type": "section/section",
+            "content": [
+              {
+                "id": 1202,
+                "type": "basic/text",
+                "content": [
+                  {
+                    "insert": "A LITTLE ABOUT ME",
+                    "attributes": {
+                      "bold": true,
+                      "color": "#EF233C"
+                    }
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1203,
+                "type": "basic/heading",
+                "content": [
+                  {
+                    "insert": "I make useful things feel "
+                  },
+                  {
+                    "insert": "distinctive.",
+                    "attributes": {
+                      "bold": true,
+                      "color": "#D90429"
+                    }
+                  },
+                  {
+                    "insert": "\n",
+                    "attributes": {
+                      "header": 1
+                    }
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1204,
+                "type": "basic/text",
+                "content": [
+                  {
+                    "insert": "I'm Ray, a full-stack developer and digital product designer. I bring thoughtful ideas to life through clear interfaces, careful engineering, and a strong point of view."
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1205,
+                "type": "basic/image",
+                "content": {
+                  "source": {
+                    "mode": "external",
+                    "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 360'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%238D0801'/%3E%3Cstop offset='1' stop-color='%230B090A'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='360' rx='24' fill='url(%23g)'/%3E%3Ccircle cx='920' cy='100' r='170' fill='%23D90429' fill-opacity='.45'/%3E%3Ccircle cx='650' cy='300' r='200' fill='%23EF233C' fill-opacity='.2'/%3E%3C/svg%3E"
+                  },
+                  "alt": "Abstract crimson gradient artwork made for Ray's portfolio",
+                  "displayX": 2,
+                  "displayY": 2
+                },
+                "layout": {},
+                "appearance": {
+                  "default": {
+                    "base": {
+                      "default": {
+                        "style": {
+                          "borderMode": "none",
+                          "borderRadius": 12,
+                          "shadow": true,
+                          "shadowOffsetX": 0,
+                          "shadowOffsetY": 12,
+                          "shadowBlur": 32,
+                          "shadowExpand": 0,
+                          "shadowColor": {
+                            "mode": "basic",
+                            "color": "rgba(0,0,0,0.35)"
+                          }
+                        },
+                        "size": {
+                          "along": {
+                            "mode": "%",
+                            "value": 100
+                          },
+                          "across": {
+                            "mode": "px",
+                            "value": 240
+                          },
+                          "alongGrow": false,
+                          "alongShrink": true,
+                          "overflowAlong": 1,
+                          "overflowAcross": 1,
+                          "acrossAlign": 1,
+                          "mobileMinHeight": {
+                            "mode": "px",
+                            "value": 180
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "animation": {}
+              }
+            ],
+            "layout": {
+              "spaceAcross": 1,
+              "spaceAlong": 1,
+              "overflow": 3,
+              "displayType": 0
+            },
+            "appearance": {
+              "default": {
+                "base": {
+                  "default": {
+                    "style": {
+                      "textColor": {
+                        "mode": "basic",
+                        "color": "#F5F3F4"
+                      },
+                      "background": {
+                        "mode": "basic",
+                        "color": "#0B090A"
+                      },
+                      "paddingTop": {
+                        "mode": "px",
+                        "value": 80
+                      },
+                      "paddingBottom": {
+                        "mode": "px",
+                        "value": 72
+                      },
+                      "paddingLeft": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "paddingRight": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "borderMode": "none"
+                    },
+                    "size": {
+                      "height": {
+                        "mode": "auto"
+                      },
+                      "alongGrow": false,
+                      "alongShrink": false,
+                      "mobileMinHeight": {
+                        "mode": "auto"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "animation": {}
+          },
+          {
+            "id": 1210,
+            "type": "section/section",
+            "content": [
+              {
+                "id": 1211,
+                "type": "basic/heading",
+                "content": [
+                  {
+                    "insert": "How I work"
+                  },
+                  {
+                    "insert": "\n",
+                    "attributes": {
+                      "header": 2
+                    }
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1212,
+                "type": "container/div",
+                "content": [
+                  {
+                    "id": 1213,
+                    "type": "container/div",
+                    "content": [
+                      {
+                        "id": 1214,
+                        "type": "basic/heading",
+                        "content": [
+                          {
+                              "insert": "Clarity before complexity"
+                          },
+                          {
+                              "insert": "\n",
+                              "attributes": {
+                              "header": 3
+                              }
+                          }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      },
+                      {
+                        "id": 1215,
+                        "type": "basic/text",
+                        "content": [
+                          {
+                            "insert": "I start with the people and goals behind a project. Then I shape the simplest useful experience and build it with care, so the result feels intuitive instead of over-engineered."
+                          }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      }
+                    ],
+                    "layout": {
+                      "direction": 2,
+                      "wrap": 1,
+                      "spaceAlong": 1,
+                      "spaceAcross": 1,
+                      "gapX": {
+                        "mode": "none"
+                      },
+                      "gapY": {
+                        "mode": "px",
+                        "value": 12
+                      }
+                    },
+                    "appearance": {
+                      "default": {
+                        "base": {
+                          "default": {
+                            "style": {
+                              "textColor": {
+                                "mode": "basic",
+                                "color": "#F5F3F4"
+                              },
+                              "background": {
+                                "mode": "basic",
+                                "color": "#161A1D"
+                              },
+                              "paddingTop": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingBottom": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingLeft": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingRight": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "borderMode": "solid",
+                              "borderRadius": 12
+                            },
+                            "size": {
+                              "along": {
+                                "mode": "%",
+                                "value": 47
+                              },
+                              "across": {
+                                "mode": "auto"
+                              },
+                              "alongGrow": 1,
+                              "alongShrink": true,
+                              "overflowAlong": 1,
+                              "overflowAcross": 1,
+                              "acrossAlign": 1,
+                              "mobileMinHeight": {
+                                "mode": "auto"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "animation": {}
+                  },
+                  {
+                    "id": 1223,
+                    "type": "container/div",
+                    "content": [
+                      {
+                        "id": 1224,
+                        "type": "basic/heading",
+                        "content": [
+                          {
+                              "insert": "Craft that lasts"
+                          },
+                          {
+                              "insert": "\n",
+                              "attributes": {
+                              "header": 3
+                              }
+                          }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      },
+                      {
+                        "id": 1225,
+                        "type": "basic/text",
+                        "content": [
+                          {
+                            "insert": "Thoughtful details, accessible patterns, and dependable engineering matter. I care about making a product work well for real people, across devices and over time."
+                          }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      }
+                    ],
+                    "layout": {
+                      "direction": 2,
+                      "wrap": 1,
+                      "spaceAlong": 1,
+                      "spaceAcross": 1,
+                      "gapX": {
+                        "mode": "none"
+                      },
+                      "gapY": {
+                        "mode": "px",
+                        "value": 12
+                      }
+                    },
+                    "appearance": {
+                      "default": {
+                        "base": {
+                          "default": {
+                            "style": {
+                              "textColor": {
+                                "mode": "basic",
+                                "color": "#F5F3F4"
+                              },
+                              "background": {
+                                "mode": "basic",
+                                "color": "#161A1D"
+                              },
+                              "paddingTop": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingBottom": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingLeft": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingRight": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "borderMode": "solid",
+                              "borderRadius": 12
+                            },
+                            "size": {
+                              "along": {
+                                "mode": "%",
+                                "value": 47
+                              },
+                              "across": {
+                                "mode": "auto"
+                              },
+                              "alongGrow": 1,
+                              "alongShrink": true,
+                              "overflowAlong": 1,
+                              "overflowAcross": 1,
+                              "acrossAlign": 1,
+                              "mobileMinHeight": {
+                                "mode": "auto"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "animation": {}
+                  }
+                ],
+                "layout": {
+                  "direction": 1,
+                  "wrap": 2,
+                  "spaceAlong": 1,
+                  "spaceAcross": 1,
+                  "gapX": {
+                    "mode": "px",
+                    "value": 24
+                  },
+                  "gapY": {
+                    "mode": "px",
+                    "value": 24
+                  },
+                  "stackAtMobile": true,
+                  "mobileReverseDirection": false,
+                  "mobileGap": {
+                    "mode": "px",
+                    "value": 16
+                  }
+                },
+                "appearance": {},
+                "animation": {}
+              }
+            ],
+            "layout": {
+              "spaceAcross": 1,
+              "spaceAlong": 1,
+              "overflow": 3,
+              "displayType": 0
+            },
+            "appearance": {
+              "default": {
+                "base": {
+                  "default": {
+                    "style": {
+                      "textColor": {
+                        "mode": "basic",
+                        "color": "#F5F3F4"
+                      },
+                      "background": {
+                        "mode": "basic",
+                        "color": "#161A1D"
+                      },
+                      "paddingTop": {
+                        "mode": "px",
+                        "value": 72
+                      },
+                      "paddingBottom": {
+                        "mode": "px",
+                        "value": 72
+                      },
+                      "paddingLeft": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "paddingRight": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "borderMode": "none"
+                    },
+                    "size": {
+                      "height": {
+                        "mode": "auto"
+                      },
+                      "alongGrow": false,
+                      "alongShrink": false,
+                      "mobileMinHeight": {
+                        "mode": "auto"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "animation": {}
+          },
+          {
+            "id": 1230,
+            "type": "section/section",
+            "content": [
+              {
+                "id": 1231,
+                "type": "basic/heading",
+                "content": [
+                  {
+                    "insert": "Beyond the screen"
+                  },
+                  {
+                    "insert": "\n",
+                    "attributes": {
+                      "header": 2
+                    }
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1232,
+                "type": "basic/text",
+                "content": [
+                  {
+                    "insert": "I enjoy exploring new tools, sharing what I learn, and working with kind people who want to make the web a little better. I'm always open to a thoughtful conversation or a challenging new project."
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1233,
+                "type": "basic/button",
+                "content": {
+                  "label": "Let's make something meaningful"
+                },
+                "clickable": {
+                  "enable": true,
+                  "action": {
+                    "mode": "a",
+                    "url": "mailto:ray@example.com",
+                    "newPage": false
+                  }
+                },
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              }
+            ],
+            "layout": {
+              "spaceAcross": 1,
+              "spaceAlong": 1,
+              "overflow": 3,
+              "displayType": 0
+            },
+            "appearance": {
+              "default": {
+                "base": {
+                  "default": {
+                    "style": {
+                      "textColor": {
+                        "mode": "basic",
+                        "color": "#F5F3F4"
+                      },
+                      "background": {
+                        "mode": "basic",
+                        "color": "#0B090A"
+                      },
+                      "paddingTop": {
+                        "mode": "px",
+                        "value": 72
+                      },
+                      "paddingBottom": {
+                        "mode": "px",
+                        "value": 72
+                      },
+                      "paddingLeft": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "paddingRight": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "borderMode": "none"
+                    },
+                    "size": {
+                      "height": {
+                        "mode": "auto"
+                      },
+                      "alongGrow": false,
+                      "alongShrink": false,
+                      "mobileMinHeight": {
+                        "mode": "auto"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "animation": {}
+          }
+        ],
+        "layout": {},
+        "appearance": {},
+        "animation": {}
+      },
+      "cta": {
+        "type": "@inherit/inherit",
+        "source": "cta"
+      },
+      "footer": {
+        "type": "@inherit/inherit",
+        "source": "footer"
+      }
+    },
+    "layout": {},
+    "appearance": {},
+    "animation": {}
+  }
+}

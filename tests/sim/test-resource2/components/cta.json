@@ -1,0 +1,113 @@
+{
+  "id": 1002,
+  "type": "@root/CTA",
+  "content": [
+    {
+      "id": 10021,
+      "type": "basic/heading",
+      "content": [
+        {
+          "insert": "Have a thoughtful project in mind?"
+        },
+        {
+          "insert": "\n",
+          "attributes": {
+            "header": 2
+          }
+        }
+      ],
+      "layout": {},
+      "appearance": {},
+      "animation": {}
+    },
+    {
+      "id": 10022,
+      "type": "basic/text",
+      "content": [
+        {
+          "insert": "Let’s make something useful, clear, and unmistakably yours."
+        }
+      ],
+      "layout": {},
+      "appearance": {},
+      "animation": {}
+    },
+    {
+      "id": 10023,
+      "type": "basic/button",
+      "content": {
+        "label": "Get in touch"
+      },
+      "clickable": {
+        "enable": true,
+        "action": {
+          "mode": "a",
+          "url": "mailto:ray@example.com",
+          "newPage": false
+        }
+      },
+      "layout": {},
+      "appearance": {},
+      "animation": {}
+    }
+  ],
+  "layout": {
+    "spaceAcross": 2,
+    "spaceAlong": 2,
+    "overflow": 3,
+    "gap": {
+      "mode": "none"
+    },
+    "mobileGap": {
+      "mode": "none"
+    },
+    "mobileReverseDirection": false,
+    "displayType": 0
+  },
+  "appearance": {
+    "default": {
+      "base": {
+        "default": {
+          "style": {
+            "textColor": {
+              "mode": "basic",
+              "color": "#F5F3F4"
+            },
+            "background": {
+              "mode": "basic",
+              "color": "#161A1D"
+            },
+            "paddingTop": {
+              "mode": "px",
+              "value": 64
+            },
+            "paddingBottom": {
+              "mode": "px",
+              "value": 64
+            },
+            "paddingLeft": {
+              "mode": "%",
+              "value": 8
+            },
+            "paddingRight": {
+              "mode": "%",
+              "value": 8
+            },
+            "borderMode": "none"
+          },
+          "size": {
+            "height": {
+              "mode": "auto"
+            },
+            "alongGrow": false,
+            "alongShrink": false,
+            "mobileMinHeight": {
+              "mode": "auto"
+            }
+          }
+        }
+      }
+    }
+  },
+  "animation": {}
+}

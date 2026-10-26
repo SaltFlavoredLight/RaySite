@@ -1,0 +1,44 @@
+{
+  "title": "Page Not Found — Ray",
+  "description": "The page you were looking for could not be found.",
+  "coverIMG": null,
+  "path": "/404",
+  "importence": 0,
+  "doNotIndex": true,
+  "type": "webpage",
+  "theme": "default",
+  "body": {
+    "id": 0,
+    "type": "@root/RaySite",
+    "content": {
+      "header": { "type": "@inherit/inherit", "source": "header" },
+      "main": {
+        "id": 5100,
+        "type": "@root/main",
+        "content": [
+          {
+            "id": 5101,
+            "type": "section/section",
+            "content": [
+              { "id": 5102, "type": "basic/text", "content": [{ "insert": "404  /  A LITTLE DETOUR" }], "layout": {}, "appearance": {}, "animation": {} },
+              { "id": 5103, "type": "basic/heading", "content": [{ "insert": "That page isn't here." }, { "insert": "\n", "attributes": { "header": 1 } }], "layout": {}, "appearance": {}, "animation": {} },
+              { "id": 5104, "type": "basic/text", "content": [{ "insert": "Looks like this link wandered off. Let’s get you back to something good." }], "layout": {}, "appearance": {}, "animation": {} },
+              { "id": 5105, "type": "basic/button", "content": { "label": "Back to the homepage" }, "clickable": { "enable": true, "action": { "mode": "a", "url": "/", "newPage": false } }, "layout": {}, "appearance": {}, "animation": {} }
+            ],
+            "layout": { "spaceAcross": 1, "spaceAlong": 2, "overflow": 3, "gap": { "mode": "px", "value": 20 }, "mobileGap": { "mode": "px", "value": 16 }, "mobileReverseDirection": false, "displayType": 0 },
+            "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#F5F3ED" }, "paddingTop": { "mode": "px", "value": 120 }, "paddingBottom": { "mode": "px", "value": 130 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } } },
+            "animation": {}
+          }
+        ],
+        "layout": {},
+        "appearance": {},
+        "animation": {}
+      },
+      "cta": { "type": "@inherit/inherit", "source": "cta" },
+      "footer": { "type": "@inherit/inherit", "source": "footer" }
+    },
+    "layout": {},
+    "appearance": {},
+    "animation": {}
+  }
+}

@@ -1,0 +1,329 @@
+{
+  "title": "Ray — Creative Developer & Designer",
+  "description": "I’m Ray, a creative developer and product designer making thoughtful digital experiences for people and the planet.",
+  "coverIMG": null,
+  "path": "/",
+  "importence": 1,
+  "doNotIndex": false,
+  "type": "webpage",
+  "theme": "default",
+  "body": {
+    "id": 0,
+    "type": "@root/RaySite",
+    "content": {
+      "header": { "type": "@inherit/inherit", "source": "header" },
+      "main": {
+        "id": 1100,
+        "type": "@root/main",
+        "content": [
+          {
+            "id": 1101,
+            "type": "section/section",
+            "content": [
+              {
+                "id": 1102,
+                "type": "basic/text",
+                "content": [{ "insert": "INDEPENDENT CREATIVE DEVELOPER  ·  AVAILABLE FOR SELECT PROJECTS" }],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1103,
+                "type": "container/div",
+                "content": [
+                  {
+                    "id": 1104,
+                    "type": "container/div",
+                    "content": [
+                      {
+                        "id": 1105,
+                        "type": "basic/heading",
+                        "content": [
+                          { "insert": "I build digital things that " },
+                          { "insert": "feel human.", "attributes": { "bold": true, "color": "#416A57" } },
+                          { "insert": "\n", "attributes": { "header": 1 } }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": { "animationType": 2, "duration": 0.5, "delayTime": 0, "trigger": 1, "direction": 0, "intensity": 24 }
+                      },
+                      {
+                        "id": 1106,
+                        "type": "basic/text",
+                        "content": [{ "insert": "I’m Ray — designer, developer, and curious collaborator. I turn ambitious ideas into warm, clear, and useful digital experiences." }],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      },
+                      {
+                        "id": 1107,
+                        "type": "container/div",
+                        "content": [
+                          {
+                            "id": 1108,
+                            "type": "basic/button",
+                            "content": { "label": "Explore selected work" },
+                            "clickable": { "enable": true, "action": { "mode": "a", "url": "/work", "newPage": false } },
+                            "layout": {},
+                            "appearance": {},
+                            "animation": {}
+                          },
+                          {
+                            "id": 1109,
+                            "type": "basic/button",
+                            "content": { "label": "A little about me" },
+                            "clickable": { "enable": true, "action": { "mode": "a", "url": "/about", "newPage": false } },
+                            "layout": {},
+                            "appearance": {},
+                            "animation": {}
+                          }
+                        ],
+                        "layout": {
+                          "direction": 1,
+                          "wrap": 2,
+                          "spaceAlong": 1,
+                          "spaceAcross": 1,
+                          "spaceAcrossMutiple": 1,
+                          "gapX": { "mode": "px", "value": 12 },
+                          "gapY": { "mode": "px", "value": 12 },
+                          "stackAtMobile": true,
+                          "mobileReverseDirection": false,
+                          "mobileGap": { "mode": "px", "value": 12 }
+                        },
+                        "appearance": {},
+                        "animation": {}
+                      }
+                    ],
+                    "layout": {
+                      "direction": 2,
+                      "wrap": 1,
+                      "spaceAlong": 2,
+                      "spaceAcross": 1,
+                      "spaceAcrossMutiple": 1,
+                      "gapX": { "mode": "px", "value": 20 },
+                      "gapY": { "mode": "px", "value": 20 },
+                      "stackAtMobile": false,
+                      "mobileReverseDirection": false,
+                      "mobileGap": { "mode": "px", "value": 16 }
+                    },
+                    "appearance": {},
+                    "animation": {}
+                  },
+                  {
+                    "id": 1110,
+                    "type": "basic/image",
+                    "content": {
+                      "source": { "mode": "external", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 980'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='135' y1='76' x2='793' y2='890' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23E6E8DC'/%3E%3Cstop offset='1' stop-color='%23BDCCBA'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='900' height='980' rx='34' fill='url(%23g)'/%3E%3Ccircle cx='654' cy='254' r='142' fill='%23C98752'/%3E%3Cpath d='M0 704c123-132 248-199 374-202 179-4 292 111 526 35v443H0V704Z' fill='%23416A57'/%3E%3Cpath d='M0 798c171-93 302-114 435-73 144 44 260 110 465 51v204H0V798Z' fill='%23244A3D'/%3E%3Cpath d='M202 647c58-91 127-136 205-136 78 0 147 45 205 136' stroke='%23F5F3ED' stroke-width='18' stroke-linecap='round'/%3E%3Cpath d='M299 645V489c0-60 48-108 108-108s108 48 108 108v156' fill='%23F5F3ED'/%3E%3C/svg%3E" },
+                      "alt": "An abstract illustration of a sunlit studio, hills, and a framed creative idea",
+                      "displayX": 2,
+                      "displayY": 2
+                    },
+                    "layout": {},
+                    "appearance": {},
+                    "animation": {}
+                  }
+                ],
+                "layout": {
+                  "direction": 1,
+                  "wrap": 1,
+                  "spaceAlong": 2,
+                  "spaceAcross": 4,
+                  "spaceAcrossMutiple": 1,
+                  "gapX": { "mode": "px", "value": 56 },
+                  "gapY": { "mode": "px", "value": 40 },
+                  "stackAtMobile": true,
+                  "mobileReverseDirection": false,
+                  "mobileGap": { "mode": "px", "value": 32 }
+                },
+                "appearance": {},
+                "animation": {}
+              }
+            ],
+            "layout": {
+              "spaceAcross": 1,
+              "spaceAlong": 2,
+              "overflow": 3,
+              "gap": { "mode": "px", "value": 24 },
+              "mobileGap": { "mode": "px", "value": 20 },
+              "mobileReverseDirection": false,
+              "displayType": 0
+            },
+            "appearance": {
+              "default": {
+                "base": {
+                  "default": {
+                    "style": {
+                      "textColor": { "mode": "basic", "color": "#25312B" },
+                      "background": { "mode": "basic", "color": "#F5F3ED" },
+                      "paddingTop": { "mode": "px", "value": 76 },
+                      "paddingBottom": { "mode": "px", "value": 88 },
+                      "paddingLeft": { "mode": "%", "value": 8 },
+                      "paddingRight": { "mode": "%", "value": 8 },
+                      "borderMode": "none"
+                    },
+                    "size": { "height": { "mode": "auto" }, "alongGrow": false, "alongShrink": false, "mobileMinHeight": { "mode": "auto" } }
+                  }
+                }
+              }
+            },
+            "animation": {}
+          },
+          {
+            "id": 1120,
+            "JSID": "projects",
+            "type": "section/section",
+            "content": [
+              {
+                "id": 1121,
+                "type": "basic/text",
+                "content": [{ "insert": "A FEW GOOD THINGS" }],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1122,
+                "type": "basic/heading",
+                "content": [
+                  { "insert": "Featured Work" },
+                  { "insert": "\n", "attributes": { "header": 2 } }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1123,
+                "type": "container/div",
+                "content": [
+                  {
+                    "id": 1124,
+                    "type": "container/div",
+                    "content": [
+                      { "id": 1125, "type": "basic/text", "content": [{ "insert": "01  /  DIGITAL PRODUCT" }], "layout": {}, "appearance": {}, "animation": {} },
+                      { "id": 1126, "type": "basic/heading", "content": [{ "insert": "Fieldnotes", "attributes": { "bold": true } }, { "insert": "\n", "attributes": { "header": 3 } }], "layout": {}, "appearance": {}, "animation": {} },
+                      { "id": 1127, "type": "basic/text", "content": [{ "insert": "A calmer way for small teams to collect ideas, share progress, and stay in sync." }], "layout": {}, "appearance": {}, "animation": {} }
+                    ],
+                    "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 12 }, "gapY": { "mode": "px", "value": 12 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 12 } },
+                    "appearance": {
+                      "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#EAEDE6" }, "paddingTop": { "mode": "px", "value": 30 }, "paddingBottom": { "mode": "px", "value": 30 }, "paddingLeft": { "mode": "px", "value": 28 }, "paddingRight": { "mode": "px", "value": 28 }, "borderMode": "none", "borderRadius": 18 }, "size": { "height": { "mode": "auto" } } } } }
+                    },
+                    "animation": {}
+                  },
+                  {
+                    "id": 1128,
+                    "type": "container/div",
+                    "content": [
+                      { "id": 1129, "type": "basic/text", "content": [{ "insert": "02  /  BRAND & WEB" }], "layout": {}, "appearance": {}, "animation": {} },
+                      { "id": 1130, "type": "basic/heading", "content": [{ "insert": "Common Ground", "attributes": { "bold": true } }, { "insert": "\n", "attributes": { "header": 3 } }], "layout": {}, "appearance": {}, "animation": {} },
+                      { "id": 1131, "type": "basic/text", "content": [{ "insert": "A fresh identity and welcoming digital home for a neighborhood food collective." }], "layout": {}, "appearance": {}, "animation": {} }
+                    ],
+                    "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 12 }, "gapY": { "mode": "px", "value": 12 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 12 } },
+                    "appearance": {
+                      "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#E9DCCB" }, "paddingTop": { "mode": "px", "value": 30 }, "paddingBottom": { "mode": "px", "value": 30 }, "paddingLeft": { "mode": "px", "value": 28 }, "paddingRight": { "mode": "px", "value": 28 }, "borderMode": "none", "borderRadius": 18 }, "size": { "height": { "mode": "auto" } } } } }
+                    },
+                    "animation": {}
+                  },
+                  {
+                    "id": 1132,
+                    "type": "container/div",
+                    "content": [
+                      { "id": 1133, "type": "basic/text", "content": [{ "insert": "03  /  CREATIVE TOOL" }], "layout": {}, "appearance": {}, "animation": {} },
+                      { "id": 1134, "type": "basic/heading", "content": [{ "insert": "Open Canvas", "attributes": { "bold": true } }, { "insert": "\n", "attributes": { "header": 3 } }], "layout": {}, "appearance": {}, "animation": {} },
+                      { "id": 1135, "type": "basic/text", "content": [{ "insert": "A playful browser-based sketchbook that makes creative practice feel easy to begin." }], "layout": {}, "appearance": {}, "animation": {} }
+                    ],
+                    "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 12 }, "gapY": { "mode": "px", "value": 12 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 12 } },
+                    "appearance": {
+                      "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#DCE5DD" }, "paddingTop": { "mode": "px", "value": 30 }, "paddingBottom": { "mode": "px", "value": 30 }, "paddingLeft": { "mode": "px", "value": 28 }, "paddingRight": { "mode": "px", "value": 28 }, "borderMode": "none", "borderRadius": 18 }, "size": { "height": { "mode": "auto" } } } } }
+                    },
+                    "animation": {}
+                  }
+                ],
+                "layout": {
+                  "direction": 1,
+                  "wrap": 2,
+                  "spaceAlong": 1,
+                  "spaceAcross": 4,
+                  "spaceAcrossMutiple": 1,
+                  "gapX": { "mode": "px", "value": 18 },
+                  "gapY": { "mode": "px", "value": 18 },
+                  "stackAtMobile": true,
+                  "mobileReverseDirection": false,
+                  "mobileGap": { "mode": "px", "value": 16 }
+                },
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1136,
+                "type": "basic/button",
+                "content": { "label": "See all projects →" },
+                "clickable": { "enable": true, "action": { "mode": "a", "url": "/work", "newPage": false } },
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              }
+            ],
+            "layout": { "spaceAcross": 1, "spaceAlong": 1, "overflow": 3, "gap": { "mode": "px", "value": 18 }, "mobileGap": { "mode": "px", "value": 16 }, "mobileReverseDirection": false, "displayType": 0 },
+            "appearance": {
+              "default": { "base": { "default": { "style": { "textColor": { "mode": "basic", "color": "#25312B" }, "background": { "mode": "basic", "color": "#FFFFFF" }, "paddingTop": { "mode": "px", "value": 78 }, "paddingBottom": { "mode": "px", "value": 84 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } }
+            },
+            "animation": {}
+          },
+          {
+            "id": 1140,
+            "type": "section/section",
+            "content": [
+              {
+                "id": 1141,
+                "type": "container/div",
+                "content": [
+                  { "id": 1142, "type": "basic/text", "content": [{ "insert": "A NOTE ON HOW I WORK" }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 1143, "type": "basic/heading", "content": [{ "insert": "Good work is a team sport.", "attributes": { "bold": true } }, { "insert": "\n", "attributes": { "header": 2 } }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 1144, "type": "basic/text", "content": [{ "insert": "I bring a curious mind, a steady hand, and a belief that the best digital products make life a little more thoughtful. I love working from the first messy sketch through the final, satisfying detail." }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 1145, "type": "basic/button", "content": { "label": "Meet Ray →" }, "clickable": { "enable": true, "action": { "mode": "a", "url": "/about", "newPage": false } }, "layout": {}, "appearance": {}, "animation": {} }
+                ],
+                "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 16 }, "gapY": { "mode": "px", "value": 16 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 16 } },
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1146,
+                "type": "basic/image",
+                "content": { "source": { "mode": "external", "url": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 980'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='135' y1='76' x2='793' y2='890' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23E6E8DC'/%3E%3Cstop offset='1' stop-color='%23BDCCBA'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='900' height='980' rx='34' fill='url(%23g)'/%3E%3Ccircle cx='654' cy='254' r='142' fill='%23C98752'/%3E%3Cpath d='M0 704c123-132 248-199 374-202 179-4 292 111 526 35v443H0V704Z' fill='%23416A57'/%3E%3Cpath d='M0 798c171-93 302-114 435-73 144 44 260 110 465 51v204H0V798Z' fill='%23244A3D'/%3E%3Cpath d='M202 647c58-91 127-136 205-136 78 0 147 45 205 136' stroke='%23F5F3ED' stroke-width='18' stroke-linecap='round'/%3E%3Cpath d='M299 645V489c0-60 48-108 108-108s108 48 108 108v156' fill='%23F5F3ED'/%3E%3C/svg%3E" }, "alt": "The calm, earthy palette of Ray's creative studio", "displayX": 2, "displayY": 2 },
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              }
+            ],
+            "layout": {
+              "direction": 1,
+              "wrap": 1,
+              "spaceAlong": 2,
+              "spaceAcross": 4,
+              "spaceAcrossMutiple": 1,
+              "gapX": { "mode": "px", "value": 56 },
+              "gapY": { "mode": "px", "value": 32 },
+              "stackAtMobile": true,
+              "mobileReverseDirection": false,
+              "mobileGap": { "mode": "px", "value": 28 }
+            },
+            "appearance": {
+              "default": { "base": { "default": { "style": { "textColor": { "mode": "basic", "color": "#F5F3ED" }, "background": { "mode": "basic", "color": "#244A3D" }, "paddingTop": { "mode": "px", "value": 78 }, "paddingBottom": { "mode": "px", "value": 78 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } }
+            },
+            "animation": {}
+          }
+        ],
+        "layout": {},
+        "appearance": {},
+        "animation": {}
+      },
+      "cta": { "type": "@inherit/inherit", "source": "cta" },
+      "footer": { "type": "@inherit/inherit", "source": "footer" }
+    },
+    "layout": {},
+    "appearance": {},
+    "animation": {}
+  }
+}
