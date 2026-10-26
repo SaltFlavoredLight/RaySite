@@ -1,110 +1,127 @@
-/* public/ws.js */
-
-// ============================================================
-// Configuration
-// ============================================================
+"use strict";
 
 const DEBUG = true;
-const PROXY_TIMEOUT_MS = 15000;
+const PROXY_TIMEOUT_MS = 30000;
 
-const engineClients = new Set();
 let engineClientId = null;
 
-// ============================================================
-// Debugging helpers
-// ============================================================
-
 function log(...args) {
-    if (DEBUG) console.log("[WS]", ...args);
+    if (DEBUG) console.log("[RaySite SW]", ...args);
 }
 
 function warn(...args) {
-    console.warn("[WS]", ...args);
+    console.warn("[RaySite SW]", ...args);
 }
 
 function error(...args) {
-    console.error("[WS]", ...args);
+    console.error("[RaySite SW]", ...args);
 }
 
-function describeRequest(request, clientId) {
-    return {
-        url: request.url,
-        method: request.method,
-        mode: request.mode,
-        destination: request.destination,
-        clientId: clientId || "(none)",
-        engineClientId: engineClientId || "(none)",
-        isEngine: Boolean(clientId && engineClients.has(clientId))
-    };
+function errorResponse(status, code, message) {
+    return new Response(message, {
+        status,
+        headers: {
+            "Content-Type": "text/plain; charset=utf-8",
+            "Cache-Control": "no-store",
+            "X-RaySite-SW-Error": code
+        }
+    });
 }
 
-async function getClientInfo(clientId) {
-    if (!clientId) return null;
+function isBuilderRequest(pathname) {
+    const exactPaths = new Set([
+        "/sw.js",
+        "/ui.css",
+        "/favicon.ico",
+        "/rs-preview/index.html",
+        "/__vite_ping",
+        "/@react-refresh"
+    ]);
 
-    try {
-        const client = await self.clients.get(clientId);
+    const prefixes = [
+        "/tests/",
+        "/modules/",
+        "/src/",
+        "/assets/",
+        "/@vite/",
+        "/@id/",
+        "/@fs/",
+        "/node_modules/"
+    ];
 
-        if (!client) return {
-            id: clientId,
-            exists: false
-        };
+    return (
+        exactPaths.has(pathname) ||
+        prefixes.some(prefix =>
+            pathname.startsWith(prefix)
+        )
+    );
+}
 
-        return {
-            id: client.id,
-            type: client.type,
-            url: client.url,
-            frameType: client.frameType
-        };
-    } catch (err) {
-        return {
-            id: clientId,
-            error: String(err)
-        };
+async function isBuilderDocumentRequest(event, pathname) {
+    if (pathname !== "/" && pathname !== "/index.html") {
+        return false;
     }
+
+    if (!event.clientId) {
+        return true;
+    }
+
+    if (event.clientId === engineClientId) {
+        return true;
+    }
+
+    const client = await self.clients.get(event.clientId);
+    return client?.frameType === "top-level";
 }
 
-// ============================================================
-// Install / activate
-// ============================================================
+async function isRenderRequest(event, pathname) {
+    if (pathname === "/rs-build/index.html" || pathname.startsWith("/rs-build/")) {
+        return true;
+    }
+
+    if (!event.clientId || !pathname.startsWith("/rs-assets/")) {
+        return false;
+    }
+
+    const client = await self.clients.get(event.clientId);
+    if (!client) return false;
+
+    const clientURL = new URL(client.url);
+    return clientURL.origin === self.location.origin &&
+        clientURL.pathname.startsWith("/rs-build/");
+}
 
 self.addEventListener("install", event => {
-    log("Installing Service Worker");
+    log("Installing");
     event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", event => {
-    log("Activating Service Worker");
     event.waitUntil((async () => {
         await self.clients.claim();
-        log("Activated; clients claimed");
+        log("Activated");
     })());
 });
 
-// ============================================================
-// Engine registration (Consolidated)
-// ============================================================
-
 self.addEventListener("message", event => {
     const data = event.data;
+    const port = event.ports?.[0];
 
     if (data?.type === "REGISTER_ENGINE") {
-        log("REGISTER_ENGINE received from client:", event.source?.id);
+        const clientId = event.source?.id;
 
-        if (!event.source?.id) {
-            warn("REGISTER_ENGINE rejected: source has no client ID");
+        if (!clientId) {
+            port?.postMessage({
+                type: "ENGINE_REGISTRATION_ERROR",
+                error: "Client ID is unavailable"
+            });
+
             return;
         }
 
-        const clientId = event.source.id;
-        engineClients.add(clientId);
         engineClientId = clientId;
+        log("Engine registered", { clientId });
 
-        log("Engine registered", {
-            clientId,
-            totalRegisteredEngines: engineClients.size
-        });
-
-        const port = event.ports?.[0];
         port?.postMessage({
             type: "ENGINE_REGISTERED",
             clientId
@@ -113,112 +130,136 @@ self.addEventListener("message", event => {
         return;
     }
 
-    if (data?.type === "WS_DEBUG_STATUS") {
-        const port = event.ports?.[0];
+    if (data?.type === "UNREGISTER_ENGINE") {
+        if (event.source?.id === engineClientId) {
+            engineClientId = null;
+        }
 
+        port?.postMessage({
+            type: "ENGINE_UNREGISTERED"
+        });
+
+        return;
+    }
+
+    if (data?.type === "WS_DEBUG_STATUS") {
         event.waitUntil((async () => {
-            const clients = await Promise.all(
-                [...engineClients].map(getClientInfo)
-            );
+            const engine = engineClientId
+                ? await self.clients.get(engineClientId)
+                : null;
 
             port?.postMessage({
                 type: "WS_DEBUG_STATUS",
                 engineClientId,
-                engineClients: clients
+                engineAvailable: Boolean(engine),
+                engineURL: engine?.url ?? null
             });
         })());
-
-        return; 
-    }
-
-    if (data?.type === "WS_DEBUG_UNREGISTER_ENGINE") {
-        const clientId = data.clientId;
-
-        if (clientId) {
-            engineClients.delete(clientId);
-
-            if (engineClientId === clientId) {
-                engineClientId = engineClients.values().next().value ?? null;
-            }
-
-            log("Engine unregistered", {
-                clientId,
-                currentEngineClientId: engineClientId
-            });
-        }
     }
 });
 
-// ============================================================
-// Fetch interception
-// ============================================================
+async function resolveEngineClient() {
+    if (engineClientId) {
+        const client = await self.clients.get(engineClientId);
+
+        if (client) return client;
+
+        engineClientId = null;
+    }
+
+    const clients = await self.clients.matchAll({
+        type: "window",
+        includeUncontrolled: true
+    });
+
+    const builders = clients.filter(client => {
+        const url = new URL(client.url);
+
+        return (
+            url.origin === self.location.origin &&
+            client.frameType === "top-level" &&
+            (
+                url.pathname === "/" ||
+                url.pathname === "/index.html"
+            )
+        );
+    });
+
+    if (builders.length === 0) {
+        return null;
+    }
+
+    const builder =
+        builders.find(client => client.focused) ||
+        builders.find(client => client.visibilityState === "visible") ||
+        builders[0];
+    engineClientId = builder.id;
+
+    log("Engine client recovered", {
+        clientId: engineClientId,
+        builderCount: builders.length
+    });
+
+    return builder;
+}
 
 self.addEventListener("fetch", event => {
+    event.respondWith(handleFetch(event));
+});
+
+async function handleFetch(event) {
     const request = event.request;
     const url = new URL(request.url);
 
-    // 1. Leave cross-origin requests alone
-    if (url.origin !== self.location.origin) {
-        return;
-    }
+    log("Request intercepted", {
+        url: request.url,
+        method: request.method,
+        destination: request.destination,
+        clientId: event.clientId
+    });
 
-    // 2. STRICTLY DEFINE WHAT TO BYPASS (Do not touch these)
-    const isBypassed = 
-        url.pathname === "/sw.js" ||
-        url.pathname.startsWith("/rs-preview/") || 
-        url.pathname.startsWith("/@vite/") ||
-        url.pathname.startsWith("/@id/") ||
-        url.pathname.startsWith("/@fs/") ||
-        url.pathname.startsWith("/src/") ||
-        url.pathname.startsWith("/node_modules/");
-
-    if (isBypassed) {
-        log("Bypass: Builder core / Vite asset", url.pathname);
-        return;
-    }
-
-    // 3. Ensure a registered engine is available before proxying
-    if (!engineClientId || !engineClients.has(engineClientId)) {
-        log("Bypass: no registered engine for request", url.pathname);
-        return;
-    }
-
-    // 4. INTERCEPT EVERYTHING ELSE and send to engine
-    event.respondWith(
-        proxyToEngine(request, engineClientId, event.clientId)
-    );
-});
-
-// ============================================================
-// Proxy request to parent engine
-// ============================================================
-
-async function proxyToEngine(request, targetEngineId, requesterId) {
-    const engineClient = await self.clients.get(targetEngineId);
-
-    if (!engineClient) {
-        engineClients.delete(targetEngineId);
-
-        if (engineClientId === targetEngineId) {
-            engineClientId = null;
+    try {
+        if (url.origin !== self.location.origin) {
+            return await fetch(request);
         }
 
-        error("Registered engine client no longer exists", {
-            targetEngineId,
-            requesterId,
-            url: request.url
-        });
+        if (
+            isBuilderRequest(url.pathname) ||
+            await isBuilderDocumentRequest(event, url.pathname)
+        ) {
+            return await fetch(request);
+        }
 
-        return new Response("Registered FlexEngine client is unavailable", {
-            status: 502,
-            headers: {
-                "Content-Type": "text/plain; charset=utf-8",
-                "X-RaySite-WS-Error": "ENGINE_UNAVAILABLE"
-            }
-        });
+        const server = await isRenderRequest(event, url.pathname)
+            ? "render"
+            : "editor";
+        return await proxyToEngine(request, server);
+    } catch (err) {
+        error("Request dispatch failed", err);
+
+        return errorResponse(
+            502,
+            "DISPATCH_ERROR",
+            String(err)
+        );
+    }
+}
+
+async function proxyToEngine(request, server = "editor") {
+    const engineClient = await resolveEngineClient();
+
+    if (!engineClient) {
+        return errorResponse(
+            503,
+            "ENGINE_UNAVAILABLE",
+            "No available RaySite engine client"
+        );
     }
 
-    const body = ["GET", "HEAD"].includes(request.method)
+    const body = (
+        request.method === "GET" ||
+        request.method === "HEAD"
+    )
         ? null
         : await request.arrayBuffer();
 
@@ -227,79 +268,55 @@ async function proxyToEngine(request, targetEngineId, requesterId) {
     log("Proxying request", {
         url: request.url,
         method: request.method,
-        requesterId: requesterId || "(none)",
-        targetEngineId
+        engineClientId: engineClient.id,
+        server
     });
 
     return new Promise(resolve => {
         let settled = false;
 
+        const timeout = setTimeout(() => {
+            finish(errorResponse(
+                504,
+                "ENGINE_TIMEOUT",
+                "RaySite engine request timed out"
+            ));
+        }, PROXY_TIMEOUT_MS);
+
         function finish(response) {
             if (settled) return;
-            settled = true;
 
+            settled = true;
             clearTimeout(timeout);
             channel.port1.close();
             resolve(response);
         }
 
-        const timeout = setTimeout(() => {
-            error("Engine request timed out", {
-                url: request.url,
-                targetEngineId,
-                timeoutMs: PROXY_TIMEOUT_MS
-            });
-
-            finish(new Response("FlexEngine request timed out", {
-                status: 504,
-                headers: {
-                    "Content-Type": "text/plain; charset=utf-8",
-                    "X-RaySite-WS-Error": "ENGINE_TIMEOUT"
-                }
-            }));
-        }, PROXY_TIMEOUT_MS);
-
         channel.port1.onmessage = ({ data }) => {
-            log("Engine response received", {
-                url: request.url,
-                status: data?.status,
-                type: data?.type
-            });
-
             if (data?.type === "ENGINE_ERROR") {
-                error("Engine returned an error", {
-                    url: request.url,
-                    error: data.error
-                });
+                error("Engine error", data.error);
 
-                finish(new Response(
-                    data.error || "FlexEngine request failed",
-                    {
-                        status: 502,
-                        headers: {
-                            "Content-Type": "text/plain; charset=utf-8",
-                            "X-RaySite-WS-Error": "ENGINE_ERROR"
-                        }
-                    }
+                finish(errorResponse(
+                    502,
+                    "ENGINE_ERROR",
+                    data.error || "Unknown engine error"
                 ));
 
                 return;
             }
 
-            if (
-                !Number.isInteger(data?.status) ||
-                data.status < 200 ||
-                data.status > 599
-            ) {
-                error("Invalid engine response", data);
+            const status = data?.status;
 
-                finish(new Response("Invalid FlexEngine response", {
-                    status: 502,
-                    headers: {
-                        "Content-Type": "text/plain; charset=utf-8",
-                        "X-RaySite-WS-Error": "INVALID_ENGINE_RESPONSE"
-                    }
-                }));
+            if (
+                !Number.isInteger(status) ||
+                status < 200 ||
+                status > 599
+            ) {
+                finish(errorResponse(
+                    502,
+                    "INVALID_RESPONSE",
+                    "Invalid engine HTTP response"
+                ));
 
                 return;
             }
@@ -307,64 +324,76 @@ async function proxyToEngine(request, targetEngineId, requesterId) {
             try {
                 const noBody =
                     request.method === "HEAD" ||
-                    [204, 205, 304].includes(data.status);
+                    [204, 205, 304].includes(status);
 
-                finish(new Response(noBody ? null : data.body ?? null, {
-                    status: data.status,
-                    statusText: data.statusText || "",
-                    headers: data.headers || []
-                }));
-            } catch (err) {
-                error("Failed to construct response", err);
-
-                finish(new Response(String(err), {
-                    status: 502,
-                    headers: {
-                        "Content-Type": "text/plain; charset=utf-8",
-                        "X-RaySite-WS-Error": "RESPONSE_CONSTRUCTION"
+                const response = new Response(
+                    noBody ? null : (data.body ?? null),
+                    {
+                        status,
+                        statusText: data.statusText || "",
+                        headers: data.headers || []
                     }
-                }));
+                );
+
+                log("Engine response received", {
+                    url: request.url,
+                    status: response.status,
+                    contentType: response.headers.get("content-type"),
+                    response
+                });
+
+                finish(response);
+            } catch (err) {
+                error("Response construction failed", err);
+
+                finish(errorResponse(
+                    502,
+                    "RESPONSE_CONSTRUCTION",
+                    String(err)
+                ));
             }
         };
 
         channel.port1.onmessageerror = () => {
-            error("MessageChannel response could not be decoded", {
-                url: request.url,
-                targetEngineId
-            });
-
-            finish(new Response("Invalid message from FlexEngine", {
-                status: 502,
-                headers: {
-                    "Content-Type": "text/plain; charset=utf-8",
-                    "X-RaySite-WS-Error": "MESSAGE_ERROR"
-                }
-            }));
+            finish(errorResponse(
+                502,
+                "MESSAGE_ERROR",
+                "Engine response could not be decoded"
+            ));
         };
 
         try {
-            engineClient.postMessage({
-                type: "SERVER_FETCH",
-                url: request.url,
-                method: request.method,
-                headers: [...request.headers],
-                body
-            }, [channel.port2]);
+            engineClient.postMessage(
+                {
+                    type: "SERVER_FETCH",
+                    server,
+                    url: request.url,
+                    method: request.method,
+                    headers: [...request.headers],
+                    body
+                },
+                [channel.port2]
+            );
         } catch (err) {
-            error("Failed to send request to engine", err);
-            channel.port2.close();
+            error("Failed to contact engine", err);
 
-            finish(new Response(String(err), {
-                status: 502,
-                headers: {
-                    "Content-Type": "text/plain; charset=utf-8",
-                    "X-RaySite-WS-Error": "POST_MESSAGE_FAILED"
-                }
-            }));
+            finish(errorResponse(
+                502,
+                "POST_MESSAGE_FAILED",
+                String(err)
+            ));
         }
     });
 }
 
 self.addEventListener("messageerror", event => {
-    error("Service Worker received an unreadable message", event);
+    error("Unreadable message", event);
+});
+
+self.addEventListener("error", event => {
+    error("Service Worker error", event.message);
+});
+
+self.addEventListener("unhandledrejection", event => {
+    error("Unhandled rejection", event.reason);
 });

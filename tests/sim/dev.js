@@ -42,7 +42,12 @@ const server = http.createServer((req, res) => {
     ? 'index.html'
     : pathname.replace(/^\/+/, '');
 
-  const filePath = path.resolve(ROOT, relativePath);
+  // The simulator is intentionally a tiny static server, but the demo also
+  // needs the service worker from Vite's public directory to generate the
+  // virtual RenderServer CSS and script resources.
+  const filePath = relativePath === 'sw.js'
+    ? path.resolve(ROOT, 'public/sw.js')
+    : path.resolve(ROOT, relativePath);
 
   // Prevent requests from accessing files outside the project root.
   if (filePath !== ROOT && !filePath.startsWith(ROOT + path.sep)) {

@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Builder Preview Reconstruction Test</title>
+</head>
+<body>
+    <h1>Preview project reconstruction</h1>
+    <pre id="status">Running…</pre>
+    <details>
+        <summary>Generated builder project JSON</summary>
+        <pre id="project-json"></pre>
+    </details>
+    <div>
+        <iframe id="first-render" title="First builder render" src="/rs-preview/index.html"></iframe>
+        <iframe id="refreshed-render" title="Repeated builder render" src="/rs-preview/index.html"></iframe>
+    </div>
+    <script type="module">
+        import { initFiles } from "/src/filerename.js";
+        import {
+            editorServer,
+            flexEngineFileSystem,
+            renderServer
+        } from "/src/flexEngine.js";
+
+        const status = document.querySelector("#status");
+        const projectJSON = document.querySelector("#project-json");
+
+        function assert(condition, message) {
+            if (!condition) {
+                throw new Error(message);
+            }
+        }
+
+        async function registerEngine() {
+            const registration = await navigator.serviceWorker.register(
+                "/sw.js",
+                { type: "module", scope: "/" }
+            );
+
+            await navigator.serviceWorker.ready;
+
+            let controller = navigator.serviceWorker.controller;
+            if (!controller) {
+                controller = await new Promise((resolve, reject) => {
+                    const timeout = setTimeout(() => {
+                        navigator.serviceWorker.removeEventListener(
+                            "controllerchange",
+                            onChange
+                        );
+                        reject(new Error(
+                            "Service Worker did not control the test page."
+                        ));
+                    }, 5000);
+
+                    function onChange() {
+                        controller = navigator.serviceWorker.controller;
+                        if (!controller) return;
+
+                        clearTimeout(timeout);
+                        navigator.serviceWorker.removeEventListener(
+                            "controllerchange",
+                            onChange
+                        );
+                        resolve(controller);
+                    }
+
+                    navigator.serviceWorker.addEventListener(
+                        "controllerchange",
+                        onChange
+                    );
+                });
+            }
+
+            const channel = new MessageChannel();
+            await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    channel.port1.close();
+                    reject(new Error(
+                        "Service Worker engine registration timed out."
+                    ));
+                }, 5000);
+
+                channel.port1.onmessage = ({ data }) => {
+                    clearTimeout(timeout);
+                    channel.port1.close();
+
+                    if (data?.type !== "ENGINE_REGISTERED") {
+                        reject(new Error(
+                            data?.error || "Engine registration failed."
+                        ));
+                        return;
+                    }
+
+                    resolve();
+                };
+
+                controller.postMessage(
+                    { type: "REGISTER_ENGINE" },
+                    [channel.port2]
+                );
+            });
+
+            return registration;
+        }
+
+        function makeHTMLNode(id, html) {
+            return {
+                id,
+                type: "media/html",
+                content: { html },
+                layout: {},
+                appearance: {},
+                animation: {}
+            };
+        }
+
+        async function renderInto(frame, url) {
+            await new Promise((resolve, reject) => {
+                frame.addEventListener("load", resolve, { once: true });
+                frame.addEventListener("error", reject, { once: true });
+
+                const previewURL = new URL(
+                    "/rs-build/index.html",
+                    location.origin
+                );
+                previewURL.searchParams.set("page", url);
+                frame.src = previewURL.toString();
+            });
+        }
+
+        async function run() {
+            await initFiles();
+            await registerEngine();
+
+            const sourceResponse = await fetch(
+                "/rs-preview/index.html",
+                { cache: "no-store" }
+            );
+            assert(sourceResponse.ok, "Could not load the preview snapshot.");
+
+            const sourceHTML = await sourceResponse.text();
+            const sourceDocument = new DOMParser().parseFromString(
+                sourceHTML,
+                "text/html"
+            );
+            const css = sourceDocument.head.querySelector("style")?.outerHTML;
+            const header = sourceDocument.body.querySelector("header");
+            const footer = sourceDocument.body.querySelector("footer");
+            const mainSections = Array.from(
+                sourceDocument.body.querySelectorAll(":scope > section")
+            );
+
+            assert(css && header && footer, "Preview structure is incomplete.");
+            assert(
+                mainSections.length === 3,
+                "Expected hero, projects, and contact sections."
+            );
+
+            const project = {
+                title: sourceDocument.title,
+                description: "Reconstructed from the supplied preview HTML.",
+                coverIMG: null,
+                type: "webpage",
+                theme: "default",
+                body: {
+                    id: 0,
+                    type: "@root/RaySite",
+                    content: {
+                        header: makeHTMLNode(
+                            1001,
+                            `${css}${header.outerHTML}`
+                        ),
+                        main: {
+                            id: 1002,
+                            type: "@root/main",
+                            content: [
+                                makeHTMLNode(
+                                    1003,
+                                    mainSections
+                                        .map(section => section.outerHTML)
+                                        .join("")
+                                )
+                            ],
+                            layout: {},
+                            appearance: {},
+                            animation: {}
+                        },
+                        cta: {
+                            id: 1004,
+                            type: "@root/cta",
+                            content: [],
+                            layout: {},
+                            appearance: {},
+                            animation: {}
+                        },
+                        footer: makeHTMLNode(1005, footer.outerHTML)
+                    },
+                    layout: {},
+                    appearance: {},
+                    animation: {}
+                }
+            };
+
+            projectJSON.textContent = JSON.stringify(project, null, 2);
+
+            const saveResult = await flexEngineFileSystem.updatePage(
+                "/preview-reconstruction",
+                JSON.stringify(project)
+            );
+            assert(
+                saveResult && saveResult.code !== 1,
+                saveResult?.error || "Could not save reconstructed project."
+            );
+
+            const serverRequest = () => new Request(
+                new URL("/preview-reconstruction", location.origin)
+            );
+            const [editorResponse, renderResponse] = await Promise.all([
+                editorServer.fetch(serverRequest()),
+                renderServer.fetch(serverRequest())
+            ]);
+            const [editorHTML, renderHTML] = await Promise.all([
+                editorResponse.text(),
+                renderResponse.text()
+            ]);
+
+            assert(editorResponse.ok, "EditorServer page response failed.");
+            assert(renderResponse.ok, "RenderServer page response failed.");
+            assert(
+                !/href="[^"]*styles\/preview-reconstruction\.css"/.test(editorHTML),
+                "EditorServer should not link the page-specific stylesheet."
+            );
+            assert(
+                /href="[^"]*styles\/preview-reconstruction\.css"/.test(renderHTML),
+                "RenderServer did not link the page-specific stylesheet."
+            );
+            assert(
+                !editorHTML.includes("renderStyles.js"),
+                "EditorServer should not inject the render-only style runtime."
+            );
+            assert(
+                renderHTML.includes("renderStyles.js") &&
+                /href="[^"]*styles\/preview-reconstruction\.css"/.test(renderHTML),
+                "RenderServer did not include its style runtime and page stylesheet."
+            );
+
+            const renderScriptResponse = await renderServer.fetch(
+                new Request(new URL(
+                    "/rs-assets/script/renderStyles.js",
+                    location.origin
+                ))
+            );
+            const renderScript = await renderScriptResponse.text();
+            assert(
+                renderScriptResponse.ok &&
+                renderScript.includes("element.style.setProperty") &&
+                renderScript.includes("removeAttribute"),
+                "RenderServer style runtime response is incomplete."
+            );
+            const styleTestFrame = document.createElement("iframe");
+            styleTestFrame.hidden = true;
+            styleTestFrame.style.width = "320px";
+            styleTestFrame.style.height = "200px";
+            document.body.appendChild(styleTestFrame);
+            const styleTestDocument =
+                styleTestFrame.contentDocument;
+            const styleTestElement =
+                styleTestDocument.createElement("div");
+            styleTestElement.className = "rs-120343 target";
+            styleTestElement.setAttribute(
+                "rs-styles-default",
+                "color: rgb(1, 2, 3); padding: 4px;"
+            );
+            styleTestElement.setAttribute(
+                "rs-styles-target",
+                "font-weight: 700;"
+            );
+            styleTestElement.setAttribute(
+                "rs-styles-default-onMobile",
+                "opacity: 0.5;"
+            );
+            styleTestElement.setAttribute(
+                "rs-animation-config-self",
+                "test"
+            );
+            const nestedStyleElement =
+                styleTestDocument.createElement("span");
+            styleTestElement.setAttribute(
+                "rs-styles-default-atspan",
+                "text-decoration: underline;"
+            );
+            styleTestElement.appendChild(nestedStyleElement);
+            styleTestDocument.body.appendChild(styleTestElement);
+            const runtimeScript =
+                styleTestDocument.createElement("script");
+            runtimeScript.textContent = renderScript;
+            styleTestDocument.body.appendChild(runtimeScript);
+            await new Promise(resolve => setTimeout(resolve, 0));
+            assert(
+                styleTestElement.style.color === "rgb(1, 2, 3)" &&
+                styleTestElement.style.padding === "4px" &&
+                styleTestElement.style.fontWeight === "700" &&
+                styleTestElement.style.opacity === "0.5" &&
+                nestedStyleElement.style.textDecoration === "underline",
+                "RenderServer did not apply the configured styles inline."
+            );
+            assert(
+                !Array.from(styleTestElement.attributes).some(attribute =>
+                    attribute.name.startsWith("rs-")
+                ),
+                "RenderServer did not remove processed RaySite attributes."
+            );
+            styleTestFrame.remove();
+
+            const firstFrame = document.querySelector("#first-render");
+            const secondFrame = document.querySelector("#refreshed-render");
+
+            await Promise.all([
+                renderInto(firstFrame, "/preview-reconstruction"),
+                renderInto(secondFrame, "/preview-reconstruction")
+            ]);
+
+            function snapshot(frame) {
+                const doc = frame.contentDocument;
+                const stylesheets = Array.from(
+                    doc.querySelectorAll('link[rel="stylesheet"]')
+                );
+
+                return {
+                    title: doc.title,
+                    renderRoute: new URL(frame.src).pathname,
+                    bodyClass: doc.body.className,
+                    background: getComputedStyle(doc.body).backgroundColor,
+                    headerPosition: getComputedStyle(
+                        doc.querySelector("header")
+                    ).position,
+                    heroDisplay: getComputedStyle(
+                        doc.querySelector(".hero")
+                    ).display,
+                    cardBackground: getComputedStyle(
+                        doc.querySelector(".card")
+                    ).backgroundColor,
+                    mainCssRules: doc.querySelector(
+                        'link[href$="/main.css"]'
+                    ).sheet.cssRules.length,
+                    stylesheetsLoaded: stylesheets.every(link => link.sheet),
+                    hasRenderStyleRuntime: Array.from(
+                        doc.scripts
+                    ).some(script => script.src.endsWith("/renderStyles.js")),
+                    hasPageStylesheet: stylesheets.some(link =>
+                        link.href.endsWith("/preview-reconstruction.css")
+                    ),
+                    missingIDs: doc.querySelectorAll('[id="undefined"]').length,
+                    missingChartClasses: doc.querySelectorAll(
+                        '[class*="rs-undefined"]'
+                    ).length
+                };
+            }
+
+            const first = snapshot(firstFrame);
+            const refreshed = snapshot(secondFrame);
+            const stylesheetResults = await Promise.all([
+                "/rs-assets/styles/main.css",
+                "/rs-assets/styles/theme.css",
+                "/rs-assets/styles/animation.css",
+                "/rs-assets/styles/preview-reconstruction.css"
+            ].map(async path => {
+                const response = await firstFrame.contentWindow.fetch(path);
+                return {
+                    path,
+                    status: response.status,
+                    contentType: response.headers.get("content-type"),
+                    body: await response.text()
+                };
+            }));
+
+            assert(first.title === project.title, "Page title did not render.");
+            assert(
+                first.renderRoute === "/rs-build/index.html",
+                "Preview did not load through the RenderServer URL."
+            );
+            assert(
+                first.hasRenderStyleRuntime && first.hasPageStylesheet,
+                "The RenderServer iframe did not load its runtime and page stylesheet."
+            );
+            assert(
+                first.background === "rgb(11, 9, 10)",
+                `Body CSS is missing: ${first.background}`
+            );
+            assert(
+                first.headerPosition === "sticky",
+                "Header CSS is missing."
+            );
+            assert(first.heroDisplay === "flex", "Hero CSS is missing.");
+            assert(
+                first.cardBackground === "rgb(22, 26, 29)",
+                "Card CSS is missing."
+            );
+            assert(first.mainCssRules > 0, "Element CSS rules were not generated.");
+            assert(first.stylesheetsLoaded, "A builder stylesheet did not load.");
+            assert(
+                stylesheetResults.every(result =>
+                    result.status === 200 &&
+                    result.contentType?.startsWith("text/css")
+                ),
+                "A builder stylesheet request failed."
+            );
+            assert(
+                !/@context|@main/.test(stylesheetResults[0].body),
+                "Element CSS contains an unresolved selector."
+            );
+            assert(first.missingIDs === 0, "An undefined ID was rendered.");
+            assert(
+                first.missingChartClasses === 0,
+                "An undefined element-chart class was rendered."
+            );
+            assert(
+                JSON.stringify(first) === JSON.stringify(refreshed),
+                "First render and refresh render differ."
+            );
+
+            status.textContent =
+                "PASS\n" + JSON.stringify({ first, refreshed }, null, 2);
+        }
+
+        run().catch(error => {
+            status.textContent = `FAIL\n${error.stack || error}`;
+            console.error(error);
+        });
+    </script>
+</body>
+</html>

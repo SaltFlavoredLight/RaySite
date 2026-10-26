@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Browse RaySite's interactive demos, experiments, and supporting test files.">
+    <title>RaySite | Test Modules</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --primary-red: #D90429;
+            --dark-red: #8D0801;
+            --bg-color: #0B090A;
+            --surface-color: #161A1D;
+            --text-light: #F5F3F4;
+            --text-muted: #B1A7A6;
+            --accent: #EF233C;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-width: 320px;
+            margin: 0;
+            background: var(--bg-color);
+            color: var(--text-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .site-header {
+            position: sticky;
+            z-index: 2;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem 8%;
+            border-bottom: 1px solid rgba(217, 4, 41, 0.25);
+            background: rgba(11, 9, 10, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            color: var(--text-light);
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+
+        .logo span,
+        .hero h1 span {
+            color: var(--primary-red);
+        }
+
+        .site-header nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .site-header nav a {
+            color: var(--text-muted);
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .site-header nav a:hover,
+        .site-header nav a:focus-visible {
+            color: var(--accent);
+        }
+
+        .hero {
+            padding: 5rem 8% 4rem;
+            background: linear-gradient(135deg, rgba(141, 8, 1, 0.32), var(--bg-color) 72%);
+        }
+
+        .hero-content {
+            max-width: 820px;
+        }
+
+        .badge {
+            display: inline-block;
+            margin-bottom: 1.25rem;
+            padding: 0.35rem 0.85rem;
+            border: 1px solid rgba(217, 4, 41, 0.35);
+            border-radius: 50px;
+            background: rgba(217, 4, 41, 0.14);
+            color: var(--accent);
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .hero h1 {
+            margin: 0 0 1rem;
+            font-size: clamp(2.4rem, 6vw, 4rem);
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            line-height: 1.08;
+        }
+
+        .hero p {
+            max-width: 680px;
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 1.08rem;
+        }
+
+        main {
+            padding: 2rem 8% 5rem;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0 0 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .section-heading::after {
+            height: 2px;
+            flex: 1;
+            background: linear-gradient(to right, var(--primary-red), transparent);
+            content: "";
+        }
+
+        .toolbar {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            background: var(--surface-color);
+            color: var(--text-light);
+            font: inherit;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.16);
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+        }
+
+        .filter-button {
+            padding: 0.45rem 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            font: inherit;
+            font-size: 0.84rem;
+            transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .filter-button:hover,
+        .filter-button[aria-pressed="true"] {
+            border-color: var(--primary-red);
+            background: rgba(217, 4, 41, 0.14);
+            color: var(--text-light);
+        }
+
+        .results-summary {
+            margin: 0 0 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+            gap: 1.25rem;
+        }
+
+        .card {
+            display: flex;
+            min-height: 225px;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--surface-color);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-red);
+        }
+
+        .card-meta {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .tag,
+        .file-type {
+            display: inline-block;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .tag {
+            padding: 0.22rem 0.55rem;
+            background: rgba(217, 4, 41, 0.12);
+            color: var(--accent);
+        }
+
+        .file-type {
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .card h3 {
+            margin: 0 0 0.45rem;
+            font-size: 1.18rem;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+
+        .card p {
+            margin: 0 0 1.25rem;
+            color: var(--text-muted);
+            font-size: 0.92rem;
+        }
+
+        .card-path {
+            margin-top: auto;
+            color: #c7bdbc;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 0.75rem;
+            overflow-wrap: anywhere;
+        }
+
+        .card-link {
+            margin-top: 0.85rem;
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .card-link:hover,
+        .card-link:focus-visible {
+            color: #ff6577;
+            text-decoration: underline;
+        }
+
+        .empty-state {
+            padding: 2rem;
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        footer {
+            padding: 2rem 8%;
+            border-top: 1px solid var(--border-color);
+            background: #070506;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .site-header {
+                padding: 0.9rem 6%;
+            }
+
+            .site-header nav {
+                gap: 0.9rem;
+                font-size: 0.9rem;
+            }
+
+            .hero {
+                padding: 4rem 6% 3rem;
+            }
+
+            main {
+                padding: 1.5rem 6% 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <a class="logo" href="../" aria-label="RaySite home">Ray<span>Site Demos.</span></a>
+        <nav aria-label="Main navigation">
+            <a href="../">Home</a>
+            <a href="#modules">Test modules</a>
+        </nav>
+    </header>
+
+    <section class="hero" aria-labelledby="page-title">
+        <div class="hero-content">
+            <span class="badge" id="module-badge">Loading modules</span>
+            <h1 id="page-title">The <span>test lab.</span></h1>
+            <p>A browsable index of RaySite experiments, demos, and their supporting files. Search by name or description, or filter by area.</p>
+            <p> I used AI to geranrte this page becuase I need focus on real project </p>
+        </div>
+    </section>
+
+    <main id="modules">
+        <h2 class="section-heading">Browse modules</h2>
+        <div class="toolbar">
+            <div>
+                <label class="search-label" for="module-search">Search modules</label>
+                <input class="search-input" id="module-search" type="search" placeholder="Try “header”, “sorting”, or “color”">
+            </div>
+            <div class="filters" id="category-filters" aria-label="Filter modules by category"></div>
+        </div>
+        <p class="results-summary" id="results-summary" aria-live="polite"></p>
+        <div class="grid" id="module-grid"></div>
+        <p class="empty-state" id="empty-state" hidden>No modules match your search. Try another term or category.</p>
+    </main>
+
+    <footer>
+        <p>RaySite test modules · Descriptions and links are editable in the JSON data in this page.</p>
+    </footer>
+
+    <script type="application/json" id="module-data">
+    [
+        {
+            "title": "Development simulation",
+            "path": "tests/sim/dev.js",
+            "category": "Simulation",
+            "description": "Development simulation script used for trying out behavior in the test environment."
+        },
+        {
+            "title": "Animation sample 2",
+            "path": "tests/units/animation/animationSample2.html",
+            "category": "Animation",
+            "description": "A standalone animation experiment for previewing motion and visual effects."
+        },
+        {
+            "title": "Animation sample",
+            "path": "tests/units/animation/animationsample.html",
+            "category": "Animation",
+            "description": "An additional standalone animation sample for testing animated page elements."
+        },
+        {
+            "title": "Builder preview project",
+            "path": "tests/units/builder/previewProject.html",
+            "category": "Builder",
+            "description": "Preview page for checking how a project created with the website builder is rendered."
+        },
+        {
+            "title": "Header menu animation",
+            "path": "tests/units/headers/animations/headerMenuAnimation.html",
+            "category": "Header animations",
+            "description": "Tests animated menu behavior in a header component."
+        },
+        {
+            "title": "Header menu animation 2",
+            "path": "tests/units/headers/animations/headerMenuAnimation2.html",
+            "category": "Header animations",
+            "description": "A second header menu animation experiment with an alternate implementation."
+        },
+        {
+            "title": "Header demo: header generator",
+            "path": "tests/units/headers/finalHeaderDemo/creatingHeader.js",
+            "category": "Header demo",
+            "description": "JavaScript source for creating and configuring the final header demo."
+        },
+        {
+            "title": "Header demo: CSS schema",
+            "path": "tests/units/headers/finalHeaderDemo/cssschema.json",
+            "category": "Header demo",
+            "description": "JSON schema data describing CSS options for the final header demo."
+        },
+        {
+            "title": "Header demo: design notes",
+            "path": "tests/units/headers/finalHeaderDemo/ideas.md",
+            "category": "Header demo",
+            "description": "Ideas and notes associated with the final header demo."
+        },
+        {
+            "title": "Header demo",
+            "path": "tests/units/headers/finalHeaderDemo/index.html",
+            "category": "Header demo",
+            "description": "Main page for previewing the final header demo."
+        },
+        {
+            "title": "Header demo runtime",
+            "path": "tests/units/headers/finalHeaderDemo/runtime.js",
+            "category": "Header demo",
+            "description": "Runtime JavaScript used by the final header demo."
+        },
+        {
+            "title": "Header demo styles",
+            "path": "tests/units/headers/finalHeaderDemo/styles.css",
+            "category": "Header demo",
+            "description": "Primary stylesheet for the final header demo."
+        },
+        {
+            "title": "Header demo test styles",
+            "path": "tests/units/headers/finalHeaderDemo/test.css",
+            "category": "Header demo",
+            "description": "Additional test stylesheet for the final header demo."
+        },
+        {
+            "title": "Header JavaScript",
+            "path": "tests/units/headers/header.js",
+            "category": "Headers",
+            "description": "Standalone JavaScript file for experimenting with header behavior."
+        },
+        {
+            "title": "Blank header shell",
+            "path": "tests/units/headers/headerBlankShell.html",
+            "category": "Headers",
+            "description": "Minimal header shell for testing header layouts in isolation."
+        },
+        {
+            "title": "Original header generator",
+            "path": "tests/units/headers/headerOriginalGernator.html",
+            "category": "Headers",
+            "description": "HTML experiment for the original header generator."
+        },
+        {
+            "title": "Header results",
+            "path": "tests/units/headers/headerResults.html",
+            "category": "Headers",
+            "description": "Displays the results of a header layout or generation experiment."
+        },
+        {
+            "title": "Color system",
+            "path": "tests/units/inputField/colorSystem.html",
+            "category": "Input fields",
+            "description": "Tests a color-system interface and its input controls."
+        },
+        {
+            "title": "Color system 2",
+            "path": "tests/units/inputField/colorSystem2.html",
+            "category": "Input fields",
+            "description": "An alternate color-system interface experiment."
+        },
+        {
+            "title": "Nested input fields",
+            "path": "tests/units/inputField/nesting.html",
+            "category": "Input fields",
+            "description": "Explores nested input-field structures and their presentation."
+        },
+        {
+            "title": "Sortable table",
+            "path": "tests/units/inputField/sortTable.html",
+            "category": "Input fields",
+            "description": "Tests table sorting controls within an input-field demo."
+        },
+        {
+            "title": "Sortable table with categories",
+            "path": "tests/units/inputField/sortTablewithCatergory.html",
+            "category": "Input fields",
+            "description": "Tests a sortable table with category-based organization."
+        },
+        {
+            "title": "Full-screen scroll",
+            "path": "tests/units/scrolls/fullSCreenScroll.html",
+            "category": "Scrolling",
+            "description": "Experiments with full-screen section scrolling."
+        },
+        {
+            "title": "Scroll test",
+            "path": "tests/units/scrolls/scrollTest.html",
+            "category": "Scrolling",
+            "description": "Basic page for checking scroll-related behavior."
+        },
+        {
+            "title": "Scroll test 2",
+            "path": "tests/units/scrolls/scrollTest2.html",
+            "category": "Scrolling",
+            "description": "Second scroll behavior experiment."
+        },
+        {
+            "title": "Scroll test 3",
+            "path": "tests/units/scrolls/scrollTest3.html",
+            "category": "Scrolling",
+            "description": "Third scroll behavior experiment."
+        },
+        {
+            "title": "Sortable final",
+            "path": "tests/units/sortable/sortableFinal.html",
+            "category": "Sorting",
+            "description": "More complete sortable-interface demo."
+        },
+        {
+            "title": "Sortable test",
+            "path": "tests/units/sortable/sortableTest.html",
+            "category": "Sorting",
+            "description": "Basic experiment for testing sortable elements."
+        },
+        {
+            "title": "Sortable test 2",
+            "path": "tests/units/sortable/sortableTest2.html",
+            "category": "Sorting",
+            "description": "Second experiment for sortable elements."
+        },
+        {
+            "title": "Sortable test 3",
+            "path": "tests/units/sortable/sortableTest3.html",
+            "category": "Sorting",
+            "description": "Third experiment for sortable elements."
+        },
+        {
+            "title": "Converter sample",
+            "path": "tests/units/tools/converterSample.html",
+            "category": "Tools",
+            "description": "Sample page for testing a conversion tool."
+        },
+        {
+            "title": "Hook demo",
+            "path": "tests/units/tools/hookdemo.html",
+            "category": "Tools",
+            "description": "Demonstrates and tests a hook-based tool workflow."
+        },
+        {
+            "title": "HTML transfer",
+            "path": "tests/units/tools/htmlTransfer.html",
+            "category": "Tools",
+            "description": "Tests transferring or importing HTML content."
+        },
+        {
+            "title": "Quill delta test",
+            "path": "tests/units/tools/quildeltaTest.html",
+            "category": "Tools",
+            "description": "Experiments with Quill editor delta data."
+        },
+        {
+            "title": "Schema CSS",
+            "path": "tests/units/tools/schemacss.html",
+            "category": "Tools",
+            "description": "Tests schema-driven CSS configuration and rendering."
+        },
+        {
+            "title": "Theme test",
+            "path": "tests/units/tools/theme.html",
+            "category": "Tools",
+            "description": "Preview page for experimenting with theme settings."
+        }
+    ]
+    </script>
+    <script>
+        const modules = JSON.parse(document.getElementById("module-data").textContent);
+        const grid = document.getElementById("module-grid");
+        const searchInput = document.getElementById("module-search");
+        const filters = document.getElementById("category-filters");
+        const summary = document.getElementById("results-summary");
+        const emptyState = document.getElementById("empty-state");
+        const badge = document.getElementById("module-badge");
+        let activeCategory = "All";
+
+        badge.textContent = `${modules.length} files indexed`;
+
+        function createFilter(label) {
+            const button = document.createElement("button");
+            button.className = "filter-button";
+            button.type = "button";
+            button.textContent = label;
+            button.setAttribute("aria-pressed", String(activeCategory === label));
+            button.addEventListener("click", () => {
+                activeCategory = label;
+                render();
+            });
+            filters.append(button);
+        }
+
+        function createCard(module) {
+            const card = document.createElement("article");
+            card.className = "card";
+
+            const meta = document.createElement("div");
+            meta.className = "card-meta";
+
+            const category = document.createElement("span");
+            category.className = "tag";
+            category.textContent = module.category;
+
+            const type = document.createElement("span");
+            type.className = "file-type";
+            type.textContent = module.path.split(".").pop();
+            meta.append(category, type);
+
+            const title = document.createElement("h3");
+            title.textContent = module.title;
+
+            const description = document.createElement("p");
+            description.textContent = module.description;
+
+            const path = document.createElement("span");
+            path.className = "card-path";
+            path.textContent = module.path;
+
+            const link = document.createElement("a");
+            link.className = "card-link";
+            link.href = `../${module.path.split("/").map(encodeURIComponent).join("/")}`;
+            link.target = "_blank";
+            link.rel = "noopener";
+            link.textContent = "Open file ↗";
+
+            card.append(meta, title, description, path, link);
+            return card;
+        }
+
+        function render() {
+            const query = searchInput.value.trim().toLowerCase();
+            const visibleModules = modules.filter((module) => {
+                const matchesCategory = activeCategory === "All" || module.category === activeCategory;
+                const searchableText = `${module.title} ${module.path} ${module.category} ${module.description}`.toLowerCase();
+                return matchesCategory && searchableText.includes(query);
+            });
+
+            grid.replaceChildren(...visibleModules.map(createCard));
+            summary.textContent = `Showing ${visibleModules.length} of ${modules.length} files`;
+            emptyState.hidden = visibleModules.length > 0;
+
+            for (const button of filters.querySelectorAll("button")) {
+                button.setAttribute("aria-pressed", String(button.textContent === activeCategory));
+            }
+        }
+
+        createFilter("All");
+        for (const category of [...new Set(modules.map((module) => module.category))].sort()) {
+            createFilter(category);
+        }
+
+        searchInput.addEventListener("input", render);
+        render();
+    </script>
+</body>
+</html>
