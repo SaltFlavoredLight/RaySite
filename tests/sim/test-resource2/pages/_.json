@@ -1,0 +1,842 @@
+{
+  "title": "Ray | Creative Developer & Designer",
+  "description": "Full-stack developer and digital product designer crafting thoughtful, high-impact digital experiences.",
+  "coverIMG": null,
+  "importence": 1,
+  "doNotIndex": false,
+  "type": "webpage",
+  "theme": "default",
+  "body": {
+    "id": 0,
+    "type": "@root/RaySite",
+    "content": {
+      "header": {
+        "type": "@inherit/inherit",
+        "source": "header"
+      },
+      "main": {
+        "id": 1100,
+        "type": "@root/main",
+        "content": [
+          {
+            "id": 1101,
+            "type": "section/section",
+            "content": [
+              {
+                "id": 1102,
+                "type": "basic/heading",
+                "content": [
+                  {
+                    "insert": "Hi, I'm Ray."
+                  },
+                  {
+                    "insert": "\n",
+                    "attributes": {
+                      "header": 1
+                    }
+                  },
+                  {
+                    "insert": "I build "
+                  },
+                  {
+                    "insert": "bold",
+                    "attributes": {
+                      "bold": true,
+                      "color": "#D90429"
+                    }
+                  },
+                  {
+                    "insert": " digital experiences."
+                  },
+                  {
+                    "insert": "\n",
+                    "attributes": {
+                      "header": 1
+                    }
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {
+                  "animationType": 2,
+                  "duration": 0.6,
+                  "delayTime": 0,
+                  "trigger": 1,
+                  "direction": 0,
+                  "intensity": 36
+                }
+              },
+              {
+                "id": 1103,
+                "type": "basic/text",
+                "content": [
+                  {
+                    "insert": "Full-stack developer and digital product designer crafting high-impact, minimalist interfaces with a sharp edge."
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1104,
+                "type": "container/div",
+                "content": [
+                  {
+                    "id": 1105,
+                    "type": "basic/button",
+                    "content": {
+                      "label": "View featured work"
+                    },
+                    "clickable": {
+                      "enable": true,
+                      "action": {
+                        "mode": "a",
+                        "url": "#projects",
+                        "newPage": false
+                      }
+                    },
+                    "layout": {},
+                    "appearance": {},
+                    "animation": {}
+                  },
+                  {
+                    "id": 1106,
+                    "type": "basic/button",
+                    "content": {
+                      "label": "Get in touch"
+                    },
+                    "clickable": {
+                      "enable": true,
+                      "action": {
+                        "mode": "a",
+                        "url": "#contact",
+                        "newPage": false
+                      }
+                    },
+                    "layout": {},
+                    "appearance": {},
+                    "animation": {}
+                  }
+                ],
+                "layout": {
+                  "direction": 1,
+                  "wrap": 2,
+                  "spaceAlong": 1,
+                  "spaceAcross": 2,
+                  "spaceAcrossMutiple": 1,
+                  "gapX": {
+                    "mode": "px",
+                    "value": 16
+                  },
+                  "gapY": {
+                    "mode": "px",
+                    "value": 16
+                  },
+                  "stackAtMobile": true,
+                  "mobileReverseDirection": false,
+                  "mobileGap": {
+                    "mode": "px",
+                    "value": 12
+                  }
+                },
+                "appearance": {},
+                "animation": {}
+              }
+            ],
+            "layout": {
+              "spaceAcross": 1,
+              "spaceAlong": 1,
+              "overflow": 3,
+              "gap": {
+                "mode": "none"
+              },
+              "mobileGap": {
+                "mode": "none"
+              },
+              "mobileReverseDirection": false,
+              "displayType": 0
+            },
+            "appearance": {
+              "default": {
+                "base": {
+                  "default": {
+                    "style": {
+                      "textColor": {
+                        "mode": "basic",
+                        "color": "#F5F3F4"
+                      },
+                      "background": {
+                        "mode": "basic",
+                        "color": "linear-gradient(135deg, rgba(141, 8, 1, 0.3) 0%, #0B090A 70%)"
+                      },
+                      "paddingTop": {
+                        "mode": "px",
+                        "value": 96
+                      },
+                      "paddingBottom": {
+                        "mode": "px",
+                        "value": 96
+                      },
+                      "paddingLeft": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "paddingRight": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "borderMode": "none"
+                    },
+                    "size": {
+                      "height": {
+                        "mode": "auto"
+                      },
+                      "alongGrow": false,
+                      "alongShrink": false,
+                      "mobileMinHeight": {
+                        "mode": "auto"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "animation": {}
+          },
+          {
+            "id": 1110,
+            "JSID": "projects",
+            "type": "section/section",
+            "content": [
+              {
+                "id": 1111,
+                "type": "basic/heading",
+                "content": [
+                  {
+                    "insert": "Featured Work"
+                  },
+                  {
+                    "insert": "\n",
+                    "attributes": {
+                      "header": 2
+                    }
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1112,
+                "type": "container/div",
+                "content": [
+                  {
+                    "id": 1113,
+                    "type": "container/div",
+                    "content": [
+                      {
+                        "id": 1114,
+                        "type": "basic/heading",
+                        "content": [
+                          {
+                            "insert": "Crimson Analytics"
+                          },
+                          {
+                            "insert": "\n",
+                            "attributes": {
+                              "header": 3
+                            }
+                          }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      },
+                      {
+                        "id": 1115,
+                        "type": "basic/text",
+                        "content": [
+                          {
+                            "insert": "A real-time financial dashboard built around clear data visualization and low-latency metrics."
+                          }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      },
+                      {
+                        "id": 1116,
+                        "type": "basic/text",
+                        "content": [
+                          {
+                            "insert": "React · TypeScript · Tailwind"
+                          }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      }
+                    ],
+                    "layout": {
+                      "direction": 2,
+                      "wrap": 1,
+                      "spaceAlong": 1,
+                      "spaceAcross": 1,
+                      "spaceAcrossMutiple": 1,
+                      "gapX": {
+                        "mode": "none"
+                      },
+                      "gapY": {
+                        "mode": "px",
+                        "value": 12
+                      },
+                      "stackAtMobile": false,
+                      "mobileReverseDirection": false,
+                      "mobileGap": {
+                        "mode": "none"
+                      }
+                    },
+                    "appearance": {
+                      "default": {
+                        "base": {
+                          "default": {
+                            "style": {
+                              "textColor": {
+                                "mode": "basic",
+                                "color": "#F5F3F4"
+                              },
+                              "background": {
+                                "mode": "basic",
+                                "color": "#161A1D"
+                              },
+                              "paddingTop": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingBottom": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingLeft": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingRight": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "borderMode": "solid",
+                              "borderRadius": 12,
+                              "shadow": true,
+                              "shadowOffsetX": 0,
+                              "shadowOffsetY": 8,
+                              "shadowBlur": 24,
+                              "shadowExpand": 0,
+                              "shadowColor": {
+                                "mode": "basic",
+                                "color": "rgba(0,0,0,0.25)"
+                              }
+                            },
+                            "size": {
+                              "along": {
+                                "mode": "%",
+                                "value": 30
+                              },
+                              "across": {
+                                "mode": "auto"
+                              },
+                              "alongGrow": 1,
+                              "alongShrink": true,
+                              "overflowAlong": 1,
+                              "overflowAcross": 1,
+                              "acrossAlign": 1,
+                              "mobileMinHeight": {
+                                "mode": "auto"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "animation": {}
+                  },
+                  {
+                    "id": 1123,
+                    "type": "container/div",
+                    "content": [
+                      {
+                        "id": 1124,
+                        "type": "basic/heading",
+                        "content": [
+                          {
+                            "insert": "Vortex UI Kit"
+                          },
+                          {
+                            "insert": "\n",
+                            "attributes": {
+                              "header": 3
+                            }
+                          }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      },
+                      {
+                        "id": 1125,
+                        "type": "basic/text",
+                        "content": [
+                          {
+                            "insert": "An open-source dark-mode component library for teams building modern SaaS products."
+                          }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      },
+                      {
+                        "id": 1126,
+                        "type": "basic/text",
+                        "content": [
+                          {
+                            "insert": "Design systems · Figma"
+                          }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      }
+                    ],
+                    "layout": {
+                      "direction": 2,
+                      "wrap": 1,
+                      "spaceAlong": 1,
+                      "spaceAcross": 1,
+                      "spaceAcrossMutiple": 1,
+                      "gapX": {
+                        "mode": "none"
+                      },
+                      "gapY": {
+                        "mode": "px",
+                        "value": 12
+                      },
+                      "stackAtMobile": false,
+                      "mobileReverseDirection": false,
+                      "mobileGap": {
+                        "mode": "none"
+                      }
+                    },
+                    "appearance": {
+                      "default": {
+                        "base": {
+                          "default": {
+                            "style": {
+                              "textColor": {
+                                "mode": "basic",
+                                "color": "#F5F3F4"
+                              },
+                              "background": {
+                                "mode": "basic",
+                                "color": "#161A1D"
+                              },
+                              "paddingTop": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingBottom": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingLeft": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingRight": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "borderMode": "solid",
+                              "borderRadius": 12,
+                              "shadow": true,
+                              "shadowOffsetX": 0,
+                              "shadowOffsetY": 8,
+                              "shadowBlur": 24,
+                              "shadowExpand": 0,
+                              "shadowColor": {
+                                "mode": "basic",
+                                "color": "rgba(0,0,0,0.25)"
+                              }
+                            },
+                            "size": {
+                              "along": {
+                                "mode": "%",
+                                "value": 30
+                              },
+                              "across": {
+                                "mode": "auto"
+                              },
+                              "alongGrow": 1,
+                              "alongShrink": true,
+                              "overflowAlong": 1,
+                              "overflowAcross": 1,
+                              "acrossAlign": 1,
+                              "mobileMinHeight": {
+                                "mode": "auto"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "animation": {}
+                  },
+                  {
+                    "id": 1133,
+                    "type": "container/div",
+                    "content": [
+                      {
+                        "id": 1134,
+                        "type": "basic/heading",
+                        "content": [
+                          {
+                            "insert": "Aether Audio"
+                          },
+                          {
+                            "insert": "\n",
+                            "attributes": {
+                              "header": 3
+                            }
+                          }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      },
+                      {
+                        "id": 1135,
+                        "type": "basic/text",
+                        "content": [
+                          {
+                            "insert": "An interactive spatial soundscape exploring custom WebGL visualizers and touch-first controls."
+                          }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      },
+                      {
+                        "id": 1136,
+                        "type": "basic/text",
+                        "content": [
+                          {
+                            "insert": "WebGL · Three.js"
+                          }
+                        ],
+                        "layout": {},
+                        "appearance": {},
+                        "animation": {}
+                      }
+                    ],
+                    "layout": {
+                      "direction": 2,
+                      "wrap": 1,
+                      "spaceAlong": 1,
+                      "spaceAcross": 1,
+                      "spaceAcrossMutiple": 1,
+                      "gapX": {
+                        "mode": "none"
+                      },
+                      "gapY": {
+                        "mode": "px",
+                        "value": 12
+                      },
+                      "stackAtMobile": false,
+                      "mobileReverseDirection": false,
+                      "mobileGap": {
+                        "mode": "none"
+                      }
+                    },
+                    "appearance": {
+                      "default": {
+                        "base": {
+                          "default": {
+                            "style": {
+                              "textColor": {
+                                "mode": "basic",
+                                "color": "#F5F3F4"
+                              },
+                              "background": {
+                                "mode": "basic",
+                                "color": "#161A1D"
+                              },
+                              "paddingTop": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingBottom": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingLeft": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "paddingRight": {
+                                "mode": "px",
+                                "value": 28
+                              },
+                              "borderMode": "solid",
+                              "borderRadius": 12,
+                              "shadow": true,
+                              "shadowOffsetX": 0,
+                              "shadowOffsetY": 8,
+                              "shadowBlur": 24,
+                              "shadowExpand": 0,
+                              "shadowColor": {
+                                "mode": "basic",
+                                "color": "rgba(0,0,0,0.25)"
+                              }
+                            },
+                            "size": {
+                              "along": {
+                                "mode": "%",
+                                "value": 30
+                              },
+                              "across": {
+                                "mode": "auto"
+                              },
+                              "alongGrow": 1,
+                              "alongShrink": true,
+                              "overflowAlong": 1,
+                              "overflowAcross": 1,
+                              "acrossAlign": 1,
+                              "mobileMinHeight": {
+                                "mode": "auto"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "animation": {}
+                  }
+                ],
+                "layout": {
+                  "direction": 1,
+                  "wrap": 2,
+                  "spaceAlong": 1,
+                  "spaceAcross": 1,
+                  "spaceAcrossMutiple": 1,
+                  "gapX": {
+                    "mode": "px",
+                    "value": 24
+                  },
+                  "gapY": {
+                    "mode": "px",
+                    "value": 24
+                  },
+                  "stackAtMobile": true,
+                  "mobileReverseDirection": false,
+                  "mobileGap": {
+                    "mode": "px",
+                    "value": 16
+                  }
+                },
+                "appearance": {},
+                "animation": {}
+              }
+            ],
+            "layout": {
+              "spaceAcross": 1,
+              "spaceAlong": 1,
+              "overflow": 3,
+              "gap": {
+                "mode": "none"
+              },
+              "mobileGap": {
+                "mode": "none"
+              },
+              "mobileReverseDirection": false,
+              "displayType": 0
+            },
+            "appearance": {
+              "default": {
+                "base": {
+                  "default": {
+                    "style": {
+                      "textColor": {
+                        "mode": "basic",
+                        "color": "#F5F3F4"
+                      },
+                      "background": {
+                        "mode": "basic",
+                        "color": "#0B090A"
+                      },
+                      "paddingTop": {
+                        "mode": "px",
+                        "value": 80
+                      },
+                      "paddingBottom": {
+                        "mode": "px",
+                        "value": 80
+                      },
+                      "paddingLeft": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "paddingRight": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "borderMode": "none"
+                    },
+                    "size": {
+                      "height": {
+                        "mode": "auto"
+                      },
+                      "alongGrow": false,
+                      "alongShrink": false,
+                      "mobileMinHeight": {
+                        "mode": "auto"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "animation": {}
+          },
+          {
+            "id": 1140,
+            "JSID": "contact",
+            "type": "section/section",
+            "content": [
+              {
+                "id": 1141,
+                "type": "basic/heading",
+                "content": [
+                  {
+                    "insert": "Let's connect"
+                  },
+                  {
+                    "insert": "\n",
+                    "attributes": {
+                      "header": 2
+                    }
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1142,
+                "type": "basic/text",
+                "content": [
+                  {
+                    "insert": "Have a project in mind or just want to say hello? I would love to hear from you."
+                  }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              {
+                "id": 1143,
+                "type": "basic/button",
+                "content": {
+                  "label": "ray@example.com"
+                },
+                "clickable": {
+                  "enable": true,
+                  "action": {
+                    "mode": "a",
+                    "url": "mailto:ray@example.com",
+                    "newPage": false
+                  }
+                },
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              }
+            ],
+            "layout": {
+              "spaceAcross": 1,
+              "spaceAlong": 1,
+              "overflow": 3,
+              "gap": {
+                "mode": "none"
+              },
+              "mobileGap": {
+                "mode": "none"
+              },
+              "mobileReverseDirection": false,
+              "displayType": 0
+            },
+            "appearance": {
+              "default": {
+                "base": {
+                  "default": {
+                    "style": {
+                      "textColor": {
+                        "mode": "basic",
+                        "color": "#F5F3F4"
+                      },
+                      "background": {
+                        "mode": "basic",
+                        "color": "#161A1D"
+                      },
+                      "paddingTop": {
+                        "mode": "px",
+                        "value": 72
+                      },
+                      "paddingBottom": {
+                        "mode": "px",
+                        "value": 72
+                      },
+                      "paddingLeft": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "paddingRight": {
+                        "mode": "%",
+                        "value": 8
+                      },
+                      "borderMode": "none"
+                    },
+                    "size": {
+                      "height": {
+                        "mode": "auto"
+                      },
+                      "alongGrow": false,
+                      "alongShrink": false,
+                      "mobileMinHeight": {
+                        "mode": "auto"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "animation": {}
+          }
+        ],
+        "layout": {},
+        "appearance": {},
+        "animation": {}
+      },
+      "cta": {
+        "type": "@inherit/inherit",
+        "source": "cta"
+      },
+      "footer": {
+        "type": "@inherit/inherit",
+        "source": "footer"
+      }
+    },
+    "layout": {},
+    "appearance": {},
+    "animation": {}
+  }
+}

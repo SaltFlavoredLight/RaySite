@@ -1,0 +1,43 @@
+{
+  "resources": [
+    {
+      "file": "main.json",
+      "type": "main"
+    },
+    {
+      "file": "themes/default.json",
+      "type": "theme",
+      "name": "default"
+    },
+    {
+      "file": "components/header.json",
+      "type": "component",
+      "name": "header"
+    },
+    {
+      "file": "components/cta.json",
+      "type": "component",
+      "name": "cta"
+    },
+    {
+      "file": "components/footer.json",
+      "type": "component",
+      "name": "footer"
+    },
+    {
+      "file": "pages/_.json",
+      "type": "page",
+      "route": "/"
+    },
+    {
+      "file": "pages/_about.json",
+      "type": "page",
+      "route": "/about"
+    },
+    {
+      "file": "pages/404.json",
+      "type": "page",
+      "route": "404"
+    }
+  ]
+}

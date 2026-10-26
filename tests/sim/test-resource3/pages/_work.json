@@ -1,0 +1,91 @@
+{
+  "title": "Selected Work — Ray",
+  "description": "A collection of thoughtful digital products, brand systems, and creative tools by Ray.",
+  "coverIMG": null,
+  "path": "/work",
+  "importence": 3,
+  "doNotIndex": false,
+  "type": "webpage",
+  "theme": "default",
+  "body": {
+    "id": 0,
+    "type": "@root/RaySite",
+    "content": {
+      "header": { "type": "@inherit/inherit", "source": "header" },
+      "main": {
+        "id": 3100,
+        "type": "@root/main",
+        "content": [
+          {
+            "id": 3101,
+            "type": "section/section",
+            "content": [
+              { "id": 3102, "type": "basic/text", "content": [{ "insert": "SELECTED WORK  /  2022—2026" }], "layout": {}, "appearance": {}, "animation": {} },
+              { "id": 3103, "type": "basic/heading", "content": [{ "insert": "Small details. " }, { "insert": "Big feelings.", "attributes": { "bold": true, "color": "#416A57" } }, { "insert": "\n", "attributes": { "header": 1 } }], "layout": {}, "appearance": {}, "animation": {} },
+              { "id": 3104, "type": "basic/text", "content": [{ "insert": "A few collaborations and experiments where thoughtful design met practical technology." }], "layout": {}, "appearance": {}, "animation": {} }
+            ],
+            "layout": { "spaceAcross": 1, "spaceAlong": 1, "overflow": 3, "gap": { "mode": "px", "value": 20 }, "mobileGap": { "mode": "px", "value": 16 }, "mobileReverseDirection": false, "displayType": 0 },
+            "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#F5F3ED" }, "paddingTop": { "mode": "px", "value": 82 }, "paddingBottom": { "mode": "px", "value": 64 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } } },
+            "animation": {}
+          },
+          {
+            "id": 3110,
+            "type": "section/section",
+            "content": [
+              {
+                "id": 3111,
+                "type": "container/div",
+                "content": [
+                  { "id": 3112, "type": "basic/text", "content": [{ "insert": "01   DIGITAL PRODUCT" }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 3113, "type": "basic/heading", "content": [{ "insert": "Fieldnotes" }, { "insert": "\n", "attributes": { "header": 2 } }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 3114, "type": "basic/text", "content": [{ "insert": "A calmer way for small teams to collect ideas, share progress, and stay in sync. I shaped the product language, interaction model, and a flexible visual system designed for everyday use." }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 3115, "type": "basic/text", "content": [{ "insert": "PRODUCT STRATEGY  ·  UX/UI  ·  FRONT-END" }], "layout": {}, "appearance": {}, "animation": {} }
+                ],
+                "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 14 }, "gapY": { "mode": "px", "value": 14 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 12 } },
+                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#EAEDE6" }, "paddingTop": { "mode": "px", "value": 34 }, "paddingBottom": { "mode": "px", "value": 34 }, "paddingLeft": { "mode": "px", "value": 34 }, "paddingRight": { "mode": "px", "value": 34 }, "borderMode": "none", "borderRadius": 20 }, "size": { "height": { "mode": "auto" } } } } } },
+                "animation": {}
+              },
+              {
+                "id": 3116,
+                "type": "container/div",
+                "content": [
+                  { "id": 3117, "type": "basic/text", "content": [{ "insert": "02   BRAND & WEB" }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 3118, "type": "basic/heading", "content": [{ "insert": "Common Ground" }, { "insert": "\n", "attributes": { "header": 2 } }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 3119, "type": "basic/text", "content": [{ "insert": "A fresh identity and welcoming digital home for a neighborhood food collective. The work brought their community-first spirit into a warm brand and a simple, accessible web experience." }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 3120, "type": "basic/text", "content": [{ "insert": "BRAND IDENTITY  ·  ART DIRECTION  ·  WEB DESIGN" }], "layout": {}, "appearance": {}, "animation": {} }
+                ],
+                "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 14 }, "gapY": { "mode": "px", "value": 14 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 12 } },
+                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#E9DCCB" }, "paddingTop": { "mode": "px", "value": 34 }, "paddingBottom": { "mode": "px", "value": 34 }, "paddingLeft": { "mode": "px", "value": 34 }, "paddingRight": { "mode": "px", "value": 34 }, "borderMode": "none", "borderRadius": 20 }, "size": { "height": { "mode": "auto" } } } } } },
+                "animation": {}
+              },
+              {
+                "id": 3121,
+                "type": "container/div",
+                "content": [
+                  { "id": 3122, "type": "basic/text", "content": [{ "insert": "03   CREATIVE TOOL" }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 3123, "type": "basic/heading", "content": [{ "insert": "Open Canvas" }, { "insert": "\n", "attributes": { "header": 2 } }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 3124, "type": "basic/text", "content": [{ "insert": "A playful browser-based sketchbook that makes creative practice feel easy to begin. Designed around a welcoming blank page, quick gestures, and room to explore." }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 3125, "type": "basic/text", "content": [{ "insert": "CONCEPT  ·  INTERACTION DESIGN  ·  PROTOTYPING" }], "layout": {}, "appearance": {}, "animation": {} }
+                ],
+                "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 14 }, "gapY": { "mode": "px", "value": 14 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 12 } },
+                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#DCE5DD" }, "paddingTop": { "mode": "px", "value": 34 }, "paddingBottom": { "mode": "px", "value": 34 }, "paddingLeft": { "mode": "px", "value": 34 }, "paddingRight": { "mode": "px", "value": 34 }, "borderMode": "none", "borderRadius": 20 }, "size": { "height": { "mode": "auto" } } } } } },
+                "animation": {}
+              }
+            ],
+            "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 4, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 18 }, "gapY": { "mode": "px", "value": 18 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 16 } },
+            "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#FFFFFF" }, "paddingTop": { "mode": "px", "value": 10 }, "paddingBottom": { "mode": "px", "value": 84 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } } },
+            "animation": {}
+          }
+        ],
+        "layout": {},
+        "appearance": {},
+        "animation": {}
+      },
+      "cta": { "type": "@inherit/inherit", "source": "cta" },
+      "footer": { "type": "@inherit/inherit", "source": "footer" }
+    },
+    "layout": {},
+    "appearance": {},
+    "animation": {}
+  }
+}

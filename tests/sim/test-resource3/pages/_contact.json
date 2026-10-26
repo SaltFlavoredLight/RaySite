@@ -1,0 +1,99 @@
+{
+  "title": "Contact Ray — Let's Make Something Good",
+  "description": "Have a thoughtful project in mind? Get in touch with Ray to start a conversation.",
+  "coverIMG": null,
+  "path": "/contact",
+  "importence": 4,
+  "doNotIndex": false,
+  "type": "webpage",
+  "theme": "default",
+  "body": {
+    "id": 0,
+    "type": "@root/RaySite",
+    "content": {
+      "header": { "type": "@inherit/inherit", "source": "header" },
+      "main": {
+        "id": 4100,
+        "type": "@root/main",
+        "content": [
+          {
+            "id": 4101,
+            "JSID": "contact",
+            "type": "section/section",
+            "content": [
+              { "id": 4102, "type": "basic/text", "content": [{ "insert": "YOUR NEXT GOOD THING STARTS HERE" }], "layout": {}, "appearance": {}, "animation": {} },
+              {
+                "id": 4103,
+                "type": "basic/heading",
+                "content": [
+                  { "insert": "Let’s make something " },
+                  { "insert": "meaningful.", "attributes": { "bold": true, "color": "#416A57" } },
+                  { "insert": "\n", "attributes": { "header": 1 } }
+                ],
+                "layout": {},
+                "appearance": {},
+                "animation": { "animationType": 2, "duration": 0.5, "delayTime": 0, "trigger": 1, "direction": 0, "intensity": 24 }
+              },
+              { "id": 4104, "type": "basic/text", "content": [{ "insert": "Tell me a little about what you’re building, what’s not working yet, or the idea you can’t stop thinking about. I’ll get back to you soon." }], "layout": {}, "appearance": {}, "animation": {} },
+              {
+                "id": 4105,
+                "type": "basic/button",
+                "content": { "label": "Write me an email ↗" },
+                "clickable": { "enable": true, "action": { "mode": "a", "url": "mailto:hello@example.com", "newPage": true } },
+                "layout": {},
+                "appearance": {},
+                "animation": {}
+              },
+              { "id": 4106, "type": "basic/text", "content": [{ "insert": "Independent creative partner · Available for select collaborations" }], "layout": {}, "appearance": {}, "animation": {} }
+            ],
+            "layout": { "spaceAcross": 1, "spaceAlong": 2, "overflow": 3, "gap": { "mode": "px", "value": 22 }, "mobileGap": { "mode": "px", "value": 18 }, "mobileReverseDirection": false, "displayType": 0 },
+            "appearance": {
+              "default": { "base": { "default": { "style": { "textColor": { "mode": "basic", "color": "#25312B" }, "background": { "mode": "basic", "color": "#F5F3ED" }, "paddingTop": { "mode": "px", "value": 112 }, "paddingBottom": { "mode": "px", "value": 128 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } }
+            },
+            "animation": {}
+          },
+          {
+            "id": 4110,
+            "type": "section/section",
+            "content": [
+              { "id": 4111, "type": "basic/heading", "content": [{ "insert": "A good place to begin" }, { "insert": "\n", "attributes": { "header": 2 } }], "layout": {}, "appearance": {}, "animation": {} },
+              {
+                "id": 4112,
+                "type": "container/div",
+                "content": [
+                  { "id": 4113, "type": "basic/text", "content": [{ "insert": "01   SAY HELLO" }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 4114, "type": "basic/text", "content": [{ "insert": "A note with a little context is perfect. No polished brief needed." }], "layout": {}, "appearance": {}, "animation": {} }
+                ],
+                "layout": { "direction": 2, "gapY": { "mode": "px", "value": 10 } },
+                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#EAEDE6" }, "paddingTop": { "mode": "px", "value": 24 }, "paddingBottom": { "mode": "px", "value": 24 }, "paddingLeft": { "mode": "px", "value": 24 }, "paddingRight": { "mode": "px", "value": 24 }, "borderMode": "none", "borderRadius": 16 }, "size": { "height": { "mode": "auto" } } } } } },
+                "animation": {}
+              },
+              {
+                "id": 4115,
+                "type": "container/div",
+                "content": [
+                  { "id": 4116, "type": "basic/text", "content": [{ "insert": "02   FIND A FIT" }], "layout": {}, "appearance": {}, "animation": {} },
+                  { "id": 4117, "type": "basic/text", "content": [{ "insert": "We’ll talk about goals, people, timing, and what a good outcome looks like." }], "layout": {}, "appearance": {}, "animation": {} }
+                ],
+                "layout": { "direction": 2, "gapY": { "mode": "px", "value": 10 } },
+                "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#E9DCCB" }, "paddingTop": { "mode": "px", "value": 24 }, "paddingBottom": { "mode": "px", "value": 24 }, "paddingLeft": { "mode": "px", "value": 24 }, "paddingRight": { "mode": "px", "value": 24 }, "borderMode": "none", "borderRadius": 16 }, "size": { "height": { "mode": "auto" } } } } } },
+                "animation": {}
+              }
+            ],
+            "layout": { "direction": 1, "wrap": 2, "spaceAcross": 4, "spaceAlong": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 18 }, "gapY": { "mode": "px", "value": 18 }, "stackAtMobile": true, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 16 } },
+            "appearance": { "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#FFFFFF" }, "paddingTop": { "mode": "px", "value": 42 }, "paddingBottom": { "mode": "px", "value": 78 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } } },
+            "animation": {}
+          }
+        ],
+        "layout": {},
+        "appearance": {},
+        "animation": {}
+      },
+      "cta": { "type": "@inherit/inherit", "source": "cta" },
+      "footer": { "type": "@inherit/inherit", "source": "footer" }
+    },
+    "layout": {},
+    "appearance": {},
+    "animation": {}
+  }
+}
