@@ -58,7 +58,7 @@
             "paddingRight": { "mode": "%", "value": 8 },
             "borderMode": "none"
           },
-          "size": { "height": { "mode": "auto" }, "alongGrow": false, "alongShrink": false }
+          "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" }, "alongGrow": false, "alongShrink": false }
         }
       }
     }

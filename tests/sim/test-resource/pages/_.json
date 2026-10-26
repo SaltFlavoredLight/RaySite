@@ -162,7 +162,7 @@
                       "paddingRight": { "mode": "%", "value": 8 },
                       "borderMode": "none"
                     },
-                    "size": { "height": { "mode": "auto" }, "alongGrow": false, "alongShrink": false, "mobileMinHeight": { "mode": "auto" } }
+                    "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" }, "alongGrow": false, "alongShrink": false, "mobileMinHeight": { "mode": "auto" } }
                   }
                 }
               }
@@ -207,7 +207,7 @@
                     ],
                     "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 12 }, "gapY": { "mode": "px", "value": 12 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 12 } },
                     "appearance": {
-                      "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#EAEDE6" }, "paddingTop": { "mode": "px", "value": 30 }, "paddingBottom": { "mode": "px", "value": 30 }, "paddingLeft": { "mode": "px", "value": 28 }, "paddingRight": { "mode": "px", "value": 28 }, "borderMode": "none", "borderRadius": 18 }, "size": { "height": { "mode": "auto" } } } } }
+                      "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#EAEDE6" }, "paddingTop": { "mode": "px", "value": 30 }, "paddingBottom": { "mode": "px", "value": 30 }, "paddingLeft": { "mode": "px", "value": 28 }, "paddingRight": { "mode": "px", "value": 28 }, "borderMode": "none", "borderRadius": 18 }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } }
                     },
                     "animation": {}
                   },
@@ -221,7 +221,7 @@
                     ],
                     "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 12 }, "gapY": { "mode": "px", "value": 12 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 12 } },
                     "appearance": {
-                      "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#E9DCCB" }, "paddingTop": { "mode": "px", "value": 30 }, "paddingBottom": { "mode": "px", "value": 30 }, "paddingLeft": { "mode": "px", "value": 28 }, "paddingRight": { "mode": "px", "value": 28 }, "borderMode": "none", "borderRadius": 18 }, "size": { "height": { "mode": "auto" } } } } }
+                      "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#E9DCCB" }, "paddingTop": { "mode": "px", "value": 30 }, "paddingBottom": { "mode": "px", "value": 30 }, "paddingLeft": { "mode": "px", "value": 28 }, "paddingRight": { "mode": "px", "value": 28 }, "borderMode": "none", "borderRadius": 18 }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } }
                     },
                     "animation": {}
                   },
@@ -235,7 +235,7 @@
                     ],
                     "layout": { "direction": 2, "wrap": 1, "spaceAlong": 1, "spaceAcross": 1, "spaceAcrossMutiple": 1, "gapX": { "mode": "px", "value": 12 }, "gapY": { "mode": "px", "value": 12 }, "stackAtMobile": false, "mobileReverseDirection": false, "mobileGap": { "mode": "px", "value": 12 } },
                     "appearance": {
-                      "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#DCE5DD" }, "paddingTop": { "mode": "px", "value": 30 }, "paddingBottom": { "mode": "px", "value": 30 }, "paddingLeft": { "mode": "px", "value": 28 }, "paddingRight": { "mode": "px", "value": 28 }, "borderMode": "none", "borderRadius": 18 }, "size": { "height": { "mode": "auto" } } } } }
+                      "default": { "base": { "default": { "style": { "background": { "mode": "basic", "color": "#DCE5DD" }, "paddingTop": { "mode": "px", "value": 30 }, "paddingBottom": { "mode": "px", "value": 30 }, "paddingLeft": { "mode": "px", "value": 28 }, "paddingRight": { "mode": "px", "value": 28 }, "borderMode": "none", "borderRadius": 18 }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } }
                     },
                     "animation": {}
                   }
@@ -267,7 +267,7 @@
             ],
             "layout": { "spaceAcross": 1, "spaceAlong": 1, "overflow": 3, "gap": { "mode": "px", "value": 18 }, "mobileGap": { "mode": "px", "value": 16 }, "mobileReverseDirection": false, "displayType": 0 },
             "appearance": {
-              "default": { "base": { "default": { "style": { "textColor": { "mode": "basic", "color": "#25312B" }, "background": { "mode": "basic", "color": "#FFFFFF" }, "paddingTop": { "mode": "px", "value": 78 }, "paddingBottom": { "mode": "px", "value": 84 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } }
+              "default": { "base": { "default": { "style": { "textColor": { "mode": "basic", "color": "#25312B" }, "background": { "mode": "basic", "color": "#FFFFFF" }, "paddingTop": { "mode": "px", "value": 78 }, "paddingBottom": { "mode": "px", "value": 84 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } }
             },
             "animation": {}
           },
@@ -310,7 +310,7 @@
               "mobileGap": { "mode": "px", "value": 28 }
             },
             "appearance": {
-              "default": { "base": { "default": { "style": { "textColor": { "mode": "basic", "color": "#F5F3ED" }, "background": { "mode": "basic", "color": "#244A3D" }, "paddingTop": { "mode": "px", "value": 78 }, "paddingBottom": { "mode": "px", "value": 78 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "height": { "mode": "auto" } } } } }
+              "default": { "base": { "default": { "style": { "textColor": { "mode": "basic", "color": "#F5F3ED" }, "background": { "mode": "basic", "color": "#244A3D" }, "paddingTop": { "mode": "px", "value": 78 }, "paddingBottom": { "mode": "px", "value": 78 }, "paddingLeft": { "mode": "%", "value": 8 }, "paddingRight": { "mode": "%", "value": 8 }, "borderMode": "none" }, "size": { "spaceAlong": { "mode": "auto" }, "spaceAcross": { "mode": "auto" } } } } }
             },
             "animation": {}
           }
