@@ -150,6 +150,14 @@ const flexEngineStyleVarible = {
     },
 
     space: function (spaceObj) {
+        // Older editor data and some controls store a spacing value directly
+        // as a number. Treat those values as pixels for backward compatibility.
+        if (typeof spaceObj === "number" && Number.isFinite(spaceObj)) {
+            return `${spaceObj}px`;
+        }
+        if (typeof spaceObj === "string" && spaceObj.trim()) {
+            return spaceObj.trim();
+        }
         if (!spaceObj || !spaceObj.mode) return '0px';
 
         switch (spaceObj.mode) {
@@ -223,7 +231,7 @@ const flexEngineStyleVarible = {
             coords[0] === "theme") {
             const prefix =
                 typeof BUILDER_CONFIG !== "undefined" &&
-                BUILDER_CONFIG.classPrefix
+                    BUILDER_CONFIG.classPrefix
                     ? BUILDER_CONFIG.classPrefix
                     : "default";
 
@@ -6280,12 +6288,24 @@ export const flexEngineDefaultVariables = {
                     return async () => {
                         try {
                             const themeName = typeof this.thisPageObject !== "undefined" ? this.thisPageObject.theme : "defaultTheme";
-                            const themeData = await flexEngineFlieSystem.readTheme(themeName);
-                            const parsedTheme = typeof themeData === "string" ? JSON.parse(themeData) : themeData;
+                            const themeResult = await flexEngineFileSystem.readTheme(themeName);
+                            if (!themeResult || themeResult.code === 1) {
+                                throw new Error(
+                                    themeResult?.error || `Failed to read theme: ${themeName}`
+                                );
+                            }
+                            const parsedTheme = themeResult.data;
+                            if (!parsedTheme || typeof parsedTheme !== "object") {
+                                throw new TypeError(`Invalid theme data: ${themeName}`);
+                            }
                             this.themeColors = parsedTheme.color || {};
                             this.renderUI();
                         } catch (error) {
                             console.error("Theme variables failed to load:", error);
+                            return {
+                                code: 1,
+                                error: error.message || "Theme variables failed to load."
+                            };
                         }
                         return {
                             code: 0
@@ -8401,12 +8421,24 @@ export const flexEngineDefaultVariables = {
                     return async () => {
                         try {
                             const themeName = typeof this.thisPageObject !== "undefined" ? this.thisPageObject.theme : "defaultTheme";
-                            const themeData = await flexEngineFlieSystem.readTheme(themeName);
-                            const parsedTheme = typeof themeData === "string" ? JSON.parse(themeData) : themeData;
+                            const themeResult = await flexEngineFileSystem.readTheme(themeName);
+                            if (!themeResult || themeResult.code === 1) {
+                                throw new Error(
+                                    themeResult?.error || `Failed to read theme: ${themeName}`
+                                );
+                            }
+                            const parsedTheme = themeResult.data;
+                            if (!parsedTheme || typeof parsedTheme !== "object") {
+                                throw new TypeError(`Invalid theme data: ${themeName}`);
+                            }
                             this.themeColors = parsedTheme.color || {};
                             this.renderUI();
                         } catch (error) {
                             console.error("Theme variables failed to load:", error);
+                            return {
+                                code: 1,
+                                error: error.message || "Theme variables failed to load."
+                            };
                         }
                         return {
                             code: 0
@@ -15990,11 +16022,15 @@ const flexEngineDefaultAppearance = {
             "border-right": flexEngineStyleVarible.space(s.borderRight) || "0px",
             "border-radius": `${s.borderRadius || 0}px`,
             "box-shadow": s.shadow ? `${s.shadowInset ? 'inset ' : ''}${s.shadowOffsetX || 0}px ${s.shadowOffsetY || 0}px ${s.shadowBlur || 0}px ${s.shadowExpand || 0}px ${flexEngineStyleVarible.color(s.shadowColor)}` : "none",
-            "color": flexEngineStyleVarible.color(s.textColor),
+            "color": s.textColor
+                ? flexEngineStyleVarible.color(s.textColor)
+                : "inherit",
             "background": flexEngineStyleVarible.color(s.background),
             "filter": s.blur ? `blur(${s.blur}px)` : "none",
             "font-family": s.font || "inherit",
-            "caret-color": flexEngineStyleVarible.color(s.markColor),
+            "caret-color": s.markColor
+                ? flexEngineStyleVarible.color(s.markColor)
+                : "auto",
         };
     },
     styleMobile: (s) => {
@@ -16052,15 +16088,15 @@ export const flexEngineStylesResolveRegistry = (elementMode) => {
 
     // Root types use className as the identifier.
     const elementRegistry = isRoot
-        ? Object.values(elementsRegistry).find(
-            entry =>
+        ? Object.entries(elementsRegistry).find(
+            ([name, entry]) =>
                 entry &&
                 typeof entry === "object" &&
-                entry.className === element
-        ) || {}
+                (name === element || entry.className === element)
+        )?.[1] || {}
         : (
             elementsRegistry[element] &&
-            typeof elementsRegistry[element] === "object"
+                typeof elementsRegistry[element] === "object"
                 ? elementsRegistry[element]
                 : {}
         );
@@ -16204,7 +16240,11 @@ const flexEngineStylesBuildClassName = (prefix, appearanceName, position, stateN
             ? ""
             : `-at${toAlphaEscape(String(position))}`;
 
-    return `${prefix}-styles-${cleanAppearance}${stateSuffix}${targetSuffix}`;
+    const normalizedPrefix = String(prefix).endsWith("-")
+        ? String(prefix)
+        : `${prefix}-`;
+
+    return `${normalizedPrefix}styles-${cleanAppearance}${stateSuffix}${targetSuffix}`;
 };
 
 /*
@@ -16500,7 +16540,7 @@ const flexEngineRenderHTMLHeader = function (
 
     const coverIMG =
         typeof dataArray.coverIMG === "string" &&
-        dataArray.coverIMG.trim()
+            dataArray.coverIMG.trim()
             ? dataArray.coverIMG.trim()
             : "";
 
@@ -16711,7 +16751,7 @@ const flexEngineRenderHTMLHeader = function (
  * Setting will include systemClass, allowedSortIn, dependencyAnimation, allowedSortTo those 4 types.
  * 
  * Now for each element, they need include a className, alts, icon, contentQuery, layoutQuery, initQuery(optional), 
- * initFunction(optional), contentFunction, cssStyles, jsRuntime and setting.
+ * initFunction(optional), contentFunction or contextFunction, cssStyles, jsRuntime and setting.
  * a setting may have some questions, check in to see what there have.
  * contentFunction need include function(dataArray, documentHTML, node, createAnotherNode)
  * 
@@ -16795,9 +16835,17 @@ export const flexEngineDefaultElements = {
         ],
 
         sizeDefault: (sz, isVertical) => {
+            const resolveSize = value => value?.mode
+                ? flexEngineStyleVarible.space(value)
+                : "auto";
+
             return {
-                "width": isVertical ? flexEngineStyleVarible.space(sz.across) : flexEngineStyleVarible.space(sz.along),
-                "height": isVertical ? flexEngineStyleVarible.space(sz.along) : flexEngineStyleVarible.space(sz.across),
+                "width": isVertical
+                    ? resolveSize(sz.across)
+                    : resolveSize(sz.along),
+                "height": isVertical
+                    ? resolveSize(sz.along)
+                    : resolveSize(sz.across),
                 "flex-grow": sz.alongGrow || 0,
                 "flex-shrink": sz.alongShrink === true ? 1 : 0,
                 "overflow-x": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible'),
@@ -16806,9 +16854,13 @@ export const flexEngineDefaultElements = {
             }
         },
         sizeMobile: (sz, isVertical) => {
-            return {
-                "min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
-            }
+            return sz.mobileMinHeight?.mode
+                ? {
+                    "min-height": flexEngineStyleVarible.space(
+                        sz.mobileMinHeight
+                    )
+                }
+                : {};
         },
 
         elements: {
@@ -16846,7 +16898,7 @@ export const flexEngineDefaultElements = {
                     {
                         "object": "*",
                         "info": [
-                            { "key": "all", "value": "unset" }
+                            { "key": "box-sizing", "value": "border-box" }
                         ]
                     },
                     {
@@ -17378,9 +17430,17 @@ export const flexEngineDefaultElements = {
         ],
 
         sizeDefault: (sz, isVertical) => {
+            const along = sz.spaceAlong
+                ?? sz.along
+                ?? (isVertical ? sz.height : sz.width)
+                ?? { mode: "auto" };
+            const across = sz.spaceAcross
+                ?? sz.across
+                ?? (isVertical ? sz.width : sz.height)
+                ?? { mode: "auto" };
             return {
-                "width": isVertical ? flexEngineStyleVarible.space(sz.across) : flexEngineStyleVarible.space(sz.along),
-                "height": isVertical ? flexEngineStyleVarible.space(sz.along) : flexEngineStyleVarible.space(sz.across),
+                "width": isVertical ? flexEngineStyleVarible.space(across) : flexEngineStyleVarible.space(along),
+                "height": isVertical ? flexEngineStyleVarible.space(along) : flexEngineStyleVarible.space(across),
                 "flex-grow": sz.alongGrow || 0,
                 "flex-shrink": sz.alongShrink === true ? 1 : 0,
                 "overflow-x": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible'),
@@ -17584,20 +17644,14 @@ export const flexEngineDefaultElements = {
                 className: "vimeoVideo",
 
                 alts: ["vimeo", "vimeo video"],
-
                 icon: `
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 -960 960 960"
-                        fill="currentColor"
-                        class="RaySiteUI-c-svg">
-                        <path d="M2498.5,499c-11.2,242.7-181.1,575.1-509.7,997.1c-339.8,440.6-627.4,661-862.6,661 
-                        c-145.6,0-268.9-134.4-369.7-403.3l-201.6-739.4C480.1,745.4,399.8,611,314,611c-18.7,0-84,39.2-196.1,117.6L0.3,577.4 
-                        C122.5,470,243.8,361.7,364.4,252.5C528.7,110.6,651.9,35.9,734.1,28.5c194.2-18.7,313.7,113.9,358.5,397.7 
-                        c48.5,306.2,82.2,496.7,100.8,571.3c56,253.9,117.6,380.9,184.8,380.9c52.3,0,130.7-82.2,235.3-246.5 
-                        c104.6-164.3,160.6-289.4,168-375.3c14.9-141.9-41.1-212.9-168-212.9c-59.7,0-121.4,13.1-184.8,39.2 
-                        c123.2-399.6,358.5-593.7,705.8-582.5C2392.1,7.9,2513.4,174.1,2498.5,499L2498.5,499z"/>
-                    </svg>
-                `,
+    <svg xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="#17D5FF"
+        class="RaySiteUI-c-svg">
+        <path d="M23.9765 6.4168c-.105 2.338-1.739 5.5429-4.894 9.6088-3.2679 4.247-6.0258 6.3699-8.2898 6.3699-1.409 0-2.578-1.294-3.553-3.881l-1.9179-7.1138c-.719-2.584-1.488-3.878-2.312-3.878-.179 0-.806.378-1.8809 1.132l-1.129-1.457a315.06 315.06 0 003.501-3.1279c1.579-1.368 2.765-2.085 3.5539-2.159 1.867-.18 3.016 1.1 3.447 3.838.465 2.953.789 4.789.971 5.5069.5389 2.45 1.1309 3.674 1.7759 3.674.502 0 1.256-.796 2.265-2.385 1.004-1.589 1.54-2.797 1.612-3.628.144-1.371-.395-2.061-1.614-2.061-.574 0-1.167.121-1.777.391 1.186-3.8679 3.434-5.7568 6.7619-5.6368 2.4729.06 3.6279 1.664 3.4929 4.7969z"/>
+    </svg>
+`,
 
                 contentQuery: [
                     {
@@ -17767,16 +17821,16 @@ export const flexEngineDefaultElements = {
                 className: "ytVideo",
 
                 alts: ["youtube", "yt", "youtube video"],
-
                 icon: `
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 -960 960 960"
-                        fill="currentColor"
-                        class="RaySiteUI-c-svg">
-                        <path d="M27.9727 3.12324C27.6435 1.89323 26.6768 0.926623 25.4468 0.597366C23.2197 2.24288e-07 14.285 0 14.285 0C14.285 0 5.35042 2.24288e-07 3.12323 0.597366C1.89323 0.926623 0.926623 1.89323 0.597366 3.12324C2.24288e-07 5.35042 0 10 0 10C0 10 2.24288e-07 14.6496 0.597366 16.8768C0.926623 18.1068 1.89323 19.0734 3.12323 19.4026C5.35042 20 14.285 20 14.285 20C14.285 20 23.2197 20 25.4468 19.4026C26.6768 19.0734 27.6435 18.1068 27.9727 16.8768C28.5701 14.6496 28.5701 10 28.5701 10C28.5701 10 28.5677 5.35042 27.9727 3.12324Z" fill="#FF0000"></path>
-                    </svg>
-                `,
-
+    <svg xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 28.5701 20"
+        class="RaySiteUI-c-svg">
+        <path fill="#FF0033"
+            d="M27.9727 3.12324C27.6435 1.89323 26.6768 0.926623 25.4468 0.597366C23.2197 0 14.285 0 14.285 0S5.35042 0 3.12323 0.597366C1.89323 0.926623 0.926623 1.89323 0.597366 3.12324C0 5.35042 0 10 0 10S0 14.6496 0.597366 16.8768C0.926623 18.1068 1.89323 19.0734 3.12323 19.4026C5.35042 20 14.285 20 14.285 20S23.2197 20 25.4468 19.4026C26.6768 19.0734 27.6435 18.1068 27.9727 16.8768C28.5701 14.6496 28.5701 10 28.5701 10S28.5677 5.35042 27.9727 3.12324Z"/>
+        <path fill="#FFFFFF"
+            d="M11.43 5.71L18.86 10L11.43 14.29V5.71Z"/>
+    </svg>
+`,
                 contentQuery: [
                     {
                         name: "videoID",
@@ -18201,7 +18255,7 @@ export const flexEngineDefaultElements = {
             },
 
             gDocs: {
-                name: "Google Docs Native Embeds",
+                name: "Google Docs Native",
                 className: "gDocs",
 
                 alts: ["google docs", "gdocs", "docs embed", "google document"],
@@ -18654,7 +18708,7 @@ export const flexEngineDefaultElements = {
                     element.content.html = dataArray.html || "";
                 },
 
-                contextFunction: function (dataArray, documentHTML, node) {
+                contentFunction: function (dataArray, documentHTML, node) {
                     node.innerHTML = dataArray.content.html;
                 },
 
@@ -18746,9 +18800,17 @@ export const flexEngineDefaultElements = {
         ],
 
         sizeDefault: (sz, isVertical) => {
+            const along = sz.spaceAlong
+                ?? sz.along
+                ?? (isVertical ? sz.height : sz.width)
+                ?? { mode: "auto" };
+            const across = sz.spaceAcross
+                ?? sz.across
+                ?? (isVertical ? sz.width : sz.height)
+                ?? { mode: "auto" };
             return {
-                "width": isVertical ? flexEngineStyleVarible.space(sz.across) : flexEngineStyleVarible.space(sz.along),
-                "height": isVertical ? flexEngineStyleVarible.space(sz.along) : flexEngineStyleVarible.space(sz.across),
+                "width": isVertical ? flexEngineStyleVarible.space(across) : flexEngineStyleVarible.space(along),
+                "height": isVertical ? flexEngineStyleVarible.space(along) : flexEngineStyleVarible.space(across),
                 "flex-grow": sz.alongGrow || 0,
                 "flex-shrink": sz.alongShrink === true ? 1 : 0,
                 "overflow-x": isVertical ? (['visible', 'hidden', 'auto'][sz.overflowAcross - 1] || 'visible') : (['visible', 'hidden', 'auto'][sz.overflowAlong - 1] || 'visible'),
@@ -18973,8 +19035,8 @@ export const flexEngineDefaultElements = {
     section: {
         sizeQuery: [
             {
-                name: "height",
-                label: "Height",
+                name: "spaceAlong",
+                label: "Space Along",
                 type: "space",
                 defaultAsFull: true
             },
@@ -18997,9 +19059,12 @@ export const flexEngineDefaultElements = {
         ],
 
         sizeDefault: (sz, isVertical) => {
+            const along = sz.spaceAlong ?? sz.height;
             return {
                 "width": "100%",
-                "height": flexEngineStyleVarible.space(sz.height),
+                "height": along?.mode
+                    ? flexEngineStyleVarible.space(along)
+                    : "auto",
                 "flex-grow": sz.alongGrow === true ? 1 : 0,
                 "flex-shrink": sz.alongShrink === true ? 1 : 0,
                 "overflow-x": "visible",
@@ -19009,9 +19074,13 @@ export const flexEngineDefaultElements = {
         },
 
         sizeMobile: (sz, isVertical) => {
-            return {
-                "min-height": flexEngineStyleVarible.space(sz.mobileMinHeight)
-            };
+            return sz.mobileMinHeight?.mode
+                ? {
+                    "min-height": flexEngineStyleVarible.space(
+                        sz.mobileMinHeight
+                    )
+                }
+                : {};
         },
 
         elements: {
@@ -19150,7 +19219,7 @@ export const flexEngineDefaultElements = {
 
                     // gap
                     if (layout.gap !== undefined) {
-                        const gapValue = flexEngineStyleVarible.space[layout.gap];
+                        const gapValue = flexEngineStyleVarible.space(layout.gap);
                         cssOutput += `gap:${gapValue};`;
                     }
 
@@ -19161,7 +19230,7 @@ export const flexEngineDefaultElements = {
 
                     // mobile gap
                     if (layout.mobileGap !== undefined) {
-                        const gapValue = flexEngineStyleVarible.space[layout.mobileGap];
+                        const gapValue = flexEngineStyleVarible.space(layout.mobileGap);
                         cssMobileOutput += `gap:${gapValue};`;
                     }
 
@@ -19175,11 +19244,11 @@ export const flexEngineDefaultElements = {
                     let innerNode = documentHTML.createElement("div");
 
                     if (layout.displayType === 0) {
-                        innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-standard`);
+                        innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}context-section-standard`);
                     } else if (layout.displayType === 1) {
-                        innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-wide`);
+                        innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}context-section-wide`);
                     } else {
-                        innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-full`);
+                        innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}context-section-full`);
                     }
 
                     // children
@@ -19209,14 +19278,14 @@ export const flexEngineDefaultElements = {
                         object: "@context-full",
                         info: [
                             { key: "width", value: "100%" },
-                            { key: "height", value: "100%" }
+                            { key: "height", value: "auto" }
                         ]
                     },
                     {
                         object: "@context-wide",
                         info: [
                             { key: "width", value: "100%" },
-                            { key: "height", value: "100%" },
+                            { key: "height", value: "auto" },
                             { key: "max-width", value: "1600px" }
                         ]
                     },
@@ -19224,7 +19293,7 @@ export const flexEngineDefaultElements = {
                         object: "@context-standard",
                         info: [
                             { key: "width", value: "100%" },
-                            { key: "height", value: "100%" },
+                            { key: "height", value: "auto" },
                             { key: "max-width", value: "1200px" }
                         ]
                     }
@@ -19374,7 +19443,7 @@ export const flexEngineRootElement = {
             }
             // gap
             if (layout.gap !== undefined) {
-                const gapValue = flexEngineStyleVarible.space[layout.gap];
+                const gapValue = flexEngineStyleVarible.space(layout.gap);
                 cssOutput += `gap:${gapValue};`;
             }
             // mobile reverse direction
@@ -19383,7 +19452,7 @@ export const flexEngineRootElement = {
             }
             // mobile gap
             if (layout.mobileGap !== undefined) {
-                const gapValue = flexEngineStyleVarible.space[layout.mobileGap];
+                const gapValue = flexEngineStyleVarible.space(layout.mobileGap);
                 cssMobileOutput += `gap:${gapValue};`;
             }
             // apply attributes
@@ -19492,9 +19561,10 @@ export const flexEngineRootElement = {
         ],
 
         sizeDefault: (sz, isVertical) => {
+            const along = sz.spaceAlong ?? sz.height;
             return {
                 "width": "100%",
-                "height": flexEngineStyleVarible.space(sz.height),
+                "height": flexEngineStyleVarible.space(along),
                 "flex-grow": sz.alongGrow === true ? 1 : 0,
                 "flex-shrink": sz.alongShrink === true ? 1 : 0,
 
@@ -19800,7 +19870,7 @@ export const flexEngineRootElement = {
             }
             // gap
             if (layout.gap !== undefined) {
-                const gapValue = flexEngineStyleVarible.space[layout.gap];
+                const gapValue = flexEngineStyleVarible.space(layout.gap);
                 cssOutput += `gap:${gapValue};`;
             }
             // mobile reverse direction
@@ -19809,7 +19879,7 @@ export const flexEngineRootElement = {
             }
             // mobile gap
             if (layout.mobileGap !== undefined) {
-                const gapValue = flexEngineStyleVarible.space[layout.mobileGap];
+                const gapValue = flexEngineStyleVarible.space(layout.mobileGap);
                 cssMobileOutput += `gap:${gapValue};`;
             }
             // apply attributes
@@ -19819,11 +19889,11 @@ export const flexEngineRootElement = {
             node.setAttribute(prefixMobile, cssMobileOutput);
             let innerNode = documentHTML.createElement("div");
             if (layout.displayType === 0) {
-                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-standard`);
+                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}context-cta-standard`);
             } else if (layout.displayType === 1) {
-                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-wide`);
+                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}context-cta-wide`);
             } else {
-                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-full`);
+                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}context-cta-full`);
             }
             // children
             if (Array.isArray(dataArray.content)) {
@@ -19852,7 +19922,7 @@ export const flexEngineRootElement = {
                     value: "100%"
                 }, {
                     key: "height",
-                    value: "100%"
+                    value: "auto"
                 }]
             }, {
                 object: "@context-wide",
@@ -19861,7 +19931,7 @@ export const flexEngineRootElement = {
                     value: "100%"
                 }, {
                     key: "height",
-                    value: "100%"
+                    value: "auto"
                 }, {
                     key: "max-width",
                     value: "1600px"
@@ -19873,7 +19943,7 @@ export const flexEngineRootElement = {
                     value: "100%"
                 }, {
                     key: "height",
-                    value: "100%"
+                    value: "auto"
                 }, {
                     key: "max-width",
                     value: "1200px"
@@ -19882,8 +19952,8 @@ export const flexEngineRootElement = {
 
         sizeQuery: [
             {
-                name: "height",
-                label: "Height",
+                name: "spaceAlong",
+                label: "Space Along",
                 type: "space",
                 defaultAsFull: true
             },
@@ -19906,9 +19976,10 @@ export const flexEngineRootElement = {
         ],
 
         sizeDefault: (sz, isVertical) => {
+            const along = sz.spaceAlong ?? sz.height;
             return {
                 "width": "100%",
-                "height": flexEngineStyleVarible.space(sz.height),
+                "height": flexEngineStyleVarible.space(along),
                 "flex-grow": sz.alongGrow === true ? 1 : 0,
                 "flex-shrink": sz.alongShrink === true ? 1 : 0,
                 "overflow-x": "visible",
@@ -20071,7 +20142,7 @@ export const flexEngineRootElement = {
             }
             // gap
             if (layout.gap !== undefined) {
-                const gapValue = flexEngineStyleVarible.space[layout.gap];
+                const gapValue = flexEngineStyleVarible.space(layout.gap);
                 cssOutput += `gap:${gapValue};`;
             }
             // mobile reverse direction
@@ -20080,7 +20151,7 @@ export const flexEngineRootElement = {
             }
             // mobile gap
             if (layout.mobileGap !== undefined) {
-                const gapValue = flexEngineStyleVarible.space[layout.mobileGap];
+                const gapValue = flexEngineStyleVarible.space(layout.mobileGap);
                 cssMobileOutput += `gap:${gapValue};`;
             }
             // apply attributes
@@ -20090,11 +20161,11 @@ export const flexEngineRootElement = {
             node.setAttribute(prefixMobile, cssMobileOutput);
             let innerNode = documentHTML.createElement("div");
             if (layout.displayType === 0) {
-                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-standard`);
+                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}context-footer-standard`);
             } else if (layout.displayType === 1) {
-                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-wide`);
+                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}context-footer-wide`);
             } else {
-                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}-context-section-full`);
+                innerNode.classList.add(`${BUILDER_CONFIG.classPrefix}context-footer-full`);
             }
             // children
             if (Array.isArray(dataArray.content)) {
@@ -20123,7 +20194,7 @@ export const flexEngineRootElement = {
                     value: "100%"
                 }, {
                     key: "height",
-                    value: "100%"
+                    value: "auto"
                 }]
             }, {
                 object: "@context-wide",
@@ -20132,7 +20203,7 @@ export const flexEngineRootElement = {
                     value: "100%"
                 }, {
                     key: "height",
-                    value: "100%"
+                    value: "auto"
                 }, {
                     key: "max-width",
                     value: "1600px"
@@ -20144,7 +20215,7 @@ export const flexEngineRootElement = {
                     value: "100%"
                 }, {
                     key: "height",
-                    value: "100%"
+                    value: "auto"
                 }, {
                     key: "max-width",
                     value: "1200px"
@@ -20153,8 +20224,8 @@ export const flexEngineRootElement = {
 
         sizeQuery: [
             {
-                name: "height",
-                label: "Height",
+                name: "spaceAlong",
+                label: "Space Along",
                 type: "space",
                 defaultAsFull: true
             },
@@ -20177,9 +20248,10 @@ export const flexEngineRootElement = {
         ],
 
         sizeDefault: (sz, isVertical) => {
+            const along = sz.spaceAlong ?? sz.height;
             return {
                 "width": "100%",
-                "height": flexEngineStyleVarible.space(sz.height),
+                "height": flexEngineStyleVarible.space(along),
                 "flex-grow": sz.alongGrow === true ? 1 : 0,
                 "flex-shrink": sz.alongShrink === true ? 1 : 0,
                 "overflow-x": "visible",
@@ -20830,6 +20902,17 @@ export const flexEngineRootElement = {
                     --${prefix}header-layout-transitionTime: ${layout.transitionTime};
                     --${prefix}header-layout-transitionCurve: ${flexEngineStyleVarible.curve(layout.transitionCurve)};
                     --${prefix}header-layout-mobileButonRound: ${flexEngineStyleVarible.space(layout.mobileButonRound)};
+                    /* Keep legacy site-prefixed selectors compatible with the active rs prefix. */
+                    --site-header-layout-desktopHeaderMaxInnerWidth: var(--${prefix}header-layout-desktopHeaderMaxInnerWidth);
+                    --site-header-layout-desktopHeaderMainGap: var(--${prefix}header-layout-desktopHeaderMainGap);
+                    --site-header-layout-mobileHeaderMainGap: var(--${prefix}header-layout-mobileHeaderMainGap);
+                    --site-header-layout-desktopHeaderSeparateBorderSpace: var(--${prefix}header-layout-desktopHeaderSeparateBorderSpace);
+                    --site-header-layout-spaceBetween: var(--${prefix}header-layout-spaceBetween);
+                    --site-header-layout-navMajorGap: var(--${prefix}header-layout-navMajorGap);
+                    --site-header-layout-navMinorGap: var(--${prefix}header-layout-navMinorGap);
+                    --site-header-layout-transitionTime: var(--${prefix}header-layout-transitionTime);
+                    --site-header-layout-transitionCurve: var(--${prefix}header-layout-transitionCurve);
+                    --site-header-layout-mobileButonRound: var(--${prefix}header-layout-mobileButonRound);
                 `;
             header.setAttribute(`${prefix}styles-node`, cssVaribles);
             // End Layout Creation
@@ -22243,7 +22326,7 @@ export const flexEngineRootElement = {
                 object: "@context-buttons",
                 info: [
                     { "key": "display", "value": "flex" },
-                    { "key": "gap", "value": "var(--site-header-layout-mobileHeaderMainGap)" },
+                    { "key": "gap", "value": "var(--site-header-layout-desktopHeaderMainGap)" },
                     { "key": "align-items", "value": "center" }
                 ]
             },
@@ -22441,14 +22524,22 @@ export const flexEngineRootElement = {
         ],
 
         sizeDefault: (sz, isVertical) => {
-            return {
+            const sizeStyles = {
                 "width": `calc(100% - ${flexEngineStyleVarible.space(sz.marginLeft)} - ${flexEngineStyleVarible.space(sz.marginRight)})`,
-                "max-width": flexEngineStyleVarible.space(sz.maxWidth),
                 "margin-top": flexEngineStyleVarible.space(sz.marginTop),
                 "margin-left": flexEngineStyleVarible.space(sz.marginLeft),
                 "margin-right": flexEngineStyleVarible.space(sz.marginRight),
-                "height": flexEngineStyleVarible.space(sz.height)
+                "height": flexEngineStyleVarible.space(
+                    sz.height?.mode ? sz.height : { mode: "px", value: 60 }
+                )
             };
+
+            if (sz.maxWidth !== undefined && sz.maxWidth !== null && sz.maxWidth !== "") {
+                sizeStyles["max-width"] =
+                    flexEngineStyleVarible.space(sz.maxWidth);
+            }
+
+            return sizeStyles;
         },
 
         sizeMobile: (sz, isVertical) => {
@@ -22457,7 +22548,11 @@ export const flexEngineRootElement = {
                 "margin-top": flexEngineStyleVarible.space(sz.mobileMarginTop),
                 "margin-left": flexEngineStyleVarible.space(sz.mobileMarginLeft),
                 "margin-right": flexEngineStyleVarible.space(sz.mobileMarginRight),
-                "height": flexEngineStyleVarible.space(sz.mobileHeight)
+                "height": flexEngineStyleVarible.space(
+                    sz.mobileHeight?.mode
+                        ? sz.mobileHeight
+                        : { mode: "px", value: 60 }
+                )
             };
         },
 
@@ -22664,6 +22759,48 @@ export const flexEngineRootElement = {
 
         cssStyles: [
             {
+                "object": "*, *::before, *::after",
+                "info": [
+                    { "key": "box-sizing", "value": "border-box" }
+                ]
+            },
+            {
+                "object": ".rs-button",
+                "info": [
+                    { "key": "display", "value": "inline-block" },
+                    { "key": "padding", "value": "12px 18px" },
+                    { "key": "border", "value": "1px solid var(--color-primary-color, currentColor)" },
+                    { "key": "border-radius", "value": "999px" },
+                    { "key": "background", "value": "var(--color-primary-color, currentColor)" },
+                    { "key": "color", "value": "var(--color-custom-color1, #ffffff)" },
+                    { "key": "font-family", "value": "inherit" },
+                    { "key": "line-height", "value": "1.2" },
+                    { "key": "text-decoration", "value": "none" },
+                    { "key": "cursor", "value": "pointer" }
+                ]
+            },
+            {
+                "object": ".rs-content-header-primaryCTA, .rs-content-header-secondaryCTA",
+                "info": [
+                    { "key": "display", "value": "inline-flex" },
+                    { "key": "align-items", "value": "center" },
+                    { "key": "justify-content", "value": "center" },
+                    { "key": "padding", "value": "10px 16px" },
+                    { "key": "border", "value": "1px solid currentColor" },
+                    { "key": "border-radius", "value": "999px" },
+                    { "key": "line-height", "value": "1.2" },
+                    { "key": "text-decoration", "value": "none" },
+                    { "key": "white-space", "value": "nowrap" },
+                    { "key": "cursor", "value": "pointer" }
+                ]
+            },
+            {
+                "object": ".rs-cta .rs-heading h1, .rs-cta .rs-heading h2, .rs-cta .rs-heading h3, .rs-cta .rs-text, .rs-cta .rs-text p",
+                "info": [
+                    { "key": "color", "value": "inherit" }
+                ]
+            },
+            {
                 "object": "html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video",
                 "info": [
                     { "key": "margin", "value": "0" },
@@ -22747,7 +22884,7 @@ export const flexEngineRootElement = {
             animation: 0,
             noStyles: true,
             disableAction: true,
-            elementType: "html",
+            elementType: "body",
             skipPrefix: true
         }
     }
@@ -23049,7 +23186,7 @@ function appendSourceRequirementsToDocument(sourceRequirements, DocumentHTML) {
 // #endregion
 
 // #region CSS modules
-function jsToCss(jsObj, namespace = "") {
+function jsToCss(jsObj, namespace = "", elementClass = "") {
     const items = Array.isArray(jsObj) ? jsObj : [jsObj];
     const output = [];
     let mediaBreak = null;
@@ -23102,10 +23239,33 @@ function jsToCss(jsObj, namespace = "") {
     }
 
     function applyNamespace(selector) {
-        if (!namespace.trim()) return selector;
-
         return splitSelectors(selector)
-            .map(part => `${namespace.trim()} ${part}`)
+            .map(part => {
+                const contextClass =
+                    elementClass.toLowerCase() === "header"
+                        ? `${BUILDER_CONFIG.classPrefix}content-header`
+                        : `${BUILDER_CONFIG.classPrefix}context-${elementClass}`;
+
+                const resolved = part
+                    .replace(/@main\b/g, namespace)
+                    .replace(
+                        /@context(?:-([a-zA-Z0-9_-]+))?/g,
+                        (_match, suffix = "") =>
+                            `.${contextClass}${suffix ? `-${suffix}` : ""}`
+                    );
+
+                if (!namespace.trim()) {
+                    return resolved;
+                }
+
+                if (resolved === part && elementClass === "RaySite") {
+                    return resolved;
+                }
+
+                return resolved.startsWith(namespace)
+                    ? resolved
+                    : `${namespace} ${resolved}`;
+            })
             .join(", ");
     }
 
@@ -23186,60 +23346,43 @@ function jsToCss(jsObj, namespace = "") {
 function generateCombinedCss() {
     const cssStrings = [];
     const classPrefix = BUILDER_CONFIG.classPrefix ?? "";
+    const visited = new WeakSet();
 
-    // Process flexEngineDefaultElements.
-    const defaultGroups = Array.isArray(flexEngineDefaultElements)
-        ? flexEngineDefaultElements
-        : [];
+    function collectElementStyles(value) {
+        if (!value || typeof value !== "object" || visited.has(value)) {
+            return;
+        }
 
-    for (const group of defaultGroups) {
-        const elements = Array.isArray(group?.elements)
-            ? group.elements
-            : [];
+        visited.add(value);
 
-        for (const element of elements) {
-            if (!element || typeof element.className !== "string") {
-                continue;
-            }
+        if (
+            typeof value.className === "string" &&
+            Array.isArray(value.cssStyles) &&
+            value.cssStyles.length > 0
+        ) {
+            const elementClass = value.className;
+            const namespace =
+                elementClass === "RaySite"
+                    ? ""
+                    : `.${classPrefix}${elementClass}`;
+            const css = jsToCss(
+                value.cssStyles,
+                namespace,
+                elementClass
+            );
 
-            const cssStyles = element.cssStyles;
-
-            if (!Array.isArray(cssStyles) || cssStyles.length === 0) {
-                continue;
-            }
-
-            const namespace = classPrefix + element.className;
-            const css = jsToCss(cssStyles, namespace);
-
-            if (typeof css === "string" && css.length > 0) {
+            if (css) {
                 cssStrings.push(css);
             }
         }
-    }
 
-    // Process flexEngineRootElement directly.
-    const rootElements = Array.isArray(flexEngineRootElement)
-        ? flexEngineRootElement
-        : [];
-
-    for (const element of rootElements) {
-        if (!element || typeof element.className !== "string") {
-            continue;
-        }
-
-        const cssStyles = element.cssStyles;
-
-        if (!Array.isArray(cssStyles) || cssStyles.length === 0) {
-            continue;
-        }
-
-        const namespace = classPrefix + element.className;
-        const css = jsToCss(cssStyles, namespace);
-
-        if (typeof css === "string" && css.length > 0) {
-            cssStrings.push(css);
+        for (const child of Object.values(value)) {
+            collectElementStyles(child);
         }
     }
+
+    collectElementStyles(flexEngineDefaultElements);
+    collectElementStyles(flexEngineRootElement);
 
     // Combine all generated CSS into one string.
     return cssStrings.join("\n\n");
@@ -23247,6 +23390,7 @@ function generateCombinedCss() {
 
 function generateAnimationCss() {
     const cssStrings = [];
+    const prefix = BUILDER_CONFIG.classPrefix;
 
     for (const animation of Object.values(
         flexEngineDefaultAnimation ?? {}
@@ -23265,7 +23409,7 @@ function generateAnimationCss() {
         const cssRawCode = animation.cssRawCode.trim();
 
         cssStrings.push(
-            `@keyframes ${name} {\n${cssRawCode}\n}`
+            `@keyframes ${prefix}animation-${name} {\n${cssRawCode}\n}`
         );
     }
 
@@ -23337,7 +23481,7 @@ function themeJSONToCSS(themeJSON, themeName) {
             const declarations = [];
 
             for (const [key, value] of Object.entries(settings)) {
-                if (key === "costomStyle") {
+                if (key === "customStyle") {
                     if (typeof value === "string" && value.trim()) {
                         declarations.push(`  ${value.trim()}`);
                     }
@@ -23377,8 +23521,11 @@ function themeJSONToCSS(themeJSON, themeName) {
             }
 
             if (declarations.length) {
+                const selectors = ["h1", "h2", "h3", "h4"].includes(name)
+                    ? `${themeSelector} ${name}, ${themeSelector} .${name}`
+                    : `${themeSelector} .${name}`;
                 rules.push(
-                    `${themeSelector} .${name} {\n` +
+                    `${selectors} {\n` +
                     `${declarations.join("\n")}\n}`
                 );
             }
@@ -23401,17 +23548,41 @@ function themeJSONToCSS(themeJSON, themeName) {
     return output.join("\n\n");
 }
 
-function getAllThemesCSS() {
-    const themes = flexEngineFileSystem.listThemes().data || [];
+async function getAllThemesCSS() {
+    const themesResult =
+        await flexEngineFileSystem.listThemes();
 
-    const cssStrings = themes.map(theme => {
-        const themeName =
-            typeof theme === "string" ? theme : theme.name;
+    if (!themesResult || themesResult.code === 1) {
+        throw new Error(
+            themesResult?.error ||
+            "Failed to list themes"
+        );
+    }
 
-        const themeJSON = flexEngineFileSystem.readTheme(themeName).data;
+    const themes = themesResult.data || [];
 
-        return themeJSONToCSS(themeJSON, themeName, CONFIG);
-    });
+    if (!Array.isArray(themes)) {
+        throw new TypeError("Invalid theme list");
+    }
+
+    const cssStrings = await Promise.all(
+        themes.map(async themeName => {
+            const result =
+                await flexEngineFileSystem.readTheme(themeName);
+
+            if (!result || result.code === 1) {
+                throw new Error(
+                    result?.error ||
+                    `Failed to read theme: ${themeName}`
+                );
+            }
+
+            return themeJSONToCSS(
+                result.data,
+                themeName
+            );
+        })
+    );
 
     return cssStrings.join("\n\n");
 }
@@ -23439,7 +23610,6 @@ function transformCSSAnimation(root) {
         }
     }
 
-    debugger; // disabled for right now.
 }
 
 // #endregion
@@ -23484,6 +23654,17 @@ const flexEngineRegistryLookup = function (
         return elementValue;
     }
 
+    if (propertyPath.startsWith("setting.")) {
+        const pluralSettingValue = getValue(
+            elementRegistry,
+            `settings.${propertyPath.slice("setting.".length)}`
+        );
+
+        if (isUsable(pluralSettingValue)) {
+            return pluralSettingValue;
+        }
+    }
+
     const categoryValue = getValue(categoryRegistry, propertyPath);
 
     if (isUsable(categoryValue)) {
@@ -23492,6 +23673,39 @@ const flexEngineRegistryLookup = function (
 
     return undefined;
 };
+
+const elementChartIdsByDocument = new WeakMap();
+
+function generateElementChartId(documentHTML) {
+    let usedIds = elementChartIdsByDocument.get(documentHTML);
+
+    if (!usedIds) {
+        usedIds = new Set();
+
+        for (const element of documentHTML.querySelectorAll("[class]")) {
+            for (const className of element.classList) {
+                const match = className.match(
+                    new RegExp(`^${BUILDER_CONFIG.classPrefix}(\\d+)$`)
+                );
+
+                if (match) {
+                    usedIds.add(Number(match[1]));
+                }
+            }
+        }
+
+        elementChartIdsByDocument.set(documentHTML, usedIds);
+    }
+
+    let id;
+
+    do {
+        id = Math.floor(Math.random() * 900000000) + 100000000;
+    } while (usedIds.has(id));
+
+    usedIds.add(id);
+    return id;
+}
 
 
 export const flexEngineCreateNode = function (dataArray, documentHTML, parentVertical = true) {
@@ -23515,18 +23729,59 @@ export const flexEngineCreateNode = function (dataArray, documentHTML, parentVer
     console.log(elementDefaultType);
 
     // 3. Create the node.
-    const node = flexEngineCreateAction(
-        documentHTML,
-        dataArray.clickable,
-        elementDefaultType
-    );
+    const isDocumentBody =
+        dataArray.type.startsWith("@root/") &&
+        elementDefaultType.toLowerCase() === "body";
+    const node = isDocumentBody
+        ? documentHTML.body
+        : flexEngineCreateAction(
+            documentHTML,
+            dataArray.clickable,
+            elementDefaultType
+        );
+
+    if (isDocumentBody) {
+        node.replaceChildren();
+    }
 
     // 4. Set identity and CSS classes.
-    node.id = dataArray.JSID;
+    node.removeAttribute("id");
 
-    node.classList.add(
-        `${BUILDER_CONFIG.classPrefix}${dataArray.type.split("/").pop()}`
+    const jsID = dataArray.JSID;
+    if (
+        jsID !== undefined &&
+        jsID !== null &&
+        String(jsID).trim() !== "" &&
+        String(jsID).trim().toLowerCase() !== "undefined"
+    ) {
+        node.id = String(jsID);
+    }
+
+    const registeredClassName = flexEngineRegistryLookup(
+        elementRegistry,
+        categoryRegistry,
+        "className",
+        value =>
+            typeof value === "string" &&
+            value.trim() !== ""
     );
+    node.classList.add(
+        `${BUILDER_CONFIG.classPrefix}${registeredClassName || dataArray.type.split("/").pop()}`
+    );
+
+    const chartId =
+        typeof dataArray.id === "number"
+            ? dataArray.id
+            : typeof dataArray.id === "string" &&
+                /^\d+$/.test(dataArray.id)
+                ? Number(dataArray.id)
+                : NaN;
+
+    if (!Number.isSafeInteger(chartId) || chartId < 0) {
+        dataArray.id = generateElementChartId(documentHTML);
+    } else {
+        dataArray.id = chartId;
+    }
 
     node.classList.add(
         `${BUILDER_CONFIG.classPrefix}${dataArray.id}`
@@ -23562,6 +23817,15 @@ export const flexEngineCreateNode = function (dataArray, documentHTML, parentVer
         "contentFunction",
         value => typeof value === "function"
     );
+
+    if (typeof contentFunction !== "function") {
+        contentFunction = flexEngineRegistryLookup(
+            elementRegistry,
+            categoryRegistry,
+            "contextFunction",
+            value => typeof value === "function"
+        );
+    }
 
     // Missing content renderer: log the error and use an empty callback.
     if (typeof contentFunction !== "function") {
@@ -23955,7 +24219,7 @@ export const flexEngineResolveInheritance = function (pageStructure, componentRe
 };
 
 // Final process that make it seperate from HTML and CSS
-export function extractBuilderStyles(dom) {
+export function extractBuilderStyles(dom, options = {}) {
     if (!dom || typeof dom.nodeType !== "number") {
         throw new TypeError(
             "Expected a Document, Element, or DocumentFragment."
@@ -23964,7 +24228,7 @@ export function extractBuilderStyles(dom) {
 
     const config = BUILDER_CONFIG;
     const classPrefix = config?.classPrefix;
-    const alphaEscape = toAlphaEscape;
+    const alphaEscape = fromAlphaEscape;
 
     if (
         typeof classPrefix !== "string" ||
@@ -23976,7 +24240,13 @@ export function extractBuilderStyles(dom) {
     }
 
     const stylePrefix = classPrefix + "styles-";
-    const stylePrefixLower = stylePrefix.toLowerCase();
+    const stylePrefixes = [
+        stylePrefix,
+        classPrefix + "appearance-"
+    ];
+    const stylePrefixesLower = stylePrefixes.map(prefix =>
+        prefix.toLowerCase()
+    );
 
     const documentNode =
         dom.nodeType === 9 ? dom : dom.ownerDocument;
@@ -24120,7 +24390,18 @@ export function extractBuilderStyles(dom) {
      */
 
     function parseStyleAttribute(attributeName) {
-        let remainder = attributeName.slice(stylePrefix.length);
+        const matchingPrefixIndex = stylePrefixesLower.findIndex(prefix =>
+            attributeName.toLowerCase().startsWith(prefix)
+        );
+        if (matchingPrefixIndex === -1) {
+            throw new Error(
+                "Unsupported style attribute \"" + attributeName + "\"."
+            );
+        }
+
+        let remainder = attributeName.slice(
+            stylePrefixes[matchingPrefixIndex].length
+        );
 
         let hasAtSelector = false;
         let encodedSelector = "";
@@ -24216,8 +24497,8 @@ export function extractBuilderStyles(dom) {
         const styleAttributes = Array.from(
             element.attributes
         ).filter(function (attribute) {
-            return attribute.name.toLowerCase().startsWith(
-                stylePrefixLower
+            return stylePrefixesLower.some(prefix =>
+                attribute.name.toLowerCase().startsWith(prefix)
             );
         });
 
@@ -24320,8 +24601,7 @@ export function extractBuilderStyles(dom) {
                     selector =
                         tagName +
                         scopeSelector +
-                        "." +
-                        escapeCssIdentifier(parsed.target);
+                        `[class~="${escapeCssIdentifier(parsed.target)}" i]`;
                 }
 
                 if (parsed.hover) {
@@ -24339,7 +24619,9 @@ export function extractBuilderStyles(dom) {
                 );
             }
 
-            element.removeAttribute(attribute.name);
+            if (options.preserveStyleAttributes !== true) {
+                element.removeAttribute(attribute.name);
+            }
         }
     }
 
@@ -24400,7 +24682,7 @@ export function extractBuilderStyles(dom) {
             .join("\n\n");
 
         cssParts.push(
-            "@media (max-width: 768px) {\n" +
+            "@media (max-width: 767px) {\n" +
             mobileCSS + "\n" +
             "}"
         );
@@ -24471,20 +24753,29 @@ const flexEngineRenderDOM = function (
     // Step 4: Apply the page theme.
     const themeName = dataArray.theme;
 
-    if (typeof themeName === "string" && themeName) {
+    if (typeof themeName === "string" && themeName.trim()) {
         documentHTML.body.classList.add(
             `${BUILDER_CONFIG.classPrefix}${themeName}`
         );
     }
 
-    // Step 5: Render the page body into the target document.
-    const newBody = flexEngineCreateNode(
+    // Step 5: Render the page inside the existing <body>.
+    const renderedRoot = flexEngineCreateNode(
         newDataArray.body,
         documentHTML,
         true
     );
 
-    documentHTML.body.replaceWith(newBody);
+    if (!renderedRoot || renderedRoot.nodeType !== 1) {
+        throw new TypeError(
+            "FlexEngine must render an HTML element"
+        );
+    }
+
+    // Preserve the real HTML body and its theme classes.
+    if (renderedRoot !== documentHTML.body) {
+        documentHTML.body.replaceChildren(renderedRoot);
+    }
 
     // Step 6: Append global source requirements.
     appendSourceRequirementsToDocument(
@@ -24527,7 +24818,8 @@ function flexEngineUnwrapResult(result, label) {
 export const flexEngineRenderPage = async function (
     url,
     doc = null,
-    inHTML = false
+    inHTML = false,
+    options = {}
 ) {
     // Step 1: Read and parse the page JSON.
     const pageResult = await flexEngineFileSystem.readPage(url);
@@ -24577,22 +24869,96 @@ export const flexEngineRenderPage = async function (
         doc
     );
 
+    const pathname = new URL(
+        url,
+        window.location.origin
+    ).pathname;
+    const pagePath = pathname === "/"
+        ? "_"
+        : pathname
+            .replace(/^\/+|\/+$/g, "")
+            .replace(/\//g, "_");
+
+    if (options.includePageStylesheet !== false) {
+        let pageStylesheet = documentHTML.head.querySelector(
+            "#rs-page-styles"
+        );
+
+        if (!pageStylesheet) {
+            pageStylesheet = documentHTML.createElement("link");
+            pageStylesheet.id = "rs-page-styles";
+            pageStylesheet.rel = "stylesheet";
+            documentHTML.head.appendChild(pageStylesheet);
+        }
+
+        pageStylesheet.href =
+            `/${BUILDER_CONFIG.classPrefix}assets/styles/${pagePath}.css`;
+    }
+
     // Step 7: Handle HTML extraction when requested.
     if (inHTML) {
-        const pagePath = new URL(
-            url,
-            window.location.origin
-        ).pathname.replace(/\//g, "_");
+        if (options.preserveRuntimeAttributes !== true) {
+            transformCSSAnimation(documentHTML);
+        }
 
-        transformCSSAnimation(documentHTML);
+        return extractBuilderStyles(documentHTML, {
+            preserveStyleAttributes:
+                options.preserveRuntimeAttributes === true
+        });
+    }
 
-        const link = documentHTML.createElement("link");
-        link.rel = "stylesheet";
-        link.href = `${BUILDER_CONFIG.classPrefix}assets/styles/${pagePath}`;
+    const stylesheetLinks = Array.from(
+        documentHTML.head.querySelectorAll('link[rel="stylesheet"]')
+    );
 
-        documentHTML.head.appendChild(link);
+    await Promise.all(stylesheetLinks.map(link => {
+        if (link.sheet) {
+            return Promise.resolve();
+        }
 
-        return extractBuilderStyles(documentHTML);
+        return new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+                cleanup();
+                reject(new Error(
+                    `Stylesheet loading timed out: ${link.href}`
+                ));
+            }, 15000);
+
+            function cleanup() {
+                clearTimeout(timeout);
+                link.removeEventListener("load", onLoad);
+                link.removeEventListener("error", onError);
+            }
+
+            function onLoad() {
+                cleanup();
+                resolve();
+            }
+
+            function onError() {
+                cleanup();
+                reject(new Error(
+                    `Failed to load stylesheet: ${link.href}`
+                ));
+            }
+
+            link.addEventListener("load", onLoad, { once: true });
+            link.addEventListener("error", onError, { once: true });
+
+            if (link.sheet) {
+                cleanup();
+                resolve();
+            }
+        });
+    }));
+
+    if (documentHTML.defaultView) {
+        const runtimeScript = documentHTML.createElement("script");
+        runtimeScript.textContent = generateRenderStylesRuntime({
+            editorMode: options.editorMode === true
+        });
+        documentHTML.head.appendChild(runtimeScript);
+        await documentHTML.defaultView.__raySiteRenderRuntimeReady;
     }
 
     return documentHTML;
@@ -24860,7 +25226,7 @@ export class SimServer {
             );
 
             const route = this.findRoute(
-                req.method,
+                req.method === "HEAD" ? "GET" : req.method,
                 actualSegments,
                 url.pathname
             );
@@ -24891,6 +25257,12 @@ export class SimServer {
                 }
             );
         } catch (error) {
+            console.error("[RaySite SimServer] Request failed", {
+                method: req.method,
+                url: req.url,
+                error
+            });
+
             // Handler errors or invalid handler results become HTTP 500.
             return new Response(
                 JSON.stringify({
@@ -24924,8 +25296,10 @@ export class SimServer {
 // Now is the correct Web Server, that return a responce as a responce object. we will bandle it to Web Builder Soon later.
 // Now is the correct Web Server, that returns a Response object.
 // We will bundle it to Web Builder soon later.
-export const createWebServer = function () {
+export const createWebServer = function (options = {}) {
     const app = new SimServer();
+    const assetBase = `/${BUILDER_CONFIG.classPrefix}assets`;
+    const isRenderServer = options.mode === "render";
 
     function notFound() {
         return new Response("Not Found", {
@@ -24938,17 +25312,7 @@ export const createWebServer = function () {
     }
 
     async function handleOr404(handler, req) {
-        try {
-            const response = await handler(req);
-
-            if (!(response instanceof Response) || response.status >= 400) {
-                return notFound();
-            }
-
-            return response;
-        } catch {
-            return notFound();
-        }
+        return handler(req);
     }
 
     function getPath(req) {
@@ -24957,7 +25321,7 @@ export const createWebServer = function () {
 
     function getAssetName(req, directory) {
         const pathname = getPath(req);
-        const prefix = `/${BUILDER_CONFIG}assets/${directory}/`;
+        const prefix = `${assetBase}/${directory}/`;
 
         if (!pathname.startsWith(prefix)) {
             throw new Error("Invalid asset path");
@@ -25052,30 +25416,36 @@ export const createWebServer = function () {
     }
 
     // Priority 6 — Images
-    app.get(6, `/${BUILDER_CONFIG}assets/img/**`, req =>
+    app.get(6, `${assetBase}/img/**`, req =>
         handleOr404(req => serveAsset(req, "img"), req)
     );
 
     // Priority 5 — Audio
-    app.get(5, `/${BUILDER_CONFIG}assets/audio/**`, req =>
+    app.get(5, `${assetBase}/audio/**`, req =>
         handleOr404(req => serveAsset(req, "audio"), req)
     );
 
     // Priority 4 — Video
-    app.get(4, `/${BUILDER_CONFIG}assets/video/**`, req =>
+    app.get(4, `${assetBase}/video/**`, req =>
         handleOr404(req => serveAsset(req, "video"), req)
     );
 
     // Priority 3 — Scripts
-    app.get(3, `/${BUILDER_CONFIG}assets/script/**`, req =>
+    app.get(3, `${assetBase}/script/**`, req =>
         handleOr404(async req => {
             const name = getAssetName(req, "script");
 
-            if (name !== "main.js" && name !== "global.js") {
+            if (
+                name !== "main.js" &&
+                name !== "global.js" &&
+                name !== "renderStyles.js"
+            ) {
                 return notFound();
             }
 
-            const code = await generateForEachRuntimeCode();
+            const code = name === "renderStyles.js"
+                ? generateRenderStylesRuntime()
+                : await generateForEachRuntimeCode();
 
             if (typeof code !== "string") {
                 return notFound();
@@ -25092,7 +25462,7 @@ export const createWebServer = function () {
     );
 
     // Priority 2 — Stylesheets
-    app.get(2, `/${BUILDER_CONFIG}assets/styles/**`, req =>
+    app.get(2, `${assetBase}/styles/**`, req =>
         handleOr404(async req => {
             const name = getAssetName(req, "styles");
             let css;
@@ -25104,15 +25474,39 @@ export const createWebServer = function () {
             } else if (name === "theme.css") {
                 css = await getAllThemesCSS();
             } else {
-                const themeURL = `/${name.replace(/_/g, "/")}`;
+                if (!name.endsWith(".css")) {
+                    return notFound();
+                }
 
-                const result = await flexEngineRenderPage(
-                    themeURL,
-                    null,
-                    true
-                );
+                const slug = name.slice(0, -4);
+                const pageURL = slug === "_"
+                    ? "/"
+                    : `/${slug.replace(/_/g, "/")}`;
 
-                if (!Array.isArray(result) || typeof result[1] !== "string") {
+                let result;
+
+                try {
+                    result = await flexEngineRenderPage(
+                        pageURL,
+                        null,
+                        true
+                    );
+                } catch (err) {
+                    if (
+                        String(err?.message).includes(
+                            "File not found at path:"
+                        )
+                    ) {
+                        return notFound();
+                    }
+
+                    throw err;
+                }
+
+                if (
+                    !Array.isArray(result) ||
+                    typeof result[1] !== "string"
+                ) {
                     return notFound();
                 }
 
@@ -25133,22 +25527,74 @@ export const createWebServer = function () {
         }, req)
     );
 
+    // Reject unknown virtual assets instead of rendering them as pages.
+    app.get(1.5, `${assetBase}/**`, () => notFound());
+
     // Priority 1 — Catch-all
     app.get(1, "/**", req =>
         handleOr404(async req => {
             const url = getPath(req);
 
-            const result = await flexEngineRenderPage(
-                url,
-                null,
-                true
-            );
+            let result;
+
+            try {
+                result = await flexEngineRenderPage(
+                    url,
+                    null,
+                    true,
+                    {
+                        includePageStylesheet: isRenderServer,
+                        preserveRuntimeAttributes: true
+                    }
+                );
+            } catch (err) {
+                if (
+                    String(err?.message).includes(
+                        "File not found at path:"
+                    )
+                ) {
+                    return notFound();
+                }
+
+                throw err;
+            }
 
             if (!Array.isArray(result) || typeof result[0] !== "string") {
                 return notFound();
             }
 
             let html = result[0];
+
+            const parsedDocument = new DOMParser().parseFromString(
+                html,
+                "text/html"
+            );
+            if (
+                isRenderServer &&
+                typeof result[1] === "string" &&
+                result[1].trim()
+            ) {
+                const elementStyles =
+                    parsedDocument.createElement("style");
+                elementStyles.id = "rs-render-element-styles";
+                elementStyles.textContent = result[1];
+                parsedDocument.head.appendChild(elementStyles);
+            }
+            if (isRenderServer) {
+                const renderScript = parsedDocument.createElement("script");
+                renderScript.src =
+                    `/${BUILDER_CONFIG.classPrefix}assets/script/renderStyles.js`;
+                renderScript.defer = true;
+                parsedDocument.head.appendChild(renderScript);
+            }
+            const doctype = parsedDocument.doctype
+                ? new XMLSerializer().serializeToString(
+                    parsedDocument.doctype
+                )
+                : "";
+            html =
+                (doctype ? doctype + "\n" : "") +
+                parsedDocument.documentElement.outerHTML;
 
             return new Response(html, {
                 status: 200,
@@ -25164,30 +25610,561 @@ export const createWebServer = function () {
     return app;
 };
 
-export const webServer = createWebServer();
-export const simServer = webServer;
-// #endregion
+function generateRenderStylesRuntime(options = {}) {
+    const prefix = JSON.stringify(BUILDER_CONFIG.classPrefix);
+    const escapedCharacters = JSON.stringify(reverseCharacters);
+    const editorMode = JSON.stringify(options.editorMode === true);
 
-navigator.serviceWorker?.addEventListener("message", async event => { 
-    if (event.data?.type !== "SERVER_FETCH") return; 
-    const port = event.ports[0]; 
-    if (!port) return; 
+    return `(function () {
+    "use strict";
+    const prefix = ${prefix};
+    const stylePrefix = prefix + "styles-";
+    const stylePrefixes = [stylePrefix, prefix + "appearance-"];
+    const escapedCharacters = ${escapedCharacters};
+    const editorMode = ${editorMode};
 
-    try { 
-        let { url, method, headers, body } = event.data; 
+    if (editorMode && window.parent !== window) {
+        document.addEventListener("click", event => {
+            const target = event.target;
+            const link = target instanceof Element
+                ? target.closest("a[href]")
+                : null;
+            if (!link || event.defaultPrevented) return;
+            if (link.target && link.target !== "_self") return;
 
-        const urlObj = new URL(url);
-        if (urlObj.pathname.startsWith("/rs-preview/")) {
-            urlObj.pathname = urlObj.pathname.replace("/rs-preview/", "/");
+            const destination = new URL(link.href, window.location.href);
+            if (destination.origin !== window.location.origin) return;
+            if (
+                destination.pathname === window.location.pathname &&
+                destination.search === window.location.search &&
+                destination.hash
+            ) return;
+
+            event.preventDefault();
+            window.parent.postMessage({
+                type: "RAYSITE_EDITOR_NAVIGATE",
+                path: destination.pathname + destination.search + destination.hash
+            }, window.location.origin);
+        }, true);
+    }
+
+    function reloadStylesheets() {
+        const timestamp = Date.now();
+        const links = Array.from(
+            document.querySelectorAll('link[rel="stylesheet"]')
+        );
+
+        for (const link of links) {
+            const nextURL = new URL(link.href, window.location.href);
+            nextURL.searchParams.set("rs-hmr", String(timestamp));
+
+            const replacement = link.cloneNode(false);
+            replacement.href = nextURL.href;
+            replacement.addEventListener("load", () => {
+                if (link.isConnected) link.replaceWith(replacement);
+            }, { once: true });
+            replacement.addEventListener("error", () => {
+                replacement.remove();
+            }, { once: true });
+            link.after(replacement);
+        }
+    }
+
+    window.addEventListener("message", event => {
+        if (event.origin !== window.location.origin) return;
+        if (event.data?.type === "RAYSITE_RELOAD_STYLESHEETS") {
+            reloadStylesheets();
+        }
+    });
+
+    function applyInlineStyles() {
+        const records = [];
+        const elements = Array.from(document.querySelectorAll("*"));
+
+        for (const element of elements) {
+            for (const attribute of Array.from(element.attributes)) {
+                const matchingStylePrefix = stylePrefixes.find(styleAttributePrefix =>
+                    attribute.name.toLowerCase().startsWith(
+                        styleAttributePrefix.toLowerCase()
+                    )
+                );
+                if (
+                    !editorMode &&
+                    matchingStylePrefix
+                ) {
+                    let remainder = attribute.name.slice(
+                        matchingStylePrefix.length
+                    );
+                    let selector = "";
+                    const atIndex = remainder.toLowerCase().lastIndexOf("-at");
+
+                    if (atIndex !== -1) {
+                        const encoded = remainder.slice(atIndex + 3);
+                        if (!encoded) {
+                            throw new Error(
+                                "Render style selector is empty: " +
+                                attribute.name
+                            );
+                        }
+                        remainder = remainder.slice(0, atIndex);
+                        selector = encoded.replace(/_([^_]+)_/g, (match, code) => {
+                            if (Object.prototype.hasOwnProperty.call(escapedCharacters, code)) {
+                                return escapedCharacters[code];
+                            }
+                            if (/^x[0-9a-f]{6}$/i.test(code)) {
+                                const codePoint = parseInt(code.slice(1), 16);
+                                return codePoint <= 0x10ffff
+                                    ? String.fromCodePoint(codePoint)
+                                    : match;
+                            }
+                            return match;
+                        });
+                    }
+
+                    const modifier = remainder.match(
+                        /-(onhovermobile|onmobilehover|onhover|onmobile)$/i
+                    );
+                    let hover = false;
+                    let mobile = false;
+
+                    if (modifier) {
+                        remainder = remainder.slice(0, modifier.index);
+                        hover = /hover/i.test(modifier[1]);
+                        mobile = /mobile/i.test(modifier[1]);
+                    }
+
+                    const declarations = document.createElement("div").style;
+                    declarations.cssText = attribute.value;
+                    const properties = Array.from(declarations, property => ({
+                        name: property,
+                        value: declarations.getPropertyValue(property),
+                        priority: declarations.getPropertyPriority(property)
+                    }));
+
+                    if (remainder && properties.length) {
+                        records.push({
+                            element,
+                            target: remainder.toLowerCase(),
+                            selector,
+                            hover,
+                            mobile,
+                            properties
+                        });
+                    }
+                }
+            }
         }
 
-        const request = new Request(urlObj.toString(), { 
-            method, 
-            headers, 
-            body: body ?? undefined 
-        }); 
+        const animationRecords = [];
+        const animationConfigAttribute =
+            prefix + "animation-config-self";
+        const animationTriggerAttribute =
+            prefix + "animation-config-self-trigger";
+        const animationAllAttribute =
+            prefix + "animation-config-all";
+        const animationAllTriggerAttribute =
+            prefix + "animation-config-all-trigger";
+        const animationFirstDelayAttribute =
+            prefix + "animation-config-all-firstdelay";
+        const animationTimeRangeAttribute =
+            prefix + "animation-config-all-timeRange";
+        const animationInheritAttribute =
+            prefix + "animation-self-inherit";
+        const animationByElement = new Map();
 
-        const response = await simServer.fetch(request); 
+        function createAnimationRecord(element, config, trigger) {
+            if (!config || config === "inherit" || !trigger) return null;
+
+            const declarations = document.createElement("div").style;
+            declarations.cssText = config;
+            const properties = Array.from(declarations, property => ({
+                name: property,
+                value: declarations.getPropertyValue(property),
+                priority: declarations.getPropertyPriority(property)
+            }));
+            if (!properties.some(property =>
+                property.name.startsWith("animation")
+            )) {
+                return null;
+            }
+
+            const triggerType = Number(trigger);
+            if (triggerType !== 1 && triggerType !== 2) {
+                console.warn(
+                    "[RaySite] Unsupported animation trigger:",
+                    trigger
+                );
+                return null;
+            }
+
+            return { element, properties, triggerType };
+        }
+
+        for (const section of elements) {
+            const allConfig = section.getAttribute(animationAllAttribute);
+            const allTrigger =
+                section.getAttribute(animationAllTriggerAttribute);
+            if (!allConfig || allConfig === "inherit" || !allTrigger) continue;
+
+            const firstDelay =
+                parseFloat(section.getAttribute(animationFirstDelayAttribute)) || 0;
+            const timeRange =
+                parseFloat(section.getAttribute(animationTimeRangeAttribute)) || 0;
+            let inheritedCount = 0;
+
+            function collectInheritedAnimations(element) {
+                const selfConfig =
+                    element.getAttribute(animationConfigAttribute);
+                const inheritValue =
+                    element.getAttribute(animationInheritAttribute);
+                const inheritsAnimation =
+                    selfConfig === "inherit" ||
+                    (
+                        inheritValue !== null &&
+                        inheritValue !== "" &&
+                        inheritValue !== "0"
+                    );
+
+                if (inheritsAnimation) {
+                    const delay = firstDelay + inheritedCount * timeRange;
+                    inheritedCount++;
+                    const config = allConfig.replace(/<delay>/g, String(delay));
+                    const record = createAnimationRecord(
+                        element,
+                        config,
+                        allTrigger
+                    );
+                    if (record) animationByElement.set(element, record);
+                }
+
+                for (const child of element.children) {
+                    collectInheritedAnimations(child);
+                }
+            }
+
+            for (const child of section.children) {
+                collectInheritedAnimations(child);
+            }
+        }
+
+        for (const element of elements) {
+            const config = element.getAttribute(animationConfigAttribute);
+            const trigger = element.getAttribute(animationTriggerAttribute);
+            const record = createAnimationRecord(element, config, trigger);
+            if (record) animationByElement.set(element, record);
+        }
+        animationRecords.push(...animationByElement.values());
+
+        const originalStyles = new Map();
+        const media = window.matchMedia("(max-width: 767px)");
+
+        function restoreStyles() {
+            for (const [element, properties] of originalStyles) {
+                for (const [name, original] of properties) {
+                    if (original.value) {
+                        element.style.setProperty(
+                            name,
+                            original.value,
+                            original.priority
+                        );
+                    } else {
+                        element.style.removeProperty(name);
+                    }
+                }
+            }
+        }
+
+        function updateStyles() {
+            restoreStyles();
+            const changes = [];
+
+            for (const record of records) {
+                if (
+                    (record.mobile && !media.matches) ||
+                    (record.hover && !record.element.matches(":hover")) ||
+                    (
+                        !["default", "base", "node"].includes(record.target) &&
+                        !record.element.classList.contains(record.target)
+                    )
+                ) {
+                    continue;
+                }
+
+                const selector = record.selector.trim();
+                const scopedSelector = /^[>+~]/.test(selector)
+                    ? ":scope " + selector
+                    : selector;
+                const targets = selector
+                    ? record.element.querySelectorAll(scopedSelector)
+                    : [record.element];
+
+                for (const target of targets) {
+                    let originals = originalStyles.get(target);
+                    if (!originals) {
+                        originals = new Map();
+                        originalStyles.set(target, originals);
+                    }
+
+                    for (const property of record.properties) {
+                        if (record.hover) {
+                            const currentValue = window.getComputedStyle(
+                                target
+                            ).getPropertyValue(property.name);
+                            if (currentValue !== property.value) {
+                                changes.push({
+                                    element: target,
+                                    property: property.name,
+                                    from: currentValue,
+                                    to: property.value
+                                });
+                            }
+                        }
+
+                        if (!originals.has(property.name)) {
+                            originals.set(property.name, {
+                                value: target.style.getPropertyValue(property.name),
+                                priority: target.style.getPropertyPriority(property.name)
+                            });
+                        }
+                        target.style.setProperty(
+                            property.name,
+                            property.value,
+                            property.priority
+                        );
+                    }
+                }
+            }
+
+            return changes;
+        }
+
+        function addEditorHoverTransitions() {
+            if (!editorMode) return;
+
+            const hoverRecords = records.filter(record => record.hover);
+            const propertiesByElement = new Map();
+
+            for (const record of hoverRecords) {
+                if (
+                    !["default", "base", "node"].includes(record.target) &&
+                    !record.element.classList.contains(record.target)
+                ) {
+                    continue;
+                }
+
+                const selector = record.selector.trim();
+                const scopedSelector = /^[>+~]/.test(selector)
+                    ? ":scope " + selector
+                    : selector;
+                const targets = selector
+                    ? record.element.querySelectorAll(scopedSelector)
+                    : [record.element];
+
+                for (const target of targets) {
+                    let properties = propertiesByElement.get(target);
+                    if (!properties) {
+                        properties = new Set();
+                        propertiesByElement.set(target, properties);
+                    }
+                    for (const property of record.properties) {
+                        properties.add(property.name);
+                    }
+                }
+            }
+
+            for (const [element, properties] of propertiesByElement) {
+                const computed = window.getComputedStyle(element);
+                const hasTransition = computed.transitionDuration
+                    .split(",")
+                    .some(duration => parseFloat(duration) > 0);
+                if (hasTransition) continue;
+
+                element.style.transition = Array.from(properties)
+                    .map(property => property + " 180ms ease")
+                    .join(", ");
+            }
+        }
+
+        function startAnimation(record) {
+            for (const property of record.properties) {
+                if (property.name.startsWith("animation")) continue;
+                record.element.style.setProperty(
+                    property.name,
+                    property.value,
+                    property.priority
+                );
+            }
+
+            for (const property of record.properties) {
+                if (!property.name.startsWith("animation")) continue;
+                record.element.style.setProperty(
+                    property.name,
+                    property.value,
+                    property.priority
+                );
+            }
+        }
+
+        const scrollAnimations = animationRecords.filter(
+            record => record.triggerType === 2
+        );
+        if (scrollAnimations.length && "IntersectionObserver" in window) {
+            const observer = new IntersectionObserver(entries => {
+                for (const entry of entries) {
+                    if (!entry.isIntersecting) continue;
+                    const record = scrollAnimations.find(
+                        candidate => candidate.element === entry.target
+                    );
+                    if (!record) continue;
+                    startAnimation(record);
+                    observer.unobserve(entry.target);
+                }
+            });
+            for (const record of scrollAnimations) {
+                observer.observe(record.element);
+            }
+        } else if (scrollAnimations.length) {
+            const startVisibleAnimations = () => {
+                for (const record of scrollAnimations) {
+                    const rect = record.element.getBoundingClientRect();
+                    if (rect.bottom < 0 || rect.top > window.innerHeight) continue;
+                    startAnimation(record);
+                    scrollAnimations.splice(
+                        scrollAnimations.indexOf(record),
+                        1
+                    );
+                }
+            };
+            window.addEventListener("scroll", startVisibleAnimations, {
+                passive: true
+            });
+            window.addEventListener("resize", startVisibleAnimations);
+            startVisibleAnimations();
+        }
+
+        const hoverElements = new Set(
+            records.filter(record => record.hover).map(record => record.element)
+        );
+        for (const element of hoverElements) {
+            element.addEventListener("mouseenter", updateStyles);
+            element.addEventListener("mouseleave", updateStyles);
+        }
+        media.addEventListener("change", updateStyles);
+        updateStyles();
+        addEditorHoverTransitions();
+
+        for (const record of animationRecords) {
+            if (record.triggerType === 1) {
+                startAnimation(record);
+            }
+        }
+
+        for (const element of document.querySelectorAll("*")) {
+            for (const attribute of Array.from(element.attributes)) {
+                if (
+                    attribute.name.toLowerCase().startsWith(prefix.toLowerCase()) &&
+                    !(
+                        editorMode &&
+                        stylePrefixes.some(styleAttributePrefix =>
+                            attribute.name.toLowerCase().startsWith(
+                                styleAttributePrefix.toLowerCase()
+                            )
+                        )
+                    )
+                ) {
+                    element.removeAttribute(attribute.name);
+                }
+            }
+
+            window.__raySiteRenderRuntime = {
+                refreshStyles: updateStyles
+            };
+        }
+    }
+
+    const stylesheets = Array.from(
+        document.querySelectorAll('link[rel="stylesheet"]')
+    );
+    window.__raySiteRenderRuntimeReady = Promise.all(stylesheets.map(link => {
+        if (link.sheet) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+                reject(new Error("Render stylesheet timed out: " + link.href));
+            }, 15000);
+            function finish(error) {
+                clearTimeout(timeout);
+                link.removeEventListener("load", onLoad);
+                link.removeEventListener("error", onError);
+                if (error) reject(error);
+                else resolve();
+            }
+            function onLoad() {
+                finish();
+            }
+            function onError() {
+                finish(new Error("Render stylesheet failed: " + link.href));
+            }
+            link.addEventListener("load", onLoad, { once: true });
+            link.addEventListener("error", onError, { once: true });
+        });
+    })).then(applyInlineStyles).catch(error => {
+        console.error("[RaySite RenderServer] Style processing failed", error);
+        throw error;
+    });
+})();`;
+}
+
+// Final-site path: call SimRenderServer.fetch(request) from the future Render action.
+// Normal app and preview traffic is dispatched to SimEditorServer by the service worker.
+export const SimEditorServer = createWebServer({ mode: "editor" });
+export const SimRenderServer = createWebServer({ mode: "render" });
+export const flexEngineServers = Object.freeze({
+    editor: SimEditorServer,
+    render: SimRenderServer
+});
+export const editorServer = SimEditorServer;
+export const renderServer = SimRenderServer;
+export const webServer = editorServer;
+export const simServer = editorServer;
+// #endregion
+
+navigator.serviceWorker?.addEventListener("message", async event => {
+    if (event.data?.type !== "SERVER_FETCH") return;
+    const port = event.ports[0];
+    if (!port) return;
+
+    try {
+        let { url, method, headers, body } = event.data;
+
+        const urlObj = new URL(url);
+        if (urlObj.pathname === "/rs-build/index.html") {
+            const pageRoute = urlObj.searchParams.get("page") || "/";
+            if (!pageRoute.startsWith("/") || pageRoute.startsWith("//")) {
+                throw new Error("Invalid RenderServer page route");
+            }
+
+            urlObj.pathname = pageRoute;
+            urlObj.searchParams.delete("page");
+        } else if (urlObj.pathname === "/rs-preview") {
+            urlObj.pathname = "/";
+        } else if (urlObj.pathname.startsWith("/rs-preview/")) {
+            urlObj.pathname = urlObj.pathname.slice("/rs-preview".length);
+
+            if (urlObj.pathname === "/index.html") {
+                urlObj.pathname = "/";
+            }
+        }
+
+        const request = new Request(urlObj.toString(), {
+            method,
+            headers,
+            body: body ?? undefined
+        });
+
+        const server = event.data?.server === "render"
+            ? renderServer
+            : editorServer;
+        const response = await server.fetch(request);
 
         // GUARD: Prevent HTML fallbacks from being served to asset requests
         const pathname = urlObj.pathname;
@@ -25197,29 +26174,28 @@ navigator.serviceWorker?.addEventListener("message", async event => {
             const contentType = response.headers.get("content-type") || "";
             if (contentType.includes("text/html") || !contentType) {
                 const errorBody = new TextEncoder().encode("Asset not found in virtual filesystem");
-                port.postMessage({ 
-                    status: 404, 
-                    statusText: "Not Found", 
-                    headers: [["Content-Type", "text/plain; charset=utf-8"]], 
-                    body: errorBody 
+                port.postMessage({
+                    status: 404,
+                    statusText: "Not Found",
+                    headers: [["Content-Type", "text/plain; charset=utf-8"]],
+                    body: errorBody
                 }, [errorBody.buffer]);
                 return;
             }
         }
-
-        const responseBody = await response.arrayBuffer(); 
+        const responseBody = await response.arrayBuffer();
 
         // Clone the buffer so the original remains intact for future fetches/reloads
         const clonedBody = responseBody.slice(0);
 
-        port.postMessage({ 
-            status: response.status, 
-            statusText: response.statusText, 
-            headers: [...response.headers], 
-            body: clonedBody 
-        }, [clonedBody]); 
+        port.postMessage({
+            status: response.status,
+            statusText: response.statusText,
+            headers: [...response.headers],
+            body: clonedBody
+        }, [clonedBody]);
 
-    } catch (error) { 
-        port.postMessage({ type: "ENGINE_ERROR", error: String(error) }); 
-    } 
+    } catch (error) {
+        port.postMessage({ type: "ENGINE_ERROR", error: String(error) });
+    }
 });

@@ -13,8 +13,7 @@
     <link rel="stylesheet" href="/ui.css">
 
     <script type="module" src="/src/main.js"></script>
-    <script defer src="/src/ui.js"></script>
-
+    <script type="module" src="/src/ui.js"></script>
     <style>
         .rsapp-loading-cover {
             display: none;
@@ -36,11 +35,12 @@
 
     <header class="rsapp-navbar">
         <div class="rsapp-navbar__left">
-            <div class="rsapp-navbar-menu">
+            <button class="rsapp-navbar-menu" type="button" aria-label="Open menu"
+                aria-controls="menu-dropdown" aria-expanded="false" data-hook-triggler="menu-dropdown">
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
+            </button>
             <h2 class="rsapp-button--margin-small">Ray<span class="rsapp-redtext">Site</span></h2>
             <button class="rsapp-button--5 rsapp-button--margin-small" data-hook-triggler="toolbar-contentPanel">
                 Assets
@@ -52,13 +52,87 @@
             </button>
         </div>
         <div class="rsapp-navbar__right">
-            <button class="rsapp-button--5 rsapp-button--margin-small" data-hook-triggler="toolbar-contentPanel">
-                Edit Content
+            <button class="rsapp-button--5 rsapp-button--margin-small" type="button" data-ui-action="preview">
+                Preview
+            </button>
+            <button class="rsapp-button--1 rsapp-button--margin-small" type="button">
+                Publish
             </button>
         </div>
+        <nav class="rsapp-menu-popup" id="menu-dropdown" aria-label="Main menu" data-hook-react="menu-dropdown">
+            <button class="rsapp-menu-popup__action" type="button" data-hook-triggler="menu-aboutPanel">
+                About RaySite
+            </button>
+            <button class="rsapp-menu-popup__action" type="button" data-hook-triggler="menu-creditsPanel">
+                Credits
+            </button>
+            <button class="rsapp-menu-popup__action" type="button" data-ui-action="export">
+                Export project
+            </button>
+            <button class="rsapp-menu-popup__action" type="button" data-ui-action="import">
+                Import project
+            </button>
+            <button class="rsapp-menu-popup__action" type="button" data-ui-action="import">
+                Export HTML packages
+            </button>
+            <button class="rsapp-menu-popup__action" type="button" data-hook-triggler="menu-settingsPanel">
+                Settings
+            </button>
+            <button class="rsapp-menu-popup__action" type="button" data-hook-triggler="menu-themePanel">
+                Theme
+            </button>
+            <input class="rsapp-file-input" type="file" accept=".zip,application/zip" data-ui-file-import hidden>
+        </nav>
     </header>
 
-    <iframe id="canvas" class="rsapp-canvas" data-raysite-preview="true" src="/rs-preview/index.html"></iframe>
+    <section class="rsapp-page-shell" role="dialog" aria-modal="true" aria-labelledby="about-title"
+        data-hook-react="menu-aboutPanel">
+        <div class="rsapp-page-shell__content">
+            <button class="rsapp-button--5 rsapp-button--size-small" type="button"
+                data-hook-open="menu-dropdown">Back to menu</button>
+            <h1 id="about-title">About RaySite</h1>
+            <p>RaySite is a free website builder based on SSG technology.</p>
+            <p>Version 0.9.0</p>
+        </div>
+    </section>
+
+    <section class="rsapp-page-shell" role="dialog" aria-modal="true" aria-labelledby="credits-title"
+        data-hook-react="menu-creditsPanel">
+        <div class="rsapp-page-shell__content">
+            <button class="rsapp-button--5 rsapp-button--size-small" type="button"
+                data-hook-open="menu-dropdown">Back to menu</button>
+            <h1 id="credits-title">Credits</h1>
+            <p>Built by Ray, <span class="rsapp-redtext">@SaltFlavoredLight</span>.</p>
+            <p>Licensed under Apache 2.0.</p>
+        </div>
+    </section>
+
+    <!-- Next agent: implement Settings and Theme behavior in these placeholder page shells. -->
+    <section class="rsapp-page-shell" role="dialog" aria-modal="true" aria-labelledby="settings-title"
+        data-hook-react="menu-settingsPanel">
+        <div class="rsapp-page-shell__content">
+            <button class="rsapp-button--5 rsapp-button--size-small" type="button"
+                data-hook-open="menu-dropdown">Back to menu</button>
+            <h1 id="settings-title">Settings</h1>
+            <p>Settings page shell. Add settings controls here.</p>
+        </div>
+    </section>
+
+    <section class="rsapp-page-shell" role="dialog" aria-modal="true" aria-labelledby="theme-title"
+        data-hook-react="menu-themePanel">
+        <div class="rsapp-page-shell__content">
+            <button class="rsapp-button--5 rsapp-button--size-small" type="button"
+                data-hook-open="menu-dropdown">Back to menu</button>
+            <h1 id="theme-title">Theme</h1>
+            <p>Theme page shell. Add theme controls here.</p>
+        </div>
+    </section>
+
+    <iframe id="canvas" class="rsapp-canvas" src="/rs-preview/index.html" style="visibility: hidden"></iframe>
+    <iframe id="render-preview" class="rsapp-render-preview" title="Rendered page preview"></iframe>
+    <button class="rsapp-button--1 rsapp-preview-exit" type="button" data-ui-action="exit-preview" hidden>
+        Exit Preview
+    </button>
 
 
     <section class="rsapp-toolbar">
@@ -107,11 +181,10 @@
             </div>
 
 
-            <div class="rsapp-popuppanel--top" style="height: 150px" data-hook-react="toolbar-elementPanel">
-                Elements Panel
+            <div class="rsapp-popuppanel--top" data-hook-react="toolbar-contentPanel" data-ui-panel="contentLibrary">
             </div>
 
-            <div class="rsapp-popuppanel--top" style="height: 150px" data-hook-react="toolbar-contentPanel">
+            <div class="rsapp-popuppanel--top" style="height: 150px" data-hook-react="toolbar-elementPanel">
                 Content Panel
             </div>
 
