@@ -1,0 +1,12 @@
+{
+  "version": "0.9.0",
+  "type": "website",
+  "name": "RaySite",
+  "icon": "raysite.net/icon.png",
+  "websiteKeywords": [
+    "creative development",
+    "web design",
+    "digital experiences"
+  ],
+  "domain": "example.com"
+}

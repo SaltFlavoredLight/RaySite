@@ -1,0 +1,63 @@
+{
+  "id": 1001,
+  "JSID": "top",
+  "type": "@root/header",
+  "content": {
+    "logo.type": "text",
+    "logo.text": "RAY /",
+    "nav": [
+      { "name": "Home", "url": "/" },
+      { "name": "About", "url": "/about" },
+      { "name": "Selected work", "url": "/work" },
+      { "name": "Contact", "url": "/contact" }
+    ],
+    "primaryButton.enable": true,
+    "primaryButton.text": "Let's talk",
+    "primaryButton.url": "/contact",
+    "primaryButton.newPage": false,
+    "secondaryButton.enable": false
+  },
+  "layout": {
+    "desktopPosition": 1,
+    "mobileMenuPlace": "right",
+    "desktopHeaderMaxInnerWidth": { "mode": "px", "value": 1200 },
+    "desktopHeaderMainGap": { "mode": "px", "value": 28 },
+    "mobileHeaderMainGap": { "mode": "px", "value": 16 },
+    "desktopHeaderSeparateBorderSpace": { "mode": "none" },
+    "desktopMenuMode": 0,
+    "desktopCoverHeaderOnMenu": false,
+    "mobileCoverHeaderOnMenu": false,
+    "spaceBetween": { "mode": "px", "value": 22 },
+    "navMajorGap": { "mode": "px", "value": 24 },
+    "navMinorGap": { "mode": "px", "value": 8 },
+    "nestingSupport": 0,
+    "transitionTime": 220,
+    "transitionCurve": { "coords": [0.25, 0.1, 0.25, 1] },
+    "mobileCtaType": 0,
+    "mobileLogoPosition": "left",
+    "hamAnimation": 1,
+    "hamAnimationOnDesktop": false,
+    "mobileButonRound": { "mode": "px", "value": 24 },
+    "stickyToBottom": false
+  },
+  "appearance": {
+    "default": {
+      "base": {
+        "default": {
+          "style": {
+            "textColor": { "mode": "basic", "color": "#25312B" },
+            "background": { "mode": "basic", "color": "#F5F3ED" },
+            "paddingTop": { "mode": "px", "value": 18 },
+            "paddingBottom": { "mode": "px", "value": 18 },
+            "paddingLeft": { "mode": "%", "value": 7 },
+            "paddingRight": { "mode": "%", "value": 7 },
+            "borderMode": "solid",
+            "borderBottom": { "mode": "px", "value": 1, "color": "#E7E3D8" }
+          },
+          "size": {}
+        }
+      }
+    }
+  },
+  "animation": {}
+}

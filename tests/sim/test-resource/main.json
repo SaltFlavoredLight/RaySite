@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "type": "website",
+  "name": "Ray — Creative Developer",
+  "domain": "https://ray.example",
+  "websiteKeywords": [
+    "creative development",
+    "digital design",
+    "product design",
+    "web experiences"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": 1002,
+  "type": "@root/CTA",
+  "content": [
+    {
+      "id": 10021,
+      "type": "basic/heading",
+      "content": [
+        { "insert": "Have a good idea? Let's make it real." },
+        { "insert": "\n", "attributes": { "header": 2 } }
+      ],
+      "layout": {},
+      "appearance": {},
+      "animation": {}
+    },
+    {
+      "id": 10022,
+      "type": "basic/text",
+      "content": [
+        { "insert": "Thoughtful work starts with a simple conversation." }
+      ],
+      "layout": {},
+      "appearance": {},
+      "animation": {}
+    },
+    {
+      "id": 10023,
+      "type": "basic/button",
+      "content": { "label": "Tell me about it" },
+      "clickable": {
+        "enable": true,
+        "action": { "mode": "a", "url": "/contact", "newPage": false }
+      },
+      "layout": {},
+      "appearance": {},
+      "animation": {}
+    }
+  ],
+  "layout": {
+    "spaceAcross": 2,
+    "spaceAlong": 2,
+    "overflow": 3,
+    "gap": { "mode": "px", "value": 16 },
+    "mobileGap": { "mode": "px", "value": 12 },
+    "mobileReverseDirection": false,
+    "displayType": 0
+  },
+  "appearance": {
+    "default": {
+      "base": {
+        "default": {
+          "style": {
+            "textColor": { "mode": "basic", "color": "#F5F3ED" },
+            "background": { "mode": "basic", "color": "#244A3D" },
+            "paddingTop": { "mode": "px", "value": 72 },
+            "paddingBottom": { "mode": "px", "value": 72 },
+            "paddingLeft": { "mode": "%", "value": 8 },
+            "paddingRight": { "mode": "%", "value": 8 },
+            "borderMode": "none"
+          },
+          "size": { "height": { "mode": "auto" }, "alongGrow": false, "alongShrink": false }
+        }
+      }
+    }
+  },
+  "animation": {}
+}

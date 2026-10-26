@@ -1,0 +1,122 @@
+{
+  "id": 1001,
+  "JSID": "top",
+  "type": "@root/header",
+  "content": {
+    "logo.type": "text",
+    "logo.text": "RAY.",
+    "nav": [
+      {
+        "name": "Home",
+        "url": "/"
+      },
+      {
+        "name": "About",
+        "url": "/about"
+      },
+      {
+        "name": "Projects",
+        "url": "/#projects"
+      },
+      {
+        "name": "Contact",
+        "url": "/#contact"
+      }
+    ],
+    "primaryButton.enable": true,
+    "primaryButton.text": "Start a project",
+    "primaryButton.url": "mailto:ray@example.com",
+    "primaryButton.newPage": false,
+    "secondaryButton.enable": false
+  },
+  "layout": {
+    "desktopPosition": 1,
+    "mobileMenuPlace": "right",
+    "desktopHeaderMaxInnerWidth": {
+      "mode": "px",
+      "value": 1200
+    },
+    "desktopHeaderMainGap": {
+      "mode": "px",
+      "value": 24
+    },
+    "mobileHeaderMainGap": {
+      "mode": "px",
+      "value": 16
+    },
+    "desktopHeaderSeparateBorderSpace": {
+      "mode": "px",
+      "value": 0
+    },
+    "desktopMenuMode": 0,
+    "desktopCoverHeaderOnMenu": false,
+    "mobileCoverHeaderOnMenu": false,
+    "spaceBetween": {
+      "mode": "px",
+      "value": 16
+    },
+    "navMajorGap": {
+      "mode": "px",
+      "value": 16
+    },
+    "navMinorGap": {
+      "mode": "px",
+      "value": 8
+    },
+    "nestingSupport": 0,
+    "transitionTime": 200,
+    "transitionCurve": {
+      "coords": [
+        0.25,
+        0.1,
+        0.25,
+        1
+      ]
+    },
+    "mobileCtaType": 0,
+    "mobileLogoPosition": "left",
+    "hamAnimation": 1,
+    "hamAnimationOnDesktop": false,
+    "mobileButonRound": {
+      "mode": "none"
+    },
+    "stickyToBottom": false
+  },
+  "appearance": {
+    "default": {
+      "base": {
+        "default": {
+          "style": {
+            "textColor": {
+              "mode": "basic",
+              "color": "#F5F3F4"
+            },
+            "background": {
+              "mode": "basic",
+              "color": "#0B090A"
+            },
+            "paddingTop": {
+              "mode": "px",
+              "value": 16
+            },
+            "paddingBottom": {
+              "mode": "px",
+              "value": 16
+            },
+            "paddingLeft": {
+              "mode": "%",
+              "value": 8
+            },
+            "paddingRight": {
+              "mode": "%",
+              "value": 8
+            },
+            "borderMode": "none"
+          },
+          "size": {}
+        }
+      }
+    }
+  },
+  "animation": {}
+}

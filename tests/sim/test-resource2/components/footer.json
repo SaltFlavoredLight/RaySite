@@ -1,0 +1,95 @@
+{
+  "id": 1003,
+  "type": "@root/footer",
+  "content": [
+    {
+      "id": 10031,
+      "type": "basic/text",
+      "content": [
+        {
+          "insert": "© 2026 Ray. Crafted with curiosity and care."
+        }
+      ],
+      "layout": {},
+      "appearance": {},
+      "animation": {}
+    },
+    {
+      "id": 10032,
+      "type": "basic/button",
+      "content": {
+        "label": "Back to top ↑"
+      },
+      "clickable": {
+        "enable": true,
+        "action": {
+          "mode": "a",
+          "url": "#top",
+          "newPage": false
+        }
+      },
+      "layout": {},
+      "appearance": {},
+      "animation": {}
+    }
+  ],
+  "layout": {
+    "spaceAcross": 2,
+    "spaceAlong": 2,
+    "overflow": 3,
+    "gap": {
+      "mode": "none"
+    },
+    "mobileGap": {
+      "mode": "none"
+    },
+    "mobileReverseDirection": false,
+    "displayType": 0
+  },
+  "appearance": {
+    "default": {
+      "base": {
+        "default": {
+          "style": {
+            "textColor": {
+              "mode": "basic",
+              "color": "#B1A7A6"
+            },
+            "background": {
+              "mode": "basic",
+              "color": "#070506"
+            },
+            "paddingTop": {
+              "mode": "px",
+              "value": 32
+            },
+            "paddingBottom": {
+              "mode": "px",
+              "value": 32
+            },
+            "paddingLeft": {
+              "mode": "%",
+              "value": 8
+            },
+            "paddingRight": {
+              "mode": "%",
+              "value": 8
+            },
+            "borderMode": "none"
+          },
+          "size": {
+            "height": {
+              "mode": "auto"
+            },
+            "alongGrow": false,
+            "alongShrink": false,
+            "mobileMinHeight": {
+              "mode": "auto"
+            }
+          }
+        }
+      }
+    }
+  },
+  "animation": {}
+}
