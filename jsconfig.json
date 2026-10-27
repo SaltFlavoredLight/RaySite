@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    /* Target & Module Resolution */
+    "target": "es2022",           // Specifies the JavaScript language version (e.g., 'es5', 'es2015', 'es2022', 'esnext').
+    "module": "esnext",         // Specifies the module system for the project (e.g., 'commonjs', 'esnext', 'node16').
+    "lib": ["es2022", "dom"],     // Specifies library files to be included in the compilation (e.g., 'dom', 'scripthost').
+
+    /* Path Mapping & Directories */
+    "paths": {                    // Allows you to set up path aliases (e.g., importing from "@/components/utils").
+      "@/*": ["./src/*"]
+    },
+    "rootDir": "src",             // Specifies the root directory of input files.
+    "outDir": "dist",             // Redirects output structure to the directory.
+
+    /* Strictness & Type Checking - for TS */
+    "checkJs": false,              // Enables type checking on JavaScript files (works alongside JSDoc comments).
+    "strict": false,              // Enables all strict type-checking options if set to true.
+
+    /* Module & Interop Flags */
+    "allowSyntheticDefaultImports": true, // Allows default imports from modules with no default export.
+    "esModuleInterop": true,              // Enables emit interoperability between CommonJS and ES Modules.
+    "isolatedModules": false,             // Ensures that each file can be safely transpiled without relying on other imports.
+
+    /* Advanced Settings */
+    "experimentalDecorators": false,       // Enables experimental support for ES7 decorators.
+    "emitDecoratorMetadata": false,        // Enables experimental support for emitting type metadata for decorators.
+    "disableSizeLimit": false,            // Polishes performance; removes the total memory size limit for JavaScript source code.
+    "preserveSymlinks": false             // Do not resolve symlinks to their real path; treats a symlinked file as a real file.
+  },
+  
+  /* File Inclusion & Exclusion Rules */
+  "include": [
+    "src/**/*"                    // Specifies files or directories to track.
+  ],
+  "exclude": [
+    "node_modules",               // Highly recommended to exclude to optimize editor performance.
+    "dist",                       // Excludes build output maps.
+    "**/*.spec.js"                // Example: Excludes test files from standard project context.
+  ]
+}
