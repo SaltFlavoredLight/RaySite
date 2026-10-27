@@ -1,0 +1,438 @@
+/* Copyright CubicWorld 2025 (formattly Ray Studio)*/
+
+/* === System Route === */
+:root {
+    --maintheme1: #efbf04;
+    --maintheme2: #9D2729;
+    --maintheme3: #e3e4df;
+	
+	--system-point2: var(--maintheme1);
+	--system-point1: var(--maintheme2);
+	--system-point1h: #720002;
+	
+    --system-primary: #ffffff;
+    --system-secondary: #f4f4f4;
+	--system-third: #e3e4df;
+    --system-main: #212121;
+    --system-success: #27ae60;
+    --system-warning: #e67e22;
+    --system-info: #2980b9;
+    --contrast-level: 0.15;
+    --system-border: 1px solid rgba(0, 0, 0, var(--contrast-level));
+    --system-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+	--system-gap: 10px;
+	--system-gap2: 10px;
+	--system-main-padding-bottom: 68px;
+	--system-main-padding-top: 35px;
+	--system-main-padding-left: 50px;
+	--system-main-padding-right: 300px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+body {
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    letter-spacing: 0.4px;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    font-family: "Roboto", sans-serif;
+    background-color: var(--system-primary);
+    color: var(--system-main);
+    display: grid;
+    grid-template-columns: 50px 220px auto 1fr 300px;
+    grid-template-rows: 35px auto 1fr 180px 45px 24px;
+    grid-template-areas:
+        "leftmenu Logo system topbar deploysettings"
+        "leftbar1 canva canva canva rightbanner"
+        "leftbar2 canva canva canva rightbanner"
+        "workspaceswitcher canva canva canva rightbanner"
+        "toolsbar toolsbar toolsbar toolsbar toolsbar"
+        "status status status status status";
+}
+
+section {
+    background-color: var(--system-secondary);
+    border-bottom: var(--system-border);
+    border-right: var(--system-border);
+    display: flex;
+    align-items: center;
+    padding: 0 var(--system-gap);
+    position: relative;
+}
+
+/* for delete the setting of a */
+a,
+a:hover {
+	text-decoration: none;
+	background: none;
+	color: inherit;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	align-items: center;	
+}
+
+.app-button {
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: inherit;
+    text-decoration: none;
+    background: rgba(0, 0, 0, 0.05);
+    border: 0;
+	transition: background-color 0.3s ease, background 0.3s ease;
+}
+
+.app-button:hover {
+    background: rgba(0, 0, 0, var(--contrast-level));
+}
+
+.tag-success {
+    color: var(--system-success);
+    font-weight: bold;
+}
+
+/* === Deploy settings === */
+.app-redbutton {
+	background: var(--system-point1);
+	color: var(--system-primary);
+}
+
+.app-redtext {
+	color: var(--system-point1);
+}
+
+.app-redbutton:hover {
+	background: var(--system-point1h);
+	color: var(--system-primary);
+}
+
+.app-title {
+    grid-area: Logo;
+    font-family: "Cardo", serif;
+    font-weight: bold;
+    font-size: 14px;
+    border-right: var(--system-border);
+    position: relative;
+    z-index: 100;
+}
+
+.app-box {
+    grid-area: system;
+    gap: 10px;
+    position: relative;
+    z-index: 100;
+}
+
+.app-topbar {
+    grid-area: topbar;
+    border-right: none;
+    position: relative;
+    z-index: 100;
+}
+
+.app-deploysettings {
+    grid-area: deploysettings;
+    border-left: var(--system-border);
+    border-right: none;
+    justify-content: flex-end;
+    position: relative;
+    z-index: 100;
+	gap: var(--system-gap);
+}
+
+.app-leftbar1 {
+    grid-area: leftbar1;
+    align-items: flex-start;
+    padding: var(--system-gap) var(--system-gap2) var(--system-gap) var(--system-gap2);
+    position: relative;
+    z-index: 100;
+	gap: var(--system-gap);
+	flex-direction: column;
+}
+
+.app-leftbar2 {
+    grid-area: leftbar2;
+    align-items: flex-start;
+    position: relative;
+    padding: var(--system-gap) var(--system-gap2) var(--system-gap) var(--system-gap2);
+    z-index: 100;
+	gap: var(--system-gap);
+	flex-direction: column;
+}
+
+.app-workspaceswitcher {
+    grid-area: workspaceswitcher;
+    border-bottom: none;
+    align-items: flex-start;
+	justify-content: flex-end;
+    padding: var(--system-gap) var(--system-gap2) var(--system-gap) var(--system-gap2);
+    position: relative;
+    z-index: 100;
+	gap: var(--system-gap);
+	flex-direction: column;
+}
+
+.app-canvasworkspace {
+    grid-area: canva;
+    background: #ddd;
+    border: none;
+    display: block;
+    overflow: auto;
+    position: relative;
+    z-index: 0;
+}
+
+.app-rightbanner {
+    grid-area: rightbanner;
+    border-left: var(--system-border);
+    border-right: none;
+    align-items: flex-start;
+    padding-top: 15px;
+    position: relative;
+    z-index: 98;
+}
+
+.app-toolsbar {
+    grid-area: toolsbar;
+    border-top: var(--system-border);
+    border-bottom: var(--system-border);
+    background: var(--system-third);
+    position: relative;
+    z-index: 100;
+}
+
+.app-statusbar {
+    grid-area: status;
+    background: var(--system-main);
+    color: var(--system-primary);
+    font-size: 10px;
+    border: none;
+    position: relative;
+    z-index: 100;
+}
+
+/* === Popup things === */
+
+
+.app-leftbanner {
+	position: absolute;
+    background: var(--system-secondary);
+    border-right: var(--system-border);
+	width: 320px;
+	left: -320px;
+	top: var(--system-main-padding-top);
+    bottom: var(--system-main-padding-bottom);
+	z-index: 99;
+	opacity: 0;
+	transition: left 0.3s ease-in-out, opacity 0.3s ease-in-out;
+	
+	display: flex;
+    flex-direction: column;
+	gap: 10px;
+	padding: 20px;
+	align-items: flex-start;
+	text-align: left;
+}
+
+.app-leftbanner.active {
+	opacity: 1;
+	left: var(--system-main-padding-left);
+}
+
+.app-leftbannerbig {
+	position: absolute;
+    background: var(--system-secondary);
+    border-right: var(--system-border);
+	width: 600px;
+	left: -600px;
+	top: var(--system-main-padding-top);
+    bottom: var(--system-main-padding-bottom);
+	z-index: 99;
+	opacity: 0;
+	transition: left 0.3s ease-in-out, opacity 0.3s ease-in-out;
+	
+	display: flex;
+    flex-direction: column;
+	gap: 10px;
+	padding: 20px;
+	align-items: flex-start;
+	text-align: left;
+}
+
+.app-leftbannerbig.active {
+	opacity: 1;
+	left: var(--system-main-padding-left);
+}
+
+
+
+
+/* === For Icon banner settings === */
+
+.app-iconmenu {
+    grid-area: leftmenu;
+    justify-content: center;
+    padding: 0;
+    position: relative;
+    z-index: 100;
+	transition: background-color 0.3s ease, background 0.3s ease;
+
+}
+
+.app-lefthamburger {
+    width: 20px;
+    height: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+	}
+
+.app-iconmenu:hover,
+.app-iconmenu.active {
+    background: rgba(0, 0, 0, var(--contrast-level));
+}
+
+
+.app-lefthamburger span {
+    width: 100%;
+    height: 2px;
+    background-color: var(--system-main);
+    transition: 0.3s;
+    border-radius: 2px;
+}
+
+.app-iconmenu.active .app-lefthamburger span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.app-iconmenu.active .app-lefthamburger span:nth-child(2) {
+    opacity: 0;
+}
+
+.app-iconmenu.active .app-lefthamburger span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+.app-iconmenulist {
+    position: fixed;
+    top: var(--system-main-padding-top);
+    left: 0;
+    width: 250px; 
+    background: var(--system-third);
+    border: var(--system-border);
+    z-index: 200;
+
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start; 
+    justify-content: flex-start; 
+    padding: 20px 0; 
+    
+    clip-path: inset(0 0 100% 0);
+    filter: drop-shadow(5px 0 15px rgba(0,0,0,0.1));
+    transition: clip-path 0.3s ease-in-out;
+}
+
+.app-iconmenulist.active {
+	clip-path: inset(0 0 0 0);
+}
+
+.app-menu-item {
+    width: 100%;
+    padding: 12px 25px; 
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.app-menu-item:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+
+/* == App icons === */
+
+.app-icons {
+    cursor: pointer;
+    border-radius: 3px;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+	background: none;
+	max-height: 100%;
+	width: 100%;
+    display: flex;
+	align-items: center;	
+	padding: 5px;
+    border: 0;
+	
+	
+	transition: background-color 0.3s ease, background 0.3s ease;
+}
+
+.app-icons:hover,
+.app-icons.active {
+    background: rgba(0, 0, 0, var(--contrast-level));
+}
+
+
+/* === app-canvasworkspace === */
+.app-canvasworkspace {
+	display: grid;
+    grid-template-columns: 25px auto 200px 25px;
+    grid-template-rows: 33px auto 1px;
+    grid-template-areas:
+		"spaceleft nav screeninfo spaceright"
+		"spaceleft iframe iframe spaceright"
+		"spaceleft bottom bottom spaceright"
+		;
+}
+
+.app-canvasnav {
+    grid-area: nav;
+    border-right: none;
+	display: flex;
+    align-items: flex-start;
+    padding: 0 15px;
+    position: relative;
+    z-index: 100;
+}
+
+.app-screeninfo {
+    grid-area: screeninfo;
+    border-right: none;
+	display: flex;
+    align-items: flex-start;
+    padding: 0 15px;
+    position: relative;
+    z-index: 100;
+}
+
+.app-iframe {
+	all: unset;
+    grid-area: iframe;
+	width: 100%;
+	height: 100%;
+	border: var(--system-border);
+	border-bottom: 0;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}

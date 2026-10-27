@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Cursor Tracker</title>
+  <style>
+    div {
+      border: 1px solid #ccc;
+      padding: 10px;
+      min-height: 100px;
+      font-size: 16px;
+    }
+    #info {
+      margin-top: 10px;
+      font-family: monospace;
+      white-space: pre;
+    }
+	.is-editing { background-color: #FF0000; }
+  </style>
+</head>
+<body>
+
+<div id="editor" contenteditable="true">
+</div>
+<div id="editor2" contenteditable="true">
+</div>
+
+<script type="module">
+	/*  RSD textbox Editor 1.0 version.
+		save as RSDtextboxeditor.js at /app/JSbandles
+		Need: 
+		nothing :)
+		Output as: fromRSDtoJSON(function), renderJSONtoHTML(function), RSDTextboxEditor(class)
+		RSD format using RSD1.0.
+	*/
+
+	function escapeHTML(str) {
+	    if (!str) return "";
+	    return str
+	        .replace(/&/g, "&amp;")
+	        .replace(/</g, "&lt;")
+	        .replace(/>/g, "&gt;")
+	        .replace(/"/g, "&quot;")
+	        .replace(/'/g, "&#039;");
+	}
+
+	function minifyRSD(raw) {
+	    // 使用字符串定义 XML 注释的正则：匹配 结尾
+	    // [\\s\\S]*? 是为了确保即使注释里有换行符也能被选中
+	    const commentPattern = "";
+	    const regex = new RegExp(commentPattern, "g");
+
+	    // 1. 第一步：彻底移除所有注释内容
+	    let noComments = raw.replace(regex, "");
+
+	    // 2. 第二步：处理换行和空白
+	    let lines = noComments.split(/\r?\n/);
+	    let processedLines = [];
+	    for (let line of lines) {
+	        let trimmed = line.trim();
+	        if (trimmed.length > 0) {
+	            processedLines.push(trimmed);
+	        }
+	    }
+
+	    // 3. 第三步：合并并清理标签间的空隙
+	    let singleLine = processedLines.join(" ");
+	    let result = "";
+	    for (let i = 0; i < singleLine.length; i++) {
+	        result += singleLine[i];
+	        if (singleLine[i] === '>') {
+	            let j = i + 1;
+	            while (j < singleLine.length && singleLine[j] === ' ') j++;
+	            if (j < singleLine.length && singleLine[j] === '<') {
+	                i = j - 1; // 跳过标签之间的空格
+	            }
+	        }
+	    }
+	    return result;
+	}
+
+	function parseTagContent(content) {
+	    if (content.includes("  ")) {
+	        throw new Error(`[Strict Error] Multiple spaces detected in tag: <${content}>`);
+	    }
+
+	    const parts = content.split(" ");
+	    const tagName = parts[0];
+	    const attrs = {};
+
+	    for (let i = 1; i < parts.length; i++) {
+	        const pair = parts[i].split('=');
+	        if (pair.length === 2) {
+	            const key = pair[0];
+	            // 移除引号
+	            const value = pair[1].replace(/['"]/g, "");
+	            attrs[key] = value;
+	        }
+	    }
+	    return {
+	        tagName,
+	        attrs
+	    };
+	}
+
+
+	function handleTagState(rsd, state, stack, json) {
+	    const isOpening = rsd[state.pos + 1] !== '/';
+
+	    if (!isOpening) {
+	        state.pos += 2;
+	        let tagName = "";
+	        while (state.pos < rsd.length && rsd[state.pos] !== '>') tagName += rsd[state.pos++];
+	        state.pos++;
+	        stack.pop();
+	    } else {
+	        state.pos++;
+	        let tagContent = "";
+	        while (state.pos < rsd.length && rsd[state.pos] !== '>') tagContent += rsd[state.pos++];
+	        state.pos++;
+
+	        const {
+	            tagName,
+	            attrs
+	        } = parseTagContent(tagContent);
+	        const parent = stack[stack.length - 1];
+
+	        // --- 核心修正：识别容器内部的 line ---
+	        // 只要父级是 list, blockquote 或 code，内部的 line 都视为嵌套项
+	        const isNestedLine = tagName === 'line' && parent && ['list', 'blockquote', 'code'].includes(parent.name);
+
+	        if (isNestedLine) {
+	            const currentContainer = json[json.length - 1];
+	            // 统一使用 items 数组来存储容器内的多行
+	            if (!currentContainer.items) currentContainer.items = [];
+
+	            const newItem = {
+	                runs: []
+	            };
+	            currentContainer.items.push(newItem);
+
+	            // 压入 stack 并标记为内部 Item
+	            stack.push({
+	                name: tagName,
+	                isListItem: true,
+	                item: newItem
+	            });
+	        } else if (['list', 'blockquote', 'code'].includes(tagName)) {
+	            // 创建容器 Block
+	            const containerBlock = {
+	                type: tagName,
+	                ...attrs,
+	                items: []
+	            };
+	            json.push(containerBlock);
+	            stack.push({
+	                name: tagName,
+	                attrs
+	            });
+	        } else if (tagName === 'line') {
+	            // 普通顶层行
+	            const newBlock = {
+	                type: 'line',
+	                ...attrs,
+	                runs: []
+	            };
+	            json.push(newBlock);
+	            stack.push({
+	                name: tagName,
+	                attrs
+	            });
+	        } else {
+	            // 样式标签
+	            stack.push({
+	                name: tagName,
+	                attrs
+	            });
+	        }
+	    }
+	}
+
+	function handleTextState(rsd, state, stack, json) {
+	    let text = "";
+	    while (state.pos < rsd.length && rsd[state.pos] !== '<') {
+	        if (rsd[state.pos] === '&') {
+	            const decodedObj = decodeEntity(rsd, state.pos);
+	            text += decodedObj.char;
+	            state.pos = decodedObj.nextPos;
+	        } else {
+	            text += rsd[state.pos++];
+	        }
+	    }
+
+	    if (text.length > 0) {
+	        const top = stack[stack.length - 1];
+	        let targetRuns = null;
+
+	        // 核心：如果是 ListItem 环境，target 是 item.runs
+	        if (top && top.isListItem) {
+	            targetRuns = top.item.runs;
+	        }
+	        // 否则，target 是 json 最后一个 block 的 runs
+	        else if (json.length > 0) {
+	            const currentBlock = json[json.length - 1];
+	            if (currentBlock.runs) targetRuns = currentBlock.runs;
+	        }
+
+	        if (targetRuns) {
+	            const currentStyles = mapStackToStyles(stack);
+	            const lastRun = targetRuns[targetRuns.length - 1];
+
+	            if (lastRun && areStylesEqual(lastRun, currentStyles)) {
+	                lastRun.text += text;
+	            } else {
+	                targetRuns.push({
+	                    text: text,
+	                    ...currentStyles
+	                });
+	            }
+	        }
+	    }
+	}
+
+	function areStylesEqual(styles1, styles2) {
+	    const keys = ['bold', 'italic', 'underline', 'strike', 'textColor', 'highlight', 'size', 'font', 'link', 'header'];
+	    return keys.every(key => (styles1[key] || false) === (styles2[key] || false));
+	}
+
+	function mapStackToStyles(stack) {
+	    const styles = {};
+
+	    // stack 里面存的是对象: { name: 'b', attrs: {} }
+	    stack.forEach(tag => {
+	        switch (tag.name) {
+	            case 'b':
+	                styles.bold = true;
+	                break;
+	            case 'i':
+	                styles.italic = true;
+	                break;
+	            case 'u':
+	                styles.underline = true;
+	                break;
+	            case 's':
+	                styles.strike = true;
+	                break;
+	            case 'color':
+	                if (tag.attrs.co) styles.textColor = tag.attrs.co;
+	                break;
+	            case 'highlight':
+	                if (tag.attrs.co) styles.highlight = tag.attrs.co;
+	                break;
+	            case 'size':
+	                if (tag.attrs.s) styles.size = tag.attrs.s;
+	                break;
+	            case 'font':
+	                if (tag.attrs.name) styles.font = tag.attrs.name;
+	                break;
+	            case 'link':
+	                if (tag.attrs.url) styles.link = tag.attrs.url;
+	                break;
+	                // 处理你的 h1, h2, h3 样式映射
+	            case 'h1':
+	            case 'h2':
+	            case 'h3':
+	                styles.header = tag.name;
+	                break;
+	        }
+	    });
+
+	    return styles;
+	}
+
+	export function fromRSDtoJSON(rsd) {
+	    const cleanRsd = minifyRSD(rsd);
+	    const json = [];
+	    const stack = [];
+	    let state = {
+	        pos: 0
+	    };
+
+	    while (state.pos < cleanRsd.length) {
+	        if (cleanRsd[state.pos] === '<') {
+	            handleTagState(cleanRsd, state, stack, json);
+	        } else {
+	            handleTextState(cleanRsd, state, stack, json);
+	        }
+	    }
+
+	    if (stack.length !== 0) throw new Error(`[Strict Error] Unclosed tags: ${stack.join(', ')}`);
+	    return json;
+	}
+
+
+	//Part: renderJSONtoHTML
+	//Out put as: Function 
+	function renderRuns(runs) {
+	    // 保底：即使没内容也要有一个带零宽空格的 span，否则行会塌陷
+	    if (!runs || runs.length === 0) return "<span>&#8203;</span>";
+
+	    return runs.map(run => {
+	        let text = escapeHTML(run.text);
+
+	        // 1. 处理样式标签 (b, i, u, s, code)
+	        if (run.bold) text = `<b>${text}</b>`;
+	        if (run.italic) text = `<i>${text}</i>`;
+	        if (run.underline) text = `<u>${text}</u>`;
+	        if (run.strike) text = `<s>${text}</s>`;
+	        if (run.code) text = `<code>${text}</code>`;
+
+	        // 2. 构造 Style 字符串
+	        const styles = [];
+	        if (run.highlight) styles.push(`background-color:${run.highlight}`);
+	        if (run.textColor) styles.push(`color:${run.textColor}`);
+	        if (run.size) styles.push(`font-size:${run.size}px`);
+
+	        const styleAttr = styles.length > 0 ? ` style="${styles.join(';')}"` : "";
+
+	        // 3. 核心要求：所有 Node 必须包裹在一个 <span> 中
+	        let result = `<span${styleAttr}>${text}</span>`;
+
+	        // 4. 如果有链接，包裹在最外层
+	        if (run.link) {
+	            result = `<a href="${run.link}" target="_blank">${result}</a>`;
+	        }
+
+	        return result;
+	    }).join("");
+	}
+
+	function renderJSONtoHTML(json) {
+	    let html = "";
+	    json.forEach(block => {
+	        // 1. 处理 List
+	        if (block.type === 'list') {
+	            const tag = block.order === "true" ? "ol" : "ul";
+	            html += `<${tag}>`;
+	            (block.items || []).forEach(item => {
+	                html += `<li>${renderRuns(item.runs)}</li>`;
+	            });
+	            html += `</${tag}>`;
+	        }
+	        // 2. 处理 Blockquote 或 Code 容器
+	        else if (block.type === 'blockquote' || block.type === 'code') {
+	            html += `<${block.type}>`;
+	            (block.items || []).forEach(line => {
+	                // 内部每一行 line 渲染为一个 p，确保符合你的全 span 要求
+	                html += `<p>${renderRuns(line.runs)}</p>`;
+	            });
+	            html += `</${block.type}>`;
+	        }
+	        // 3. 处理普通顶层 Block (line, h1 等)
+	        else {
+	            const tag = block.mode === "h1" ? "h1" : (block.type === 'line' ? 'p' : block.type);
+	            const style = block.justify ? ` style="text-align:${block.justify}"` : "";
+	            html += `<${tag}${style}>${renderRuns(block.runs)}</${tag}>`;
+	        }
+	    });
+	    return html;
+	}
+
+
+
+
+	/**
+	 * RSDTextboxEditor 3.0 (Production Hardened)
+	 * Optimized for the Google Sites "Block + Run" architecture.
+	 */
+	export class RSDTextboxEditor {
+		constructor(containerId, options = {}) {
+			this.container = document.getElementById(containerId);
+			if (!this.container) throw new Error(`Container #${containerId} not found.`);
+
+			this.options = options;
+			this.isProcessing = false;
+			this.doc = [];
+			
+			this._setupContainer();
+			this._loadInitialData(options.rsd);
+			this._attachEvents();
+		}
+
+		/* --- Core Setup --- */
+
+		_setupContainer() {
+			Object.assign(this.container.style, {
+				contentEditable: "true",
+				outline: "none",
+				whiteSpace: "pre-wrap",
+				minHeight: "100px",
+				padding: "10px",
+				border: "1px solid transparent"
+			});
+			this.container.setAttribute("spellcheck", "false");
+			
+			// Google Sites visual cue: Blue border on focus
+			this.container.addEventListener('focus', () => this.container.style.borderColor = '#4285f4');
+			this.container.addEventListener('blur', () => this.container.style.borderColor = 'transparent');
+		}
+
+		_loadInitialData(rsd) {
+			// Fallback if the external conversion helpers aren't ready
+			try {
+				this.doc = (typeof fromRSDtoJSON === 'function') ? fromRSDtoJSON(rsd) : [];
+				this.container.innerHTML = (typeof renderJSONtoHTML === 'function') ? renderJSONtoHTML(this.doc) : '';
+			} catch (e) {
+				console.error("Data Sync Error:", e);
+				this.doc = [{ mode: 'line', runs: [{ text: "Enter text...", editing: false }] }];
+			}
+		}
+
+		/* --- Selection & Sync Logic --- */
+
+		handleSelection() {
+			const sel = window.getSelection();
+			if (!sel || sel.rangeCount === 0 || !this.container.contains(sel.anchorNode)) return;
+
+			this._clearInternalState();
+
+			const range = sel.getRangeAt(0);
+			
+			// 1. Identify active blocks and runs
+			if (range.collapsed) {
+				this._processCursorPos(range);
+			} else {
+				this._processSelectionRange(range);
+			}
+
+			// 2. High-speed DOM to JSON Sync
+			this._syncDataModel();
+
+			// 3. Notify UI (The Toolbar)
+			this._broadcastState();
+		}
+
+		_syncDataModel() {
+			const blocks = Array.from(this.container.children);
+			
+			this.doc = blocks.map(block => {
+				const spans = Array.from(block.querySelectorAll('span'));
+				return {
+					mode: block.tagName.toLowerCase(), // h1, p, etc.
+					justify: block.style.textAlign || 'left',
+					editing: spans.some(s => s.classList.contains('is-editing')),
+					runs: spans.map(span => ({
+						text: span.textContent.replace(/\u200B/g, ''),
+						bold: !!span.querySelector('b'),
+						italic: !!span.querySelector('i'),
+						color: span.style.color || null,
+						editing: span.classList.contains('is-editing')
+					}))
+				};
+			});
+		}
+
+		/* --- Defensive State Calculation --- */
+
+		_broadcastState() {
+			const state = { inline: {}, block: {} };
+			const editingRuns = this.doc.flatMap(b => (b.runs || []).filter(r => r.editing));
+			const editingBlocks = this.doc.filter(b => b.editing);
+
+			if (editingBlocks.length === 0) return;
+
+			['bold', 'italic', 'color'].forEach(attr => {
+				state.inline[attr] = this._getTriple(editingRuns, attr);
+			});
+
+			['mode', 'justify'].forEach(attr => {
+				state.block[attr] = this._getTriple(editingBlocks, attr);
+			});
+
+			if (this.options.onSelectionChange) this.options.onSelectionChange(state);
+		}
+
+		_getTriple(items, attr) {
+			if (!items || items.length === 0) return [true, null, true];
+			const values = items.map(i => i[attr]);
+			const consistent = values.every(v => v === values[0]);
+			return [consistent, consistent ? values[0] : null, true];
+		}
+
+		/* --- Event Listeners --- */
+
+		_attachEvents() {
+			const trigger = () => {
+				if (this.isProcessing) return;
+				this.isProcessing = true;
+				setTimeout(() => { // Small delay to let DOM settle
+					this.handleSelection();
+					this.isProcessing = false;
+				}, 10);
+			};
+
+			this.container.addEventListener("mouseup", trigger);
+			this.container.addEventListener("keyup", (e) => {
+				// Only trigger on navigation or text changes, ignore modifier keys
+				if (![16, 17, 18, 91].includes(e.keyCode)) trigger();
+			});
+		}
+
+		_clearInternalState() {
+			this.container.querySelectorAll('.is-editing').forEach(el => el.classList.remove('is-editing'));
+		}
+	}
+
+
+
+	window.RSDTextboxEditor = RSDTextboxEditor;
+</script>
+
+<script>
+	window.onload = () => {
+	
+    let editor = new window.RSDTextboxEditor("editor",
+      {
+      	rsd: `<rsd>
+
+  <title>The truth of Christianity</title>
+
+  <line mode="h1" justify="center">
+    The truth of Christianity
+  </line>
+
+  <line mode="h3" justify="center">
+    <i>Why we need Jesus, and why some people in the USA start not believing in Him</i>
+  </line>
+
+  <line></line>
+
+  <line>
+    <b>Christianity</b> has shaped cultures, inspired compassion, and offered hope to many people across history.
+    At the center of this faith stands <highlight co="#FFF59D">Jesus</highlight> — whose teachings about
+    <i>forgiveness</i>, <i>love</i>, and <i>redemption</i> continue to influence the world.
+  </line>
+
+  <line>
+    Yet in the <color co="#1976D2">United States</color>, a country once deeply rooted in Christian identity,
+    more people are beginning to drift away from belief. Understanding both sides —
+    <b>why we need Jesus</b> and <b>why some stop believing</b> — helps us see the full picture of Christianity today.
+  </line>
+
+  <line></line>
+
+  <line mode="h2">1. Why many people believe we need Jesus</line>
+
+  <line><b>A. A source of hope in a broken world</b></line>
+  <line>
+    Many Christians see Jesus as the answer to the deepest human struggles: guilt, fear, loneliness,
+    and the longing for meaning. His message that every person is loved and redeemable gives people
+    a foundation to stand on when life feels unstable.
+  </line>
+
+  <line><b>B. A moral compass</b></line>
+  <line>
+    Jesus’ teachings — <i>love your neighbor</i>, <i>forgive your enemies</i>, <i>care for the poor</i> —
+    offer a moral framework that many find both challenging and life‑giving.
+    For believers, following Jesus is not just religion; it is a way of living with purpose.
+  </line>
+
+  <line><b>C. A path to grace</b></line>
+  <line>
+    Christianity teaches that humans are imperfect, and that Jesus bridges the gap between human brokenness
+    and God’s holiness. This idea of <highlight co="#C8E6C9">grace</highlight> — being accepted not because we are perfect,
+    but because we are loved — is one of the most powerful reasons people turn to Him.
+  </line>
+
+  <line></line>
+
+  <line mode="h2">2. Why some in the USA are losing faith</line>
+
+  <line><b>A. Cultural shifts</b></line>
+  <line>
+    American society has become more individualistic and less tied to traditional institutions.
+    As people prioritize personal freedom and self‑definition, organized religion can feel restrictive
+    or outdated to some.
+  </line>
+
+  <line><b>B. Negative experiences with churches</b></line>
+  <line>
+    Some people step away not because of Jesus, but because of painful experiences with religious communities —
+    hypocrisy, judgment, or political division. These experiences can overshadow the core message of Christianity.
+  </line>
+
+  <line><b>C. The rise of science and secularism</b></line>
+  <line>
+    As scientific understanding grows, some feel they must choose between faith and reason.
+    Even though many Christians see no conflict between the two, the cultural narrative often pushes them apart.
+  </line>
+
+  <line><b>D. Information overload</b></line>
+  <line>
+    The internet exposes people to countless worldviews, philosophies, and criticisms of religion.
+    This can create confusion or skepticism, especially for those who never had strong spiritual foundations.
+  </line>
+
+  <line></line>
+
+  <line mode="h2">3. The tension: needing Jesus vs. drifting away</line>
+
+  <line>
+    The paradox is striking:
+    <highlight co="#FFE082">Christianity continues to offer <b>hope, identity, and moral grounding</b>,
+    yet many Americans feel disconnected from it.</highlight>
+  </line>
+
+  <line>
+    Some see Jesus as the answer to modern anxiety, division, and emptiness.
+    Others feel that religion no longer speaks to their experiences or values.
+    This tension reflects a society searching for meaning in a rapidly changing world.
+  </line>
+
+  <line></line>
+
+  <line mode="h2">4. A path forward</line>
+
+  <line>
+    Whether someone believes or doubts, the conversation about Jesus remains deeply relevant.
+    His teachings about compassion, humility, and sacrificial love continue to challenge and inspire.
+  </line>
+
+  <line>
+    For those who still believe, the mission is not to win arguments but to live out the kind of love Jesus taught —
+    because often, people lose faith not from lack of truth, but from lack of love.
+  </line>
+
+  <line></line>
+
+  <line justify="center"><i>“The question is not only whether Jesus is true,”</i></line>
+  <line justify="center"><i>“but whether we are willing to live the love He spoke of.”</i></line>
+
+  <line></line>
+
+  <line>
+    For more reflections, you might visit
+    <link url="https://example.com/christianity-truth">this article</link>
+    or write your own story in this RSD document.
+  </line>
+
+  <line>
+    Sometimes people feel their faith is <s>completely gone</s>, but often it is simply buried under pain or confusion.
+  </line>
+
+  <line>
+    The message of Jesus is still <size s="50">BIG</size> enough to reach anyone who seeks truth.
+  </line>
+
+  <line>
+    And His love remains <u>unchanging</u>, even when our beliefs shift.
+  </line>
+
+  <line>
+    As one writer beautifully expressed it in a different style:
+    <font name="Lexend">“Grace is not earned; it is received.”</font>
+  </line>
+
+  <line>Below is a short summary using a list:</line>
+
+  <list order="true">
+    <line>Jesus offers hope and identity.</line>
+    <line>Modern culture creates spiritual distance.</line>
+    <line>Faith grows through love, not pressure.</line>
+  </list>
+
+	<blockquote><line>love the lord your god with all your heart and with all your soul and with all your mind.</line></blockquote>
+	
+	<line>
+	God Bless you.
+	</line>
+
+		<code>
+			<line>This is Example of RSD document.</line>
+		</code>
+		
+	<line><link url="youtube.com/@RayStudio1130"> Check out my YT! </link></line>
+</rsd>
+
+`
+      }
+    );
+
+    let editor2 = new window.RSDTextboxEditor("editor2", {});
+	
+	};
+</script>
+
+</body>
+</html>

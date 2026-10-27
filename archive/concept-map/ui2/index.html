@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Ray Studio Website Builder 1.0 version.</title>
+	
+	<style>
+		:root {
+			--theme1: #EFBF04;
+			--theme2: #b81c1e;
+			--theme3: #e3e4df;
+			
+			--backgroundcolor: #212121;
+			--textcolor: var(--theme3);
+			
+			--theme4: #aaa;
+			--theme5: #666;
+			
+			--border1: 2px solid var(--theme5);
+		}
+		
+		[hidden] { display: none !important; }
+
+		body {
+			font-size: 12px;
+			margin: 0;
+			padding: 0;
+			letter-spacing: 0.4px;
+			overflow: hidden;
+
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			width: 100%;
+			height: 100%;
+			
+			display: flex;
+			flex-direction: column;
+			inset: 0;
+
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-position: center;
+
+			font-family: 'Segoe UI', sans-serif;
+
+			background-color: var(--backgroundcolor);
+			color: var(--textcolor);
+		}
+
+		button,
+		.button {
+			display: inline-block;
+			border-radius: 4px;
+			margin: 0;
+			border: none;
+			cursor: pointer;
+			white-space: nowrap;
+
+			background: inherit;
+			color: inherit;
+			font-size: 12px;
+			font-weight: 600;
+			font-family: 'Segoe UI', sans-serif;
+			letter-spacing: 0.4px;
+
+			transition: background 0.3s ease, height 0.3s ease, background-color 0.3s ease;
+
+			padding: 5px;
+			
+			text-decoration: none;
+		}
+		
+		.separator {
+			width: 1px;
+			height: 20px;
+			background-color: var(--textcolor);
+			opacity: 0.2;
+			margin: 0 4px;
+		}
+
+		.app-topbanner {
+		    flex: 0 0 40px;
+			display: flex;
+			align-items: center;
+			padding: 0 10px;
+			gap: 8px;
+			border-bottom: var(--border1);
+
+		}
+		
+		.app-topbanner button:hover,
+		.app-topbanner .button:hover{
+			background-color: var(--theme4);
+		}
+		
+	
+		.app-middle {
+			flex: 1;
+			
+			display: flex;
+			inset: 0;
+		}
+
+		.app-leftbanner {
+		    flex: 0 0 40px;
+			border-right: var(--border1);
+		}
+		
+		.app-mainarea {
+			flex: 1; 
+		}
+		
+		.app-rightbanner {
+		    flex: 0 0 250px;
+			border-left: var(--border1);
+		}
+
+		.app-bottombanner {
+		    flex: 0 0 40px;
+			border-var(--border1);
+		}
+	
+		.app-popup {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 80%;
+			height: 60%;
+			background-color: white;
+			box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+			z-index: 10;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="app-topbanner">
+			<a class="button" href="/" target="_blank"><strong>Ray Studio Sites</strong></a>
+			<div class="separator"></div>
+
+	</div>
+	
+	<div class="app-middle">
+		<div class="app-leftbanner">
+
+		</div>
+
+		<div class="app-mainarea">
+		
+		</div>
+
+		<div class="app-rightbanner">
+		
+		</div>
+		
+
+	</div>
+	
+	<div class="app-bottombanner">
+
+	</div>
+
+</body>
+</html>
+
+
+
