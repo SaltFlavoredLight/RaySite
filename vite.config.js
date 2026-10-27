@@ -22,6 +22,9 @@ function copyTestsToBuild() {
 
 export default defineConfig({
   appType: 'mpa', // Disables SPA history API fallback and returns 404 for unknown routes
+  server: {
+    strictPort: true,
+  },
   plugins: [copyTestsToBuild()],
   // ...other options
 });
