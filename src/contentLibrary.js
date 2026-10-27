@@ -38,7 +38,7 @@ export function createContentLibraryButton(element, onSelect = null) {
     const button = document.createElement('button');
 
     button.type = 'button';
-    button.className = 'rs-content-library-button';
+    button.className = `rs-content-library-button rs-${element.className}`;
 
     button.dataset.element = element.key;
     button.dataset.category = element.category;

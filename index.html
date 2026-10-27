@@ -14,10 +14,10 @@
 
     <script type="module" src="/src/main.js"></script>
     <script type="module" src="/src/ui.js"></script>
-    <style>
+    <style>/*
         .rsapp-loading-cover {
             display: none;
-        }
+        }*/
     </style>
 </head>
 
@@ -55,44 +55,95 @@
             <button class="rsapp-button--5 rsapp-button--margin-small" type="button" data-ui-action="preview">
                 Preview
             </button>
-            <button class="rsapp-button--1 rsapp-button--margin-small" type="button">
+            <button class="rsapp-button--1 rsapp-button--margin-small" type="button" data-ui-action="publish">
                 Publish
             </button>
         </div>
         <nav class="rsapp-menu-popup" id="menu-dropdown" aria-label="Main menu" data-hook-react="menu-dropdown">
-            <button class="rsapp-menu-popup__action" type="button" data-hook-triggler="menu-aboutPanel">
-                About RaySite
-            </button>
-            <button class="rsapp-menu-popup__action" type="button" data-hook-triggler="menu-creditsPanel">
-                Credits
-            </button>
             <button class="rsapp-menu-popup__action" type="button" data-ui-action="export">
                 Export project
             </button>
             <button class="rsapp-menu-popup__action" type="button" data-ui-action="import">
                 Import project
             </button>
-            <button class="rsapp-menu-popup__action" type="button" data-ui-action="import">
-                Export HTML packages
+            <button class="rsapp-menu-popup__action" type="button" data-ui-action="export-html">
+                Export HTML
             </button>
-            <button class="rsapp-menu-popup__action" type="button" data-hook-triggler="menu-settingsPanel">
-                Settings
+            <button class="rsapp-menu-popup__action" type="button" data-hook-triggler="menu-aboutPanel">
+                About RaySite
             </button>
-            <button class="rsapp-menu-popup__action" type="button" data-hook-triggler="menu-themePanel">
-                Theme
-            </button>
-            <input class="rsapp-file-input" type="file" accept=".zip,application/zip" data-ui-file-import hidden>
         </nav>
     </header>
 
-    <section class="rsapp-page-shell" role="dialog" aria-modal="true" aria-labelledby="about-title"
-        data-hook-react="menu-aboutPanel">
-        <div class="rsapp-page-shell__content">
+    <section class="rsapp-modal" role="dialog" aria-modal="true" aria-labelledby="about-title"
+        data-hook-react="menu-aboutPanel" aria-hidden="true">
+        <div class="rsapp-modal__content">
             <button class="rsapp-button--5 rsapp-button--size-small" type="button"
                 data-hook-open="menu-dropdown">Back to menu</button>
             <h1 id="about-title">About RaySite</h1>
             <p>RaySite is a free website builder based on SSG technology.</p>
             <p>Version 0.9.0</p>
+        </div>
+    </section>
+
+    <section class="rsapp-modal" role="dialog" aria-modal="true" aria-labelledby="import-title"
+        data-hook-react="menu-importPanel" aria-hidden="true">
+        <div class="rsapp-modal__content">
+            <button class="rsapp-modal__close" type="button" aria-label="Close import dialog"
+                data-hook-close="menu-importPanel">&times;</button>
+            <h1 id="import-title">Import project</h1>
+            <p>Drop a RaySite project archive here, or choose a ZIP file from your computer.</p>
+            <label class="rsapp-import-dropzone" data-ui-dropzone for="project-file-input">
+                <span>Drop project ZIP here</span>
+                <small>or click to browse</small>
+                <input id="project-file-input" class="rsapp-file-input" type="file"
+                    accept=".zip,application/zip" data-ui-file-import>
+            </label>
+            <p class="rsapp-modal__status" data-ui-import-status role="status" aria-live="polite"></p>
+        </div>
+    </section>
+
+    <section class="rsapp-modal rsapp-publish-modal" role="dialog" aria-modal="true"
+        aria-labelledby="publish-title" data-hook-react="publish-successPanel" aria-hidden="true">
+        <div class="rsapp-modal__content rsapp-publish-modal__content">
+            <button class="rsapp-modal__close" type="button" aria-label="Close publishing guide"
+                data-hook-close="publish-successPanel">&times;</button>
+            <div class="rsapp-publish-success" aria-hidden="true">✓</div>
+            <p class="rsapp-publish-eyebrow">Export complete</p>
+            <h1 id="publish-title">Your website is starting to download!</h1>
+            <p class="rsapp-publish-lead">After your .zip is ready, choose one of these hosting options to put your website online.</p>
+
+            <div class="rsapp-guide-tabs" role="tablist" aria-label="Hosting guides">
+                <button class="rsapp-guide-tab is-active" type="button" role="tab" aria-selected="true"
+                    aria-controls="cloudflare-guide" id="cloudflare-tab" data-guide-tab="cloudflare">Cloudflare Pages</button>
+                <button class="rsapp-guide-tab" type="button" role="tab" aria-selected="false"
+                    aria-controls="github-guide" id="github-tab" data-guide-tab="github">GitHub Pages</button>
+            </div>
+
+            <div class="rsapp-guide-panel is-active" id="cloudflare-guide" role="tabpanel" aria-labelledby="cloudflare-tab" data-guide-panel="cloudflare">
+                <p class="rsapp-guide-intro">Cloudflare Pages is a fast, free option for hosting a static RaySite export.</p>
+                <ol class="rsapp-guide-steps">
+                    <li><a href="https://dash.cloudflare.com/sign-up" target="_blank" rel="noopener noreferrer">Click here to create a Cloudflare account</a>.</li>
+                    <li>Open the <a href="https://dash.cloudflare.com/?to=/:account/pages/view" target="_blank" rel="noopener noreferrer">Cloudflare Pages Portal</a>.</li>
+                    <li>Choose <strong>Upload assets</strong>, then drag your downloaded ZIP into the upload area.</li>
+                    <li>Name your project and select <strong>Deploy site</strong>. You’re done!</li>
+                </ol>
+                <p class="rsapp-guide-note"><strong>RaySite note:</strong> Cloudflare Pages has no bandwidth limit for this workflow, but you can update a website up to 500 times per month.</p>
+            </div>
+
+            <div class="rsapp-guide-panel" id="github-guide" role="tabpanel" aria-labelledby="github-tab" data-guide-panel="github" hidden>
+                <p class="rsapp-guide-intro">GitHub Pages is a convenient option when you want your website files alongside a GitHub repository.</p>
+                <ol class="rsapp-guide-steps">
+                    <li><a href="https://github.com/signup" target="_blank" rel="noopener noreferrer">Create or sign in to your GitHub account</a>, then create a new repository.</li>
+                    <li>Open the repository, choose <strong>Add file → Upload files</strong>, and upload the contents of your downloaded ZIP.</li>
+                    <li>Commit the files to the branch you want to publish, usually <strong>main</strong>.</li>
+                    <li>Open <strong>Settings → Pages</strong>, set the source to <strong>Deploy from a branch</strong>, choose your branch and the <strong>/ (root)</strong> folder, then select <strong>Save</strong>.</li>
+                    <li>Wait for GitHub to finish deploying, then open the site URL shown in the Pages settings.</li>
+                </ol>
+                <p class="rsapp-guide-note">To update your site later, upload the changed files and commit them to the same publishing branch.</p>
+            </div>
+
+            <button class="rsapp-button--5 rsapp-publish-done" type="button" data-hook-close="publish-successPanel">Done</button>
         </div>
     </section>
 
@@ -128,7 +179,7 @@
         </div>
     </section>
 
-    <iframe id="canvas" class="rsapp-canvas" src="/rs-preview/index.html" style="visibility: hidden"></iframe>
+    <iframe id="canvas" class="rsapp-canvas" src="/rs-preview/index.html"></iframe>
     <iframe id="render-preview" class="rsapp-render-preview" title="Rendered page preview"></iframe>
     <button class="rsapp-button--1 rsapp-preview-exit" type="button" data-ui-action="exit-preview" hidden>
         Exit Preview
@@ -205,8 +256,7 @@
             <div class="rsapp-toolbar__left">
                 <small> Rayite V0.9.0</small>
             </div>
-            <div class="rsapp-toolbar__center">
-            </div>
+            <div class="rsapp-toolbar__center"></div>
             <div class="rsapp-toolbar__right">
             </div>
         </div>
