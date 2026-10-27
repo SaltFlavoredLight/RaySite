@@ -1,0 +1,48 @@
+/* all prefix that should using ${BUILDER_CONFIG.classPrefix} is "cw-" */
+
+/* in Quill Documents class */
+
+.cw-internal-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;      
+    object-position: center;  
+    display: block;
+    user-select: none;
+}
+
+/* Custom! */
+.cw-context-hr {
+    width: 100%;
+    margin: 0;
+    border: none;
+    border-top: 1px solid currentColor;
+    box-sizing: border-box;
+}
+
+
+.cw-context-audio {
+    width: 100%;
+    display: block;
+}
+
+.cw-context-video {
+    width: 100%;
+    height: auto;
+    display: block;
+    background: #000; /* helps when poster is loading */
+}
+
+.cw-context-vimeoVideo {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+    border: none;
+}
+
+.cw-context-ytvideo {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    display: block;
+    border: none;
+}
