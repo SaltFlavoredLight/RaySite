@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Cursor Tracker</title>
+  <style>
+    div {
+      border: 1px solid #ccc;
+      padding: 10px;
+      min-height: 100px;
+      font-size: 16px;
+    }
+    #info {
+      margin-top: 10px;
+      font-family: monospace;
+      white-space: pre;
+    }
+	.is-editing { background-color: #FF0000; }
+  </style>
+</head>
+<body>
+
+<div id="editor" contenteditable="true">
+</div>
+<div id="editor2" contenteditable="true">
+</div>
+
+<script type="module">
+	/*  RSD textbox Editor 1.0 version.
+		save as RSDtextboxeditor.js at /app/JSbandles
+		Need: 
+		nothing :)
+		Output as: fromRSDtoJSON(function), renderJSONtoHTML(function), RSDTextboxEditor(class)
+		RSD format using RSD1.0.
+	*/
+
+	function escapeHTML(str) {
+	    if (!str) return "";
+	    return str
+	        .replace(/&/g, "&amp;")
+	        .replace(/</g, "&lt;")
+	        .replace(/>/g, "&gt;")
+	        .replace(/"/g, "&quot;")
+	        .replace(/'/g, "&#039;");
+	}
+
+	function minifyRSD(raw) {
+	    // 使用字符串定义 XML 注释的正则：匹配 结尾
+	    // [\\s\\S]*? 是为了确保即使注释里有换行符也能被选中
+	    const commentPattern = "";
+	    const regex = new RegExp(commentPattern, "g");
+
+	    // 1. 第一步：彻底移除所有注释内容
+	    let noComments = raw.replace(regex, "");
+
+	    // 2. 第二步：处理换行和空白
+	    let lines = noComments.split(/\r?\n/);
+	    let processedLines = [];
+	    for (let line of lines) {
+	        let trimmed = line.trim();
+	        if (trimmed.length > 0) {
+	            processedLines.push(trimmed);
+	        }
+	    }
+
+	    // 3. 第三步：合并并清理标签间的空隙
+	    let singleLine = processedLines.join(" ");
+	    let result = "";
+	    for (let i = 0; i < singleLine.length; i++) {
+	        result += singleLine[i];
+	        if (singleLine[i] === '>') {
+	            let j = i + 1;
+	            while (j < singleLine.length && singleLine[j] === ' ') j++;
+	            if (j < singleLine.length && singleLine[j] === '<') {
+	                i = j - 1; // 跳过标签之间的空格
+	            }
+	        }
+	    }
+	    return result;
+	}
+
+	function parseTagContent(content) {
+	    if (content.includes("  ")) {
+	        throw new Error(`[Strict Error] Multiple spaces detected in tag: <${content}>`);
+	    }
+
+	    const parts = content.split(" ");
+	    const tagName = parts[0];
+	    const attrs = {};
+
+	    for (let i = 1; i < parts.length; i++) {
+	        const pair = parts[i].split('=');
+	        if (pair.length === 2) {
+	            const key = pair[0];
+	            // 移除引号
+	            const value = pair[1].replace(/['"]/g, "");
+	            attrs[key] = value;
+	        }
+	    }
+	    return {
+	        tagName,
+	        attrs
+	    };
+	}
+
+
+	function handleTagState(rsd, state, stack, json) {
+	    const isOpening = rsd[state.pos + 1] !== '/';
+
+	    if (!isOpening) {
+	        state.pos += 2;
+	        let tagName = "";
+	        while (state.pos < rsd.length && rsd[state.pos] !== '>') tagName += rsd[state.pos++];
+	        state.pos++;
+	        stack.pop();
+	    } else {
+	        state.pos++;
+	        let tagContent = "";
+	        while (state.pos < rsd.length && rsd[state.pos] !== '>') tagContent += rsd[state.pos++];
+	        state.pos++;
+
+	        const {
+	            tagName,
+	            attrs
+	        } = parseTagContent(tagContent);
+	        const parent = stack[stack.length - 1];
+
+	        // --- 核心修正：识别容器内部的 line ---
+	        // 只要父级是 list, blockquote 或 code，内部的 line 都视为嵌套项
+	        const isNestedLine = tagName === 'line' && parent && ['list', 'blockquote', 'code'].includes(parent.name);
+
+	        if (isNestedLine) {
+	            const currentContainer = json[json.length - 1];
+	            // 统一使用 items 数组来存储容器内的多行
+	            if (!currentContainer.items) currentContainer.items = [];
+
+	            const newItem = {
+	                runs: []
+	            };
+	            currentContainer.items.push(newItem);
+
+	            // 压入 stack 并标记为内部 Item
+	            stack.push({
+	                name: tagName,
+	                isListItem: true,
+	                item: newItem
+	            });
+	        } else if (['list', 'blockquote', 'code'].includes(tagName)) {
+	            // 创建容器 Block
+	            const containerBlock = {
+	                type: tagName,
+	                ...attrs,
+	                items: []
+	            };
+	            json.push(containerBlock);
+	            stack.push({
+	                name: tagName,
+	                attrs
+	            });
+	        } else if (tagName === 'line') {
+	            // 普通顶层行
+	            const newBlock = {
+	                type: 'line',
+	                ...attrs,
+	                runs: []
+	            };
+	            json.push(newBlock);
+	            stack.push({
+	                name: tagName,
+	                attrs
+	            });
+	        } else {
+	            // 样式标签
+	            stack.push({
+	                name: tagName,
+	                attrs
+	            });
+	        }
+	    }
+	}
+
+	function handleTextState(rsd, state, stack, json) {
+	    let text = "";
+	    while (state.pos < rsd.length && rsd[state.pos] !== '<') {
+	        if (rsd[state.pos] === '&') {
+	            const decodedObj = decodeEntity(rsd, state.pos);
+	            text += decodedObj.char;
+	            state.pos = decodedObj.nextPos;
+	        } else {
+	            text += rsd[state.pos++];
+	        }
+	    }
+
+	    if (text.length > 0) {
+	        const top = stack[stack.length - 1];
+	        let targetRuns = null;
+
+	        // 核心：如果是 ListItem 环境，target 是 item.runs
+	        if (top && top.isListItem) {
+	            targetRuns = top.item.runs;
+	        }
+	        // 否则，target 是 json 最后一个 block 的 runs
+	        else if (json.length > 0) {
+	            const currentBlock = json[json.length - 1];
+	            if (currentBlock.runs) targetRuns = currentBlock.runs;
+	        }
+
+	        if (targetRuns) {
+	            const currentStyles = mapStackToStyles(stack);
+	            const lastRun = targetRuns[targetRuns.length - 1];
+
+	            if (lastRun && areStylesEqual(lastRun, currentStyles)) {
+	                lastRun.text += text;
+	            } else {
+	                targetRuns.push({
+	                    text: text,
+	                    ...currentStyles
+	                });
+	            }
+	        }
+	    }
+	}
+
+	function areStylesEqual(styles1, styles2) {
+	    const keys = ['bold', 'italic', 'underline', 'strike', 'textColor', 'highlight', 'size', 'font', 'link', 'header'];
+	    return keys.every(key => (styles1[key] || false) === (styles2[key] || false));
+	}
+
+	function mapStackToStyles(stack) {
+	    const styles = {};
+
+	    // stack 里面存的是对象: { name: 'b', attrs: {} }
+	    stack.forEach(tag => {
+	        switch (tag.name) {
+	            case 'b':
+	                styles.bold = true;
+	                break;
+	            case 'i':
+	                styles.italic = true;
+	                break;
+	            case 'u':
+	                styles.underline = true;
+	                break;
+	            case 's':
+	                styles.strike = true;
+	                break;
+	            case 'color':
+	                if (tag.attrs.co) styles.textColor = tag.attrs.co;
+	                break;
+	            case 'highlight':
+	                if (tag.attrs.co) styles.highlight = tag.attrs.co;
+	                break;
+	            case 'size':
+	                if (tag.attrs.s) styles.size = tag.attrs.s;
+	                break;
+	            case 'font':
+	                if (tag.attrs.name) styles.font = tag.attrs.name;
+	                break;
+	            case 'link':
+	                if (tag.attrs.url) styles.link = tag.attrs.url;
+	                break;
+	                // 处理你的 h1, h2, h3 样式映射
+	            case 'h1':
+	            case 'h2':
+	            case 'h3':
+	                styles.header = tag.name;
+	                break;
+	        }
+	    });
+
+	    return styles;
+	}
+
+	export function fromRSDtoJSON(rsd) {
+	    const cleanRsd = minifyRSD(rsd);
+	    const json = [];
+	    const stack = [];
+	    let state = {
+	        pos: 0
+	    };
+
+	    while (state.pos < cleanRsd.length) {
+	        if (cleanRsd[state.pos] === '<') {
+	            handleTagState(cleanRsd, state, stack, json);
+	        } else {
+	            handleTextState(cleanRsd, state, stack, json);
+	        }
+	    }
+
+	    if (stack.length !== 0) throw new Error(`[Strict Error] Unclosed tags: ${stack.join(', ')}`);
+	    return json;
+	}
+
+
+	//Part: renderJSONtoHTML
+	//Out put as: Function 
+	function renderRuns(runs) {
+	    // 保底：即使没内容也要有一个带零宽空格的 span，否则行会塌陷
+	    if (!runs || runs.length === 0) return "<span>&#8203;</span>";
+
+	    return runs.map(run => {
+	        let text = escapeHTML(run.text);
+
+	        // 1. 处理样式标签 (b, i, u, s, code)
+	        if (run.bold) text = `<b>${text}</b>`;
+	        if (run.italic) text = `<i>${text}</i>`;
+	        if (run.underline) text = `<u>${text}</u>`;
+	        if (run.strike) text = `<s>${text}</s>`;
+	        if (run.code) text = `<code>${text}</code>`;
+
+	        // 2. 构造 Style 字符串
+	        const styles = [];
+	        if (run.highlight) styles.push(`background-color:${run.highlight}`);
+	        if (run.textColor) styles.push(`color:${run.textColor}`);
+	        if (run.size) styles.push(`font-size:${run.size}px`);
+
+	        const styleAttr = styles.length > 0 ? ` style="${styles.join(';')}"` : "";
+
+	        // 3. 核心要求：所有 Node 必须包裹在一个 <span> 中
+	        let result = `<span${styleAttr}>${text}</span>`;
+
+	        // 4. 如果有链接，包裹在最外层
+	        if (run.link) {
+	            result = `<a href="${run.link}" target="_blank">${result}</a>`;
+	        }
+
+	        return result;
+	    }).join("");
+	}
+
+	function renderJSONtoHTML(json) {
+	    let html = "";
+	    json.forEach(block => {
+	        // 1. 处理 List
+	        if (block.type === 'list') {
+	            const tag = block.order === "true" ? "ol" : "ul";
+	            html += `<${tag}>`;
+	            (block.items || []).forEach(item => {
+	                html += `<li>${renderRuns(item.runs)}</li>`;
+	            });
+	            html += `</${tag}>`;
+	        }
+	        // 2. 处理 Blockquote 或 Code 容器
+	        else if (block.type === 'blockquote' || block.type === 'code') {
+	            html += `<${block.type}>`;
+	            (block.items || []).forEach(line => {
+	                // 内部每一行 line 渲染为一个 p，确保符合你的全 span 要求
+	                html += `<p>${renderRuns(line.runs)}</p>`;
+	            });
+	            html += `</${block.type}>`;
+	        }
+	        // 3. 处理普通顶层 Block (line, h1 等)
+	        else {
+	            const tag = block.mode === "h1" ? "h1" : (block.type === 'line' ? 'p' : block.type);
+	            const style = block.justify ? ` style="text-align:${block.justify}"` : "";
+	            html += `<${tag}${style}>${renderRuns(block.runs)}</${tag}>`;
+	        }
+	    });
+	    return html;
+	}
+
+
+
+
+	export class RSDTextboxEditor {
+	    constructor(containerId, options = {}) {
+	        this.container = document.getElementById(containerId);
+	        if (!this.container) {
+	            throw new Error(`RSD Editor: Container #${containerId} not found.`);
+	        }
+
+	        this.container.innerHTML = "";
+	        this.container.contentEditable = "true";
+	        this.container.setAttribute("spellcheck", "false");
+	        this.container.style.outline = "none";
+	        this.container.style.whiteSpace = "pre-wrap";
+
+	        const initialRSD = options.rsd ||
+	            `<rsd>
+					<line>
+						<b>Love the Lord your God with all your heart and with all your soul and with all your mind.</b><i>  (EDIT ME, THIS IS EXAMPLE MESSAGE)</i>
+					</line>
+				</rsd>`;
+
+	        this.doc = fromRSDtoJSON(initialRSD);
+	        this.container.innerHTML = renderJSONtoHTML(this.doc);
+
+	        this.isProcessing = false;
+
+			this.selectionState = {
+				inline: {
+					bold: [true, false, true], italic: [true, false, true],
+					underline: [true, false, true], strike: [true, false, true],
+					color: [true, null, true], highlight: [true, null, true],
+					size: [true, null, true], font: [true, null, true], link: [true, null, true]
+				},
+				block: {
+					mode: [true, 'line', true],
+					justify: [true, 'left', true],
+					list: [true, false, true]
+				}
+			};
+
+
+	        this.container.addEventListener("mouseup", (e) => {
+	            e.stopPropagation();
+	            if (this.isProcessing) return;
+
+	            this.isProcessing = true;
+	            try {
+	                this.handleSelection();
+	            } finally {
+	                this.isProcessing = false;
+					
+	            }
+	        });
+
+	        this.container.addEventListener("keyup", (e) => {
+	            e.stopPropagation();
+	            if (this.isProcessing) return;
+	            if (e.isComposing || e.keyCode === 229) return;
+
+	            this.isProcessing = true;
+	            try {
+	                this.handleSelection();
+	            } finally {
+	                this.isProcessing = false;
+	            }
+	        });
+
+			
+	    }
+
+		// emergency: HARD REFRESH!
+	    forceRefreshEditor() {
+	        this.container.innerHTML = '';
+	        this.container.innerHTML = renderJSONtoHTML(this.doc);
+	        this.clearEditingStatus();
+	        console.warn("Editor has been force-refreshed due to sync failure.");
+	    }
+
+		//Part 1
+	    _normalizePoint(node, offset, isStart) {
+	        try {
+	            if (!node) return null;
+	            if (node.nodeType === Node.TEXT_NODE) return {
+	                node,
+	                offset
+	            };
+
+	            // node 是元素，尝试定位到合适的子节点
+	            let target = isStart ? node.childNodes[offset] || node.firstChild : node.childNodes[offset - 1] || node.lastChild;
+	            return this._findDeepestText(target, isStart);
+	        } catch (err) {
+	            console.error('_normalizePoint error:', err);
+	            return null;
+	        }
+	    }
+
+	    _findDeepestText(node, isStart) {
+	        if (!node) return null;
+	        let curr = node;
+	        while (curr && curr.nodeType !== Node.TEXT_NODE) {
+	            curr = isStart ? curr.firstChild : curr.lastChild;
+	        }
+	        if (!curr) return null;
+	        return {
+	            node: curr,
+	            offset: isStart ? 0 : curr.length
+	        };
+	    }
+
+	    /* -------------------------
+		 单点（光标）处理：在文本中间插入可编辑段
+		 ------------------------- */
+	    _handleCollapsed(textNode, offset) {
+	        try {
+	            if (!textNode || textNode.nodeType !== Node.TEXT_NODE) return;
+
+	            const parentSpan = textNode.parentElement;
+	            if (!parentSpan || parentSpan.nodeType !== Node.ELEMENT_NODE) return;
+
+	            // 如果 offset 在边界，不做切分，直接把父 span 标记并把光标放到合适位置
+	            if (offset === 0) {
+	                this._markSpanEditing(parentSpan);
+	                this._setCursorToSpanStart(parentSpan);
+	                return;
+	            }
+	            if (offset === textNode.length) {
+	                this._markSpanEditing(parentSpan);
+	                this._setCursorToSpanEnd(parentSpan);
+	                return;
+	            }
+
+	            // 切分文本节点
+	            const rightText = textNode.splitText(offset);
+
+	            // midSpan: 编辑占位
+	            const midSpan = parentSpan.cloneNode(false);
+	            midSpan.classList.add('is-editing');
+	            midSpan.textContent = '\u200B';
+
+	            // rightSpan: 右侧剩余
+	            const rightSpan = parentSpan.cloneNode(false);
+	            rightSpan.appendChild(rightText);
+
+	            // 插入顺序： parentSpan -> midSpan -> rightSpan
+	            parentSpan.after(midSpan);
+	            midSpan.after(rightSpan);
+
+	            // 将光标放入 midSpan
+	            this._setCursorToSpan(midSpan);
+
+	            // 同步 JSON
+	            this._markSpanEditing(midSpan);
+	        } catch (err) {
+	            console.error('_handleCollapsed error:', err);
+	        }
+	    }
+
+		_normalizeAndSync(bIdx) {
+			const block = this.container.children[bIdx];
+			if (!block) return;
+
+			// 1. 获取物理快照
+			let spans = Array.from(block.querySelectorAll('span'));
+			
+			// 2. 物理层合并：从后往前遍历，比较相邻节点
+			for (let i = spans.length - 1; i > 0; i--) {
+				const current = spans[i];
+				const previous = spans[i - 1];
+
+				// 检查两个 Span 的“灵魂”是否一致
+				const isSameStyle = 
+					current.style.cssText === previous.style.cssText &&
+					current.classList.contains('is-editing') === previous.classList.contains('is-editing') &&
+					!!current.querySelector('b') === !!previous.querySelector('b') &&
+					!!current.querySelector('i') === !!previous.querySelector('i');
+
+				if (isSameStyle) {
+					// 将当前的内容合并到前一个
+					// 注意：要处理 ZWS，合并时如果前一个只有 ZWS 则直接替换，否则累加
+					const currentText = current.textContent.replace(/\u200B/g, '');
+					const previousText = previous.textContent.replace(/\u200B/g, '');
+					
+					// 物理合并文本：找到 previous 的最深层文字容器
+					let target = previous;
+					while (target.firstChild && target.firstChild.nodeType !== Node.TEXT_NODE) {
+						target = target.firstChild;
+					}
+					target.textContent = previousText + currentText;
+
+					// 如果合并后变空了，补一个 ZWS 维持高度
+					if (target.textContent === "") target.innerHTML = '\u200B';
+
+					// 移除被合并的节点
+					current.remove();
+				}
+			}
+
+			// 3. 数据层同步：在物理合并完成后，一键重写 JSON
+			this._syncJsonFromDomPhysically(bIdx);
+		}
+
+	    _setCursorToSpan(span) {
+	        try {
+	            const sel = window.getSelection();
+	            const range = document.createRange();
+	            const textNode = span.firstChild && span.firstChild.nodeType === Node.TEXT_NODE ? span.firstChild : null;
+	            const offset = textNode ? textNode.length : 0;
+	            if (textNode) {
+	                range.setStart(textNode, offset);
+	            } else {
+	                range.setStart(span, 0);
+	            }
+	            range.collapse(true);
+	            sel.removeAllRanges();
+	            sel.addRange(range);
+	        } catch (err) {
+	            console.error('_setCursorToSpan error:', err);
+	        }
+	    }
+
+	    _setCursorToSpanStart(span) {
+	        try {
+	            const sel = window.getSelection();
+	            const range = document.createRange();
+	            const textNode = span.firstChild && span.firstChild.nodeType === Node.TEXT_NODE ? span.firstChild : null;
+	            if (textNode) range.setStart(textNode, 0);
+	            else range.setStart(span, 0);
+	            range.collapse(true);
+	            sel.removeAllRanges();
+	            sel.addRange(range);
+	        } catch (err) {
+	            console.error('_setCursorToSpanStart error:', err);
+	        }
+	    }
+
+	    _setCursorToSpanEnd(span) {
+	        try {
+	            const sel = window.getSelection();
+	            const range = document.createRange();
+	            const textNode = span.firstChild && span.firstChild.nodeType === Node.TEXT_NODE ? span.firstChild : null;
+	            if (textNode) range.setStart(textNode, textNode.length);
+	            else range.setStart(span, span.childNodes.length);
+	            range.collapse(true);
+	            sel.removeAllRanges();
+	            sel.addRange(range);
+	        } catch (err) {
+	            console.error('_setCursorToSpanEnd error:', err);
+	        }
+	    }
+
+	    /* -------------------------
+		 范围选择处理：切分边界并标记区间内的 span
+		 ------------------------- */
+	    _handleRange(start, end) {
+	        try {
+	            // 先切终点，再切起点，避免索引偏移
+	            const endSpan = this._physicalSplit(end.node, end.offset, 'left');
+	            const startSpan = this._physicalSplit(start.node, start.offset, 'right');
+
+	            if (!startSpan || !endSpan) return;
+
+	            // 遍历并标记从 startSpan 到 endSpan 的所有 run
+	            this._iterateAndMark(startSpan, endSpan);
+	        } catch (err) {
+	            console.error('_handleRange error:', err);
+	        }
+	    }
+
+		_standardizeDoc() {
+			this.doc.forEach(line => {
+				if (!line.runs || line.runs.length === 0) {
+					line.runs = [{ text: "", bold: false, italic: false, editing: false }];
+				}
+			});
+		}
+
+		// 这是一个“暴力但绝对对齐”的函数
+		_syncJsonFromDomPhysically(bIdx) {
+			const block = this.container.children[bIdx];
+			if (!block) return;
+
+			// 1. 获取当前 DOM 中所有的 span（物理现状）
+			const currentSpans = Array.from(block.querySelectorAll('span'));
+			
+			// 2. 强制重写该行的 JSON runs，确保数量和内容绝对 1:1
+			this.doc[bIdx].runs = currentSpans.map(span => {
+				// 提取样式信息（如果有 b, i 等标签嵌套）
+				const isBold = span.querySelector('b') !== null || span.tagName === 'B';
+				const isItalic = span.querySelector('i') !== null || span.tagName === 'I';
+				
+				return {
+					text: span.textContent.replace(/\u200B/g, ''), // 还原真实文字
+					bold: isBold,
+					italic: isItalic,
+					editing: span.classList.contains('is-editing') // 同步编辑状态
+				};
+			});
+		}
+
+		_physicalSplit(textNode, offset, returnSide = 'left') {
+			try {
+				const oldSpan = this._getClosestSpan(textNode);
+				const block = oldSpan.closest('p, h1, li');
+				const bIdx = Array.from(this.container.children).indexOf(block);
+
+				// --- 1. 物理层：执行 splitText ---
+				const rightTextNode = textNode.splitText(offset);
+				
+				// --- 2. 物理层：克隆并插入 (保留 b, i, u 等) ---
+				const newSpan = oldSpan.cloneNode(true); 
+				
+				// 深入找到新 Span 的文本承载层并放入右侧文本
+				let deepTarget = newSpan;
+				while (deepTarget.firstChild && deepTarget.firstChild.nodeType !== Node.TEXT_NODE) {
+					deepTarget = deepTarget.firstChild;
+				}
+				
+				// 如果右侧没文字（边缘点击），放 ZWS，否则放切下来的文字
+				if (rightTextNode.length === 0) {
+					deepTarget.innerHTML = '\u200B';
+				} else {
+					deepTarget.textContent = '';
+					deepTarget.appendChild(rightTextNode);
+				}
+
+				oldSpan.after(newSpan);
+
+				const allSpans = Array.from(block.querySelectorAll('span'));
+				const oldRIdx = allSpans.indexOf(oldSpan);
+				const newRIdx = allSpans.indexOf(newSpan);
+
+				this.doc[bIdx].runs[oldRIdx].text = oldSpan.textContent.replace(/\u200B/g, '');
+
+				const newText = newSpan.textContent.replace(/\u200B/g, '');
+				const newRun = { 
+					...JSON.parse(JSON.stringify(this.doc[bIdx].runs[oldRIdx])), 
+					text: newText,
+					editing: true 
+				};
+
+				if (this.doc[bIdx].runs.length < allSpans.length) {
+					this.doc[bIdx].runs.splice(newRIdx, 0, newRun);
+				}
+
+				return returnSide === 'left' ? oldSpan : newSpan;
+			} catch (err) {
+				console.error('JSON Layer Sync Error:', err);
+				return null;
+			}
+		}
+
+		_iterateAndMark(startSpan, endSpan) {
+			try {
+				// 1. 获取容器内所有的 span（这些是我们要同步到 JSON 的 Run）
+				const allSpans = Array.from(this.container.querySelectorAll('span'));
+				
+				// 2. 遍历检查每一个 span
+				allSpans.forEach(span => {
+					// 物理位置校验逻辑：
+					// - 它是不是起点或终点？
+					// - 或者：它在起点之后 (FOLLOWING) 且在终点之前 (PRECEDING)？
+					const isBoundary = (span === startSpan || span === endSpan);
+					const isInside = (
+						startSpan.compareDocumentPosition(span) & Node.DOCUMENT_POSITION_FOLLOWING &&
+						endSpan.compareDocumentPosition(span) & Node.DOCUMENT_POSITION_PRECEDING
+					);
+
+					if (isBoundary || isInside) {
+						// 3. 运行你已经写好的 _markSpanEditing
+						// 这个函数内部应该包含：span.classList.add('is-editing') 
+						// 和同步 JSON: this.doc[bIdx].runs[rIdx].editing = true
+						this._markSpanEditing(span);
+					}
+				});
+
+			} catch (err) {
+				console.error('_iterateAndMark error:', err);
+			}
+		}
+
+	    _nextSpan(span) {
+	        if (!span) return null;
+	        // 优先取同父元素的下一个 sibling
+	        if (span.nextElementSibling) return span.nextElementSibling;
+
+	        // 否则跳到下一个块级元素的第一个 run
+	        let nextBlock = span.parentElement ? span.parentElement.nextElementSibling : null;
+	        while (nextBlock && !nextBlock.matches(this.blockSelector)) {
+	            nextBlock = nextBlock.nextElementSibling;
+	        }
+	        return nextBlock ? nextBlock.querySelector(this.runSelector) : null;
+	    }
+
+	    _markSpanEditing(span) {
+	        try {
+	            if (!span || span.nodeType !== Node.ELEMENT_NODE) return;
+	            span.classList.add('is-editing');
+
+	            // 找到对应块级元素
+	            const block = span.closest(this.blockSelector);
+	            if (!block) return;
+
+	            const blockIndex = Array.from(this.container.children).indexOf(block);
+	            const runIndex = Array.from(block.querySelectorAll(this.runSelector)).indexOf(span);
+
+	            if (blockIndex < 0 || runIndex < 0) return;
+
+	            // 容错：确保 doc 有对应结构
+	            if (!this.doc[blockIndex]) {
+	                console.warn('_markSpanEditing: missing doc block at', blockIndex);
+	                return;
+	            }
+	            this.doc[blockIndex].editing = true;
+	            if (!Array.isArray(this.doc[blockIndex].runs)) this.doc[blockIndex].runs = [];
+
+	            if (!this.doc[blockIndex].runs[runIndex]) {
+	                this.doc[blockIndex].runs[runIndex] = {
+	                    text: span.textContent || '',
+	                    editing: true
+	                };
+	            } else {
+	                this.doc[blockIndex].runs[runIndex].editing = true;
+	            }
+	        } catch (err) {
+	            console.error('_markSpanEditing error:', err);
+	        }
+	    }
+
+	    _getClosestSpan(node) {
+	        let curr = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+	        while (curr && curr.tagName !== 'SPAN' && curr !== this.container) {
+	            curr = curr.parentElement;
+	        }
+	        return curr;
+	    }
+
+
+	    clearEditingStatus() {
+	        try {
+	            this.container.querySelectorAll('.is-editing').forEach(el => el.classList.remove('is-editing'));
+
+	            if (Array.isArray(this.doc)) {
+	                this.doc.forEach(block => {
+	                    block.editing = false;
+	                    if (Array.isArray(block.runs)) {
+	                        block.runs.forEach(run => run.editing = false);
+	                    }
+	                });
+	            }
+	        } catch (err) {
+	            console.error('clearEditingStatus error:', err);
+	        }
+	    }
+
+		handleSelection() {
+			try {
+			
+				for (let i = 0; i < this.doc.length; i++) {
+					this._syncJsonFromDomPhysically(i);
+				}
+			
+				const sel = window.getSelection();
+				if (!sel || sel.rangeCount === 0) return;
+
+				let range = sel.getRangeAt(0);
+
+				if (range.collapsed) {
+					const node = range.startContainer;
+					const offset = range.startOffset;
+
+					// 仅处理在文本节点边缘点击的情况
+					if (node.nodeType === Node.TEXT_NODE) {
+						const isAtStart = offset === 0;
+						const isAtEnd = offset === node.length;
+
+						if (isAtStart || isAtEnd) {
+							const oldSpan = this._getClosestSpan(node);
+							const block = oldSpan.closest('p, h1, li');
+							
+							// 1. 物理层：克隆带样式的外壳 (保留 b, i, u 等)
+							const newSpan = oldSpan.cloneNode(true); 
+							
+							// 递归清空内容并注入 ZWS (\u200B)
+							let deepTarget = newSpan;
+							while (deepTarget.firstChild && deepTarget.firstChild.nodeType !== Node.TEXT_NODE) {
+								deepTarget = deepTarget.firstChild;
+							}
+							deepTarget.innerHTML = '\u200B'; 
+
+							// 2. 物理层：增量插入
+							if (isAtStart) oldSpan.before(newSpan);
+							else oldSpan.after(newSpan);
+
+							// 3. 数据层：增量计算索引并 Splice
+							const bIdx = Array.from(this.container.children).indexOf(block);
+							const rIdx = Array.from(block.querySelectorAll('span')).indexOf(oldSpan);
+							const insertIdx = isAtStart ? rIdx : rIdx + 1;
+
+							if (this.doc[bIdx]) {
+								const originalRun = this.doc[bIdx].runs[rIdx];
+								const newRun = { ...originalRun, text: "", editing: true };
+								this.doc[bIdx].runs.splice(insertIdx, 0, newRun);
+								// 确保旧的 Run 不再处于编辑状态
+								originalRun.editing = false;
+							}
+
+							// 4. 视图层：标记红框并强行锁定光标
+							newSpan.classList.add('is-editing');
+							
+							const sel = window.getSelection();
+							const newRange = document.createRange();
+							let textNode = newSpan;
+							while (textNode.firstChild) textNode = textNode.firstChild;
+							
+							// 锁定在 ZWS 之后，确保后续输入继承样式
+							newRange.setStart(textNode, 1); 
+							newRange.collapse(true);
+							sel.removeAllRanges();
+							sel.addRange(newRange);
+
+							// 更新 Toolbar 状态并直接熔断函数
+							this.updateSelectionState();
+							return; 
+						}
+					}
+				}
+
+				// --- 修复 IndexSizeError 的截断逻辑 ---
+				if (!range.collapsed && range.endContainer.nodeType === Node.ELEMENT_NODE) {
+					const closestP = range.startContainer.parentElement.closest('p, h1, li');
+					if (closestP) {
+						const lastNode = closestP.lastChild;
+						if (lastNode) {
+							// 关键修正：如果是文本节点，用文本长度；如果是元素节点，用子节点数量
+							const finalOffset = lastNode.nodeType === Node.TEXT_NODE 
+								? lastNode.length 
+								: lastNode.childNodes.length;
+							
+							range.setEnd(lastNode, finalOffset);
+						}
+					}
+				}
+
+	            if (!this.container.contains(range.commonAncestorContainer)) return;
+
+	            const start = this._normalizePoint(range.startContainer, range.startOffset, true);
+	            const end = this._normalizePoint(range.endContainer, range.endOffset, false);
+	            if (!start || !end) return;
+
+	            // 清理旧状态
+	            this.clearEditingStatus();
+
+	            if (range.collapsed) {
+	                this._handleCollapsed(start.node, start.offset);
+	            } else {
+	                this._handleRange(start, end);
+	            }
+				
+				this.updateSelectionState();
+				this.checkIntegrity();
+	        } catch (err) {
+	            console.error('handleSelectionEvent error:', err);
+	        }
+	    }
+
+		//Double check
+		checkIntegrity() {
+			console.group('%c🔍 RSD Integrity Check', 'color: #2196F3; font-weight: bold;');
+			
+			const domLines = Array.from(this.container.children);
+			const jsonLines = this.doc;
+
+			// 1. 校验行数（Block Level）
+			if (domLines.length !== jsonLines.length) {
+				console.error(`❌ Block Count Mismatch! DOM: ${domLines.length}, JSON: ${jsonLines.length}`);
+			}
+
+			jsonLines.forEach((block, bIdx) => {
+				const domLine = domLines[bIdx];
+				if (!domLine) return;
+
+				// 2. 校验 Run 数量（Span Level）
+				// 只找一级 span，避免被递归产生的子标签干扰
+				const domSpans = Array.from(domLine.querySelectorAll('span')).filter(s => s.parentNode === domLine || s.closest('p, h1, li') === domLine);
+				const jsonRuns = block.runs || [];
+
+				if (domSpans.length !== jsonRuns.length) {
+					console.error(`❌ Run Count Mismatch at Line ${bIdx}! DOM Spans: ${domSpans.length}, JSON Runs: ${jsonRuns.length}`);
+					console.log('DOM Spans:', domSpans);
+					console.log('JSON Runs:', jsonRuns);
+				}
+
+				// 3. 深度校验内容与状态
+				jsonRuns.forEach((run, rIdx) => {
+					const span = domSpans[rIdx];
+					if (!span) return;
+
+					// 校验文本内容（忽略 \u200B）
+					const domText = span.textContent.replace(/\u200B/g, '');
+					const jsonText = run.text.replace(/\u200B/g, '');
+
+					if (domText !== jsonText) {
+						console.warn(`⚠️ Content Mismatch at Line ${bIdx}, Run ${rIdx}!`);
+						console.log(`   DOM: "${domText}" vs JSON: "${jsonText}"`);
+					}
+
+					// 校验编辑状态颜色对齐
+					const hasEditClass = span.classList.contains('is-editing');
+					if (hasEditClass !== !!run.editing) {
+						console.error(`❌ State Mismatch at Line ${bIdx}, Run ${rIdx}! Class 'is-editing': ${hasEditClass}, JSON 'editing': ${run.editing}`);
+					}
+				});
+			});
+
+			console.groupEnd();
+		}
+
+
+	    // styleing part
+		// this is 3rd part of this!
+	    _getPhysicalSpan(bIdx, rIdx) {
+	        const block = this.container.children[bIdx];
+	        if (!block) return null;
+	        return block.children[rIdx] || null;
+	    }		
+
+		getAttributeTriple(attr) {
+			const editingRuns = [];
+			let isAllValid = true;
+
+			// 1. 收集所有 is-editing 的 runs 并物理验证
+			this.doc.forEach((block, bIdx) => {
+				if (!block.runs) return;
+				block.runs.forEach((run, rIdx) => {
+					if (run.editing) {
+						// 物理同步检查
+						const dom = this._getPhysicalSpan(bIdx, rIdx);
+						if (!dom || !dom.classList.contains('is-editing')) {
+							isAllValid = false;
+						}
+						editingRuns.push(run);
+					}
+				});
+			});
+
+			// 如果熔断，直接返回
+			if (!isAllValid) return [false, null, false];
+			if (editingRuns.length === 0) return [true, null, true];
+
+			// 2. 提取值序列 (如果是 null 则表示默认样式)
+			const values = editingRuns.map(r => (r[attr] !== undefined ? r[attr] : null));
+			
+			const firstValue = values[0];
+			const isConsistent = values.every(v => v === firstValue);
+
+			return [isConsistent, firstValue, true];
+		}
+
+		updateSelectionState() {
+			const state = {
+				inline: {},
+				block: {}
+			};
+
+			// --- 行内属性 (支持二进制开关和数值/字符串) ---
+			// 定义你要监控的所有 RSD 1.0 标签
+			const inlineAttrs = [
+				'bold', 'italic', 'underline', 'strike', 
+				'color', 'highlight', 'size', 'font', 'link'
+			];
+
+			inlineAttrs.forEach(attr => {
+				const [isConsistent, firstValue, isValid] = this.getAttributeTriple(attr);
+				
+				// 如果触发了 isValid === false，执行强制刷新逻辑
+				if (!isValid) {
+					this.handleSyncError(); 
+					return;
+				}
+
+				state.inline[attr] = [isConsistent, firstValue, isValid];
+			});
+
+			// --- 块级属性 (直接获取) ---
+			const editingBlocks = this.doc.filter(b => b.editing);
+			if (editingBlocks.length > 0) {
+				const fb = editingBlocks[0];
+				// 块级属性我们也按类似逻辑处理，方便 Toolbar 统一判断
+				state.block.mode = fb.mode || 'line';
+				state.block.justify = fb.justify || 'left';
+			}
+
+			this.selectionState = state;
+
+			// 回调给外部 UI
+			if (this.options.onSelectionChange) {
+				this.options.onSelectionChange(this.selectionState);
+			}
+		}
+
+		_generateEmptyState() {
+			return {
+				inline: {
+					bold: [true, false, true], 
+					italic: [true, false, true],
+					underline: [true, false, true], 
+					strike: [true, false, true],
+					color: [true, null, true], 
+					highlight: [true, null, true],
+					size: [true, null, true], 
+					font: [true, null, true], 
+					link: [true, null, true]
+				},
+				block: {
+					mode: [true, 'line', true],
+					justify: [true, 'left', true],
+					list: [true, false, true]
+				}
+			};
+		}
+
+		updateSelectionState() {
+			// 1. 获取当前所有正在编辑的 Block 和 Run
+			const editingBlocks = this.doc.filter(b => b.editing);
+			const editingRuns = [];
+			editingBlocks.forEach(b => {
+				if (b.runs) {
+					// 只有标记为 editing 的 run 才参与计算
+					b.runs.forEach(r => { if (r.editing) editingRuns.push(r); });
+				}
+			});
+
+			// 如果没选中任何内容，重置状态并退出
+			if (editingBlocks.length === 0) {
+				this.selectionState = this._generateEmptyState();
+				return;
+			}
+
+			// 2. 准备新的状态容器
+			const newState = {
+				inline: {},
+				block: {}
+			};
+
+			// --- 处理 Inline 属性 (Run 层级) ---
+			const inlineAttrs = ['bold', 'italic', 'underline', 'strike', 'color', 'highlight', 'size', 'font', 'link'];
+			inlineAttrs.forEach(attr => {
+				// 传入物理验证逻辑：检查该 run 是否真的在 DOM 中且带有 is-editing
+				newState.inline[attr] = this._calculateTriple(editingRuns, attr, (run) => {
+					// 这里你可以根据 run 的引用去 DOM 中实地探测一下
+					// 简化版：我们假设 handleSelection 已经处理好了
+					return true; 
+				});
+			});
+
+			// --- 处理 Block 属性 (Line 层级) ---
+			// 跨行选择时，判断 mode 和 justify 是否统一
+			const blockAttrs = ['mode', 'justify'];
+			blockAttrs.forEach(attr => {
+				newState.block[attr] = this._calculateTriple(editingBlocks, attr);
+			});
+			
+			// 特殊：判断是否都在 list 中
+			newState.block.list = this._calculateTriple(editingBlocks, 'list');
+
+			// 3. 熔断检查：只要有一个字段返回 isValid=false，说明同步崩溃
+			const hasSyncError = [...Object.values(newState.inline), ...Object.values(newState.block)]
+								.some(triple => triple[2] === false);
+
+			if (hasSyncError) {
+				this.selectionState.inline.bold[2] = false; // 标记失效
+				this.forceRefreshEditor(); // 触发你之前写的 5 号状态强制刷新
+				return;
+			}
+
+			// 4. 更新实例属性并触发回调
+			this.selectionState = newState;
+
+			if (this.options.onSelectionChange) {
+				this.options.onSelectionChange(this.selectionState);
+			}
+		}
+	}
+
+
+
+	window.RSDTextboxEditor = RSDTextboxEditor;
+</script>
+
+<script>
+	window.onload = () => {
+	
+    let editor = new window.RSDTextboxEditor("editor",
+      {
+      	rsd: `<rsd>
+
+  <title>The truth of Christianity</title>
+
+  <line mode="h1" justify="center">
+    The truth of Christianity
+  </line>
+
+  <line mode="h3" justify="center">
+    <i>Why we need Jesus, and why some people in the USA start not believing in Him</i>
+  </line>
+
+  <line></line>
+
+  <line>
+    <b>Christianity</b> has shaped cultures, inspired compassion, and offered hope to many people across history.
+    At the center of this faith stands <highlight co="#FFF59D">Jesus</highlight> — whose teachings about
+    <i>forgiveness</i>, <i>love</i>, and <i>redemption</i> continue to influence the world.
+  </line>
+
+  <line>
+    Yet in the <color co="#1976D2">United States</color>, a country once deeply rooted in Christian identity,
+    more people are beginning to drift away from belief. Understanding both sides —
+    <b>why we need Jesus</b> and <b>why some stop believing</b> — helps us see the full picture of Christianity today.
+  </line>
+
+  <line></line>
+
+  <line mode="h2">1. Why many people believe we need Jesus</line>
+
+  <line><b>A. A source of hope in a broken world</b></line>
+  <line>
+    Many Christians see Jesus as the answer to the deepest human struggles: guilt, fear, loneliness,
+    and the longing for meaning. His message that every person is loved and redeemable gives people
+    a foundation to stand on when life feels unstable.
+  </line>
+
+  <line><b>B. A moral compass</b></line>
+  <line>
+    Jesus’ teachings — <i>love your neighbor</i>, <i>forgive your enemies</i>, <i>care for the poor</i> —
+    offer a moral framework that many find both challenging and life‑giving.
+    For believers, following Jesus is not just religion; it is a way of living with purpose.
+  </line>
+
+  <line><b>C. A path to grace</b></line>
+  <line>
+    Christianity teaches that humans are imperfect, and that Jesus bridges the gap between human brokenness
+    and God’s holiness. This idea of <highlight co="#C8E6C9">grace</highlight> — being accepted not because we are perfect,
+    but because we are loved — is one of the most powerful reasons people turn to Him.
+  </line>
+
+  <line></line>
+
+  <line mode="h2">2. Why some in the USA are losing faith</line>
+
+  <line><b>A. Cultural shifts</b></line>
+  <line>
+    American society has become more individualistic and less tied to traditional institutions.
+    As people prioritize personal freedom and self‑definition, organized religion can feel restrictive
+    or outdated to some.
+  </line>
+
+  <line><b>B. Negative experiences with churches</b></line>
+  <line>
+    Some people step away not because of Jesus, but because of painful experiences with religious communities —
+    hypocrisy, judgment, or political division. These experiences can overshadow the core message of Christianity.
+  </line>
+
+  <line><b>C. The rise of science and secularism</b></line>
+  <line>
+    As scientific understanding grows, some feel they must choose between faith and reason.
+    Even though many Christians see no conflict between the two, the cultural narrative often pushes them apart.
+  </line>
+
+  <line><b>D. Information overload</b></line>
+  <line>
+    The internet exposes people to countless worldviews, philosophies, and criticisms of religion.
+    This can create confusion or skepticism, especially for those who never had strong spiritual foundations.
+  </line>
+
+  <line></line>
+
+  <line mode="h2">3. The tension: needing Jesus vs. drifting away</line>
+
+  <line>
+    The paradox is striking:
+    <highlight co="#FFE082">Christianity continues to offer <b>hope, identity, and moral grounding</b>,
+    yet many Americans feel disconnected from it.</highlight>
+  </line>
+
+  <line>
+    Some see Jesus as the answer to modern anxiety, division, and emptiness.
+    Others feel that religion no longer speaks to their experiences or values.
+    This tension reflects a society searching for meaning in a rapidly changing world.
+  </line>
+
+  <line></line>
+
+  <line mode="h2">4. A path forward</line>
+
+  <line>
+    Whether someone believes or doubts, the conversation about Jesus remains deeply relevant.
+    His teachings about compassion, humility, and sacrificial love continue to challenge and inspire.
+  </line>
+
+  <line>
+    For those who still believe, the mission is not to win arguments but to live out the kind of love Jesus taught —
+    because often, people lose faith not from lack of truth, but from lack of love.
+  </line>
+
+  <line></line>
+
+  <line justify="center"><i>“The question is not only whether Jesus is true,”</i></line>
+  <line justify="center"><i>“but whether we are willing to live the love He spoke of.”</i></line>
+
+  <line></line>
+
+  <line>
+    For more reflections, you might visit
+    <link url="https://example.com/christianity-truth">this article</link>
+    or write your own story in this RSD document.
+  </line>
+
+  <line>
+    Sometimes people feel their faith is <s>completely gone</s>, but often it is simply buried under pain or confusion.
+  </line>
+
+  <line>
+    The message of Jesus is still <size s="50">BIG</size> enough to reach anyone who seeks truth.
+  </line>
+
+  <line>
+    And His love remains <u>unchanging</u>, even when our beliefs shift.
+  </line>
+
+  <line>
+    As one writer beautifully expressed it in a different style:
+    <font name="Lexend">“Grace is not earned; it is received.”</font>
+  </line>
+
+  <line>Below is a short summary using a list:</line>
+
+  <list order="true">
+    <line>Jesus offers hope and identity.</line>
+    <line>Modern culture creates spiritual distance.</line>
+    <line>Faith grows through love, not pressure.</line>
+  </list>
+
+	<blockquote><line>love the lord your god with all your heart and with all your soul and with all your mind.</line></blockquote>
+	
+	<line>
+	God Bless you.
+	</line>
+
+		<code>
+			<line>This is Example of RSD document.</line>
+		</code>
+		
+	<line><link url="youtube.com/@RayStudio1130"> Check out my YT! </link></line>
+</rsd>
+
+`
+      }
+    );
+
+    let editor2 = new window.RSDTextboxEditor("editor2", {});
+	
+	};
+</script>
+
+</body>
+</html>
