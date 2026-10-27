@@ -4,6 +4,7 @@ const DEBUG = true;
 const PROXY_TIMEOUT_MS = 30000;
 
 let engineClientId = null;
+const renderClientIds = new Set();
 
 function log(...args) {
     if (DEBUG) console.log("[RaySite SW]", ...args);
@@ -76,10 +77,11 @@ async function isBuilderDocumentRequest(event, pathname) {
 
 async function isRenderRequest(event, pathname) {
     if (pathname === "/rs-build/index.html" || pathname.startsWith("/rs-build/")) {
+        if (event.clientId) renderClientIds.add(event.clientId);
         return true;
     }
 
-    if (!event.clientId || !pathname.startsWith("/rs-assets/")) {
+    if (!event.clientId) {
         return false;
     }
 
@@ -87,8 +89,18 @@ async function isRenderRequest(event, pathname) {
     if (!client) return false;
 
     const clientURL = new URL(client.url);
-    return clientURL.origin === self.location.origin &&
-        clientURL.pathname.startsWith("/rs-build/");
+    if (clientURL.origin !== self.location.origin) return false;
+
+    if (renderClientIds.has(event.clientId)) return true;
+    if (clientURL.pathname.startsWith("/rs-build/")) return true;
+
+    try {
+        const referrer = new URL(event.request.referrer);
+        return referrer.origin === self.location.origin &&
+            referrer.pathname.startsWith("/rs-build/");
+    } catch {
+        return false;
+    }
 }
 
 self.addEventListener("install", event => {

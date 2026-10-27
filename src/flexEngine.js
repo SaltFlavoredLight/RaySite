@@ -7,6 +7,7 @@ import JSZip from 'jszip';
 // Necessary for having a Quill Delta element
 import Quill from 'quill';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
+import 'quill/dist/quill.bubble.css';
 
 // And Sortable, another important part.
 import Sortable from 'sortablejs';
@@ -1196,6 +1197,18 @@ export class FlexEngineFileSystem {
         return await this.zipManager.register();
     }
 
+    async readFile(path) {
+        return await this.zipManager.read(path);
+    }
+
+    async updateFile(path, fileData) {
+        return await this.zipManager.add(path, fileData);
+    }
+
+    async deleteFile(path) {
+        return await this.zipManager.delete(path);
+    }
+
 
     _routeToPagePath(route) {
         let cleanRoute = route.trim();
@@ -1463,7 +1476,73 @@ export const flexEngineDefaultVariables = {
     */
     interactiveTextBox: {
         interactiveTextBox: {
-            system: true
+            system: true,
+            displayType: "large",
+            strutureSample: [{ insert: "" }],
+            cssStyles: {},
+
+            component: class {
+                constructor(dataArray, entryElement) {
+                    this.entryElement = entryElement;
+                    this.quill = null;
+
+                    const initialDelta = Array.isArray(dataArray)
+                        ? dataArray
+                        : [{ insert: "" }];
+
+                    entryElement.innerHTML = "";
+                    entryElement.classList.add("rsapp-quill-editor");
+
+                    this.quill = new Quill(entryElement, {
+                        theme: "bubble",
+                        placeholder: "Start writing…",
+                        modules: {
+                            toolbar: [
+                                ["bold", "italic", "underline", "strike"],
+                                [{ header: [1, 2, 3, false] }],
+                                [{ list: "ordered" }, { list: "bullet" }],
+                                [{ align: [] }],
+                                ["blockquote", "code-block", "link"],
+                                [{ color: [] }, { background: [] }],
+                                ["clean"]
+                            ]
+                        }
+                    });
+
+                    try {
+                        this.quill.setContents(initialDelta, "silent");
+                    } catch (error) {
+                        console.warn("[RaySite] Invalid Quill Delta; using an empty editor.", error);
+                        this.quill.setText("", "silent");
+                    }
+
+                    this.dataArray = this.quill.getContents().ops;
+                    this.quill.on("text-change", (_delta, _oldDelta, source) => {
+                        if (source === "user") {
+                            this.dataArray = this.quill.getContents().ops;
+                        }
+                    });
+                }
+
+                initResult() {
+                    return { code: 0 };
+                }
+
+                onSave() {
+                    return this.quill
+                        ? this.quill.getContents().ops
+                        : this.dataArray;
+                }
+
+                destroy() {
+                    this.quill = null;
+                    this.entryElement.innerHTML = "";
+                }
+            },
+
+            render: function (dataArray) {
+                return Array.isArray(dataArray) ? dataArray : [{ insert: "" }];
+            }
         }
     },
 
@@ -17085,7 +17164,16 @@ export const flexEngineDefaultElements = {
 
                 jsRuntime: {},
 
-                settings: {}
+                settings: {
+                    allowedSortTo: [
+                        "container",
+                        "section/section",
+                        "@root/main",
+                        "@root/popup",
+                        "@root/CTA",
+                        "@root/Footer"
+                    ]
+                }
             },
 
             heading: {
@@ -23768,6 +23856,13 @@ export const flexEngineCreateNode = function (dataArray, documentHTML, parentVer
     node.classList.add(
         `${BUILDER_CONFIG.classPrefix}${registeredClassName || dataArray.type.split("/").pop()}`
     );
+
+    // Titles/headings use the same Quill editing path as paragraph text.
+    // Keep the existing heading class and add the explicit title alias for
+    // editor integrations that target rs-title.
+    if (dataArray.type === "basic/heading") {
+        node.classList.add(`${BUILDER_CONFIG.classPrefix}title`);
+    }
 
     const chartId =
         typeof dataArray.id === "number"

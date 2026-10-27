@@ -1,6 +1,63 @@
 
 import { flexEngineFileSystem } from "./flexEngine.js";
 
+function initTextSelectionGuard(root = document) {
+    const editableSelector = [
+        "textarea",
+        "[contenteditable=\"true\"]",
+        "input:not([type=\"button\"]):not([type=\"checkbox\"]):not([type=\"color\"]):not([type=\"file\"]):not([type=\"hidden\"]):not([type=\"radio\"]):not([type=\"range\"]):not([type=\"reset\"]):not([type=\"submit\"])",
+    ].join(",");
+
+    function getEditableTarget(event) {
+        const target = event.target;
+        return target instanceof Element
+            ? target.closest(editableSelector)
+            : null;
+    }
+
+    function handleMouseDown(event) {
+        const target = getEditableTarget(event);
+        if (!target) return;
+
+        target.classList.toggle(
+            "rsapp-text-selection-target",
+            event.detail >= 2
+        );
+    }
+
+    function handleMouseUp(event) {
+        const target = getEditableTarget(event);
+        if (!target) return;
+
+        window.setTimeout(() => {
+            target.classList.remove("rsapp-text-selection-target");
+        }, 0);
+    }
+
+    function handleSelectStart(event) {
+        const target = getEditableTarget(event);
+        if (target?.closest?.(".ql-editor, .ql-bubble, .rs-editor-quill-toolbar")) {
+            return;
+        }
+
+        if (target?.classList.contains("rsapp-text-selection-target")) {
+            return;
+        }
+
+        event.preventDefault();
+    }
+
+    root.addEventListener("mousedown", handleMouseDown, true);
+    root.addEventListener("mouseup", handleMouseUp, true);
+    root.addEventListener("selectstart", handleSelectStart, true);
+
+    return () => {
+        root.removeEventListener("mousedown", handleMouseDown, true);
+        root.removeEventListener("mouseup", handleMouseUp, true);
+        root.removeEventListener("selectstart", handleSelectStart, true);
+    };
+}
+
 function initRayHooks(root = document) {
     function getPanel(name) {
         return root.querySelector(
@@ -109,17 +166,30 @@ function initRayHooks(root = document) {
 
         const action = button.getAttribute("data-ui-action");
         if (action === "preview") {
+            setPanel("menu-dropdown", false);
             void togglePreview();
         } else if (action === "exit-preview") {
             exitPreview();
         } else if (action === "export") {
+            setPanel("menu-dropdown", false);
             void exportProject();
         } else if (action === "import") {
-            root.querySelector("[data-ui-file-import]")?.click();
+            setPanel("menu-dropdown", false);
+            setPanel("menu-importPanel", true);
+        } else if (action === "export-html") {
+            setPanel("menu-dropdown", false);
+            window.alert("Export HTML is not available yet.");
+        } else if (action === "publish") {
+            setPanel("menu-dropdown", false);
+            if (typeof globalThis.publishWebsite === "function") {
+                void globalThis.publishWebsite();
+            } else {
+                window.alert("Publishing is not ready yet. Please try again.");
+            }
         }
     }
 
-    function togglePreview() {
+    async function togglePreview() {
         if (document.body.classList.contains("rsapp-preview-mode")) {
             exitPreview();
             return;
@@ -132,6 +202,10 @@ function initRayHooks(root = document) {
         }
 
         try {
+            if (typeof globalThis.flushCurrentPageBeforeOutput === "function") {
+                await globalThis.flushCurrentPageBeforeOutput();
+            }
+
             const frame = root.querySelector("#render-preview");
             if (!(frame instanceof HTMLIFrameElement)) {
                 throw new Error("RenderServer preview iframe is unavailable.");
@@ -171,6 +245,10 @@ function initRayHooks(root = document) {
 
     async function exportProject() {
         try {
+            if (typeof globalThis.flushCurrentPageBeforeOutput === "function") {
+                await globalThis.flushCurrentPageBeforeOutput();
+            }
+
             const result = await flexEngineFileSystem.exportFile();
             if (result.code === 1) {
                 throw new Error(result.error || "Project export failed.");
@@ -190,9 +268,18 @@ function initRayHooks(root = document) {
     }
 
     async function importProject(file) {
+        if (!(file instanceof File)) return;
+
+        if (!file.name.toLowerCase().endsWith(".zip") && file.type !== "application/zip") {
+            setImportStatus("Please choose a .zip project archive.");
+            return;
+        }
+
+        setImportStatus("Importing project…");
         if (!window.confirm(
             "Import this project archive? Files with matching paths will be replaced; other current files will be kept."
         )) {
+            setImportStatus("");
             return;
         }
 
@@ -206,17 +293,63 @@ function initRayHooks(root = document) {
             window.location.reload();
         } catch (error) {
             console.error("[RaySite] Project import failed:", error);
-            window.alert(`Project import failed: ${error.message}`);
+            const message = error instanceof Error ? error.message : String(error);
+            setImportStatus(`Import failed: ${message}`);
+            window.alert(`Project import failed: ${message}`);
         }
     }
 
+    function setImportStatus(message) {
+        const status = root.querySelector("[data-ui-import-status]");
+        if (status) status.textContent = message;
+    }
+
     const fileInput = root.querySelector("[data-ui-file-import]");
+
+    const guideTabs = root.querySelectorAll("[data-guide-tab]");
+    const guidePanels = root.querySelectorAll("[data-guide-panel]");
+    const showGuide = guideName => {
+        guideTabs.forEach(tab => {
+            const isActive = tab.getAttribute("data-guide-tab") === guideName;
+            tab.classList.toggle("is-active", isActive);
+            tab.setAttribute("aria-selected", String(isActive));
+        });
+        guidePanels.forEach(panel => {
+            const isActive = panel.getAttribute("data-guide-panel") === guideName;
+            panel.classList.toggle("is-active", isActive);
+            panel.hidden = !isActive;
+        });
+    };
+    const handleGuideTabClick = event => showGuide(event.currentTarget.getAttribute("data-guide-tab"));
+    guideTabs.forEach(tab => tab.addEventListener("click", handleGuideTabClick));
+    document.addEventListener("RAYSITE_PUBLISH_COMPLETE", () => {
+        showGuide("cloudflare");
+        setPanel("publish-successPanel", true);
+    });
     const handleFileChange = event => {
         const [file] = event.target.files;
         if (file) void importProject(file);
         event.target.value = "";
     };
     if (fileInput) fileInput.addEventListener("change", handleFileChange);
+
+    const dropzone = root.querySelector("[data-ui-dropzone]");
+    const handleDragover = event => {
+        event.preventDefault();
+        dropzone?.classList.add("is-dragging");
+    };
+    const handleDragleave = () => dropzone?.classList.remove("is-dragging");
+    const handleDrop = event => {
+        event.preventDefault();
+        dropzone?.classList.remove("is-dragging");
+        const [file] = event.dataTransfer?.files || [];
+        if (file) void importProject(file);
+    };
+    if (dropzone) {
+        dropzone.addEventListener("dragover", handleDragover);
+        dropzone.addEventListener("dragleave", handleDragleave);
+        dropzone.addEventListener("drop", handleDrop);
+    }
 
     const handleKeydown = event => {
         if (event.key !== "Escape") return;
@@ -243,8 +376,15 @@ function initRayHooks(root = document) {
             root.removeEventListener("click", handleClick);
             root.removeEventListener("keydown", handleKeydown);
             if (fileInput) fileInput.removeEventListener("change", handleFileChange);
+            if (dropzone) {
+                dropzone.removeEventListener("dragover", handleDragover);
+                dropzone.removeEventListener("dragleave", handleDragleave);
+                dropzone.removeEventListener("drop", handleDrop);
+            }
+            guideTabs.forEach(tab => tab.removeEventListener("click", handleGuideTabClick));
         }
     };
 }
 
 const rayHooks = initRayHooks();
+initTextSelectionGuard();
