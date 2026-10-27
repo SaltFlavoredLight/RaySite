@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ray Studio Website Builder 1.0</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+		
+		<link href="system.css" rel="stylesheet">
+    </head>
+    <body>
+        <section class="app-iconmenu">
+            <button class="app-lefthamburger" id="leftBarMenuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </section>
+		
+        <section class="app-title">
+            <a href="/" target="_blank"><span> Ray Studio <span style="color:var(--maintheme2)">Sites</span></span></a>
+        </section>
+		
+        <section class="app-box">
+            <button class="app-icons">Library</button>
+        </section>
+		
+        <section class="app-topbar">
+        </section>
+		
+        <section class="app-deploysettings">
+            <button class="app-button">Save</button>
+            <button class="app-button">Preview</button>
+            <button class="app-button app-redbutton">Publish</button>
+        </section>
+		
+        <section class="app-leftbar1">
+			<button class="app-icons" id="app-leftbarAddButton">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+					<path d="M440-120v-320H120v-80h320v-320h80v320h320v80H520v320h-80Z"/>
+				</svg>
+			</button>
+			<button class="app-icons" id="app-leftbarSectionsButton">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+					<path d="M200-200v-160 4-4 160Zm0 80q-33 0-56.5-23.5T120-200v-160q0-33 23.5-56.5T200-440h560q33 0 56.5 23.5T840-360H200v160h400v80H200Zm0-400q-33 0-56.5-23.5T120-600v-160q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v160q0 33-23.5 56.5T760-520H200Zm0-80h560v-160H200v160Zm0 0v-160 160ZM760-40v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"/>
+				</svg>
+			</button>	
+			<button class="app-icons" id="app-leftbarPagesButton">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+					<path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/>
+				</svg>
+			</button>
+		</section>
+
+
+        <section class="app-leftbar2">
+		
+		</section>
+		
+        <section class="app-workspaceswitcher">
+			<button class="app-icons">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+					<path d="M440-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h240v720Zm-80-80v-560H200v560h160Zm160-320v-320h240q33 0 56.5 23.5T840-760v240H520Zm80-80h160v-160H600v160Zm-80 480v-320h320v240q0 33-23.5 56.5T760-120H520Zm80-80h160v-160H600v160ZM360-480Zm240-120Zm0 240Z"/>
+				</svg>
+			</button>
+			
+		</section>
+		
+		
+		<section class="app-leftbanner app-addsection" id="app-leftAddBanner">
+			<h3>Add a Elements</h3>
+
+		</section>
+		
+		<section class="app-leftbanner app-pagesection" id="app-leftSectionsBanner">
+			<div>Page Sections Manager</div>
+		</section>	
+		
+		<section class="app-leftbannerbig app-pages" id="app-leftPagesBanner">
+			<div>Pages Manager</div>
+		</section>		
+	
+        <main class="app-canvasworkspace">
+			<div class="app-canvasnav"></div>
+			<div class="app-screeninfo"></div>
+			<iframe class="app-iframe"></iframe>
+		</main>
+		
+        <section class="app-rightbanner">Properties</section>
+		
+        <section class="app-toolsbar">
+            <button class="app-button">Text</button>
+            <button class="app-button">Image</button>
+            <button class="app-button">Box</button>
+        </section>
+		
+        <section class="app-statusbar"> 
+			 Ray Studio Sites | Copyright (C) Ray Zuo 2026, All right Reserverd
+		</section>
+		
+		<!-- small popup -->
+		
+		<div class="app-iconmenulist" id="topLeftPageMenu">
+			<div class="app-menu-item" app-system="new-project">New Project</div>
+			<div class="app-menu-item">Open from...</div>
+			<div class="app-menu-item">Download...</div>
+			<hr>
+			<a href="/support" target="_blank"><div class="app-menu-item">Support Me</div></a>
+			<a href="/about" target="_blank"><div class="app-menu-item app-redtext">About Ray Studio Sites...</div></a>
+		</div>
+
+		<script src="system.js"></script>
+		
+		<script type="module" src="index.js"></script>
+	</body>
+</html>

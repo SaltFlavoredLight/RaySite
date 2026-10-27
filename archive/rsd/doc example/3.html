@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Cursor Tracker</title>
+  <style>
+    div {
+      border: 1px solid #ccc;
+      padding: 10px;
+      min-height: 100px;
+      font-size: 16px;
+    }
+    #info {
+      margin-top: 10px;
+      font-family: monospace;
+      white-space: pre;
+    }
+  </style>
+</head>
+<body>
+
+<div id="editor" contenteditable="true">
+</div>
+<div id="editor2" contenteditable="true">
+</div>
+
+
+<script type="module">
+		/*  RSDParser 1.0 version.
+			save as RSDParser.js at /app/JSbandles
+			Need: nothing :) 
+			Output as: parseRSDToJSON.
+		*/
+		//1, parseRSDToJSON
+// =====================
+// 1. Minify RSD
+// =====================
+function minifyRSD(xml) {
+  return xml
+    .replace(/[\n\r]+/g, " ")
+    .replace(/\s+/g, " ")
+    .replace(/>\s+</g, "><")
+    .trim();
+}
+
+// =====================
+// 2. Strip <rsd>
+// =====================
+function stripRSD(str) {
+  return str
+    .replace(/<rsd>/gi, "")
+    .replace(/<\/rsd>/gi, "")
+    .trim();
+}
+
+// =====================
+// 3. Parse Blocks (ordered)
+// =====================
+function parseBlocksInOrder(str) {
+  const blocks = [];
+  const regex = /<(title|list|blockquote|code|line)([^>]*)>([\s\S]*?)<\/\1>/gi;
+  let match;
+
+  while ((match = regex.exec(str)) !== null) {
+    const tag = match[1];
+    const attrs = match[2] || "";
+    const inner = match[3] || "";
+
+    if (tag === "title") {
+      blocks.push({
+        type: "title",
+        text: inner.trim()
+      });
+    }
+
+    if (tag === "line") {
+      const alignMatch = /justify="(.*?)"/.exec(attrs);
+      const align = alignMatch ? alignMatch[1] : "left";
+
+      const modeMatch = /mode="(.*?)"/.exec(attrs);
+      const mode = modeMatch ? modeMatch[1] : "normal";
+
+      blocks.push({
+        type: "line",
+        align,
+        mode,
+        content: inner.trim()
+      });
+    }
+
+    if (tag === "list") {
+      const order = /order="true"/.test(attrs);
+      const items = [];
+
+      const lineRegex = /<line[^>]*>([\s\S]*?)<\/line>/gi;
+      let lineMatch;
+      while ((lineMatch = lineRegex.exec(inner)) !== null) {
+        items.push(lineMatch[1].trim());
+      }
+
+      blocks.push({
+        type: "list",
+        order,
+        items
+      });
+    }
+
+    if (tag === "blockquote") {
+      const lines = [];
+      const lineRegex = /<line[^>]*>([\s\S]*?)<\/line>/gi;
+      let lineMatch;
+      while ((lineMatch = lineRegex.exec(inner)) !== null) {
+        lines.push(lineMatch[1].trim());
+      }
+
+      blocks.push({
+        type: "blockquote",
+        lines
+      });
+    }
+
+    if (tag === "code") {
+      const lines = [];
+      const lineRegex = /<line[^>]*>([\s\S]*?)<\/line>/gi;
+      let lineMatch;
+      while ((lineMatch = lineRegex.exec(inner)) !== null) {
+        lines.push(lineMatch[1].trim());
+      }
+
+      blocks.push({
+        type: "code",
+        lines
+      });
+    }
+  }
+
+  return blocks;
+}
+
+// =====================
+// 4. Inline parsing
+// =====================
+function parseRuns(str) {
+  let property = {};
+  let text = "";
+  const runs = [];
+
+  for (let i = 0; i < str.length; i++) {
+    const ch = str[i];
+
+    if (ch === "\n" || ch === "\r") {
+      text += " ";
+      continue;
+    }
+
+    if (ch === " " && text.endsWith(" ")) {
+      continue;
+    }
+
+    if (ch === "<") {
+      const tag = readTag(str, i);
+
+      if (text.length > 0) {
+        runs.push(makeRun(text, property));
+        text = "";
+      }
+
+      applyTag(tag, property);
+      i += tag.length - 1;
+    } else {
+      text += ch;
+    }
+  }
+
+  if (text.length > 0) {
+    runs.push(makeRun(text, property));
+  }
+
+  return runs;
+}
+
+// =====================
+// 5. Tag helpers
+// =====================
+function readTag(str, index) {
+  const end = str.indexOf(">", index);
+  return str.substring(index, end + 1);
+}
+
+function applyTag(tag, property) {
+  if (tag.startsWith("<b>") || tag.startsWith("<b ")) property.bold = true;
+  if (tag.startsWith("</b>")) delete property.bold;
+
+  if (tag.startsWith("<i>") || tag.startsWith("<i ")) property.italic = true;
+  if (tag.startsWith("</i>")) delete property.italic;
+
+  if (tag.startsWith("<u>") || tag.startsWith("<u ")) property.underline = true;
+  if (tag.startsWith("</u>")) delete property.underline;
+
+  // Strict <s> (avoid conflict with <size>)
+  if (tag.startsWith("<s>") || tag.startsWith("<s ")) property.strike = true;
+  if (tag.startsWith("</s>")) delete property.strike;
+
+  if (tag.startsWith("<color")) {
+    const m = /co="(.*?)"/.exec(tag);
+    property.textColor = m ? m[1] : null;
+  }
+  if (tag.startsWith("</color")) delete property.textColor;
+
+  if (tag.startsWith("<highlight")) {
+    const m = /co="(.*?)"/.exec(tag);
+    property.highlight = m ? m[1] : null;
+  }
+  if (tag.startsWith("</highlight")) delete property.highlight;
+
+  if (tag.startsWith("<size")) {
+    const m = /s="(.*?)"/.exec(tag);
+    property.size = m ? m[1] : null;
+  }
+  if (tag.startsWith("</size")) delete property.size;
+
+  if (tag.startsWith("<font")) {
+    const m = /name="(.*?)"/.exec(tag);
+    property.font = m ? m[1] : null;
+  }
+  if (tag.startsWith("</font")) delete property.font;
+
+  if (tag.startsWith("<link")) {
+    const m = /url="(.*?)"/.exec(tag);
+    property.link = m ? m[1] : null;
+  }
+  if (tag.startsWith("</link")) delete property.link;
+}
+
+function makeRun(text, property) {
+  return { text, ...property };
+}
+
+// =====================
+// 6. Exported function (ESM)
+// =====================
+export function parseRSDToJSON(rsdString) {
+  rsdString = minifyRSD(rsdString);
+  rsdString = stripRSD(rsdString);
+
+  const blocks = parseBlocksInOrder(rsdString);
+  const finalJSON = [];
+
+  for (const block of blocks) {
+    /*if (block.type === "title") {
+      finalJSON.push({
+        type: "title",
+        text: block.text
+      });
+    }*/
+
+    if (block.type === "line") {
+      finalJSON.push({
+        type: "line",
+        align: block.align,
+        mode: block.mode,
+        runs: parseRuns(block.content)
+      });
+    }
+
+    if (block.type === "list") {
+      finalJSON.push({
+        type: "list",
+        order: block.order,
+        items: block.items.map(item => ({
+          runs: parseRuns(item)
+        }))
+      });
+    }
+
+    if (block.type === "blockquote") {
+      finalJSON.push({
+        type: "blockquote",
+        lines: block.lines.map(line => ({
+          runs: parseRuns(line)
+        }))
+      });
+    }
+
+    if (block.type === "code") {
+      finalJSON.push({
+        type: "code",
+        lines: block.lines.map(line => ({
+          runs: parseRuns(line)
+        }))
+      });
+    }
+  }
+
+  return finalJSON;
+}
+
+window.parseRSDToJSON = parseRSDToJSON;
+
+
+//parseJSONToHTML
+export function parseJSONToHTML(json) {
+  let finalHTML = "";
+
+  json.forEach(block => {
+    if (block.type === "title") {
+      finalHTML += renderTitle(block);
+    }
+
+    if (block.type === "line") {
+      finalHTML += renderLine(block);
+    }
+
+    if (block.type === "list") {
+      finalHTML += renderList(block);
+    }
+
+    if (block.type === "blockquote") {
+      finalHTML += renderBlockquote(block);
+    }
+
+    if (block.type === "code") {
+      finalHTML += renderCode(block);
+    }
+  });
+
+  return finalHTML;
+}
+
+function renderTitle(block) {
+  //return `<h1 style="text-align:center;">${escapeHTML(block.text)}</h1>`; 
+  //Title we don't use it!
+  return ""
+}
+
+function renderLine(block) {
+  const tag = tagForLineMode(block.mode);
+  const align = block.align || "left";
+
+  let html = `<${tag} style="text-align:${align};">`;
+
+  block.runs.forEach(run => {
+    html += renderRun(run);
+  });
+
+  html += `</${tag}>`;
+  return html;
+}
+
+function tagForLineMode(mode) {
+  if (mode === "h1") return "h1";
+  if (mode === "h2") return "h2";
+  if (mode === "h3") return "h3";
+  return "p";
+}
+
+function renderRun(run) {
+  let style = "";
+
+  if (run.bold) style += "font-weight:bold;";
+  if (run.italic) style += "font-style:italic;";
+  if (run.underline) style += "text-decoration:underline;";
+  if (run.strike) style += "text-decoration:line-through;";
+  if (run.textColor) style += `color:${run.textColor};`;
+  if (run.highlight) style += `background:${run.highlight};`;
+  if (run.size) style += `font-size:${run.size}px;`;
+  if (run.font) style += `font-family:${run.font};`;
+
+  const text = escapeHTML(run.text);
+
+  if (run.link) {
+    return `<a href="${run.link}" style="${style}">${text}</a>`;
+  }
+
+  return `<span style="${style}">${text}</span>`;
+}
+
+function renderList(block) {
+  const tag = block.order ? "ol" : "ul";
+  let html = `<${tag}>`;
+
+  block.items.forEach(item => {
+    html += "<li>";
+    item.runs.forEach(run => {
+      html += renderRun(run);
+    });
+    html += "</li>";
+  });
+
+  html += `</${tag}>`;
+  return html;
+}
+
+function renderBlockquote(block) {
+  let html = `<blockquote>`;
+
+  block.lines.forEach(line => {
+    html += "<p>";
+    line.runs.forEach(run => {
+      html += renderRun(run);
+    });
+    html += "</p>";
+  });
+
+  html += "</blockquote>";
+  return html;
+}
+
+function renderCode(block) {
+  let html = `<pre><code>`;
+
+  block.lines.forEach(line => {
+    line.runs.forEach(run => {
+      html += escapeHTML(run.text);
+    });
+    html += "\n";
+  });
+
+  html += `</code></pre>`;
+  return html;
+}
+
+function escapeHTML(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+window.parseJSONToHTML = parseJSONToHTML;
+</script>
+
+<script type="module">
+		/*  ScreenToggleManager 1.0 version.
+			save as ScreenToggleManager.js at /app/JSbandles
+			Need: nothing :) 
+			Output as: ScreenToggleManager.
+			this will help you all the thing!
+		*/
+		export class ScreenToggleManager {
+		  constructor() {
+			this.registry = new Map();
+
+			document.addEventListener("keydown", e => this.dispatch("keydown", e));
+			document.addEventListener("keyup", e => this.dispatch("keyup", e));
+			document.addEventListener("click", e => this.dispatch("click", e));
+			document.addEventListener("input", e => this.dispatch("input", e));
+		  }
+
+		  register(element, handlers = {}) {
+			if (!element) throw new Error("ScreenToggleManager: element not found");
+			this.registry.set(element, handlers);
+		  }
+
+		  dispatch(eventName, event) {
+			const target = event.target;
+
+			let bestElement = null;
+			let bestDepth = -1;
+
+			for (const element of this.registry.keys()) {
+			  if (element.contains(target)) {
+				let depth = 0;
+				let cur = element;
+				while (cur.parentElement) {
+				  depth++;
+				  cur = cur.parentElement;
+				}
+				if (depth > bestDepth) {
+				  bestDepth = depth;
+				  bestElement = element;
+				}
+			  }
+			}
+
+			if (!bestElement) return;
+
+			const handlers = this.registry.get(bestElement);
+			const handler = handlers[eventName];
+
+			if (handler) handler(event);
+		  }
+		}
+
+	
+	//you may want one that already setup, here you go!
+	window.screenToggle = new ScreenToggleManager();
+</script>
+
+<script type="module">
+	//a helper function.
+	function getRealCaretPosition(root) {
+		const sel = window.getSelection();
+		if (!sel.rangeCount) return null;
+
+		const range = sel.getRangeAt(0);
+		const caretRect = range.getClientRects()[0];
+		if (!caretRect) return null;
+
+		const rootRect = root.getBoundingClientRect();
+
+		// 获取所有 text node
+		const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+		const textNodes = [];
+		while (walker.nextNode()) textNodes.push(walker.currentNode);
+		if (textNodes.length === 0) return null;
+
+		// 1. 光标在编辑框左边 → 第一个节点 offset=0
+		if (caretRect.left < rootRect.left) {
+			return { node: textNodes[0], offset: 0 };
+		}
+
+		// 2. 光标在编辑框右边 → 最后一个节点 offset=length
+		if (caretRect.left > rootRect.right) {
+			const last = textNodes[textNodes.length - 1];
+			return { node: last, offset: last.length };
+		}
+
+		// 3. 找最近的 text node
+		let bestNode = null;
+		let bestDist = Infinity;
+
+		for (const node of textNodes) {
+			const r = document.createRange();
+			r.setStart(node, 0);
+			r.setEnd(node, node.length);
+
+			const rects = r.getClientRects();
+			for (const rect of rects) {
+				const dx = rect.left - caretRect.left;
+				const dy = rect.top - caretRect.top;
+				const dist = dx * dx + dy * dy;
+
+				if (dist < bestDist) {
+					bestDist = dist;
+					bestNode = node;
+				}
+			}
+		}
+
+		if (!bestNode) return null;
+
+		// 4. 二分查找 offset
+		let low = 0;
+		let high = bestNode.length;
+
+		while (low < high) {
+			const mid = (low + high) >> 1;
+
+			const r = document.createRange();
+			r.setStart(bestNode, mid);
+			r.setEnd(bestNode, mid);
+
+			const rect = r.getClientRects()[0];
+			if (!rect) break;
+
+			if (rect.left < caretRect.left) {
+				low = mid + 1;
+			} else {
+				high = mid;
+			}
+		}
+
+		let offset = low;
+
+		// 5. 你的规则：如果光标在两个 inline 之间 → 默认靠右 offset=0
+		// 判断方法：如果 caretRect 在 bestNode rect 左边 2px 内
+		const r0 = document.createRange();
+		r0.setStart(bestNode, 0);
+		r0.setEnd(bestNode, 0);
+		const leftRect = r0.getClientRects()[0];
+
+		if (leftRect && caretRect.left < leftRect.left + 2) {
+			offset = 0;
+		}
+
+		return { node: bestNode, offset };
+	}
+	
+	function getRealCaretPositionFromRange(root, range) {
+		const caretRect = range.getClientRects()[0];
+		if (!caretRect) return null;
+
+		const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+		const textNodes = [];
+		while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+		if (textNodes.length === 0) return null;
+
+		const rootRect = root.getBoundingClientRect();
+
+		// 1. 左边界
+		if (caretRect.left < rootRect.left) {
+			return { node: textNodes[0], offset: 0 };
+		}
+
+		// 2. 右边界
+		if (caretRect.left > rootRect.right) {
+			const last = textNodes[textNodes.length - 1];
+			return { node: last, offset: last.length };
+		}
+
+		// 3. 找最近节点
+		let bestNode = null;
+		let bestDist = Infinity;
+
+		for (const node of textNodes) {
+			const r = document.createRange();
+			r.setStart(node, 0);
+			r.setEnd(node, node.length);
+
+			const rects = r.getClientRects();
+			for (const rr of rects) {
+				const dx = rr.left - caretRect.left;
+				const dy = rr.top - caretRect.top;
+				const dist = dx * dx + dy * dy;
+
+				if (dist < bestDist) {
+					bestDist = dist;
+					bestNode = node;
+				}
+			}
+		}
+
+		// 4. 二分 offset
+		let low = 0;
+		let high = bestNode.length;
+
+		while (low < high) {
+			const mid = (low + high) >> 1;
+
+			const r = document.createRange();
+			r.setStart(bestNode, mid);
+			r.setEnd(bestNode, mid);
+
+			const rr = r.getClientRects()[0];
+			if (!rr) break;
+
+			if (rr.left < caretRect.left) {
+				low = mid + 1;
+			} else {
+				high = mid;
+			}
+		}
+
+		return { node: bestNode, offset: low };
+	}
+	
+	function getRealSelectionBounds(root) {
+		const sel = window.getSelection();
+		if (!sel.rangeCount) return null;
+
+		const originalRange = sel.getRangeAt(0);
+
+		// ⭐ 用 cloneRange collapse，不修改 selection
+		const startRange = originalRange.cloneRange();
+		startRange.collapse(true);
+
+		const endRange = originalRange.cloneRange();
+		endRange.collapse(false);
+
+		// ⭐ 分别计算 start 和 end
+		const start = getRealCaretPositionFromRange(root, startRange);
+		const end = getRealCaretPositionFromRange(root, endRange);
+
+		return {
+			startNode: start.node,
+			startOffset: start.offset,
+			endNode: end.node,
+			endOffset: end.offset
+		};
+	}
+
+	function getNodeChain(node1, node2) {
+		const chain = [];
+		const points = [];
+
+		let current = node1;
+
+		// 如果 node1 是文本节点，先跳到它的父节点
+		if (current.nodeType === 3) {
+			current = current.parentNode;
+		}
+
+		while (current) {
+			chain.push(current);
+
+			if (current === node2) {
+				chain.reverse();
+				points.reverse();
+				points[0] = 0;
+				return [chain, points];
+			}
+
+			if (current.nodeName === "BODY") {
+				throw new Error("node1 is not inside node2");
+			}
+
+			const parent = current.parentNode;
+
+			// 只计算元素节点的 index
+			const elementSiblings = Array.from(parent.children);
+			const index = elementSiblings.indexOf(current);
+
+			points.push(index);
+
+			current = parent;
+		}
+
+		throw new Error("unexpected error");
+	}
+
+	function getNodeByPath(root, points) {
+		let current = root;
+
+		for (let i = 1; i < points.length; i++) {
+			const index = points[i];
+			current = current.children[index];
+
+			if (!current) {
+				throw new Error("Invalid path: child not found at index " + index);
+			}
+		}
+
+		return current;
+	}
+
+
+	//for focus those are all function.
+
+    export class RSDTextboxEditor {
+      constructor(textbox = "editor", options = {}) {
+
+        this.editor = document.getElementById(textbox);
+        if (!this.editor) {
+          throw new Error(`RSDTextboxEditor: element #${textbox} not found`);
+        }
+
+        this.doc = {}; // ready the JSON doc, RSD XML version we just thorw it!
+
+        this.editor.innerHTML = "";
+
+        if (options.rsd) {
+            this.doc = window.parseRSDToJSON(options.rsd);
+		    document.getElementById(textbox).innerHTML = window.parseJSONToHTML(this.doc);
+        }
+
+		window.screenToggle.register(this.editor, {
+		  keydown: this.onKeydown.bind(this),
+		  click: this.onClick.bind(this)
+		});
+		
+		this.startPoint = [0, 0, 0, 0];
+		this.endPoint = [0, 0, 0, 0];
+	  }
+
+	
+
+		// the change node ministries......
+		clearEditingAll() {
+		}
+
+		positionUpdate(pos) {
+			pos
+		}
+
+
+	  onSelectionChange(event) {
+		/*const sel = window.getSelection();
+		if (!sel.rangeCount) return;
+
+		const range = sel.getRangeAt(0);
+
+		console.log("startNode:", range.startContainer);
+		console.log("startOffset:", range.startOffset);
+		console.log("endNode:", range.endContainer);
+		console.log("endOffset:", range.endOffset);*/
+		
+		
+		const pos = getRealSelectionBounds(this.editor); 
+		console.log(pos.startNode);
+		console.log(pos.startOffset);
+		console.log(pos.endNode);
+		console.log(pos.endOffset);
+
+	  }
+
+	  onKeydown(event) {
+		console.log("key:", event.key);
+		console.log("unicode:", event.key.charCodeAt(0));
+	  	this.onSelectionChange();
+	  }
+
+	  onClick(event) {
+		console.log("clicked:", event.target);
+		this.onSelectionChange();
+	  }
+	  
+	  
+	}
+
+		
+</script>
+
+<script>
+
+
+	window.RSDTextboxEditor = RSDTextboxEditor;
+
+</script>
+
+<script>
+
+	window.onload = () => {
+	
+    let editor = new window.RSDTextboxEditor("editor",
+      {
+      	rsd: `<rsd>
+
+  <!-- Document Title -->
+  <title>The truth of Christianity</title>
+
+  <!-- Main Title -->
+  <line mode="h1" justify="center">
+    The truth of Christianity
+  </line>
+
+  <!-- Subtitle -->
+  <line mode="h3" justify="center">
+    <i>Why we need Jesus, and why some people in the USA start not believing in Him</i>
+  </line>
+
+  <line></line>
+
+  <!-- Intro Paragraph -->
+  <line>
+    <b>Christianity</b> has shaped cultures, inspired compassion, and offered hope to many people across history.
+    At the center of this faith stands <highlight co="#FFF59D">Jesus</highlight> — whose teachings about
+    <i>forgiveness</i>, <i>love</i>, and <i>redemption</i> continue to influence the world.
+  </line>
+
+  <line>
+    Yet in the <color co="#1976D2">United States</color>, a country once deeply rooted in Christian identity,
+    more people are beginning to drift away from belief. Understanding both sides —
+    <b>why we need Jesus</b> and <b>why some stop believing</b> — helps us see the full picture of Christianity today.
+  </line>
+
+  <line></line>
+
+  <!-- Section 1 -->
+  <line mode="h2">1. Why many people believe we need Jesus</line>
+
+  <line><b>A. A source of hope in a broken world</b></line>
+  <line>
+    Many Christians see Jesus as the answer to the deepest human struggles: guilt, fear, loneliness,
+    and the longing for meaning. His message that every person is loved and redeemable gives people
+    a foundation to stand on when life feels unstable.
+  </line>
+
+  <line><b>B. A moral compass</b></line>
+  <line>
+    Jesus’ teachings — <i>love your neighbor</i>, <i>forgive your enemies</i>, <i>care for the poor</i> —
+    offer a moral framework that many find both challenging and life‑giving.
+    For believers, following Jesus is not just religion; it is a way of living with purpose.
+  </line>
+
+  <line><b>C. A path to grace</b></line>
+  <line>
+    Christianity teaches that humans are imperfect, and that Jesus bridges the gap between human brokenness
+    and God’s holiness. This idea of <highlight co="#C8E6C9">grace</highlight> — being accepted not because we are perfect,
+    but because we are loved — is one of the most powerful reasons people turn to Him.
+  </line>
+
+  <line></line>
+
+  <!-- Section 2 -->
+  <line mode="h2">2. Why some in the USA are losing faith</line>
+
+  <line><b>A. Cultural shifts</b></line>
+  <line>
+    American society has become more individualistic and less tied to traditional institutions.
+    As people prioritize personal freedom and self‑definition, organized religion can feel restrictive
+    or outdated to some.
+  </line>
+
+  <line><b>B. Negative experiences with churches</b></line>
+  <line>
+    Some people step away not because of Jesus, but because of painful experiences with religious communities —
+    hypocrisy, judgment, or political division. These experiences can overshadow the core message of Christianity.
+  </line>
+
+  <line><b>C. The rise of science and secularism</b></line>
+  <line>
+    As scientific understanding grows, some feel they must choose between faith and reason.
+    Even though many Christians see no conflict between the two, the cultural narrative often pushes them apart.
+  </line>
+
+  <line><b>D. Information overload</b></line>
+  <line>
+    The internet exposes people to countless worldviews, philosophies, and criticisms of religion.
+    This can create confusion or skepticism, especially for those who never had strong spiritual foundations.
+  </line>
+
+  <line></line>
+
+  <!-- Section 3 -->
+  <line mode="h2">3. The tension: needing Jesus vs. drifting away</line>
+
+  <line>
+    The paradox is striking:
+    <highlight co="#FFE082">Christianity continues to offer hope, identity, and moral grounding,
+    yet many Americans feel disconnected from it.</highlight>
+  </line>
+
+  <line>
+    Some see Jesus as the answer to modern anxiety, division, and emptiness.
+    Others feel that religion no longer speaks to their experiences or values.
+    This tension reflects a society searching for meaning in a rapidly changing world.
+  </line>
+
+  <line></line>
+
+  <!-- Section 4 -->
+  <line mode="h2">4. A path forward</line>
+
+  <line>
+    Whether someone believes or doubts, the conversation about Jesus remains deeply relevant.
+    His teachings about compassion, humility, and sacrificial love continue to challenge and inspire.
+  </line>
+
+  <line>
+    For those who still believe, the mission is not to win arguments but to live out the kind of love Jesus taught —
+    because often, people lose faith not from lack of truth, but from lack of love.
+  </line>
+
+  <line></line>
+
+  <!-- Quote -->
+  <line justify="center"><i>“The question is not only whether Jesus is true,”</i></line>
+  <line justify="center"><i>“but whether we are willing to live the love He spoke of.”</i></line>
+
+  <line></line>
+
+  <!-- Closing -->
+  <line>
+    For more reflections, you might visit
+    <link url="https://example.com/christianity-truth">this article</link>
+    or write your own story in this RSD document.
+  </line>
+
+  <line>
+    Sometimes people feel their faith is <s>completely gone</s>, but often it is simply buried under pain or confusion.
+  </line>
+
+  <line>
+    The message of Jesus is still <size s="50">BIG</size> enough to reach anyone who seeks truth.
+  </line>
+
+  <line>
+    And His love remains <u>unchanging</u>, even when our beliefs shift.
+  </line>
+
+  <line>
+    As one writer beautifully expressed it in a different style:
+    <font name="Lexend">“Grace is not earned; it is received.”</font>
+  </line>
+
+  <line>Below is a short summary using a list:</line>
+
+  <!-- List -->
+  <list order="true">
+    <line>Jesus offers hope and identity.</line>
+    <line>Modern culture creates spiritual distance.</line>
+    <line>Faith grows through love, not pressure.</line>
+  </list>
+
+</rsd>
+
+`
+      }
+    );
+
+    let editor2 = new window.RSDTextboxEditor("editor2", {
+      }
+    );
+	
+	};
+</script>
+
+</body>
+</html>

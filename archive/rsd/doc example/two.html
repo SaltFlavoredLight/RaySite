@@ -1,0 +1,255 @@
+<div id="toolbar">
+  <button onclick="RSD.edit()">Edit</button>
+  <button onclick="RSD.lock()">Lock</button>
+
+  <button onclick="RSD.bold()">B</button>
+  <button onclick="RSD.italic()">I</button>
+  <button onclick="RSD.underline()">U</button>
+  <button onclick="RSD.strike()">S</button>
+
+  <button onclick="RSD.color()">Color</button>
+  <button onclick="RSD.highlight()">Highlight</button>
+
+  <button onclick="RSD.link()">Link</button>
+
+  <button onclick="RSD.align('left')">Left</button>
+  <button onclick="RSD.align('center')">Center</button>
+  <button onclick="RSD.align('right')">Right</button>
+
+  <button onclick="RSD.list()">• List</button>
+  <button onclick="RSD.olist()">1. List</button>
+
+  <button onclick="RSD.clear()">Clear</button>
+
+  <button onclick="console.log(RSD.export())">Export</button>
+</div>
+
+<div class="rsd-box">Click me to edit…</div>
+<div class="rsd-box">Another text box…</div>
+
+<style>
+  .rsd-box {
+    border:1px solid #ccc;
+    padding:12px;
+    min-height:80px;
+    margin-top:10px;
+    font-family:Lexend, system-ui, sans-serif;
+  }
+  .rsd-box.active {
+    border:2px solid #4a90e2;
+  }
+</style>
+<script>
+const RSD = {
+  currentBox: null,
+
+  init() {
+    document.querySelectorAll('.rsd-box').forEach(box => {
+      box.contentEditable = "false";
+      // 不再强制设置字体，使用你在 CSS 或 HTML 里本来就写好的
+      box.addEventListener('click', () => this.setActiveBox(box));
+    });
+  },
+
+  setActiveBox(box) {
+    if (this.currentBox === box) return;
+    document.querySelectorAll('.rsd-box').forEach(b => b.classList.remove('active'));
+    this.currentBox = box;
+    box.classList.add('active');
+    box.focus();
+  },
+
+  edit() {
+    if (!this.currentBox) return;
+    this.currentBox.contentEditable = "true";
+    this.currentBox.focus();
+  },
+
+  lock() {
+    if (!this.currentBox) return;
+    this.currentBox.contentEditable = "false";
+    this.currentBox.blur();
+  },
+
+  exec(cmd, value = null) {
+    if (!this.currentBox) return;
+    this.currentBox.focus();
+    document.execCommand(cmd, false, value);
+  },
+
+  bold()      { this.exec("bold"); },
+  italic()    { this.exec("italic"); },
+  underline() { this.exec("underline"); },
+  strike()    { this.exec("strikeThrough"); },
+
+  color() {
+    const c = prompt("Color (hex or name):", "#FF0000");
+    if (c) this.exec("foreColor", c);
+  },
+
+  highlight() {
+    const c = prompt("Highlight color:", "#FFFF00");
+    if (c) this.exec("hiliteColor", c);
+  },
+
+  link() {
+    const url = prompt("Enter URL:");
+    if (url) this.exec("createLink", url);
+  },
+
+  align(dir) {
+    const map = {
+      left: "justifyLeft",
+      center: "justifyCenter",
+      right: "justifyRight"
+    };
+    this.exec(map[dir]);
+  },
+
+  list()  { this.exec("insertUnorderedList"); },
+  olist() { this.exec("insertOrderedList"); },
+
+  clear() {
+    this.exec("removeFormat");
+    this.exec("unlink");
+  },
+
+  export() {
+    if (!this.currentBox) return "";
+    return this.currentBox.innerHTML;
+  }
+};
+
+window.addEventListener("DOMContentLoaded", () => RSD.init());
+
+</script>
+
+
+
+<div id="toolbar">
+  <button onclick="RSD.edit()">Edit</button>
+  <button onclick="RSD.lock()">Lock</button>
+
+  <button onclick="RSD.bold()">B</button>
+  <button onclick="RSD.italic()">I</button>
+  <button onclick="RSD.underline()">U</button>
+  <button onclick="RSD.strike()">S</button>
+
+  <button onclick="RSD.color()">Color</button>
+  <button onclick="RSD.highlight()">Highlight</button>
+
+  <button onclick="RSD.link()">Link</button>
+
+  <button onclick="RSD.align('left')">Left</button>
+  <button onclick="RSD.align('center')">Center</button>
+  <button onclick="RSD.align('right')">Right</button>
+
+  <button onclick="RSD.list()">• List</button>
+  <button onclick="RSD.olist()">1. List</button>
+
+  <button onclick="RSD.clear()">Clear</button>
+
+  <button onclick="console.log(RSD.export())">Export</button>
+</div>
+
+<div class="rsd-box">Click me to edit…</div>
+<div class="rsd-box">Another text box…</div>
+
+<style>
+  .rsd-box {
+    border:1px solid #ccc;
+    padding:12px;
+    min-height:80px;
+    margin-top:10px;
+    font-family:Lexend, system-ui, sans-serif;
+  }
+  .rsd-box.active {
+    border:2px solid #4a90e2;
+  }
+</style>
+
+<!-- ⭐ 使用 UMD 方式加载 Squire（正确方式） -->
+<script src="https://cdn.jsdelivr.net/npm/squire-rte@latest/build/squire-raw.js"></script>
+
+<script>
+const RSD = {
+  currentBox: null,
+  editors: new WeakMap(),
+
+  init() {
+    document.querySelectorAll('.rsd-box').forEach(box => {
+      box.contentEditable = "false";
+      box.addEventListener('click', () => this.setActiveBox(box));
+
+      // ⭐ 创建 Squire 实例（UMD 方式）
+      const editor = new Squire(box, {
+        blockTag: "p",
+        tagAttributes: { p: {} }
+      });
+
+      this.editors.set(box, editor);
+    });
+  },
+
+  setActiveBox(box) {
+    if (this.currentBox === box) return;
+    document.querySelectorAll('.rsd-box').forEach(b => b.classList.remove('active'));
+    this.currentBox = box;
+    box.classList.add('active');
+  },
+
+  get editor() {
+    return this.editors.get(this.currentBox);
+  },
+
+  edit() {
+    if (!this.currentBox) return;
+    this.currentBox.contentEditable = "true";
+    this.currentBox.focus();
+  },
+
+  lock() {
+    if (!this.currentBox) return;
+    this.currentBox.contentEditable = "false";
+    this.currentBox.blur();
+  },
+
+  bold()      { this.editor.bold(); },
+  italic()    { this.editor.italic(); },
+  underline() { this.editor.underline(); },
+  strike()    { this.editor.strikethrough(); },
+
+  color() {
+    const c = prompt("Color:", "#FF0000");
+    if (c) this.editor.setTextColour(c);
+  },
+
+  highlight() {
+    const c = prompt("Highlight:", "#FFFF00");
+    if (c) this.editor.setHighlightColour(c);
+  },
+
+  link() {
+    const url = prompt("Enter URL:");
+    if (url) this.editor.makeLink(url);
+  },
+
+  align(dir) {
+    this.editor.setTextAlignment(dir);
+  },
+
+  list()  { this.editor.makeUnorderedList(); },
+  olist() { this.editor.makeOrderedList(); },
+
+  clear() {
+    this.editor.removeAllFormatting();
+  },
+
+  export() {
+    return this.editor.getHTML();
+  }
+};
+
+window.RSD = RSD;
+window.addEventListener("DOMContentLoaded", () => RSD.init());
+</script>
