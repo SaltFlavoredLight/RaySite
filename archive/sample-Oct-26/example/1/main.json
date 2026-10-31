@@ -1,0 +1,34 @@
+{
+  "version": 1.0,
+  "siteTitle": "Trangle Geometry Studio",
+  "siteHomeTitle": "Trangle Geometry | The Art of Precision",
+  "siteIcon": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=128&h=128&auto=format&fit=crop",
+  "siteLangs": ["en", "zh-CN"],
+
+  "HeadMenu": {
+    "dataIsHtml": false,
+    "data": {
+      "logo": "https://images.unsplash.com/photo-1620288627223-53302f4e8c74?q=80&w=200&auto=format&fit=crop",
+      "links": [
+        {"link": "/", "name": "INDEX", "sub": []},
+        {"link": "/projects", "name": "WORKS", "sub": [
+          {"link": "/projects/minimal", "name": "MINIMAL SERIES"},
+          {"link": "/projects/spatial", "name": "SPATIAL LAB"}
+        ]},
+        {"link": "/about", "name": "STUDIO", "sub": []}
+      ],
+      "rightbutton": [
+        {"link": "/contact", "name": "START PROJECT", "type": 1}
+      ],
+      "social": [
+        {"icon": "Instagram", "URL": "#"},
+        {"icon": "YouTube", "URL": "#"}
+      ]
+    }
+  },
+
+  "domain": "trangle-geometry.studio",
+  "websiteTag": "Geometry, Architecture, Minimalist, Grey, Studio",
+  "ver.htmlNote": "V1.0.0-PRO-VERSION",
+  "scrollSpeed": "0.7s"
+}

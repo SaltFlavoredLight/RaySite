@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Ray Studio Website Builder 1.0 version.</title>
+	
+	<style>
+		:root {
+			--theme1: #dddddd;
+			--theme2: #c2c2c3;
+			--theme3: #000000;
+			--theme4: #888888;
+			--theme5: #999;
+			--theme6: #f8f8f8;
+			--theme7: #eee;
+			--theme8: #ffffff;
+			--theme9: #444444;
+            --theme10: #cee5ff; 
+
+			--speed: 0.5s;
+			--theme-border: 3px solid var(--theme4);
+			--theme-border2: 1px solid var(--theme2);
+		}
+		
+		* {
+			box-sizing: border-box;
+			translation: all 0.5s ease;
+		}
+		
+		body {
+			font-size: 12px;
+
+			margin: 0;
+			padding: 0;
+			letter-spacing: 0.4px;
+			overflow: hidden;
+
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-position: center;
+			
+			font-family: 'Segoe UI', sans-serif;
+		}
+	
+        button {
+            display: inline-block;
+            border-radius: 3px;
+            margin: 0;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+			background: inherit;
+			color: black;
+			font-weight: 600;
+			transition: background 0.5s ease, height 0.5s ease, background-color 0.5s ease;
+			letter-spacing: 0.4px;
+        }
+
+
+		/* App top banner */
+		.app-topbanner {
+			z-index: 30;
+			position: absolute;
+			top: 0;
+			left: 0;
+			
+			width: 100%;
+			height: 28px;	
+			padding: 0 40px;
+			
+			display: flex;
+			align-items: stretch;
+			background: var(--theme2);
+			color: var(--theme3);
+			justify-content: space-between;
+			align-items: center;
+		}
+		
+		.app-topbanner-left,
+		.app-topbanner-right {
+			flex: 1;         
+			display: flex;
+			gap: 15px;
+		}
+		
+		.app-topbanner-left {
+			justify-content: flex-start;
+		}
+
+		.app-topbanner-right {
+			justify-content: flex-end;
+		}
+
+		.app-topbanner-center {
+			flex-shrink: 0;       
+			white-space: nowrap; 
+			text-align: center;
+		}
+		
+		/* Menu container */
+		.app-menuitem {
+			position: relative;
+			cursor: pointer;
+		}
+
+		/* app-dropdown panel */
+		.app-topbanner .app-dropdown {
+			top: 30px;
+			border-top: none;
+			position: absolute;
+			left: 0;
+
+			background: var(--theme2);
+			color: var(--theme3);
+			padding: 5px 0;
+			min-width: 120px;
+
+			display: none;
+			flex-direction: column;
+
+			border: var(--theme-border2);
+			box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+
+			opacity: 0;
+			transform: translateY(-5px);
+			transition: opacity 0.2s ease, transform 0.2s ease;
+		}
+
+		.app-topbanner .app-menuitem {
+			display: flex;       /* Allows the item to fill the height */
+			align-items: center; /* Centers the text vertically */
+			height: 100%;        /* Matches the 28px header exactly */
+			padding: 0 2px;     /* This creates the 'width' of the highlight box */
+			cursor: pointer;
+		}
+
+		/* Perfect Match Hover */
+		.app-topbanner .app-menuitem:hover {
+			background-color: var(--theme4);
+		}
+
+		/* Remove the old paragraph hover logic */
+		.app-topbanner .app-menuitem > p {
+			background-color: transparent !important; 
+			margin: 0;
+		}
+
+		/* app-dropdown container */
+		.app-topbanner .app-dropdown {
+			position: absolute;
+			top: 100%;
+			left: 0;
+
+			background: var(--theme7);
+			color: var(--theme3);
+			min-width: 140px;
+			padding: 5px 0;
+
+			border: var(--theme-border);
+			box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+
+			display: flex;
+			flex-direction: column;
+
+			/* Start hidden */
+			opacity: 0;
+			pointer-events: none;
+
+			/* Clip-path animation (closed state) */
+			clip-path: inset(0 0 100% 0);
+			transform: translateY(-5px);
+
+			transition:
+				opacity 0.25s ease,
+				transform 0.25s ease,
+				clip-path 0.25s ease;
+			
+		}
+
+		.app-topbanner .app-dropdown p {
+			margin: 0;
+			padding: 6px 12px;
+			white-space: nowrap;
+		}
+	
+		.app-topbanner .app-dropdown p:hover {
+			background: var(--theme5);
+		}
+
+		/* Hover to open */
+		.app-topbanner .app-menuitem:hover .app-dropdown{
+			opacity: 1;
+			pointer-events: auto;
+
+			/* Clip-path animation (open state) */
+			clip-path: inset(0 0 0 0);
+			transform: translateY(0);
+		}
+
+		.app-menuitem.right-align .app-dropdown {
+			left: auto;
+			right: 0;
+		}
+
+
+		/* app-navigationbar */
+		.app-toolsbar {
+			position: absolute;
+			background: var(--theme2);
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 40px;
+			z-index: 30;
+			display: flex;
+			padding: 10px 50px;
+			border-top: var(--theme-border);
+		}
+		
+		.app-toolsbar div {
+			display: flex;
+			flex: 1;
+			flex-wrap: nowrap;
+			gap: 10px;
+		}
+
+		.app-toolsbar div,
+		.app-toolsbar button,		
+		.app-toolsbar p {
+			margin: 0;
+			color: var(--theme3);
+		}
+		
+		.app-toolsbar button {
+			padding: 2px 10px;
+		}
+		
+		.app-toolsbar button:hover {
+			background-color: var(--theme4);
+		}		
+
+		.app-mainarea {
+			position: absolute;
+			display: flex;
+			top: 28px;
+			left: 0;
+			z-index: 1;
+			width: 100%;
+			height: calc(100% - 68px);
+		}
+		
+		.app-pageroute {
+			flex: 0 0 220px;
+			background-color: var(--theme6);
+			
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+			
+			border-right: var(--theme-border);
+			width: 220px;
+		}
+
+		.app-pageroute-pages {
+			flex-grow: 1;
+            overflow: auto; 
+            box-sizing: border-box;
+		}
+		
+        .app-pageroute-pages .tree-container {
+            display: inline-block; 
+            min-width: 100%;   
+        }
+
+        .app-pageroute-pages .tree-row {
+            display: flex; 
+            align-items: center;
+            padding: 4px 10px; 
+            cursor: pointer;
+            width: max-content; 
+            min-width: 100%;
+            box-sizing: border-box;
+            white-space: nowrap; 
+			pointer-events: none;
+        }
+
+        .app-pageroute-pages .tree-row:hover { background: var(--theme7); }
+        .app-pageroute-pages .tree-row.is-editing { background-color: var(--theme10) !important; color: var(--theme9); }
+
+        /* FIXED COLLAPSE LOGIC */
+        .app-pageroute-pages .collapsible-content { 
+            display: grid; 
+            grid-template-rows: 0fr; 
+            transition: grid-template-rows var(--speed) ease-out; 
+            overflow: hidden; /* This makes the slide smooth */
+        }
+        
+        .app-pageroute-pages .folder-wrapper.is-open > .collapsible-content { 
+            grid-template-rows: 1fr; 
+        }
+
+        .app-pageroute-pages .inner-content { min-height: 0; } 
+        
+        .app-pageroute-pages .indent { 
+			margin-left: 20px; 
+			padding-left: 3px; 
+			border-left: 1px dotted var(--theme1); 
+		}
+        
+        .app-pageroute-pages .arrow-box { 
+			width: 20px; 
+            flex-shrink: 0; 
+            display: flex; 
+            justify-content: center; 
+            transition: transform var(--speed); 
+            color: #888; 
+            cursor: pointer;
+			pointer-events: auto;
+			translation: all 0.2s ease;	
+			transform: rotate(90deg);			
+        }
+        
+        /* Rotate arrow when the wrapper has .is-open */
+		.app-pageroute-pages .arrow-box.is-open {
+			transform: rotate(0);			
+		}        
+        .app-pageroute-pages .type-icon { width: 20px; flex-shrink: 0; margin-right: 5px; text-align: center; }
+        .app-pageroute-pages .spacer { width: 18px; flex-shrink: 0; }
+        .app-pageroute-pages .label { padding: 0 4px; flex-grow: 1; }
+        .app-pageroute-pages .page-exists { font-weight: 500; color: #333; }
+        .app-pageroute-pages .parent-only { color: #aaa; font-style: italic; }
+
+		.app-pageroute-actions {
+			border-top: var(--theme-border);
+			
+			flex-grow: 0;
+			
+			display: grid;
+			grid-template-columns: auto;
+			gap: 5px;
+			padding: 10px;
+			
+			background-color: var(--theme1);
+		}
+		
+		.app-pageroute-actions button {
+			text-align: left;
+		}
+		
+		.app-pageroute-actions button:hover {
+			background-color: var(--theme5);
+		}
+
+		.app-canvascreen {
+			flex-grow: 1; 
+			background-color: var(--theme8);
+		}
+
+		.app-rightmenu {
+			flex: 0 0 300px; 
+			background-color: var(--theme9);
+			color: var(--theme8);
+		}
+
+		/* screen oversize */
+		.app-screensize {
+			z-index: 99;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: none;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			background-color: var(--theme3);
+			color: var(--theme8);
+			text-align: center;
+		}
+		
+		@media (max-width: 1000px) {
+			.app-screensize {
+				display: flex;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="app-topbanner">
+		<div class="app-topbanner-left">
+
+			<div class="app-menuitem">
+				<p>File</p>
+				<div class="app-dropdown">
+					<p>New</p>
+					<p>Open</p>
+					<p>Save</p>
+					<p>Exit</p>
+				</div>
+			</div>
+
+			<div class="app-menuitem">
+				<p>Preference</p>
+				<div class="app-dropdown">
+					<p>Theme</p>
+					<p>Settings</p>
+				</div>
+			</div>
+
+			<div class="app-menuitem">
+				<p>Help</p>
+				<div class="app-dropdown">
+					<p>Documentation and devaloper</p>
+					<p>Report Issue</p>
+				</div>
+			</div>
+
+			<div class="app-menuitem">
+				<p>About</p>
+				<div class="app-dropdown">
+					<p>Version Info</p>
+					<p>Credits</p>
+				</div>
+			</div>
+
+		</div>
+
+
+		<div class="app-topbanner-center">
+			Ray Studio Website Builder V1.0
+		</div>
+		
+		<div class="app-topbanner-right">
+			<div class="app-menuitem right-align">
+				<p>Store (Free!)</p>
+				<div class="app-dropdown">
+					<p>Themes</p>
+					<p>Samples</p>
+				</div>
+			</div>
+			<div class="app-menuitem right-align">
+				<p>Export</p>
+			</div>
+			<div class="app-menuitem right-align">
+				<p>Store (Free!)</p>
+				<div class="app-dropdown">
+					<p>Themes</p>
+					<p>Samples</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="app-mainarea">
+		<div class="app-pageroute">
+			<div class="app-pageroute-pages" id="sidebar">
+				<div class="tree-container" id="tree-root">
+					<h1>Loading...</h1>
+					<p>Welcome to Ray Studio &trade; Sites!</p>
+				</div>
+			</div>
+			<div class="app-pageroute-actions">
+				<button>Edit Website Info...</button>
+				<button>Edit Page Info...</button>
+				<button>Move/Delete Page</button>
+				<button>Add Page/Subpage</button>
+			</div>
+		</div>
+		<div class="app-canvascreen">
+		</div>
+		<div class="app-rightmenu">
+			<div class="app-rightmenu-navagationbar">
+			
+			</div>
+			<div class="">
+			
+			</div>
+			<div class="">
+			
+			</div>
+			<div class="">
+			
+			</div>
+		</div>
+	</div>
+	
+	<div class="app-toolsbar">
+		<div>
+			<button>Add...</button>
+		</div>
+	</div>
+	
+	<div class="app-newproject">
+	
+	</div>
+	
+	<div class="app-screensize">
+		<h1>your Screen is so small that Ray Studio&trade; Website Builder cannot provide service.</h1>
+		<h3>Try make screen bigger or hit `<kbd>Ctrl + -</kbd>` to make viewport smaller.</h3>
+		<p>Ray Studio&trade; Sites, Website for everyone</p>
+	</div>
+	
+	<!-- script PART -->
+	<!-- DBstrorage 1.0 version. -->
+	<script type="module">
+		import { openDB } from 'https://cdn.jsdelivr.net/npm/idb@8/+esm';
+
+		export class DBStorage {
+			constructor(dbName = 'ProjectFilesDB', storeName = 'files') {
+				this.dbName = dbName;
+				this.storeName = storeName;
+				this.db = null;
+			}
+
+			/**
+			 * 1. Initialize with Persistence Check
+			 * @returns {Object} {success, code, msg} 
+			 * code 0: Success + Persisted
+			 * code 2: Success but Not Persisted
+			 * code 1: Error
+			 */
+			async init() {
+				if (this.db) return { success: true, code: 0 };
+				
+				try {
+					let persistCode = 2; // Default to "Success but not persisted"
+
+					// Attempt Persistence Request
+					if (navigator.storage && navigator.storage.persist) {
+						const granted = await navigator.storage.persist();
+						if (granted) {
+							persistCode = 0;
+							console.log("💾 Storage status: Persisted");
+						} else {
+							console.warn("⚠️ Storage status: Best Effort (Not Persisted)");
+						}
+					}
+
+					this.db = await openDB(this.dbName, 1, {
+						upgrade(db) {
+							if (!db.objectStoreNames.contains('files')) {
+								db.createObjectStore('files');
+							}
+						},
+					});
+
+					return { success: true, code: persistCode };
+				} catch (e) {
+					return { success: false, msg: e.message, code: 1 };
+				}
+			}
+
+			/**
+			 * 2. Unique Function: Get Storage Stats
+			 */
+			async getEstimate() {
+				if (navigator.storage && navigator.storage.estimate) {
+					const { usage, quota } = await navigator.storage.estimate();
+					return {
+						usageMB: (usage / (1024 * 1024)).toFixed(2),
+						quotaMB: (quota / (1024 * 1024)).toFixed(2),
+						percent: ((usage / quota) * 100).toFixed(2)
+					};
+				}
+				return null;
+			}
+
+			/**
+			 * 3. Batch Save (returns stats automatically)
+			 */
+			async batchSave(fileMap) {
+				try {
+					const tx = this.db.transaction(this.storeName, 'readwrite');
+					for (const [path, content] of Object.entries(fileMap)) {
+						tx.store.put(content, path);
+					}
+					await tx.done;
+					const stats = await this.getEstimate();
+					return { success: true, code: 0, stats };
+				} catch (e) {
+					return { success: false, msg: e.message, code: 1 };
+				}
+			}
+
+			async getFile(path) {
+				try {
+					const data = await this.db.get(this.storeName, path);
+					return { success: true, data, code: 0 };
+				} catch (e) {
+					return { success: false, msg: "Read error", code: 1 };
+				}
+			}
+
+			async getAllPaths(prefix = "") {
+				try {
+					const range = prefix ? IDBKeyRange.bound(prefix, prefix + '\uffff') : null;
+					const keys = await this.db.getAllKeys(this.storeName, range);
+					return { success: true, data: keys, code: 0 };
+				} catch (e) {
+					return { success: false, data: [], code: 1 };
+				}
+			}
+
+			async deleteFiles(paths) {
+				try {
+					const pathList = Array.isArray(paths) ? paths : [paths];
+					const tx = this.db.transaction(this.storeName, 'readwrite');
+					for (const path of pathList) {
+						tx.store.delete(path);
+					}
+					await tx.done;
+					return { success: true, code: 0 };
+				} catch (e) {
+					return { success: false, msg: e.message, code: 1 };
+				}
+			}
+		}
+
+		// --- GOGOGOGOGOGO ---
+		window.DBStorage = DBStorage;
+		// and start install
+		
+		/* example:
+
+        async function runStorageTest() {
+            console.log("🧪 Starting DB Test...");
+            
+            // 1. Instantiate (Wait for the module to be ready)
+            if (!window.DBStorage) {
+                console.error("❌ DBStorage not found on window yet!");
+                return;
+            }
+            
+            const storage = new window.DBStorage();
+
+            // 2. Initialize
+            const initRes = await storage.init();
+            console.log("Database Initialized:", initRes);
+
+            // 3. Batch Save some dummy data
+            const filesToSave = {
+                'config.json': JSON.stringify({ theme: 'dark', version: 1.0 }),
+                'notes/hello.txt': 'This is a test file content!',
+                'notes/todo.txt': '1. Build App, 2. Profit'
+            };
+            
+            const saveRes = await storage.batchSave(filesToSave);
+            console.log("Batch Save Result:", saveRes);
+
+            // 4. Retrieve one file
+            const fileRes = await storage.getFile('notes/hello.txt');
+            console.log("Get File Result:", fileRes.data);
+
+            // 5. List all paths with prefix 'notes/'
+            const listRes = await storage.getAllPaths('notes/');
+            console.log("Filtered Paths (notes/):", listRes.data);
+
+            console.log("🏁 Test Complete!");
+        }
+
+        // Call it directly using window.onload
+        window.onload = () => {
+            runStorageTest().catch(err => console.error("Test Failed:", err));
+        };
+		*/
+	</script>
+
+	<script type="module">
+		// PageNavigationBar.js
+		export class PageNavigationBar {
+			constructor(containerId = "tree-root", options = {}) {
+				this.container = document.getElementById(containerId);
+				this.options = options; // 保存外部传入的回调
+				// 内置图标（你要求内置）
+				this.typeIcons = {
+					website: "🌐",
+					article: "📄",
+					folder: "📁"
+				};
+			}
+
+			/**
+			 * Build tree structure from route list
+			 */
+			buildTree(routes) {
+				if (!Array.isArray(routes) || routes.length === 0) {
+					return {
+						"/": {
+							_path: "/",
+							_data: null,
+							_isExplicit: false,
+							_children: {}
+						}
+					};
+				}
+
+				const routeMap = {};
+				routes.forEach(r => routeMap[r.path] = r);
+
+				const tree = {
+					"/": {
+						_path: "/",
+						_data: routeMap["/"] || { type: "website" },
+						_isExplicit: !!routeMap["/"],
+						_children: {}
+					}
+				};
+
+				routes.forEach(route => {
+					if (route.path === "/") return;
+
+					const parts = route.path.split("/").filter(p => p);
+					let current = tree["/"]._children;
+					let currentPath = "";
+
+					parts.forEach(part => {
+						currentPath += "/" + part;
+
+						if (!current[part]) {
+							current[part] = {
+								_path: currentPath,
+								_data: routeMap[currentPath] || null,
+								_isExplicit: !!routeMap[currentPath],
+								_children: {}
+							};
+						}
+
+						current = current[part]._children;
+					});
+				});
+
+				return tree;
+			}
+
+			/**
+			 * Render tree nodes into HTML
+			 */
+			render(nodes) {
+				let html = "";
+
+				for (const name in nodes) {
+					const node = nodes[name];
+					const hasChildren = Object.keys(node._children).length > 0;
+					const isCreated = node._isExplicit;
+					const icon = isCreated ? (this.typeIcons[node._data?.type] || "📄") : "📂";
+					const stateClass = isCreated ? "page-exists" : "parent-only";
+
+					if (hasChildren) {
+						html += `
+						<div class="folder-wrapper is-open">
+							<div class="tree-row" data-path="${node._path}" data-created="${isCreated}">
+								<span class="arrow-box">▶</span>
+								<span class="type-icon">${icon}</span>
+								<span class="label ${stateClass}">${name === "/" ? "Root" : name}</span>
+							</div>
+							<div class="collapsible-content">
+								<div class="inner-content indent">
+									${this.render(node._children)}
+								</div>
+							</div>
+						</div>`;
+					} else {
+						html += `
+						<div class="tree-row" data-path="${node._path}" data-created="${isCreated}">
+							<span class="spacer"></span>
+							<span class="type-icon">${icon}</span>
+							<span class="label ${stateClass}">${name}</span>
+						</div>`;
+					}
+				}
+
+				return html;
+			}
+
+			/**
+			 * Toggle folder open/close
+			 */
+			toggleFolder(event) {
+				event.stopPropagation();
+				const wrapper = event.target.closest(".folder-wrapper");
+				if (wrapper) wrapper.classList.toggle("is-open");
+
+				const arrow = event.target.closest(".arrow-box");
+				if (arrow) arrow.classList.toggle("is-open");
+			}
+
+			/**
+			 * Switch route (update external variables)
+			 */
+			switchRoute(row, path, isCreated) {
+
+				window.currentEditingPage = path;
+				window.currentEditingPageIsCreated = isCreated;
+
+				const allRows = this.container.querySelectorAll(".tree-row");
+				allRows.forEach(r => r.classList.remove("is-editing"));
+				row.classList.add("is-editing");
+				
+				if (typeof this.options.onSelect === "function") {
+					this.options.onSelect(path, isCreated);
+				}
+			}
+
+			/**
+			 * Load pages from DBStorage and render tree
+			 */
+			async loadingPages() {
+				this.container.innerHTML = "";
+
+				const storage = new window.DBStorage();
+				await storage.init();
+
+				const res = await storage.getAllPaths("/pages");
+				const rawPaths = res.data;
+
+				const routes = rawPaths
+					.map(item => item.replaceAll("_", "/").replace("/pages/", "/"))
+					.map(path => ({
+						path,
+						type: "website"
+					}));
+
+				const tree = this.buildTree(routes);
+				this.container.innerHTML = this.render(tree);
+
+				this.bindEvents();
+			}
+
+			/**
+			 * Bind click events using event delegation
+			 */
+			bindEvents() {
+				this.container.addEventListener("click", (event) => {
+					const arrow = event.target.closest(".arrow-box");
+					if (arrow) {
+						this.toggleFolder(event);
+						return;
+					}
+
+					const row = event.target.closest(".tree-row");
+					if (row) {
+						const path = row.dataset.path;
+						const isCreated = row.dataset.created === "true";
+						this.switchRoute(row, path, isCreated);
+					}
+				});
+			}
+		}
+
+
+		// --- GOGOGOGOGOGO ---
+		window.PageNavigationBar = PageNavigationBar;
+
+		/* how to use it:
+
+			// 1. 确保 DBStorage 已经挂在 window 上（你的 DBStorage 模块）
+
+			// 2. 准备外部变量
+			window.currentEditingPage = null;
+			window.currentEditingPageIsCreated = false;
+
+			// 3. HTML 中准备容器
+			// <div id="tree-root"></div>
+
+			// 4. 创建实例并加载
+			async function runNavTest() {
+				const nav = new window.PageNavigationBar("tree-root");
+				await nav.loadingPages();
+
+				console.log("📁 Tree loaded, currentEditingPage:", window.currentEditingPage);
+			}
+
+			window.onload = () => {
+				runNavTest().catch(err => console.error("Nav Test Failed:", err));
+			};
+
+		*/
+	</script>
+	
+	<script type="module">
+		// please import DBstrorge becuase need to use that.
+	
+		export class PageNacgationBar {
+			constructor(space='tree-root', username="pageNacgationBar") {
+				this.spacePlace = document.getElementById(space);
+				this.username = username
+			}
+
+			toggleFolder(event) {
+				event.stopPropagation();
+
+				const wrapper = event.target.closest('.folder-wrapper');
+				if (wrapper) {
+					wrapper.classList.toggle('is-open');
+				}
+
+				const arrow = event.target.closest('.arrow-box');
+				if (arrow) {
+					arrow.classList.toggle('is-open');
+				}
+			}
+
+
+			switchRoute(element, path, isCreated, type = 'folder') {
+				currentEditingPage = path;
+				console.log("Navigating to:", path);
+				console.log("and created:", isCreated);
+
+				const allRows = document.querySelectorAll('.tree-row');
+				allRows.forEach(row => row.classList.remove('is-editing'));
+				if (element) element.classList.add('is-editing');
+			}
+
+
+			buildTree(routes) {
+				if (!Array.isArray(routes) || routes.length === 0) {
+					return {
+						"/": {
+							_path: "/",
+							_data: null,        // 没有主页
+							_isExplicit: false, // 不是已创建页面
+							_children: {}       // 没有子节点
+						}
+					};
+				}
+
+				const routeMap = {};
+				routes.forEach(r => routeMap[r.path] = r);
+
+				const tree = {
+					"/": {
+						_path: "/",
+						_data: routeMap["/"] || { type: "website" },
+						_isExplicit: !!routeMap["/"],
+						_children: {}
+					}
+				};
+
+				routes.forEach(route => {
+					if (route.path === "/") return;
+					const parts = route.path.split('/').filter(p => p);
+					let current = tree["/"]._children;
+					let currentPath = "";
+					parts.forEach((part) => {
+						currentPath += "/" + part;
+						if (!current[part]) {
+							current[part] = {
+								_path: currentPath,
+								_data: routeMap[currentPath] || null,
+								_isExplicit: !!routeMap[currentPath],
+								_children: {}
+							};
+						}
+						current = current[part]._children;
+					});
+				});
+
+				return tree;
+			}
+
+			render(nodes) {
+				let html = '';
+				for (const name in nodes) {
+					const node = nodes[name];
+					const hasChildren = Object.keys(node._children).length > 0;
+					const isCreated = node._isExplicit;
+					const icon = isCreated ? (typeIcons[node._data.type] || "📄") : "📂";
+					const stateClass = isCreated ? "page-exists" : "parent-only";
+
+					if (hasChildren) {
+						html += `
+						<div class="folder-wrapper is-open">
+							<div class="tree-row" onclick="'${this.username}'.switchRoute(this, '${node._path}', ${isCreated}, '${node._data ? node._data.type : 'folder'}')">
+								<span class="arrow-box" onclick="'${this.username}'.toggleFolder(event)">▶</span>
+								<span class="type-icon">${icon}</span>
+								<span class="label ${stateClass}">${name === "/" ? "Root" : name}</span>
+							</div>
+							<div class="collapsible-content">
+								<div class="inner-content indent">${render(node._children)}</div>
+							</div>
+						</div>`;
+					} else {
+						html += `
+						<div class="tree-row" onclick="'${this.username}'.switchRoute(this, '${node._path}', ${isCreated}, '${node._data ? node._data.type : 'article'}')">
+							<span class="spacer"></span>
+							<span class="type-icon">${icon}</span>
+							<span class="label ${stateClass}">${name}</span>
+						</div>`;
+					}
+				}
+				return html;
+			}
+
+			document.getElementById('tree-root').innerHTML = render(buildTree(myRoutes));
+
+			loadingPages() {
+				//reset first!
+				spacePlace.innerHTML = ''
+				//get pages
+				let pageURLs = await DBStorage.getAllPaths("/pages");
+				pageURLs = pageURLs.replaceAll('_', '/').replaceAll('/pages/', '/');
+				const pageURLs = pageURLs.map(item => {
+					return {
+						path: item,
+						type: "website"
+					};
+				});
+				pageRouteMenu.innerHTML = this.render(this.buildTree(myRoutes));
+				
+			}
+		}
+    </script>
+
+<script>
+		let currentEditingPage = "/";
+		const typeIcons = { website: "🌐", article: "📄", html: "💻", folder: "📂" };
+
+		const myRoutes = [
+        { path: "/", type: "website" },
+        { path: "/folder-1/folder-2/folder-3/folder-4/deep-item", type: "article" },
+        { path: "/very-long-filename-to-test-scrolling-logic", type: "html" },
+        ...Array.from({length: 10}, (_, i) => ({ path: `/page-${i}`, type: "article" }))
+		];
+
+		/* --- THE MISSING FUNCTIONS --- */
+		function toggleFolder(event) {
+			event.stopPropagation();
+
+			const wrapper = event.target.closest('.folder-wrapper');
+			if (wrapper) {
+				wrapper.classList.toggle('is-open');
+			}
+
+			const arrow = event.target.closest('.arrow-box');
+			if (arrow) {
+				arrow.classList.toggle('is-open');
+			}
+		}
+
+
+		function switchRoute(element, path, isCreated, type = 'folder') {
+			currentEditingPage = path;
+			console.log("Navigating to:", path);
+			console.log("and created:", isCreated);
+
+			const allRows = document.querySelectorAll('.tree-row');
+			allRows.forEach(row => row.classList.remove('is-editing'));
+			if (element) element.classList.add('is-editing');
+		}
+
+		/* --- TREE BUILDING LOGIC --- */
+
+		function buildTree(routes) {
+			// 情况 1：routes 根本没传进来（undefined / null）
+			// 情况 2：传进来的是 {} 或 "" 或其他非数组
+			// 情况 3：传进来的是空数组 []
+			// 以上情况都视为“文件刚创建，没有任何页面”
+			if (!Array.isArray(routes) || routes.length === 0) {
+				return {
+					"/": {
+						_path: "/",
+						_data: null,        // 没有主页
+						_isExplicit: false, // 不是已创建页面
+						_children: {}       // 没有子节点
+					}
+				};
+			}
+
+			// -------------------------
+			// 正常情况：routes 有内容
+			// -------------------------
+			const routeMap = {};
+			routes.forEach(r => routeMap[r.path] = r);
+
+			const tree = {
+				"/": {
+					_path: "/",
+					_data: routeMap["/"] || { type: "website" },
+					_isExplicit: !!routeMap["/"],
+					_children: {}
+				}
+			};
+
+			routes.forEach(route => {
+				if (route.path === "/") return;
+				const parts = route.path.split('/').filter(p => p);
+				let current = tree["/"]._children;
+				let currentPath = "";
+				parts.forEach((part) => {
+					currentPath += "/" + part;
+					if (!current[part]) {
+						current[part] = {
+							_path: currentPath,
+							_data: routeMap[currentPath] || null,
+							_isExplicit: !!routeMap[currentPath],
+							_children: {}
+						};
+					}
+					current = current[part]._children;
+				});
+			});
+
+			return tree;
+		}
+
+
+
+		function render(nodes) {
+			let html = '';
+			for (const name in nodes) {
+				const node = nodes[name];
+				const hasChildren = Object.keys(node._children).length > 0;
+				const isCreated = node._isExplicit;
+				const icon = isCreated ? (typeIcons[node._data.type] || "📄") : "📂";
+				const stateClass = isCreated ? "page-exists" : "parent-only";
+
+				if (hasChildren) {
+					html += `
+					<div class="folder-wrapper is-open">
+						<div class="tree-row" onclick="switchRoute(this, '${node._path}', ${isCreated}, '${node._data ? node._data.type : 'folder'}')">
+							<span class="arrow-box" onclick="toggleFolder(event)">▶</span>
+							<span class="type-icon">${icon}</span>
+							<span class="label ${stateClass}">${name === "/" ? "Root" : name}</span>
+						</div>
+						<div class="collapsible-content">
+							<div class="inner-content indent">${render(node._children)}</div>
+						</div>
+					</div>`;
+				} else {
+					html += `
+					<div class="tree-row" onclick="switchRoute(this, '${node._path}', ${isCreated}, '${node._data ? node._data.type : 'article'}')">
+						<span class="spacer"></span>
+						<span class="type-icon">${icon}</span>
+						<span class="label ${stateClass}">${name}</span>
+					</div>`;
+				}
+			}
+			return html;
+		}
+
+		document.getElementById('tree-root').innerHTML = render(buildTree(myRoutes));
+</script>
+</body>
+</html>

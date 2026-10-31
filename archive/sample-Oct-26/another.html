@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ray Studio - Smooth Sidebar</title>
+    <style>
+        :root {
+            --theme6: #f8f8f8;
+            --theme7: #e2e2e2;
+            --theme10: #cee5ff; 
+            --theme9: #004a99;
+            --theme1: #ddd;
+            --speed: 0.2s;
+        }
+
+        body { margin: 0; display: flex; font-family: 'Segoe UI', sans-serif; font-size: 14px; }
+        
+        .app-pageroute-pages {
+            width: 220px;
+            min-width: 220px;
+            max-width: 220px;
+            height: 100vh;
+            background: var(--theme6); 
+            border-right: 1px solid var(--theme1);
+            padding-top: 10px; 
+            user-select: none; 
+            overflow: auto; 
+            box-sizing: border-box;
+        }
+
+        .app-pageroute-pages .tree-container {
+            display: inline-block; 
+            min-width: 100%;       
+        }
+
+        .app-pageroute-pages .tree-row {
+            display: flex;  
+            align-items: center;
+            padding: 4px 10px; 
+            cursor: pointer;
+            width: max-content; 
+            min-width: 100%;
+            box-sizing: border-box;
+            white-space: nowrap; 
+			pointer-events: none;
+        }
+
+        .app-pageroute-pages .tree-row:hover { background: var(--theme7); }
+        .app-pageroute-pages .tree-row.is-editing { background-color: var(--theme10) !important; color: var(--theme9); }
+
+        /* FIXED COLLAPSE LOGIC */
+        .app-pageroute-pages .collapsible-content { 
+            display: grid; 
+            grid-template-rows: 0fr; 
+            transition: grid-template-rows var(--speed) ease-out; 
+            overflow: hidden; /* This makes the slide smooth */
+        }
+        
+        .app-pageroute-pages .folder-wrapper.is-open > .collapsible-content { 
+            grid-template-rows: 1fr; 
+        }
+
+        .app-pageroute-pages .inner-content { min-height: 0; } 
+        
+        .app-pageroute-pages .indent { margin-left: 10px; padding-left: 8px; border-left: 1px dotted var(--theme1); }
+        
+        .app-pageroute-pages .arrow-box { 
+			width: 20px; 
+            flex-shrink: 0; 
+            display: flex; 
+            justify-content: center; 
+            transition: transform var(--speed); 
+            color: #888; 
+            cursor: pointer;
+			pointer-events: auto;
+			transform: rotate(90deg);			
+        }
+        
+        /* Rotate arrow when the wrapper has .is-open */
+		.app-pageroute-pages .arrow-box.is-open {
+			transform: rotate(0);			
+		}
+        
+        .app-pageroute-pages .type-icon { width: 20px; flex-shrink: 0; margin-right: 5px; text-align: center; }
+        .app-pageroute-pages .spacer { width: 18px; flex-shrink: 0; }
+        .app-pageroute-pages .label { padding: 0 4px; flex-grow: 1; }
+        .app-pageroute-pages .page-exists { font-weight: 500; color: #333; }
+        .app-pageroute-pages .parent-only { color: #aaa; font-style: italic; }
+
+    </style>
+</head>
+<body>
+
+<div class="app-pageroute-pages" id="sidebar">
+    <div class="tree-container" id="tree-root"></div>
+</div>
+
+<script>
+    let currentEditingPage = "/";
+    const typeIcons = { website: "🌐", article: "📄", html: "💻", folder: "📂" };
+
+    const myRoutes = [
+        { path: "/", type: "website" },
+        { path: "/folder-1/folder-2/folder-3/folder-4/deep-item", type: "article" },
+        { path: "/very-long-filename-to-test-scrolling-logic", type: "html" },
+        ...Array.from({length: 10}, (_, i) => ({ path: `/page-${i}`, type: "article" }))
+    ];
+
+    /* --- THE MISSING FUNCTIONS --- */
+
+	function toggleFolder(event) {
+		event.stopPropagation();
+
+		const wrapper = event.target.closest('.folder-wrapper');
+		if (wrapper) {
+			wrapper.classList.toggle('is-open');
+		}
+
+		const arrow = event.target.closest('.arrow-box');
+		if (arrow) {
+			arrow.classList.toggle('is-open');
+		}
+	}
+
+
+    function switchRoute(element, path, isCreated, type = 'folder') {
+        currentEditingPage = path;
+        console.log("Navigating to:", path);
+        console.log("and created:", isCreated);
+
+        const allRows = document.querySelectorAll('.tree-row');
+        allRows.forEach(row => row.classList.remove('is-editing'));
+        if (element) element.classList.add('is-editing');
+    }
+
+    /* --- TREE BUILDING LOGIC --- */
+
+	function buildTree(routes) {
+		// 情况 1：routes 根本没传进来（undefined / null）
+		// 情况 2：传进来的是 {} 或 "" 或其他非数组
+		// 情况 3：传进来的是空数组 []
+		// 以上情况都视为“文件刚创建，没有任何页面”
+		if (!Array.isArray(routes) || routes.length === 0) {
+			return {
+				"/": {
+					_path: "/",
+					_data: null,        // 没有主页
+					_isExplicit: false, // 不是已创建页面
+					_children: {}       // 没有子节点
+				}
+			};
+		}
+
+		// -------------------------
+		// 正常情况：routes 有内容
+		// -------------------------
+		const routeMap = {};
+		routes.forEach(r => routeMap[r.path] = r);
+
+		const tree = {
+			"/": {
+				_path: "/",
+				_data: routeMap["/"] || { type: "website" },
+				_isExplicit: !!routeMap["/"],
+				_children: {}
+			}
+		};
+
+		routes.forEach(route => {
+			if (route.path === "/") return;
+			const parts = route.path.split('/').filter(p => p);
+			let current = tree["/"]._children;
+			let currentPath = "";
+			parts.forEach((part) => {
+				currentPath += "/" + part;
+				if (!current[part]) {
+					current[part] = {
+						_path: currentPath,
+						_data: routeMap[currentPath] || null,
+						_isExplicit: !!routeMap[currentPath],
+						_children: {}
+					};
+				}
+				current = current[part]._children;
+			});
+		});
+
+		return tree;
+	}
+
+
+
+    function render(nodes) {
+        let html = '';
+        for (const name in nodes) {
+            const node = nodes[name];
+            const hasChildren = Object.keys(node._children).length > 0;
+            const isCreated = node._isExplicit;
+            const icon = isCreated ? (typeIcons[node._data.type] || "📄") : "📂";
+            const stateClass = isCreated ? "page-exists" : "parent-only";
+
+            if (hasChildren) {
+                html += `
+                <div class="folder-wrapper is-open">
+                    <div class="tree-row" onclick="switchRoute(this, '${node._path}', ${isCreated}, '${node._data ? node._data.type : 'folder'}')">
+                        <span class="arrow-box" onclick="toggleFolder(event)">▶</span>
+                        <span class="type-icon">${icon}</span>
+                        <span class="label ${stateClass}">${name === "/" ? "Root" : name}</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="inner-content indent">${render(node._children)}</div>
+                    </div>
+                </div>`;
+            } else {
+                html += `
+                <div class="tree-row" onclick="switchRoute(this, '${node._path}', ${isCreated}, '${node._data ? node._data.type : 'article'}')">
+                    <span class="spacer"></span>
+                    <span class="type-icon">${icon}</span>
+                    <span class="label ${stateClass}">${name}</span>
+                </div>`;
+            }
+        }
+        return html;
+    }
+
+    document.getElementById('tree-root').innerHTML = render(buildTree(myRoutes));
+</script>
+</body>
+</html>
