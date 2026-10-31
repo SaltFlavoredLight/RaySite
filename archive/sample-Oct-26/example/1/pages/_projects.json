@@ -1,0 +1,34 @@
+{
+  "title": "WORKS | Trangle Geometry",
+  "section": [
+    {
+      "type": "section",
+      "paddingTop": "120px",
+      "background": "var(--theme1)",
+      "textColor": "#FFF",
+      "sectionData": [
+        { "type": "text", "data": { "text": "<h1>SELECTED <nl> PROJECTS</h1>" } }
+      ]
+    },
+    {
+      "type": "section",
+      "paddingTop": "50px",
+      "paddingBottom": "100px",
+      "background": "var(--theme1)",
+      "sectionData": [
+        {
+          "type": "flexColumnGrow",
+          "data": {
+            "overflow": "nextLine",
+            "datas": [
+              { "type": "image", "data": { "image": "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=600", "fill": true }, "space": 6, "property": { "toggleURL": "/projects/minimal" } },
+              { "type": "image", "data": { "image": "https://images.unsplash.com/photo-1497366811353-6870744d04b2?q=80&w=600", "fill": true }, "space": 6 },
+              { "type": "image", "data": { "image": "https://images.unsplash.com/photo-1449156003053-c3d8c0f71ac4?q=80&w=600", "fill": true }, "space": 4 },
+              { "type": "image", "data": { "image": "https://images.unsplash.com/photo-1491897554428-130a60dd4757?q=80&w=600", "fill": true }, "space": 8 }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
