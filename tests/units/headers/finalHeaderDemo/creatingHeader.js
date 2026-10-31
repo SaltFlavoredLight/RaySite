@@ -166,16 +166,16 @@ function createHeader(dataArray, documentHTML, node, createAnotherNode) {
 	// End Content Creation.
 	// Start Varibles Layout Creation (Replace it with AI after)
 	const cssVaribles = `
-            --${prefix}header-layout-desktopHeaderMaxInnerWidth: ${flexEngineStyleVarible.space(layout.desktopHeaderMaxInnerWidth)};
-            --${prefix}header-layout-desktopHeaderMainGap: ${flexEngineStyleVarible.space(layout.desktopHeaderMainGap)};
-            --${prefix}header-layout-mobileHeaderMainGap: ${flexEngineStyleVarible.space(layout.mobileHeaderMainGap)};
-            --${prefix}header-layout-desktopHeaderSeparateBorderSpace: ${flexEngineStyleVarible.space(layout.desktopHeaderSeparateBorderSpace)};
-            --${prefix}header-layout-spaceBetween: ${flexEngineStyleVarible.space(layout.spaceBetween)};
-            --${prefix}header-layout-navMajorGap: ${flexEngineStyleVarible.space(layout.navMajorGap)};
-            --${prefix}header-layout-navMinorGap: ${flexEngineStyleVarible.space(layout.navMinorGap)};
+            --${prefix}header-layout-desktopHeaderMaxInnerWidth: ${flexEngineDefaultVariables.space.space.render(layout.desktopHeaderMaxInnerWidth)};
+            --${prefix}header-layout-desktopHeaderMainGap: ${flexEngineDefaultVariables.space.space.render(layout.desktopHeaderMainGap)};
+            --${prefix}header-layout-mobileHeaderMainGap: ${flexEngineDefaultVariables.space.space.render(layout.mobileHeaderMainGap)};
+            --${prefix}header-layout-desktopHeaderSeparateBorderSpace: ${flexEngineDefaultVariables.space.space.render(layout.desktopHeaderSeparateBorderSpace)};
+            --${prefix}header-layout-spaceBetween: ${flexEngineDefaultVariables.space.space.render(layout.spaceBetween)};
+            --${prefix}header-layout-navMajorGap: ${flexEngineDefaultVariables.space.space.render(layout.navMajorGap)};
+            --${prefix}header-layout-navMinorGap: ${flexEngineDefaultVariables.space.space.render(layout.navMinorGap)};
             --${prefix}header-layout-transitionTime: ${layout.transitionTime};
-            --${prefix}header-layout-transitionCurve: ${flexEngineStyleVarible.curve(layout.transitionCurve)};
-            --${prefix}header-layout-mobileButonRound: ${flexEngineStyleVarible.space(layout.mobileButonRound)};
+            --${prefix}header-layout-transitionCurve: ${flexEngineDefaultVariables.curve.curve.render(layout.transitionCurve)};
+            --${prefix}header-layout-mobileButonRound: ${flexEngineDefaultVariables.space.space.render(layout.mobileButonRound)};
         `;
 	header.setAttribute(`${prefix}styles-node`, cssVaribles);
 	// End Layout Creation
