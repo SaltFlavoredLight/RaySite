@@ -57,3 +57,5 @@ replay_pid*
 
 coverage/
 .nyc_output/
+
+temp/

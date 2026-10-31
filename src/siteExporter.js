@@ -1,11 +1,11 @@
 import JSZip from "jszip";
 
 import {
-    BUILDER_CONFIG,
     SimRenderServer,
     flexEngineFileSystem,
     flexEngineRenderPage
 } from "./flexEngine.js";
+import { BUILDER_CONFIG } from './utils/config.js';
 
 const SITE_ORIGIN = "https://raysite-export.local";
 const ASSET_PREFIX = `/${BUILDER_CONFIG.classPrefix}assets`;

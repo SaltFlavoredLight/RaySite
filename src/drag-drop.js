@@ -3,11 +3,11 @@
 import Sortable from 'sortablejs';
 
 import {
-    BUILDER_CONFIG,
     flexEngineDefaultElements,
     flexEngineRootElement,
     flexEngineCreateNode
 } from './flexEngine.js';
+import { BUILDER_CONFIG } from './utils/config.js';
 
 const sortableSlots = new WeakMap();
 

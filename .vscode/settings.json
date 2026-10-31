@@ -2,5 +2,7 @@
     "chat.disableAIFeatures": false,
     "editor.tabSize": 4,
     "editor.detectIndentation": false,
-    "editor.insertSpaces": true
+    "editor.insertSpaces": true,
+
+    "js/ts.updateImportsOnFileMove.enabled": "prompt",
 }

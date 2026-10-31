@@ -3,9 +3,8 @@ import {
     flexEngineRenderPage,
     flexEngineCreateNode,
     flexEngineDefaultElements,
-    flexEngineRootElement,
-    BUILDER_CONFIG
-} from "./flexEngine.js";
+    flexEngineRootElement} from "./flexEngine.js";
+import { BUILDER_CONFIG } from './utils/config.js';
 
 import { initFiles } from "./filerename.js";
 import { canvas } from "./element.js";

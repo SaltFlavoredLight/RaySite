@@ -14,7 +14,7 @@
 
     /* Strictness & Type Checking - for TS */
     "checkJs": false,              // Enables type checking on JavaScript files (works alongside JSDoc comments).
-    "strict": false,              // Enables all strict type-checking options if set to true.
+    "strict": true,              // Enables all strict type-checking options if set to true.
 
     /* Module & Interop Flags */
     "allowSyntheticDefaultImports": true, // Allows default imports from modules with no default export.
@@ -35,6 +35,7 @@
   "exclude": [
     "node_modules",               // Highly recommended to exclude to optimize editor performance.
     "dist",                       // Excludes build output maps.
+    "archive",                    // I need use it for make sure when they have error it did not show here.
     "**/*.spec.js"                // Example: Excludes test files from standard project context.
   ]
 }
