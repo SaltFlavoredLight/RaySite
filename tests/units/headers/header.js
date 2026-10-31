@@ -609,16 +609,16 @@
             // End Content Creation.
             // Start Varibles Layout Creation (Replace it with AI after)
             const cssVaribles = `
-                    --${prefix}header-layout-desktopHeaderMaxInnerWidth: ${flexEngineStyleVarible.space(layout.desktopHeaderMaxInnerWidth)};
-                    --${prefix}header-layout-desktopHeaderMainGap: ${flexEngineStyleVarible.space(layout.desktopHeaderMainGap)};
-                    --${prefix}header-layout-mobileHeaderMainGap: ${flexEngineStyleVarible.space(layout.mobileHeaderMainGap)};
-                    --${prefix}header-layout-desktopHeaderSeparateBorderSpace: ${flexEngineStyleVarible.space(layout.desktopHeaderSeparateBorderSpace)};
-                    --${prefix}header-layout-spaceBetween: ${flexEngineStyleVarible.space(layout.spaceBetween)};
-                    --${prefix}header-layout-navMajorGap: ${flexEngineStyleVarible.space(layout.navMajorGap)};
-                    --${prefix}header-layout-navMinorGap: ${flexEngineStyleVarible.space(layout.navMinorGap)};
+                    --${prefix}header-layout-desktopHeaderMaxInnerWidth: ${flexEngineDefaultVariables.space.space.render(layout.desktopHeaderMaxInnerWidth)};
+                    --${prefix}header-layout-desktopHeaderMainGap: ${flexEngineDefaultVariables.space.space.render(layout.desktopHeaderMainGap)};
+                    --${prefix}header-layout-mobileHeaderMainGap: ${flexEngineDefaultVariables.space.space.render(layout.mobileHeaderMainGap)};
+                    --${prefix}header-layout-desktopHeaderSeparateBorderSpace: ${flexEngineDefaultVariables.space.space.render(layout.desktopHeaderSeparateBorderSpace)};
+                    --${prefix}header-layout-spaceBetween: ${flexEngineDefaultVariables.space.space.render(layout.spaceBetween)};
+                    --${prefix}header-layout-navMajorGap: ${flexEngineDefaultVariables.space.space.render(layout.navMajorGap)};
+                    --${prefix}header-layout-navMinorGap: ${flexEngineDefaultVariables.space.space.render(layout.navMinorGap)};
                     --${prefix}header-layout-transitionTime: ${layout.transitionTime};
-                    --${prefix}header-layout-transitionCurve: ${flexEngineStyleVarible.curve(layout.transitionCurve)};
-                    --${prefix}header-layout-mobileButonRound: ${flexEngineStyleVarible.space(layout.mobileButonRound)};
+                    --${prefix}header-layout-transitionCurve: ${flexEngineDefaultVariables.curve.curve.render(layout.transitionCurve)};
+                    --${prefix}header-layout-mobileButonRound: ${flexEngineDefaultVariables.space.space.render(layout.mobileButonRound)};
                 `;
             header.setAttribute(`${prefix}styles-node`, cssVaribles);
             // End Layout Creation
@@ -2082,7 +2082,7 @@
                 }],
                 sizeDefault: (sz, isVertical) => {
                     return {
-                        "min-width": flexEngineStyleVarible.space(sz.minWidth),
+                        "min-width": flexEngineDefaultVariables.space.space.render(sz.minWidth),
                         "height": sz.fullHeight ? "100%" : "auto"
                     };
                 },
@@ -2105,7 +2105,7 @@
                 }],
                 sizeDefault: (sz, isVertical) => {
                     return {
-                        "min-width": flexEngineStyleVarible.space(sz.minWidth),
+                        "min-width": flexEngineDefaultVariables.space.space.render(sz.minWidth),
                         "height": sz.fullHeight ? "100%" : "auto"
                     };
                 },
@@ -2163,7 +2163,7 @@
 
                     return {
                         "width": "auto",
-                        "max-width": flexEngineStyleVarible.space(sz.width),
+                        "max-width": flexEngineDefaultVariables.space.space.render(sz.width),
                         "overflow": "scroll"
                     };
                 },
@@ -2231,22 +2231,22 @@
 
         sizeDefault: (sz, isVertical) => {
             return {
-                "width": `calc(100% - ${flexEngineStyleVarible.space(sz.marginLeft)} - ${flexEngineStyleVarible.space(sz.marginRight)})`,
-                "max-width": flexEngineStyleVarible.space(sz.maxWidth),
-                "margin-top": flexEngineStyleVarible.space(sz.marginTop),
-                "margin-left": flexEngineStyleVarible.space(sz.marginLeft),
-                "margin-right": flexEngineStyleVarible.space(sz.marginRight),
-                "height": flexEngineStyleVarible.space(sz.height)
+                "width": `calc(100% - ${flexEngineDefaultVariables.space.space.render(sz.marginLeft)} - ${flexEngineDefaultVariables.space.space.render(sz.marginRight)})`,
+                "max-width": flexEngineDefaultVariables.space.space.render(sz.maxWidth),
+                "margin-top": flexEngineDefaultVariables.space.space.render(sz.marginTop),
+                "margin-left": flexEngineDefaultVariables.space.space.render(sz.marginLeft),
+                "margin-right": flexEngineDefaultVariables.space.space.render(sz.marginRight),
+                "height": flexEngineDefaultVariables.space.space.render(sz.height)
             };
         },
 
         sizeMobile: (sz, isVertical) => {
             return {
-                "width": `calc(100% - ${flexEngineStyleVarible.space(sz.mobileMarginLeft)} - ${flexEngineStyleVarible.space(sz.mobileMarginRight)})`,
-                "margin-top": flexEngineStyleVarible.space(sz.mobileMarginTop),
-                "margin-left": flexEngineStyleVarible.space(sz.mobileMarginLeft),
-                "margin-right": flexEngineStyleVarible.space(sz.mobileMarginRight),
-                "height": flexEngineStyleVarible.space(sz.mobileHeight)
+                "width": `calc(100% - ${flexEngineDefaultVariables.space.space.render(sz.mobileMarginLeft)} - ${flexEngineDefaultVariables.space.space.render(sz.mobileMarginRight)})`,
+                "margin-top": flexEngineDefaultVariables.space.space.render(sz.mobileMarginTop),
+                "margin-left": flexEngineDefaultVariables.space.space.render(sz.mobileMarginLeft),
+                "margin-right": flexEngineDefaultVariables.space.space.render(sz.mobileMarginRight),
+                "height": flexEngineDefaultVariables.space.space.render(sz.mobileHeight)
             };
         },
 

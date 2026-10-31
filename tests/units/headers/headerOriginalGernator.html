@@ -149,10 +149,10 @@
 
 
     <script>
-function createFlexEngineStyleVaribles() {
+function createFlexEngineDefaultVariables() {
     return {
-        space: (value) => value,
-        curve: (value) => value,
+        space: { space: { render: (value) => value } },
+        curve: { curve: { render: (value) => value } },
         integer: (value) => value,
         boolean: (value) => value,
         string: (value) => value,
@@ -160,7 +160,7 @@ function createFlexEngineStyleVaribles() {
     };
 }
 
-const flexEngineStyleVarible = createFlexEngineStyleVaribles();
+const flexEngineDefaultVariables = createFlexEngineDefaultVariables();
 
 
 
