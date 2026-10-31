@@ -1,0 +1,100 @@
+{
+  "title": "TRANGLE GEOMETRY | Studio",
+  "includeInSitemap": true,
+  "OGImage": "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=1200&auto=format&fit=crop",
+  "section": [
+    {
+      "type": "section",
+      "fullSection": true,
+      "background": "var(--theme9)",
+      "textColor": "var(--theme1)",
+      "sectionData": [
+        {
+          "type": "flexColumn",
+          "data": {
+            "align": "center",
+            "datas": [
+              {
+                "type": "text",
+                "data": { "text": "<h1>GEOMETRY <nl> IS THE <nl> NEW LUXURY</h1>" }
+              },
+              {
+                "type": "button",
+                "data": { "Mode": 1, "text": "EXPLORE SPACES", "toggleURL": "/projects" }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "paddingTop": "100px",
+      "paddingBottom": "100px",
+      "background": "#FFFFFF",
+      "sectionData": [
+        {
+          "type": "flexRow",
+          "data": {
+            "align": "center",
+            "datas": [
+              {
+                "type": "image",
+                "data": {
+                  "image": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop",
+                  "alt": "Architectural Geometry",
+                  "fill": true
+                },
+                "space": 7
+              },
+              {
+                "type": "text",
+                "data": { 
+                  "text": "<h2>01 / DEFINING SPACE</h2><nl><p>我们不仅是设计形状，我们是在重新定义空间与人的关系。每一个锐角都有其存在的哲学。</p>" 
+                },
+                "space": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "paddingTop": "80px",
+      "paddingBottom": "80px",
+      "background": "var(--theme1)",
+      "textColor": "#FFFFFF",
+      "sectionData": [
+        {
+          "type": "text",
+          "data": { "text": "<h2>PORTFOLIO PREVIEW</h2><nl divider>" }
+        },
+        {
+          "type": "flexColumnGrow",
+          "data": {
+            "overflow": "nextLine",
+            "datas": [
+              {
+                "type": "image",
+                "data": { "image": "https://images.unsplash.com/photo-1507537509458-b8312d35a233?q=80&w=600&auto=format&fit=crop", "fill": true },
+                "space": 4
+              },
+              {
+                "type": "image",
+                "data": { "image": "https://images.unsplash.com/photo-1518005020477-62021113ad28?q=80&w=600&auto=format&fit=crop", "fill": true },
+                "space": 4
+              },
+              {
+                "type": "image",
+                "data": { "image": "https://images.unsplash.com/photo-1490772889528-d7fba0130b91?q=80&w=600&auto=format&fit=crop", "fill": true },
+                "space": 4
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "addingHead": "<style>h1 { font-family: 'Space Grotesk' !important; } .section { border-bottom: 1px solid #ddd; }</style>"
+}

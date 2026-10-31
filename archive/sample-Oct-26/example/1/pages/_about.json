@@ -1,0 +1,32 @@
+{
+  "title": "STUDIO | Trangle Geometry",
+  "section": [
+    {
+      "type": "section",
+      "paddingTop": "150px",
+      "paddingBottom": "80px",
+      "background": "var(--theme9)",
+      "sectionData": [
+        { "type": "text", "data": { "text": "<h1>THE PHILOSOPHY <nl> OF THE TRIANGLE</h1>" } }
+      ]
+    },
+    {
+      "type": "section",
+      "paddingTop": "100px",
+      "paddingBottom": "100px",
+      "background": "#FFFFFF",
+      "sectionData": [
+        {
+          "type": "flexRow",
+          "data": {
+            "align": "top",
+            "datas": [
+              { "type": "text", "data": { "text": "<h3>WHO WE ARE</h3><nl><p>Trangle Geometry Studio 是一家致力于探索极简主义与几何秩序的设计研究室。我们认为，任何复杂的空间都可以被拆解为最纯粹的几何语言。</p>" }, "space": 5 },
+              { "type": "image", "data": { "image": "https://images.unsplash.com/photo-1515263487990-61b07816b324?q=80&w=800&auto=format&fit=crop", "fill": true }, "space": 7 }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
